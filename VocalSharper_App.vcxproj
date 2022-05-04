@@ -168,9 +168,23 @@
   <ItemGroup>
     <ClInclude Include="JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="mainComponent.h" />
+    <ClInclude Include="Resources\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources.rc" />
+    <ResourceCompile Include="Resources\resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
+    <Image Include="logo_128_128.ico" />
+    <Image Include="logo_16_16.ico" />
+    <Image Include="logo_256_256.ico" />
+    <Image Include="logo_32_32.ico" />
+    <Image Include="logo_48_48.ico" />
+    <Image Include="logo_64_64.ico" />
+    <Image Include="Resources\logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
