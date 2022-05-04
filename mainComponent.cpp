@@ -1,4 +1,4 @@
-#include "MainComponent.h"
+#include "mainComponent.h"
 
 //==============================================================================
 MainComponent::MainComponent()

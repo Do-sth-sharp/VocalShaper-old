@@ -7,7 +7,7 @@
 */
 
 #include <JuceHeader.h>
-#include "MainComponent.h"
+#include "mainComponent.h"
 
 //==============================================================================
 class VocalSharperApplication final : public juce::JUCEApplication
