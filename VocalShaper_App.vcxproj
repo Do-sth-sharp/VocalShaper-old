@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7F05FCA0-AD24-B462-B1C7-DCFFE82201AF}</ProjectGuid>
-    <ProjectName>VocalSharper_App</ProjectName>
+    <ProjectName>VocalShaper_App</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -41,11 +41,11 @@
     <TargetExt>.exe</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Out\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VocalSharper</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VocalShaper</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Out\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VocalSharper</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VocalShaper</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -66,7 +66,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)\VocalSharper.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)\VocalShaper.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -78,11 +78,11 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)VocalSharper.exe</OutputFile>
+      <OutputFile>$(OutDir)VocalShaper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\VocalSharper.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\VocalShaper.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
       <Version>
@@ -111,7 +111,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)\VocalSharper.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)\VocalShaper.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -123,11 +123,11 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)VocalSharper.exe</OutputFile>
+      <OutputFile>$(OutDir)VocalShaper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\VocalSharper.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\VocalShaper.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -143,6 +143,8 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="JMADF\JModule.cpp" />
+    <ClCompile Include="JMADF\CallBackManager.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_analytics.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_audio_basics.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_audio_devices.cpp" />
@@ -162,12 +164,22 @@
     <ClCompile Include="JuceLibraryCode\include_juce_osc.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_product_unlocking.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_video.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainComponent.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainComponent.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="JMADF\ModulePool.cpp" />
+    <ClCompile Include="JMADF\ModuleList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="JMADF\JMADF.h" />
+    <ClInclude Include="JMADF\JModule.h" />
+    <ClInclude Include="JMADF\CallBackManager.h" />
     <ClInclude Include="JuceLibraryCode\JuceHeader.h" />
-    <ClInclude Include="mainComponent.h" />
+    <ClInclude Include="MainComponent.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="JMADF\ModulePool.h" />
+    <ClInclude Include="JMADF\ModuleList.h" />
+    <ClInclude Include="JMADF\ModuleInfo.h" />
     <ClInclude Include="Resources\resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -177,13 +189,6 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="logo.ico" />
-    <Image Include="logo_128_128.ico" />
-    <Image Include="logo_16_16.ico" />
-    <Image Include="logo_256_256.ico" />
-    <Image Include="logo_32_32.ico" />
-    <Image Include="logo_48_48.ico" />
-    <Image Include="logo_64_64.ico" />
     <Image Include="Resources\logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
