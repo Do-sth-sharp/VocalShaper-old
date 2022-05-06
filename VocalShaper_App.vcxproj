@@ -143,6 +143,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="JMADF\JMADF.cpp" />
     <ClCompile Include="JMADF\JModule.cpp" />
     <ClCompile Include="JMADF\CallBackManager.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_analytics.cpp" />
