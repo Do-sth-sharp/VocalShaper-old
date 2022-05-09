@@ -15,9 +15,10 @@ public:
     {
         JMADF::init(
             juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
-            .getParentDirectory().getFullPathName() + "/modules/",
+            .getParentDirectory().getFullPathName() + "/modules",
             "{08338208-B752-4A90-9C73-4163152D6818}"
         );
+        JMADF::load("VocalSharp.VocalShaper.Main");
         mainWindow.reset (new MainWindow (getApplicationName()));
     }
 

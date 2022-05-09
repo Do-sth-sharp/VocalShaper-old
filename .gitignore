@@ -33,5 +33,13 @@
 
 # Others
 .vs/**
-Out/**
+
+# Build cache
 x64/**
+Modules/*/x64/**
+
+# Output of the build
+Out/**/*.exe
+Out/**/*.dll
+Out/**/*.ilk
+Out/**/*.pdb
