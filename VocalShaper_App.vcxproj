@@ -146,6 +146,7 @@
     <ClCompile Include="JMADF\JMADF.cpp" />
     <ClCompile Include="JMADF\JModule.cpp" />
     <ClCompile Include="JMADF\libJModule\CallBackManager.cpp" />
+    <ClCompile Include="JMADF\libJModule\JModuleBase.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_analytics.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_audio_basics.cpp" />
     <ClCompile Include="JuceLibraryCode\include_juce_audio_devices.cpp" />
@@ -176,6 +177,9 @@
     <ClInclude Include="JMADF\JMADF.h" />
     <ClInclude Include="JMADF\JModule.h" />
     <ClInclude Include="JMADF\libJModule\CallBackManager.h" />
+    <ClInclude Include="JMADF\libJModule\libJModule.h" />
+    <ClInclude Include="JMADF\libJModule\Macros.h" />
+    <ClInclude Include="JMADF\libJModule\JModuleBase.h" />
     <ClInclude Include="JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="MainComponent.h" />
     <ClInclude Include="MainWindow.h" />

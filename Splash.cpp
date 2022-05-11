@@ -6,6 +6,28 @@ Splash::Splash(const juce::String& version)
 	this->setAlwaysOnTop(true);
 	//this->setOpaque(false);
 
+	juce::String cDate(__DATE__),cTime(__TIME__);
+	juce::StringArray cDTS = juce::StringArray::fromTokens(cDate, " ", "");
+	cDTS.getReference(0).swapWith(cDTS.getReference(2));
+	cDTS.getReference(1).swapWith(cDTS.getReference(2));
+	cDTS.addArray(juce::StringArray::fromTokens(cTime, ":", ""));
+	
+	const juce::StringArray mArray =
+	{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	
+	int month = mArray.indexOf(cDTS[1]) + 1;
+	juce::String sMonth = juce::String(month);
+	cDTS.getReference(1).swapWith(sMonth);
+
+	juce::String cDateTime;
+	for (int i = 0; i < cDTS.size(); i++) {
+		auto& str = cDTS[i];
+		if (str.length() == 1) {
+			cDateTime.append("0", 1);
+		}
+		cDateTime.append(str, str.length());
+	}
+
 	this->mesLabel = std::make_unique<juce::Label>();
 	this->mesLabel->setColour(juce::Label::ColourIds::backgroundColourId, juce::Colour(0x0));
 	this->mesLabel->setColour(juce::Label::ColourIds::textColourId, juce::Colour(0x9EFFFFFF));
@@ -13,7 +35,7 @@ Splash::Splash(const juce::String& version)
 	this->mesLabel->setAlwaysOnTop(true);
 	this->addAndMakeVisible(this->mesLabel.get());
 
-	this->verLabel = std::make_unique<juce::Label>("", "Ver " + version);
+	this->verLabel = std::make_unique<juce::Label>("", "Ver " + version + " Build " + cDateTime);
 	this->verLabel->setColour(juce::Label::ColourIds::backgroundColourId, juce::Colour(0x0));
 	this->verLabel->setColour(juce::Label::ColourIds::textColourId, juce::Colour(0x9EFFFFFF));
 	this->verLabel->setJustificationType(juce::Justification::bottomRight);
@@ -30,7 +52,7 @@ Splash::Splash(const juce::String& version)
 void Splash::resized()
 {
 	const double labHei = 0.2;
-	const double labSpl = 0.8;
+	const double labSpl = 0.7;
 	
 	this->mesLabel->setSize((int)(this->getWidth() * labSpl), (int)(this->getHeight() * labHei));
 	this->verLabel->setSize((int)(this->getWidth() * (1 - labSpl)), (int)(this->getHeight() * labHei));

@@ -41,5 +41,7 @@ Modules/*/x64/**
 # Output of the build
 Out/**/*.exe
 Out/**/*.dll
+Out/**/*.lib
+Out/**/*.exp
 Out/**/*.ilk
 Out/**/*.pdb
