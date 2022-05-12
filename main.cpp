@@ -1,6 +1,7 @@
 #include <JuceHeader.h>
 #include "Splash.h"
 #include "JMADF/JMADF.h"
+#include "JMADF/libJModule/Utils.h"
 
 class VocalShaperApplication final : public juce::JUCEApplication
 {
@@ -13,7 +14,7 @@ public:
 
     void initialise (const juce::String& /*commandLine*/) override
     {
-        this->splash.reset(new Splash(this->getApplicationVersion()));
+        this->splash.reset(new Splash(this->getApplicationVersion(), ::getComplieTime()));
         const juce::Rectangle<int>& displayArea =
             juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
         int sizeBase = std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03;

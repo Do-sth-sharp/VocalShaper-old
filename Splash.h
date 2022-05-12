@@ -5,7 +5,7 @@ class Splash final :
     public juce::Component
 {
 public:
-	Splash(const juce::String& version);
+	Splash(const juce::String& version, const juce::String& cDateTime);
 	~Splash() = default;
 	
 	void resized() override;
