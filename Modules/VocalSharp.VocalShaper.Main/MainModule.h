@@ -1,8 +1,8 @@
 #pragma once
 #include "libJModule/libJModule.h"
 
-class MainModule :
-    public JModuleBase
+class MainModule final :
+	public jmadf::JModuleBase
 {
 public:
 	MainModule();

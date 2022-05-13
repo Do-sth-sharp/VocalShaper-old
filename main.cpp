@@ -17,7 +17,7 @@ public:
         this->splash.reset(new Splash(this->getApplicationVersion(), ::getComplieTime()));
         const juce::Rectangle<int>& displayArea =
             juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
-        int sizeBase = std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03;
+        int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);
         this->splash->centreWithSize(sizeBase * 25, sizeBase * 10);
 		this->splash->setVisible(true);
         this->splash->addToDesktop(juce::ComponentPeer::windowHasDropShadow);

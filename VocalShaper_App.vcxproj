@@ -172,6 +172,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="JMADF\ModulePool.cpp" />
     <ClCompile Include="JMADF\ModuleList.cpp" />
+    <ClCompile Include="JMADF\libJModule\ModuleLoader.cpp" />
     <ClCompile Include="Splash.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,8 +189,10 @@
     <ClInclude Include="JMADF\ModulePool.h" />
     <ClInclude Include="JMADF\ModuleList.h" />
     <ClInclude Include="JMADF\ModuleInfo.h" />
+    <ClInclude Include="JMADF\libJModule\ModuleLoader.h" />
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Splash.h" />
+    <ClInclude Include="JMADF\libJModule\StaticInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\resources.rc" />
