@@ -36,6 +36,7 @@
 
 # Build cache
 x64/**
+JUCE_Library/x64/**
 Modules/*/x64/**
 
 # Output of the build
