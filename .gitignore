@@ -35,9 +35,7 @@
 .vs/**
 
 # Build cache
-x64/**
-JUCE_Library/x64/**
-Modules/*/x64/**
+Out/build/**
 
 # Output of the build
 Out/**/*.exe
