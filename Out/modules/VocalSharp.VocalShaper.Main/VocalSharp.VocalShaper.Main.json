@@ -1,0 +1,9 @@
+{
+    "id":"VocalSharp.VocalShaper.Main",
+    "version":"0.0.1",
+    "group":"VocalShaper.OfficialModules",
+    "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
+    "entry":"VocalSharp.VocalShaper.Main.dll",
+    "description":"VocalShaper编辑器主模块",
+    "dependencies":[]
+}

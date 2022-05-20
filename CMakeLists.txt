@@ -2,32 +2,23 @@ cmake_minimum_required (VERSION 3.8)
 
 project (VocalShaper VERSION 0.0.1 LANGUAGES CXX C)
 
-set(CMAKE_CXX_STANDARD 20)#Ê¹ÓÃC++20
+set(CMAKE_CXX_STANDARD 20)#ä½¿ç”¨C++20
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_STANDARD 17)#Ê¹ÓÃC17
+set(CMAKE_C_STANDARD 17)#ä½¿ç”¨C17
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVCÏÂÊ¹ÓÃ/MDºÍ/MDd
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVCä¸‹ä½¿ç”¨/MDå’Œ/MDd
 
-#ÉèÖÃÏîÄ¿³£ÓÃÎÄ¼þ¼Ð
+#è®¾ç½®é¡¹ç›®å¸¸ç”¨æ–‡ä»¶å¤¹
 set (OUT_DIR ${CMAKE_SOURCE_DIR}/Out)
 set (JMADF_DIR ${CMAKE_SOURCE_DIR}/JMADF)
-set (LIBJMODULE_DIR ${CMAKE_SOURCE_DIR}/JMADF/libJModule)
+set (LIBJMODULE_DIR ${JMADF_DIR}/libJModule)
 set (JUCEHEADER_DIR ${CMAKE_SOURCE_DIR}/JuceLibraryCode)
-IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
-	set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Windows)
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
-	set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Windows)
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-	set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Windows)
-ELSE ()
-	set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Windows)
-ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux") 
+set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Modules)
 
-#±àÒëÄ¿±ê
-add_subdirectory (JMADF)
+#ç¼–è¯‘ç›®æ ‡
 add_subdirectory (Modules)
 add_subdirectory (VocalShaper)
 add_subdirectory (JUCE_Library)

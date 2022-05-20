@@ -1,5 +1,5 @@
 #pragma once
-#include "libJModule/libJModule.h"
+#include <libJModule.h>
 
 class MainModule final :
 	public jmadf::JModuleBase

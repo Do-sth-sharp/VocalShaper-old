@@ -1,4 +1,4 @@
-#include "libJModule/libJModule.h"
+#include <libJModule.h>
 #include "MainModule.h"
 
 JModuleInstance(MainModule)

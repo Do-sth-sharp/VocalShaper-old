@@ -31,16 +31,32 @@
 *.out
 *.app
 
+# MSVC temps
+*.exp
+*.ilk
+*.pdb
+
+# GCC/CLang temps
+*.s
+*.i
+
 # Others
 .vs/**
+.vscode/**
 
-# Build cache
-Out/build/**
+# Build caches
+[Oo]ut/[Bb]uild/**
+[Oo]ut/[Ii]nstall/**
+[Bb]uild/**
+[Ii]nstall/**
 
-# Output of the build
-Out/**/*.exe
-Out/**/*.dll
-Out/**/*.lib
-Out/**/*.exp
-Out/**/*.ilk
-Out/**/*.pdb
+# Outputs of the build
+[Oo]ut/**/*.exe
+[Oo]ut/**/*.dll
+[Oo]ut/**/*.lib
+[Oo]ut/**/*.exp
+[Oo]ut/**/*.ilk
+[Oo]ut/**/*.pdb
+[Oo]ut/**/*.a
+[Oo]ut/**/*.so
+[Oo]ut/**/*.dylib
