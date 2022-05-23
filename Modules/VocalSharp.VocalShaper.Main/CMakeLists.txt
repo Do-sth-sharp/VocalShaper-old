@@ -102,6 +102,7 @@ target_link_libraries (
 set_target_properties (
 	${TARGET_NAME}
     PROPERTIES
+	PREFIX ""
     ARCHIVE_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
     LIBRARY_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
     RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
