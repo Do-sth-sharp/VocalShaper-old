@@ -1,7 +1,7 @@
 #include "MainModule.h"
 
 MainModule::MainModule()
-	:JModuleBase()
+	:Module()
 {
 	
 }

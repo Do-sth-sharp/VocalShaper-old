@@ -2,7 +2,7 @@
 #include <libJModule.h>
 
 class MainModule final :
-	public jmadf::JModuleBase
+	public jmadf::Module
 {
 public:
 	MainModule();
