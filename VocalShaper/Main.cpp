@@ -14,7 +14,7 @@ public:
 
     void initialise (const juce::String& /*commandLine*/) override
     {
-        this->splash.reset(new Splash(this->getApplicationVersion(), ::getComplieTime()));
+        this->splash.reset(new Splash(this->getApplicationVersion(), jmadf::getComplieTime()));
         const juce::Rectangle<int>& displayArea =
             juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
         int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);
@@ -29,8 +29,19 @@ public:
             .getParentDirectory().getFullPathName() + "/modules",
             "{08338208-B752-4A90-9C73-4163152D6818}"
         );
+		
         this->splash->showMessage("Loading main module...");
-        JMADF::load("VocalSharp.VocalShaper.Main");
+        if (!JMADF::load("VocalSharp.VocalShaper.Main")) {
+            juce::String exMes = JMADF::getException();
+            JMADF::clearException();
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, "Main Module Fatal Error",
+                exMes, juce::String(),
+                this->splash.get()
+            );
+            quit();
+        }
+		
         this->splash->ready();
         this->splash->showMessage("Ready.");
     }

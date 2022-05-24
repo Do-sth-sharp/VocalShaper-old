@@ -19,6 +19,7 @@ endif()
 add_compile_definitions (JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
 add_compile_definitions (JUCE_DLL=1)
 add_compile_definitions (JUCE_DISABLE_DLL_ALLOCATORS=1)
+add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
 #设置编译器参数
 if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
