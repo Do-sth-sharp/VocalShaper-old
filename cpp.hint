@@ -10,3 +10,5 @@
 #define JUCE_LEAK_DETECTOR(OwnerClass) public: static void* operator new (size_t sz) { return juce::juceDLL_malloc (sz); } static void* operator new (size_t, void* p) { return p; } static void operator delete (void* p) { juce::juceDLL_free (p); } static void operator delete (void*, void*) {}
 #define JUCE_LEAK_DETECTOR(OwnerClass) friend class juce::LeakedObjectDetector<OwnerClass>; static const char* getLeakedObjectClassName() noexcept { return #OwnerClass; } juce::LeakedObjectDetector<OwnerClass> JUCE_JOIN_MACRO (leakDetector, __LINE__);
 #define JUCE_LEAK_DETECTOR(OwnerClass)
+#define jassertfalse JUCE_BLOCK_WITH_FORCED_SEMICOLON (JUCE_LOG_CURRENT_ASSERTION; if (juce::juce_isRunningUnderDebugger()) JUCE_BREAK_IN_DEBUGGER; JUCE_ANALYZER_NORETURN)
+#define jassertfalse JUCE_BLOCK_WITH_FORCED_SEMICOLON (JUCE_LOG_CURRENT_ASSERTION)
