@@ -4,6 +4,7 @@ include_directories (${JUCEHEADER_DIR})
 include_directories (${JUCELIBRARY_DIR})
 include_directories (${JMADF_DIR})
 include_directories (${LIBJMODULE_DIR})
+include_directories (${RC_DIR})
 
 #使用JMADF库
 add_subdirectory (${JMADF_DIR} JMADF)
