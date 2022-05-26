@@ -14,6 +14,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVC�
 #设置项目常用文件夹
 set (OUT_DIR ${CMAKE_SOURCE_DIR}/Out)
 set (JMADF_DIR ${CMAKE_SOURCE_DIR}/JMADF)
+set (RC_DIR ${CMAKE_SOURCE_DIR}/Resources)
 set (LIBJMODULE_DIR ${JMADF_DIR}/libJModule)
 set (JUCEHEADER_DIR ${CMAKE_SOURCE_DIR}/JuceLibraryCode)
 set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE_Modules)

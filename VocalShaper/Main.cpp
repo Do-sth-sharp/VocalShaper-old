@@ -42,6 +42,16 @@ public:
             quit();
         }
 		
+        /*juce::DocumentWindow* ptrMainWindow = nullptr;
+        JMADF::callInterfaceFromLoader<juce::DocumentWindow*&>(
+            "VocalSharp.VocalShaper.MainWindow", "GetMainWindowPtr",
+            ptrMainWindow
+            );
+		
+        if (ptrMainWindow) {
+            
+        }*/
+		
         this->splash->ready();
         this->splash->showMessage("Ready.");
     }

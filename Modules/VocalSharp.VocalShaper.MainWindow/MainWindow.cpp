@@ -6,16 +6,17 @@ MainWindow::MainWindow(juce::String name)
         .findColour(juce::ResizableWindow::backgroundColourId),
         DocumentWindow::allButtons)
 {
-    setUsingNativeTitleBar(true);
-    setContentOwned(new MainComponent(), true);
+    this->setUsingNativeTitleBar(true);
+    this->setContentOwned(new MainComponent(), true);
 
 #if JUCE_IOS || JUCE_ANDROID
-    setFullScreen(true);
+    this->setFullScreen(true);
 #else
-    setResizable(true, true);
-    centreWithSize(getWidth(), getHeight());
+    this->setResizable(true, true);
+    this->centreWithSize(getWidth(), getHeight());
+    this->setFullScreen(true);
 #endif
-    setVisible(true);
+    this->setVisible(true);
 }
 
 void MainWindow::closeButtonPressed()
