@@ -60,3 +60,6 @@
 [Oo]ut/**/*.a
 [Oo]ut/**/*.so
 [Oo]ut/**/*.dylib
+
+# Resources
+*.aps
