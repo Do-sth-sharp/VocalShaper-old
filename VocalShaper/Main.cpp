@@ -31,7 +31,7 @@ public:
         );
 		
         this->splash->showMessage("Loading main module...");
-        if (!JMADF::load("VocalSharp.VocalShaper.Main")) {
+        if (!JMADF::loadFromLoader("VocalSharp.VocalShaper.Main")) {
             juce::String exMes = JMADF::getException();
             JMADF::clearException();
             juce::AlertWindow::showMessageBox(
@@ -42,16 +42,6 @@ public:
             quit();
         }
 		
-        /*juce::DocumentWindow* ptrMainWindow = nullptr;
-        JMADF::callInterfaceFromLoader<juce::DocumentWindow*&>(
-            "VocalSharp.VocalShaper.MainWindow", "GetMainWindowPtr",
-            ptrMainWindow
-            );
-		
-        if (ptrMainWindow) {
-            
-        }*/
-		
         this->splash->ready();
         this->splash->showMessage("Ready.");
     }
@@ -59,7 +49,6 @@ public:
     void shutdown() override
     {
         this->splash = nullptr;
-        JMADF::unload("VocalSharp.VocalShaper.Main");
         JMADF::destroy();
     }
 
