@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "libJModule.h"
 
 MainWindow::MainWindow(juce::String name)
     : DocumentWindow(name,
@@ -16,7 +17,21 @@ MainWindow::MainWindow(juce::String name)
     this->centreWithSize(getWidth(), getHeight());
     this->setFullScreen(true);
 #endif
-    this->setVisible(true);
+
+    size_t iconSize = 0;
+    void* iconPtr = nullptr;
+    juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+        .getParentDirectory().getFullPathName() + "/rc/logo.png";
+	
+    jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+        "WuChang.JMADF.DynamicRC",
+        "GetRC",
+        iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+        );
+    //this->setIcon(juce::ImageFileFormat::loadFrom(iconPtr, iconSize));
+    juce::File file(iconPath);
+    juce::FileInputStream stream(file);
+    this->setIcon(juce::ImageFileFormat::loadFrom(stream));
 }
 
 void MainWindow::closeButtonPressed()

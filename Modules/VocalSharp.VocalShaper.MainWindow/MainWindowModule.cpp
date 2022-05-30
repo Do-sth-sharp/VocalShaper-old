@@ -27,6 +27,7 @@ bool MainWindowModule::init()
 		jmadf::RaiseException("Can't alloc memory space for main window!");
 		return false;
 	}
+	
 	this->mainWindow->setVisible(true);
 	return true;
 }
@@ -34,4 +35,8 @@ bool MainWindowModule::init()
 void MainWindowModule::destory()
 {
 	this->mainWindow = nullptr;
+	jmadf::CallInterface<void>(
+		"WuChang.JMADF.DynamicRC",
+		"Unload"
+		);
 }

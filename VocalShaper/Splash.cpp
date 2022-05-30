@@ -23,7 +23,7 @@ Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 	this->logo = std::make_unique<juce::Image>(
 		juce::ImageFileFormat::loadFrom(
 			juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
-			.getParentDirectory().getFullPathName() + "/static_rc/dark.png"
+			.getParentDirectory().getFullPathName() + "/rc/dark.png"
 		));
 }
 

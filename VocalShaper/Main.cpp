@@ -59,6 +59,7 @@ public:
     void shutdown() override
     {
         this->splash = nullptr;
+        JMADF::unload("VocalSharp.VocalShaper.Main");
         JMADF::destroy();
     }
 
