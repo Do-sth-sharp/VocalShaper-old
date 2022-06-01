@@ -135,7 +135,7 @@ JUCE_MODAL_LOOPS_PERMITTED=1
 6. 如果你使用MSVC编译器，则视情况使用`/MD`与`/MDd`编译选项之一，同时使用`/bigobj` `/Gd`编译选项与如下链接选项：`/DYNAMICBASE` `/LARGEADDRESSAWARE` `/SUBSYSTEM:WINDOWS`；如果你使用GCC或Clang编译器，则使用`-fPIC`编译选项和`-mbig-obj`链接选项。无论你使用何种编译器，你都需要将C语言版本设置为`C17`，将C++语言版本设置为`C++20`
 
 ### 模块类编写
-包含`libJModule.h`头文件，建立继承自`jmadf::Module`类的模块类，注意该模块类的类名须有足够的辨识度，JMADF框架使用类名为不同模块分配各自的静态空间。
+包含`libJModule.h`头文件，建立继承自`jmadf::Module`类的模块类，**注意该模块类的类名须有足够的辨识度**，JMADF框架使用类名为不同模块分配各自的静态空间。
 在模块类中，你需要重写以下方法：
 ```cpp
 public:
