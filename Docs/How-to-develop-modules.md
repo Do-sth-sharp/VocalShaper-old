@@ -241,4 +241,48 @@ namespace jmadf
 
 `const juce::String GetException()`获取全部错误信息，每条错误信息间将以`'\n'`分隔。
 
-`void ClearException();`清空错误信息队列。
+`void ClearException()`清空错误信息队列。
+
+### 合理放置你的模块
+在编译之后，你将会获得一个动态链接库文件（`*.dll`或`*.so`或`*.dylib`），你需要进行如下操作：
+
+1. 在VocalShaper安装目录下`modules`文件夹中建立新目录，目录名与模块名相同。
+
+2. 将动态链接库放入新目录。
+
+3. 在该目录中建立一个json文件，文件名与模块名保持一致，该文件为模块配置信息文件，其内容格式为：
+```json
+{
+    "id":"Developer.Project.Module",
+    "version":"major.minor.patch",
+    "group":"Product.Group",
+    "productId":"{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+    "entry":"Dynamic_Link_Library_File_Name",
+    "description":"Some information about the module",
+    "dependencies":
+        [
+            "xxx.xxx.xxx",
+            "yyy.yyy.yyy",
+            "zzz.zzz.zzz"
+        ]
+}
+```
+
+`id`模块名，注意与模块类`getModuleName`方法返回内容一致。
+
+`version`模块版本，注意与模块类`getModuleVersion`方法返回内容一致。
+
+`group`模块组名，`GetAllModulesInGroup`方法将以此为依据查找模块。
+
+`productId`产品ID，格式为UUID格式，JMADF框架以此为依据识别模块所属产品。模块开发时应向产品开发者询问产品的UUID，否则JMADF将不会识别该模块。
+
+**VocalShaper目前的产品ID为`"{08338208-B752-4A90-9C73-4163152D6818}"`**
+
+`entry`JMADF框架将由此文件加载模块，故此处应设置为放入该目录的动态链接库文件名（不含扩展名）。
+
+`description`一些与模块相关的信息，用于提示模块的功能。开发者可以视情况自行设置。
+
+`dependencies`模块的依赖列表，列表中的成员必须是同产品下其它模块的模块名。此设置在应用运行时不会起作用，其唯一作用是在模块安装时检查依赖模块是否安装。
+
+### 模块打包
+**相关功能正在开发中**
