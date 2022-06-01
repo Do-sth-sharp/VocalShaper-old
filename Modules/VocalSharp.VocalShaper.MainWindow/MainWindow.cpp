@@ -1,11 +1,6 @@
 ﻿#include "MainWindow.h"
 #include "libJModule.h"
 
-#if JUCE_WINDOWS
-#include <Windows.h>
-#include <ShlObj.h>
-#endif
-
 MainWindow::MainWindow(juce::String name)
     : DocumentWindow(name,
         juce::Desktop::getInstance().getDefaultLookAndFeel()
@@ -19,7 +14,7 @@ MainWindow::MainWindow(juce::String name)
     this->setFullScreen(true);
 #else
     this->setResizable(true, true);
-    this->centreWithSize(getWidth(), getHeight());
+    this->centreWithSize(this->getWidth(), this->getHeight());
     this->setFullScreen(true);
 #endif
 
@@ -33,9 +28,11 @@ MainWindow::MainWindow(juce::String name)
         "GetRC",
         iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
         );
-    this->setIcon(juce::ImageFileFormat::loadFrom(iconPtr, iconSize));
+
+    const juce::Image& iconImage = juce::ImageFileFormat::loadFrom(iconPtr, iconSize);
+    this->setIcon(iconImage);
 	
-    this->getPeer()->setIcon(juce::ImageFileFormat::loadFrom(iconPtr, iconSize));
+    this->getPeer()->setIcon(iconImage);
 }
 
 void MainWindow::closeButtonPressed()

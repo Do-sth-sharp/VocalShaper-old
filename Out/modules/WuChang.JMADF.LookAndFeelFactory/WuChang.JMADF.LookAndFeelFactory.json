@@ -1,0 +1,9 @@
+{
+    "id":"WuChang.JMADF.LookAndFeelFactory",
+    "version":"0.0.1",
+    "group":"VocalShaper.OfficialModules",
+    "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
+    "entry":"WuChang.JMADF.LookAndFeelFactory.dll",
+    "description":"VocalShaper LookAndFeel工厂模块",
+    "dependencies":[]
+}
