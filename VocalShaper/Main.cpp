@@ -14,7 +14,7 @@ public:
 
     void initialise (const juce::String& /*commandLine*/) override
     {
-        this->splash.reset(new Splash(this->getApplicationVersion(), jmadf::getComplieTime()));
+        this->splash.reset(new Splash(this->getApplicationVersion(), jmadf::getComplieTime(__DATE__, __TIME__)));
         const juce::Rectangle<int>& displayArea =
             juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
         int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);

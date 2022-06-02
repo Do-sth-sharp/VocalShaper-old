@@ -1,3 +1,4 @@
 [submodule "JMADF"]
 	path = JMADF
 	url = https://gitlab.infinitysvs.tech/WuChang/JMADF.git
+	branch = develop
