@@ -8,7 +8,7 @@ include_directories (${LIBJMODULE_DIR})
 add_subdirectory (${LIBJMODULE_DIR} libJModule)
 
 #设置目标名称
-set (TARGET_NAME WuChang.JMADF.LookAndFeelFactory)
+set (TARGET_NAME WuChang.JMADF.LookAndFeelConfigs)
 
 #设置编译宏
 if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
@@ -89,8 +89,8 @@ add_library (
 	${TARGET_NAME} SHARED
 	${LIBJMODULE_SRC}
 	${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelFactoryModule.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelFactoryModule.h
+	${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelConfigsModule.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelConfigsModule.h
 )
 
 #链接库

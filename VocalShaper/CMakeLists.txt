@@ -117,5 +117,5 @@ add_dependencies (
 	VocalSharp.VocalShaper.Main
 	VocalSharp.VocalShaper.MainWindow
 	WuChang.JMADF.DynamicRC
-	WuChang.JMADF.LookAndFeelFactory
+	WuChang.JMADF.LookAndFeelConfigs
 )

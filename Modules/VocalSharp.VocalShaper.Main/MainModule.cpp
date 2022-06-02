@@ -18,7 +18,7 @@ bool MainModule::init()
 		jmadf::RaiseException("@ERROR " + juce::String(RCManagerName));
 		return false;
 	}
-	const char* LAFFName = "WuChang.JMADF.LookAndFeelFactory";
+	const char* LAFFName = "WuChang.JMADF.LookAndFeelConfigs";
 	if (!jmadf::LoadModule(LAFFName)) {
 		jmadf::RaiseException("@ERROR " + juce::String(LAFFName));
 		return false;
@@ -34,6 +34,6 @@ bool MainModule::init()
 void MainModule::destory()
 {
 	jmadf::UnloadModule("VocalSharp.VocalShaper.MainWindow");
-	jmadf::UnloadModule("WuChang.JMADF.LookAndFeelFactory");
+	jmadf::UnloadModule("WuChang.JMADF.LookAndFeelConfigs");
 	jmadf::UnloadModule("WuChang.JMADF.DynamicRC");	
 }
