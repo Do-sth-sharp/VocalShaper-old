@@ -43,6 +43,7 @@
 # Others
 .vs/**
 .vscode/**
+.idea/**
 
 # Build caches
 [Oo]ut/[Bb]uild/**
