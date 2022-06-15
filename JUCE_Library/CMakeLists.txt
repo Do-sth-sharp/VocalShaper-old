@@ -3,8 +3,8 @@ set (DYNAMIC_LIBRARY JUCE)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 add_compile_definitions (JUCE_DLL_BUILD=1)
 add_compile_definitions (JUCE_DISABLE_DLL_ALLOCATORS=1)
-add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 endif ()
+add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
 ###############################################################################
 # Xcode (macOS)
@@ -7522,13 +7522,13 @@ target_compile_definitions (${DYNAMIC_LIBRARY} PRIVATE
 
 target_compile_options (${DYNAMIC_LIBRARY} PRIVATE
     -fPIC
-    -fvisibility=hidden
+    -fvisibility=default
 )
 
 target_link_libraries (${DYNAMIC_LIBRARY} PRIVATE
     
     -shared
-    -fvisibility=hidden
+    -fvisibility=default
     ${RT}
     ${DL}
     ${PTHREAD}
@@ -7618,13 +7618,13 @@ target_compile_definitions (${DYNAMIC_LIBRARY} PRIVATE
 
 target_compile_options (${DYNAMIC_LIBRARY} PRIVATE
     -fPIC
-    -fvisibility=hidden
+    -fvisibility=default
 )
 
 target_link_libraries (${DYNAMIC_LIBRARY} PRIVATE
     
     -shared
-    -fvisibility=hidden
+    -fvisibility=default
     ${RT}
     ${DL}
     ${PTHREAD}

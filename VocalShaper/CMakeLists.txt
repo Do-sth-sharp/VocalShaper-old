@@ -6,6 +6,14 @@ include_directories (${JMADF_DIR})
 include_directories (${LIBJMODULE_DIR})
 include_directories (${RC_DIR})
 
+#设置语言标准
+set(CMAKE_CXX_STANDARD 20)#使用C++20
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 17)#使用C17
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 #使用JMADF库
 add_subdirectory (${JMADF_DIR} JMADF)
 
@@ -19,8 +27,10 @@ elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 	add_compile_definitions (NDEBUG)
 endif()
 add_compile_definitions (JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 add_compile_definitions (JUCE_DLL=1)
 add_compile_definitions (JUCE_DISABLE_DLL_ALLOCATORS=1)
+endif ()
 add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
 #设置编译器参数
@@ -49,7 +59,7 @@ if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
 		)
 	else ()
 		add_compile_options (-fPIC)
-		add_link_options (-mbig-obj)
+		#add_link_options (-mbig-obj)
 	endif ()
 elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -81,7 +91,7 @@ elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 		)
 	else ()
 		add_compile_options (-fPIC)
-		add_link_options (-mbig-obj)
+		#add_link_options (-mbig-obj)
 	endif ()
 endif()
 
