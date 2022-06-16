@@ -101,6 +101,8 @@ add_library (
 	${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelConfigsModule.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LookAndFeelConfigsModule.h
+	${CMAKE_CURRENT_SOURCE_DIR}/LAFConfigs.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LAFConfigs.h
 )
 
 #链接库

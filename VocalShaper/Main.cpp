@@ -30,6 +30,28 @@ public:
             "{08338208-B752-4A90-9C73-4163152D6818}"
         );
 		
+        this->splash->showMessage("Loading base modules...");
+        if (!JMADF::loadFromLoader("WuChang.JMADF.DynamicRC")) {
+            juce::String exMes = JMADF::getException();
+            JMADF::clearException();
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, "Base Module Fatal Error",
+                exMes, juce::String(),
+                this->splash.get()
+            );
+            quit();
+        }
+        if (!JMADF::loadFromLoader("WuChang.JMADF.LookAndFeelConfigs")) {
+            juce::String exMes = JMADF::getException();
+            JMADF::clearException();
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, "Base Module Fatal Error",
+                exMes, juce::String(),
+                this->splash.get()
+            );
+            quit();
+        }
+		
         this->splash->showMessage("Loading main module...");
         if (!JMADF::loadFromLoader("VocalSharp.VocalShaper.Main")) {
             juce::String exMes = JMADF::getException();
