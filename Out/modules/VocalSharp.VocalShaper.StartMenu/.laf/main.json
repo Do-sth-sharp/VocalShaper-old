@@ -1,0 +1,29 @@
+{
+    "parent":
+    {
+        "module":"VocalSharp.VocalShaper.MainWindow",
+        "class":"main"
+    },
+    "size":
+    {
+        "width-leftBar:number":0.15,
+        "width-leftBar-max:number":450
+    },
+    "position":
+    {
+        "posY-logo:number":0.07
+    },
+    "scale":
+    {
+        "width-logo:number":0.7
+    },
+    "color":
+    {
+        "background:string":"#1B1B24",
+        "leftBar:string":"#272736"
+    },
+    "resource":
+    {
+        "logo:string":"/rc/dark.png"
+    }
+}

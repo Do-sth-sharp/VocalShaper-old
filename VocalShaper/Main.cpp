@@ -51,6 +51,16 @@ public:
             );
             quit();
         }
+        if (!JMADF::loadFromLoader("WuChang.JMADF.Device")) {
+            juce::String exMes = JMADF::getException();
+            JMADF::clearException();
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, "Base Module Fatal Error",
+                exMes, juce::String(),
+                this->splash.get()
+            );
+            quit();
+        }
 		
         this->splash->showMessage("Loading main module...");
         if (!JMADF::loadFromLoader("VocalSharp.VocalShaper.Main")) {

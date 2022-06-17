@@ -2,12 +2,12 @@
 #include <libJModule.h>
 #include "MainWindow.h"
 
-class MainWindowModule final :
+class VocalSharp_VocalShaper_MainWindow final :
 	public jmadf::Module
 {
 public:
-	MainWindowModule();
-	~MainWindowModule();
+	VocalSharp_VocalShaper_MainWindow();
+	~VocalSharp_VocalShaper_MainWindow();
 	
 	bool init() override;
 	void destory() override;
@@ -18,5 +18,5 @@ public:
 	std::unique_ptr<MainWindow> mainWindow;
 	
 private:
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindowModule)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VocalSharp_VocalShaper_MainWindow)
 };

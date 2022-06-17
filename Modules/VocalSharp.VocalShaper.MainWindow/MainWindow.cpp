@@ -33,9 +33,33 @@ MainWindow::MainWindow(juce::String name)
     this->setIcon(iconImage);
 	
     this->getPeer()->setIcon(iconImage);
+
+    juce::Colour cBackground;
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background", cBackground, result
+        );
+    if (result) {
+        this->setBackgroundColour(cBackground);
+    }
 }
 
 void MainWindow::closeButtonPressed()
 {
     juce::JUCEApplication::getInstance()->systemRequestedQuit();
+}
+
+void MainWindow::resized()
+{
+    juce::Rectangle<int> screenSize;
+    jmadf::CallInterface<juce::Component*, juce::Rectangle<int>&>(
+        "WuChang.JMADF.Device", "GetScreenSize",
+        this, screenSize
+        );
+    this->setResizeLimits(
+        screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
+        screenSize.getWidth() * 2, screenSize.getHeight() * 2
+    );
+    this->DocumentWindow::resized();
 }

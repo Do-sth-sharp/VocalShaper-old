@@ -94,15 +94,14 @@ elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 	endif ()
 endif()
 
+#添加目录内所有源文件
+aux_source_directory(. TARGET_SOURCE)
+
 #编译的文件
 add_library (
 	${TARGET_NAME} SHARED
 	${LIBJMODULE_SRC}
-	${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/DRCModule.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/DRCModule.h
-	${CMAKE_CURRENT_SOURCE_DIR}/RCPool.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/RCPool.h
+	${TARGET_SOURCE}
 )
 
 #链接库

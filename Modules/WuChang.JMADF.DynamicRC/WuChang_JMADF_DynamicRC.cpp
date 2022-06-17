@@ -1,17 +1,17 @@
-#include "DRCModule.h"
+#include "WuChang_JMADF_DynamicRC.h"
 
-DRCModule::DRCModule()
+WuChang_JMADF_DynamicRC::WuChang_JMADF_DynamicRC()
 	:Module()
 {
 	
 }
 
-DRCModule::~DRCModule()
+WuChang_JMADF_DynamicRC::~WuChang_JMADF_DynamicRC()
 {
 	
 }
 
-bool DRCModule::init()
+bool WuChang_JMADF_DynamicRC::init()
 {
 	this->rcManager = std::make_unique<RCPool>();
 	if (!this->rcManager) {
@@ -47,6 +47,6 @@ bool DRCModule::init()
 	return true;
 }
 
-void DRCModule::destory()
+void WuChang_JMADF_DynamicRC::destory()
 {
 }

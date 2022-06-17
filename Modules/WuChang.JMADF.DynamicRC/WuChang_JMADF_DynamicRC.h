@@ -2,12 +2,12 @@
 #include <libJModule.h>
 #include "RCPool.h"
 
-class DRCModule final :
+class WuChang_JMADF_DynamicRC final :
 	public jmadf::Module
 {
 public:
-	DRCModule();
-	~DRCModule();
+	WuChang_JMADF_DynamicRC();
+	~WuChang_JMADF_DynamicRC();
 	
 	bool init() override;
 	void destory() override;
@@ -17,5 +17,5 @@ public:
 	
 private:
 	std::unique_ptr<RCPool> rcManager;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DRCModule)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WuChang_JMADF_DynamicRC)
 };

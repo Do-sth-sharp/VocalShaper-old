@@ -1,9 +1,6 @@
 {
-    "testW":
+    "color":
     {
-        "testA1:number":123,
-        "testA1":"456",
-        "testA2":true,
-        "testA3:string":"test string"
+        "background:string":"#12121A"
     }
 }

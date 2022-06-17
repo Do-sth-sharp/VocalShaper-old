@@ -1,3 +1,3 @@
-#include "LookAndFeelConfigsModule.h"
+#include "WuChang_JMADF_LookAndFeelConfigs.h"
 
-JModuleInstance(LookAndFeelConfigsModule)
+JModuleInstance(WuChang_JMADF_LookAndFeelConfigs)

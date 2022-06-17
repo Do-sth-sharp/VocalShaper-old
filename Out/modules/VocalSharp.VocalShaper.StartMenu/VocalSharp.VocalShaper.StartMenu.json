@@ -1,0 +1,11 @@
+{
+    "id":"VocalSharp.VocalShaper.StartMenu",
+    "version":"0.0.1",
+    "group":"VocalShaper.OfficialModules",
+    "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
+    "entry":"VocalSharp.VocalShaper.StartMenu",
+    "description":"VocalShaper编辑器首页",
+    "dependencies":[
+        "VocalSharp.VocalShaper.Main"
+    ]
+}

@@ -1,4 +1,4 @@
 #include <libJModule.h>
-#include "MainWindowModule.h"
+#include "VocalSharp_VocalShaper_MainWindow.h"
 
-JModuleInstance(MainWindowModule)
+JModuleInstance(VocalSharp_VocalShaper_MainWindow)

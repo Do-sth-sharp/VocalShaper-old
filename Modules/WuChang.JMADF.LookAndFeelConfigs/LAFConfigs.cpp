@@ -1,11 +1,11 @@
 ﻿#include "LAFConfigs.h"
 #include <libJModule.h>
 
-bool LAFConfigs::getNum(const juce::String& caller, const juce::String& className, const juce::String& widget, const juce::String& attribute, double& value)
+bool LAFConfigs::getNum(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, double& value)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	juce::var result;
-	if (!this->getDFS(caller, caller, className, widget, attribute, "number", result)) {
+	if (!this->getDFS(caller, caller, className, group, attribute, "number", result)) {
 		return false;
 	}
 	
@@ -17,11 +17,11 @@ bool LAFConfigs::getNum(const juce::String& caller, const juce::String& classNam
 	return true;
 }
 
-bool LAFConfigs::getString(const juce::String& caller, const juce::String& className, const juce::String& widget, const juce::String& attribute, juce::String& value)
+bool LAFConfigs::getString(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, juce::String& value)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	juce::var result;
-	if (!this->getDFS(caller, caller, className, widget, attribute, "string", result)) {
+	if (!this->getDFS(caller, caller, className, group, attribute, "string", result)) {
 		return false;
 	}
 
@@ -33,11 +33,11 @@ bool LAFConfigs::getString(const juce::String& caller, const juce::String& class
 	return true;
 }
 
-bool LAFConfigs::getBool(const juce::String& caller, const juce::String& className, const juce::String& widget, const juce::String& attribute, bool& value)
+bool LAFConfigs::getBool(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, bool& value)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	juce::var result;
-	if (!this->getDFS(caller, caller, className, widget, attribute, "boolean", result)) {
+	if (!this->getDFS(caller, caller, className, group, attribute, "boolean", result)) {
 		return false;
 	}
 
@@ -47,6 +47,62 @@ bool LAFConfigs::getBool(const juce::String& caller, const juce::String& classNa
 
 	value = result;
 	return true;
+}
+
+bool LAFConfigs::getColour(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, juce::Colour& value)
+{
+	juce::String cString;
+	if (!this->getString(caller, className, group, attribute, cString)) {
+		return false;
+	}
+	
+	if (cString.startsWithChar('#')) {
+		if (!cString.getLastCharacters(cString.length() - 1).containsOnly("0123456789abcdefABCDEF")) {
+			return false;
+		}
+		if (cString.length() == 7) {
+			uint8_t r = this->HexToDec(cString[1]) * 16 + this->HexToDec(cString[2]);
+			uint8_t g = this->HexToDec(cString[3]) * 16 + this->HexToDec(cString[4]);
+			uint8_t b = this->HexToDec(cString[5]) * 16 + this->HexToDec(cString[6]);
+			value = juce::Colour(r, g, b);
+			return true;
+		}
+		else if (cString.length() == 9) {
+			uint8_t r = this->HexToDec(cString[1]) * 16 + this->HexToDec(cString[2]);
+			uint8_t g = this->HexToDec(cString[3]) * 16 + this->HexToDec(cString[4]);
+			uint8_t b = this->HexToDec(cString[5]) * 16 + this->HexToDec(cString[6]);
+			uint8_t a = this->HexToDec(cString[7]) * 16 + this->HexToDec(cString[8]);
+			value = juce::Colour(r, g, b, a);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		if (!cString.containsOnly("0123456789abcdefABCDEF")) {
+			return false;
+		}
+		if (cString.length() == 6) {
+			uint8_t r = this->HexToDec(cString[0]) * 16 + this->HexToDec(cString[1]);
+			uint8_t g = this->HexToDec(cString[2]) * 16 + this->HexToDec(cString[3]);
+			uint8_t b = this->HexToDec(cString[4]) * 16 + this->HexToDec(cString[5]);
+			value = juce::Colour(r, g, b);
+			return true;
+		}
+		else if (cString.length() == 8) {
+			uint8_t r = this->HexToDec(cString[0]) * 16 + this->HexToDec(cString[1]);
+			uint8_t g = this->HexToDec(cString[2]) * 16 + this->HexToDec(cString[3]);
+			uint8_t b = this->HexToDec(cString[4]) * 16 + this->HexToDec(cString[5]);
+			uint8_t a = this->HexToDec(cString[6]) * 16 + this->HexToDec(cString[7]);
+			value = juce::Colour(r, g, b, a);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
 }
 
 void LAFConfigs::releaseAll()
@@ -80,18 +136,18 @@ void LAFConfigs::close(const juce::String& caller)
 	}
 }
 
-bool LAFConfigs::getDFS(const juce::String& caller, const juce::String& moduleName, const juce::String& className, const juce::String& widget, const juce::String& attribute, const juce::String& type, juce::var& value)
+bool LAFConfigs::getDFS(const juce::String& caller, const juce::String& moduleName, const juce::String& className, const juce::String& group, const juce::String& attribute, const juce::String& type, juce::var& value)
 {
 	juce::var* configTable = nullptr;
 	if (!this->load(caller, moduleName, className, configTable)) {
 		return false;
 	}//获取配置表
 	
-	juce::var widgetTable = configTable->getProperty(widget, juce::var());//查找widget
-	if (widgetTable.isObject()) {
-		juce::var result = widgetTable.getProperty(attribute + ":" + type, juce::var());//强类型优先
+	juce::var groupTable = configTable->getProperty(group, juce::var());//查找group
+	if (groupTable.isObject()) {
+		juce::var result = groupTable.getProperty(attribute + ":" + type, juce::var());//强类型优先
 		if (result.isVoid()) {
-			result = widgetTable.getProperty(attribute, juce::var());
+			result = groupTable.getProperty(attribute, juce::var());
 		}//弱类型次之
 		if (!result.isVoid()) {
 			value = result;
@@ -99,17 +155,17 @@ bool LAFConfigs::getDFS(const juce::String& caller, const juce::String& moduleNa
 		}//找到为止
 	}
 	
-	widgetTable = configTable->getProperty("parent", juce::var());//查找父表
-	if (widgetTable.isObject()) {
-		juce::var classVar = widgetTable.getProperty("class", juce::var());
-		juce::var moduleVar = widgetTable.getProperty("module", juce::var());
+	groupTable = configTable->getProperty("parent", juce::var());//查找父表
+	if (groupTable.isObject()) {
+		juce::var classVar = groupTable.getProperty("class", juce::var());
+		juce::var moduleVar = groupTable.getProperty("module", juce::var());
 		
 		if (classVar.isString()) {
 			if (moduleVar.isVoid()) {
-				return this->getDFS(caller, moduleName, classVar.toString(), widget, attribute, type, value);
+				return this->getDFS(caller, moduleName, classVar.toString(), group, attribute, type, value);
 			}//同模块查找
 			else if (moduleVar.isString()) {
-				return this->getDFS(caller, moduleVar.toString(), classVar.toString(), widget, attribute, type, value);
+				return this->getDFS(caller, moduleVar.toString(), classVar.toString(), group, attribute, type, value);
 			}//跨模块查找
 		}//有效的父表
 	}
@@ -154,4 +210,20 @@ bool LAFConfigs::load(const juce::String& caller, const juce::String& moduleName
 	laf.flag = true;
 	data = &(laf.data);
 	return true;
+}
+
+uint8_t LAFConfigs::HexToDec(const juce::juce_wchar& s) const
+{
+	if (s >= '0' && s <= '9') {
+		return s - '0';
+	}
+	else if (s >= 'a' && s <= 'f') {
+		return 9 + s - 'a';
+	}
+	else if (s >= 'A' && s <= 'F') {
+		return 9 + s - 'A';
+	}
+	else {
+		return 0;
+	}
 }

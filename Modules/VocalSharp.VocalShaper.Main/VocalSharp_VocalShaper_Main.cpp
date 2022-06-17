@@ -1,17 +1,17 @@
-#include "MainModule.h"
+#include "VocalSharp_VocalShaper_Main.h"
 
-MainModule::MainModule()
+VocalSharp_VocalShaper_Main::VocalSharp_VocalShaper_Main()
 	:Module()
 {
 	
 }
 
-MainModule::~MainModule()
+VocalSharp_VocalShaper_Main::~VocalSharp_VocalShaper_Main()
 {
 	
 }
 
-bool MainModule::init()
+bool VocalSharp_VocalShaper_Main::init()
 {
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {
@@ -21,7 +21,7 @@ bool MainModule::init()
 	return true;
 }
 
-void MainModule::destory()
+void VocalSharp_VocalShaper_Main::destory()
 {
 	jmadf::UnloadModule("VocalSharp.VocalShaper.MainWindow");
 }

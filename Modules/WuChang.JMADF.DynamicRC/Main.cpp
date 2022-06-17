@@ -1,4 +1,4 @@
 #include <libJModule.h>
-#include "DRCModule.h"
+#include "WuChang_JMADF_DynamicRC.h"
 
-JModuleInstance(DRCModule)
+JModuleInstance(WuChang_JMADF_DynamicRC)
