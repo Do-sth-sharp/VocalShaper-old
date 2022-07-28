@@ -2,3 +2,6 @@
 	path = JMADF
 	url = https://github.com/FangCunWuChang/JMADF.git
 	branch = develop
+[submodule "JUCE"]
+	path = JUCE
+	url = https://github.com/juce-framework/JUCE.git
