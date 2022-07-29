@@ -13,6 +13,10 @@ VocalSharp_VocalShaper_StartMenu::~VocalSharp_VocalShaper_StartMenu()
 
 bool VocalSharp_VocalShaper_StartMenu::init()
 {
+	jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs");
+	jmadf::LoadModule("WuChang.JMADF.DynamicRC");
+	jmadf::LoadModule("WuChang.JMADF.Device");
+
 	this->smComp = std::make_unique<SMComponent>();
 	if (!this->smComp) {
 		jmadf::RaiseException("Can't alloc memory space for start menu!");

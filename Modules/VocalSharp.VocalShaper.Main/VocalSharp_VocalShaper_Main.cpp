@@ -23,5 +23,4 @@ bool VocalSharp_VocalShaper_Main::init()
 
 void VocalSharp_VocalShaper_Main::destory()
 {
-	jmadf::UnloadModule("VocalSharp.VocalShaper.MainWindow");
 }
