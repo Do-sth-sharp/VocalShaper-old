@@ -272,7 +272,7 @@ namespace jmadf
 
 `version`模块版本，注意与模块类`getModuleVersion`方法返回内容一致。
 
-`group`模块组名，`GetAllModulesInGroup`方法将以此为依据查找模块。
+`group`模块组名，为一个字符串或一个包含字符串的数组，`GetAllModulesInGroup`方法将以此为依据查找模块。
 
 `productId`产品ID，格式为UUID格式，JMADF框架以此为依据识别模块所属产品。模块开发时应向产品开发者询问产品的UUID，否则JMADF将不会识别该模块。
 
