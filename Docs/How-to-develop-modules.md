@@ -1,11 +1,11 @@
 [TOC]
 
 ### 准备libJModule库
-libJModule库是JMADF框架中用于模块开发的部分。\
-你可以从 [https://gitlab.infinitysvs.tech/WuChang/libJModule.git](https://gitlab.infinitysvs.tech/WuChang/libJModule.git) 处克隆libJModule库源码或将其以Git子项目的形式添加。\
+libJModule库是JMADF框架中用于模块开发的部分。  
+你可以从 [https://github.com/FangCunWuChang/libJModule.git](https://github.com/FangCunWuChang/libJModule.git) 处克隆libJModule库源码或将其以Git子项目的形式添加。  
 在使用libJModule库时，你需要注意以下几点：
-- 在你的项目中添加 [libJModule许可证](https://gitlab.infinitysvs.tech/WuChang/libJModule/-/blob/develop/LICENSE) 和 [leveldb许可证](https://gitlab.infinitysvs.tech/WuChang/libJModule/-/blob/develop/LICENSE.Arena) 
-- 确保你拥有有效的 [JUCE许可证](https://juce.com/get-juce) 或使用Juce框架的 [开源版本](https://github.com/juce-framework/JUCE) ，需要注意的是，Juce框架的开源版本使用 [GPLv3许可协议](https://www.gnu.org/licenses/gpl-3.0.en.html) ，这意味着你的模块也需要在GPLv3协议下发布
+- 在你的项目中添加 [libJModule许可证](https://github.com/FangCunWuChang/libJModule/blob/develop/LICENSE)。  
+- 确保你拥有有效的 [JUCE许可证](https://juce.com/get-juce) 或使用Juce框架的 [开源版本](https://github.com/juce-framework/JUCE) ，需要注意的是，Juce框架的开源版本使用 [GPLv3许可协议](https://www.gnu.org/licenses/gpl-3.0.en.html) ，这意味着你的模块也需要在GPLv3协议下发布。
 
 ### 动态编译Juce框架
 为了减少模块的体积，你需要对Juce框架进行动态编译并链接至你的模块中。
@@ -135,7 +135,7 @@ JUCE_MODAL_LOOPS_PERMITTED=1
 6. 如果你使用MSVC编译器，则视情况使用`/MD`与`/MDd`编译选项之一，同时使用`/bigobj` `/Gd`编译选项与如下链接选项：`/DYNAMICBASE` `/LARGEADDRESSAWARE` `/SUBSYSTEM:WINDOWS`；如果你使用GCC或Clang编译器，则使用`-fPIC`编译选项和`-mbig-obj`链接选项。无论你使用何种编译器，你都需要将C语言版本设置为`C17`，将C++语言版本设置为`C++20`
 
 ### 模块类编写
-包含`libJModule.h`头文件，建立继承自`jmadf::Module`类的模块类，**注意该模块类的类名须有足够的辨识度**，JMADF框架使用类名为不同模块分配各自的静态空间。\
+包含`libJModule.h`头文件，建立继承自`jmadf::Module`类的模块类，**注意该模块类的类名须有足够的辨识度**，JMADF框架使用类名为不同模块分配各自的静态空间。  
 在模块类中，你需要重写以下方法：
 ```cpp
 public:
@@ -214,7 +214,7 @@ namespace jmadf
 
 **需要特别注意的是：**
 - **模块不可以试图加载/卸载其本身，任何对模块本身的加载/卸载操作都将被屏蔽**
-- **为了保证模块的依赖顺序，模块的卸载顺序需与加载相反，故`LoadModule`与`UnloadModule`必须配对使用，因此，建议在模块类的`init`方法中加载其他模块，在模块类`destory`方法中逆序卸载其他模块**
+- **为了保证模块的依赖顺序，建议在模块类的`init`方法中加载其他模块，在模块类`destory`方法中逆序卸载其他模块**
 
 `bool ModuleIsLoaded(const juce::String& moduleId)`查询模块是否已被加载。
 
