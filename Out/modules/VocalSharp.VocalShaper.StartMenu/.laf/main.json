@@ -6,7 +6,7 @@
     },
     "size":
     {
-        "width-leftBar:number":0.15,
+        "width-leftBar:number":0.2,
         "width-leftBar-max:number":450
     },
     "position":

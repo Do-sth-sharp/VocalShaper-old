@@ -64,10 +64,10 @@ void SMComponent::paint(juce::Graphics& g)
         "WuChang.JMADF.Device", "GetScreenSize",
         this, screenSize
         );
-    jmadf::CallInterface<juce::Component*, double&>(
+    /*jmadf::CallInterface<juce::Component*, double&>(
         "WuChang.JMADF.Device", "GetScreenScale",
         this, screenScale
-        );
+        );*/
 	
     g.fillAll(this->colors.background);
 	
