@@ -1,0 +1,3 @@
+#include "WuChang_JMADF_OpenGLComponentRender.h"
+
+JModuleInstance(WuChang_JMADF_OpenGLComponentRender)

@@ -2,6 +2,7 @@
 add_subdirectory (WuChang.JMADF.DynamicRC)
 add_subdirectory (WuChang.JMADF.LookAndFeelConfigs)
 add_subdirectory (WuChang.JMADF.Device)
+add_subdirectory (WuChang.JMADF.OpenGLComponentRender)
 
 #VocalShaper自有模块
 add_subdirectory (VocalSharp.VocalShaper.Main)

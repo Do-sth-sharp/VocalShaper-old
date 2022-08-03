@@ -23,6 +23,11 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		return false;
 	}
 
+	bool openglLoaded = jmadf::LoadModule("WuChang.JMADF.OpenGLComponentRender");
+	if (!jmadf::GetException().isEmpty()) {
+		jmadf::ClearException();
+	}
+
 	jmadf::RegisterInterface<juce::DocumentWindow*&>(
 		"GetMainWindowPtr",
 		[this](const juce::String& caller, juce::DocumentWindow*& ptr)
@@ -36,11 +41,22 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		jmadf::RaiseException("Can't alloc memory space for main window!");
 		return false;
 	}
+	if (openglLoaded) {
+		jmadf::CallInterface<juce::Component*>(
+			"WuChang.JMADF.OpenGLComponentRender", "Attach",
+			this->mainWindow.get()
+			);
+	}
 	return true;
 }
 
 void VocalSharp_VocalShaper_MainWindow::destory()
 {
+	if (jmadf::ModuleIsLoaded("WuChang.JMADF.OpenGLComponentRender")) {
+		jmadf::CallInterface<void>(
+			"WuChang.JMADF.OpenGLComponentRender", "Detach"
+			);
+	}
 	this->mainWindow = nullptr;
 	jmadf::CallInterface<void>(
 		"WuChang.JMADF.LookAndFeelConfigs", "Close"
