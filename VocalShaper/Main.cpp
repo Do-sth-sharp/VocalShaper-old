@@ -34,7 +34,8 @@ public:
         if (!(JMADF::loadFromLoader("WuChang.JMADF.DynamicRC") &&
             JMADF::loadFromLoader("WuChang.JMADF.LookAndFeelConfigs") &&
             JMADF::loadFromLoader("WuChang.JMADF.Device") &&
-            JMADF::loadFromLoader("WuChang.JMADF.Configs")
+            JMADF::loadFromLoader("WuChang.JMADF.Configs") &&
+            JMADF::loadFromLoader("WuChang.JMADF.Translates")
             )) {
             juce::String exMes = JMADF::getException();
             JMADF::clearException();

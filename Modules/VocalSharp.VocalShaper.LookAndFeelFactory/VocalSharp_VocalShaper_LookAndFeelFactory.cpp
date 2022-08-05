@@ -22,4 +22,5 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 
 void VocalSharp_VocalShaper_LookAndFeelFactory::destory()
 {
+	jmadf::CallInterface<void>("WuChang.JMADF.LookAndFeelConfigs", "Close");
 }

@@ -1,0 +1,7 @@
+{
+    "bt_NewProject":"New Project",
+    "bt_OpenProject":"Open Project",
+
+    "tip_NewProject":"Create a new voice synthesis project",
+    "tip_OpenProject":"Open a project from a project folder"
+}

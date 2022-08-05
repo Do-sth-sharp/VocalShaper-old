@@ -8,6 +8,7 @@ public:
 	~SMComponent() override;
 	
 	void paint(juce::Graphics& g) override;
+	void resized() override;
 	
 private:
 	struct Colors final
@@ -19,6 +20,10 @@ private:
 	{
 		double width_leftBar;
 		double width_leftBar_max;
+		double width_button;
+		double height_button;
+		double height_button_logo_split;
+		double height_button_split;
 	}sizes;
 	struct Positions final
 	{
@@ -30,5 +35,8 @@ private:
 	}scales;
 	
 	juce::Image logoImage;
+	std::unique_ptr<juce::TextButton> btNewProj, btOpenProj;
+
+	std::function<const juce::String(const juce::String&)> tr;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SMComponent)
 };
