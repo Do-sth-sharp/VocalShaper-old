@@ -31,7 +31,11 @@ public:
         );
 		
         this->splash->showMessage("Loading base modules...");
-        if (!JMADF::loadFromLoader("WuChang.JMADF.DynamicRC")) {
+        if (!(JMADF::loadFromLoader("WuChang.JMADF.DynamicRC") &&
+            JMADF::loadFromLoader("WuChang.JMADF.LookAndFeelConfigs") &&
+            JMADF::loadFromLoader("WuChang.JMADF.Device") &&
+            JMADF::loadFromLoader("WuChang.JMADF.Configs")
+            )) {
             juce::String exMes = JMADF::getException();
             JMADF::clearException();
             juce::AlertWindow::showMessageBox(
@@ -40,26 +44,7 @@ public:
                 this->splash.get()
             );
             quit();
-        }
-        if (!JMADF::loadFromLoader("WuChang.JMADF.LookAndFeelConfigs")) {
-            juce::String exMes = JMADF::getException();
-            JMADF::clearException();
-            juce::AlertWindow::showMessageBox(
-                juce::MessageBoxIconType::WarningIcon, "Base Module Fatal Error",
-                exMes, juce::String(),
-                this->splash.get()
-            );
-            quit();
-        }
-        if (!JMADF::loadFromLoader("WuChang.JMADF.Device")) {
-            juce::String exMes = JMADF::getException();
-            JMADF::clearException();
-            juce::AlertWindow::showMessageBox(
-                juce::MessageBoxIconType::WarningIcon, "Base Module Fatal Error",
-                exMes, juce::String(),
-                this->splash.get()
-            );
-            quit();
+            return;
         }
 		
         bool openglLoaded = JMADF::loadFromLoader("WuChang.JMADF.OpenGLComponentRender");
@@ -74,6 +59,7 @@ public:
                 this->splash.get()
             );
             quit();
+            return;
         }
 		
         this->splash->ready();

@@ -12,7 +12,7 @@ public:
 	bool init() override;
 	void destory() override;
 
-	const juce::String getModuleName() override { return "WuChang.JMADF.LookAndFeelConfigs"; };
+	const juce::String getModuleName() override { return "WuChang.JMADF.Configs"; };
 	const juce::String getModuleVersion() override { return "0.0.1"; };
 
 	std::unique_ptr<Configs> configs;
