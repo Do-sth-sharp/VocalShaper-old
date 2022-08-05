@@ -48,6 +48,9 @@ public:
         }
 		
         bool openglLoaded = JMADF::loadFromLoader("WuChang.JMADF.OpenGLComponentRender");
+        if (!openglLoaded) {
+            JMADF::clearException();
+        }
 
         this->splash->showMessage("Loading main module...");
         if (!JMADF::loadFromLoader("VocalSharp.VocalShaper.Main")) {
