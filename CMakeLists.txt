@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.15)
 project (VocalShaper VERSION 0.0.1 LANGUAGES CXX C)
 
 if (NOT CMAKE_BUILD_TYPE)
-    set (CMAKE_BUILD_TYPE "Debug"  CACHE STRING "Choose the type of build." FORCE)
+    set (CMAKE_BUILD_TYPE "Release"  CACHE STRING "Choose the type of build." FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_STANDARD 20)#使用C++20
@@ -24,6 +24,6 @@ set (JUCEHEADER_DIR ${CMAKE_SOURCE_DIR}/JuceLibraryCode)
 set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE/modules)
 
 #编译目标
+add_subdirectory (JUCE_Library)
 add_subdirectory (Modules)
 add_subdirectory (VocalShaper)
-add_subdirectory (JUCE_Library)

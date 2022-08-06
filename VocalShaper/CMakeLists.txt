@@ -123,6 +123,6 @@ set_target_properties (
 #添加依赖
 add_dependencies (
 	${TARGET_NAME}
-	JUCE
 	${MODULE_LIST}
+	JUCE
 )
