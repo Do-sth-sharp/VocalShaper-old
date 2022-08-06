@@ -16,7 +16,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 add_subdirectory (${LIBJMODULE_DIR} libJModule)
 
 #设置目标名称
-set (TARGET_NAME WuChang.JMADF.OpenGLComponentRender)
+string (REGEX REPLACE ".*/\(.*\)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
+set (TARGET_NAME ${CURRENT_FOLDER})
 
 #设置编译宏
 if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))

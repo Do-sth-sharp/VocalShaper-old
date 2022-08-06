@@ -124,14 +124,5 @@ set_target_properties (
 add_dependencies (
 	${TARGET_NAME}
 	JUCE
-	WuChang.JMADF.DynamicRC
-	WuChang.JMADF.LookAndFeelConfigs
-	WuChang.JMADF.Device
-	WuChang.JMADF.OpenGLComponentRender
-	WuChang.JMADF.Configs
-	WuChang.JMADF.Translates
-	VocalSharp.VocalShaper.Main
-	VocalSharp.VocalShaper.MainWindow
-	VocalSharp.VocalShaper.StartMenu
-	VocalSharp.VocalShaper.LookAndFeelFactory
+	${MODULE_LIST}
 )

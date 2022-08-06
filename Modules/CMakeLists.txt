@@ -1,13 +1,20 @@
-#JMADF官方模块
-add_subdirectory (WuChang.JMADF.DynamicRC)
-add_subdirectory (WuChang.JMADF.LookAndFeelConfigs)
-add_subdirectory (WuChang.JMADF.Device)
-add_subdirectory (WuChang.JMADF.OpenGLComponentRender)
-add_subdirectory (WuChang.JMADF.Configs)
-add_subdirectory (WuChang.JMADF.Translates)
+#获取模块并包含
+macro (SUBDIRLIST result curdir)
+  file (GLOB children RELATIVE ${curdir} ${curdir}/*)
+  set (dirlist "")
+  foreach (child ${children})
+    if (IS_DIRECTORY ${curdir}/${child})
+      list (APPEND dirlist ${child})
+    endif ()
+  endforeach ()
+  set (${result} ${dirlist})
+endmacro ()
 
-#VocalShaper自有模块
-add_subdirectory (VocalSharp.VocalShaper.Main)
-add_subdirectory (VocalSharp.VocalShaper.MainWindow)
-add_subdirectory (VocalSharp.VocalShaper.StartMenu)
-add_subdirectory (VocalSharp.VocalShaper.LookAndFeelFactory)
+SUBDIRLIST (SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
+
+foreach (subdir ${SUBDIRS})
+  add_subdirectory (${subdir})
+endforeach ()
+
+#导出模块列表
+set (MODULE_LIST ${SUBDIRS} CACHE STRING INTERNAL)
