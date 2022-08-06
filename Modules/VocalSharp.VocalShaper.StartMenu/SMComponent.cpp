@@ -4,6 +4,12 @@
 SMComponent::SMComponent()
 	: Component("Start Menu Component")
 {
+    //获取屏幕属性接口
+    this->screenSizeFunc =
+        jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
+            "WuChang.JMADF.Device", "GetScreenSize"
+            );
+
     //获取翻译器
     jmadf::CallInterface<std::function<const juce::String(const juce::String&)>&>(
         "WuChang.JMADF.Translates", "GetFunc",
@@ -99,10 +105,7 @@ void SMComponent::resized()
     //获取屏幕相关属性
     juce::Rectangle<int> screenSize;
     double screenScale = 1;
-    jmadf::CallInterface<juce::Component*, juce::Rectangle<int>&>(
-        "WuChang.JMADF.Device", "GetScreenSize",
-        this, screenSize
-        );
+    this->screenSizeFunc(this, screenSize);
 
     //计算按钮大小
     int leftBarWidth =
@@ -132,14 +135,7 @@ void SMComponent::paint(juce::Graphics& g)
     //获取屏幕相关属性
     juce::Rectangle<int> screenSize;
     double screenScale = 1;
-    jmadf::CallInterface<juce::Component*, juce::Rectangle<int>&>(
-        "WuChang.JMADF.Device", "GetScreenSize",
-        this, screenSize
-        );
-    /*jmadf::CallInterface<juce::Component*, double&>(
-        "WuChang.JMADF.Device", "GetScreenScale",
-        this, screenScale
-        );*/
+    this->screenSizeFunc(this, screenSize);
 	
     //填充背景
     g.fillAll(this->colors.background);

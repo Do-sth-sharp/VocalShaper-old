@@ -38,5 +38,6 @@ private:
 	std::unique_ptr<juce::TextButton> btNewProj, btOpenProj;
 
 	std::function<const juce::String(const juce::String&)> tr;
+	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SMComponent)
 };

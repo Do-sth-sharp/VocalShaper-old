@@ -7,6 +7,11 @@ MainWindow::MainWindow(juce::String name)
         .findColour(juce::ResizableWindow::backgroundColourId),
         DocumentWindow::allButtons)
 {
+    this->screenSizeFunc =
+        jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
+            "WuChang.JMADF.Device", "GetScreenSize"
+            );
+
     this->setUsingNativeTitleBar(true);
     this->setContentOwned(new MainComponent(), true);
 
@@ -53,10 +58,7 @@ void MainWindow::closeButtonPressed()
 void MainWindow::resized()
 {
     juce::Rectangle<int> screenSize;
-    jmadf::CallInterface<juce::Component*, juce::Rectangle<int>&>(
-        "WuChang.JMADF.Device", "GetScreenSize",
-        this, screenSize
-        );
+    this->screenSizeFunc(this, screenSize);
     this->setResizeLimits(
         screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
         screenSize.getWidth() * 2, screenSize.getHeight() * 2
