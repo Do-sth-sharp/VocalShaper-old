@@ -13,7 +13,7 @@ VocalSharp_VocalShaper_Main::~VocalSharp_VocalShaper_Main()
 
 bool VocalSharp_VocalShaper_Main::init()
 {
-	//获取语言设置
+	//获取设置
 	if (!jmadf::LoadModule("WuChang.JMADF.Configs")) {
 		return false;
 	}
@@ -24,9 +24,13 @@ bool VocalSharp_VocalShaper_Main::init()
 		"config", config, ok
 		);
 	juce::String lang;
+	juce::String font;
 	if (ok && (config != nullptr)) {
 		if ((*config)["Language"].isString()) {
 			lang = (*config)["Language"].toString();
+		}
+		if ((*config)["Font"].isString()) {
+			font = (*config)["Font"].toString();
 		}
 	}
 
@@ -37,6 +41,27 @@ bool VocalSharp_VocalShaper_Main::init()
 		lang
 		);
 
+	//设置字体
+	if (!jmadf::LoadModule("WuChang.JMADF.Fonts")) {
+		return false;
+	}
+	jmadf::CallInterface<const juce::String&>(
+		"WuChang.JMADF.Fonts", "SetDefaultFont",
+		font
+		);
+
+	bool fontOK = false;
+	juce::Typeface::Ptr ptrFont = nullptr;
+	jmadf::CallInterface<juce::Typeface::Ptr&, bool&>(
+		"WuChang.JMADF.Fonts", "GetDefault",
+		ptrFont, fontOK
+		);
+	if (fontOK) {
+		juce::LookAndFeel::getDefaultLookAndFeel()
+			.setDefaultSansSerifTypeface(ptrFont);
+	}
+
+	//主界面初始化
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {
 		jmadf::RaiseException("@ERROR " + juce::String(mainWindowName));
@@ -47,6 +72,7 @@ bool VocalSharp_VocalShaper_Main::init()
 
 void VocalSharp_VocalShaper_Main::destory()
 {
+	jmadf::CallInterface<void>("WuChang.JMADF.Fonts", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.Translates", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
 }
