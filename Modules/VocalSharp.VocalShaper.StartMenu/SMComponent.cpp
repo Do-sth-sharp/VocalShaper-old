@@ -27,6 +27,14 @@ SMComponent::SMComponent()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "leftBar", this->colors.leftBar, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-button", this->colors.text_button, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-button", this->colors.background_button, result
+        );
 
     //size
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -85,11 +93,31 @@ SMComponent::SMComponent()
 
     this->logoImage = juce::ImageFileFormat::loadFrom(logoPtr, logoSize);
 
+    //以下构建按钮LookAndFeel
+    this->lafs.button = std::make_unique<juce::LookAndFeel_V4>();
+    this->lafs.button->setColour(
+        juce::TextButton::ColourIds::buttonColourId, this->colors.background_button);
+    this->lafs.button->setColour(
+        juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_button);
+    this->lafs.button->setColour(
+        juce::TextButton::ColourIds::textColourOffId, this->colors.text_button);
+    this->lafs.button->setColour(
+        juce::TextButton::ColourIds::textColourOnId, this->colors.text_button);
+    this->lafs.button->setColour(
+        juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+    );
+
     //以下初始化按钮
     this->btNewProj = std::make_unique<juce::TextButton>(
         this->tr("bt_NewProject"), this->tr("tip_NewProject"));
     this->btOpenProj = std::make_unique<juce::TextButton>(
         this->tr("bt_OpenProject"), this->tr("tip_OpenProject"));
+
+    this->btNewProj->setWantsKeyboardFocus(false);
+    this->btOpenProj->setWantsKeyboardFocus(false);
+
+    this->btNewProj->setLookAndFeel(this->lafs.button.get());
+    this->btOpenProj->setLookAndFeel(this->lafs.button.get());
 
     this->addAndMakeVisible(this->btNewProj.get());
     this->addAndMakeVisible(this->btOpenProj.get());

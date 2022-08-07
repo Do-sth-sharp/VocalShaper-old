@@ -15,6 +15,8 @@ private:
 	{
 		juce::Colour background;
 		juce::Colour leftBar;
+		juce::Colour text_button;
+		juce::Colour background_button;
 	}colors;
 	struct Sizes final
 	{
@@ -33,6 +35,10 @@ private:
 	{
 		double width_logo;
 	}scales;
+	struct LookAndFeels final
+	{
+		std::unique_ptr<juce::LookAndFeel_V4> button;
+	}lafs;
 	
 	juce::Image logoImage;
 	std::unique_ptr<juce::TextButton> btNewProj, btOpenProj;

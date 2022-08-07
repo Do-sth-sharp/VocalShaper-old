@@ -1,5 +1,6 @@
 #pragma once
 #include <libJModule.h>
+#include "LAFFactory.h"
 
 class VocalSharp_VocalShaper_LookAndFeelFactory final :
 	public jmadf::Module
@@ -13,6 +14,8 @@ public:
 	
 	const juce::String getModuleName() override { return "VocalSharp.VocalShaper.LookAndFeelFactory"; };
 	const juce::String getModuleVersion() override { return "0.0.1"; };
+
 private:
+	std::unique_ptr<LAFFactory> factory;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VocalSharp_VocalShaper_LookAndFeelFactory)
 };
