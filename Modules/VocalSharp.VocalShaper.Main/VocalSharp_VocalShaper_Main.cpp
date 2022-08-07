@@ -61,6 +61,11 @@ bool VocalSharp_VocalShaper_Main::init()
 			.setDefaultSansSerifTypeface(ptrFont);
 	}
 
+	//初始化样式工厂
+	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
+		return false;
+	}
+
 	//主界面初始化
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {

@@ -17,6 +17,9 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 	jmadf::LoadModule("WuChang.JMADF.DynamicRC");
 	jmadf::LoadModule("WuChang.JMADF.Device");
 	jmadf::LoadModule("WuChang.JMADF.Translates");
+	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
+		return false;
+	}
 
 	this->smComp = std::make_unique<SMComponent>();
 	if (!this->smComp) {

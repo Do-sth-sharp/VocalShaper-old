@@ -4,7 +4,13 @@
 MainComponent::MainComponent()
     : Component("Main Window Central Component")
 {
+    this->screenSizeFunc =
+        jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
+            "WuChang.JMADF.Device", "GetScreenSize"
+            );
+
     setSize (600, 400);
+
     jmadf::CallInterface<juce::Component*&>(
         "VocalSharp.VocalShaper.StartMenu", "GetPtr",
         this->ptrStartMenu

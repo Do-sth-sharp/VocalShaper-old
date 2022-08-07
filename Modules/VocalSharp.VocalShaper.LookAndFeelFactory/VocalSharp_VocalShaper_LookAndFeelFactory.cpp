@@ -17,6 +17,14 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		return false;
 	}
 	this->factory = std::make_unique<LAFFactory>();
+
+	jmadf::RegisterInterface<int, juce::LookAndFeel*&>(
+		"GetStartMenuButtonLAF",
+		[this](const juce::String&, int fontHeight, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuButtonLAF(fontHeight);
+		}
+	);
+
 	return true;
 }
 

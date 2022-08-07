@@ -8,25 +8,30 @@
     {
         "width-leftBar:number":0.175,
         "width-leftBar-max:number":450,
+        "height-logo-topMargin":0.05,
         "width-button:number":0.5,
         "height-button:number":0.07,
         "height-button-logo-split:number":0.04,
-        "height-button-split:number":0.02
+        "height-button-split:number":0.02,
+        "height-titleBar:number":0.08,
+        "height-titleBar-max:number":200,
+        "width-title-leftMargin":0.03
     },
     "position":
     {
-        "posY-logo:number":0.07
     },
     "scale":
     {
-        "width-logo:number":0.7
+        "width-logo:number":0.7,
+        "height-title:number":0.7
     },
     "color":
     {
         "background:string":"#1B1B24",
         "leftBar:string":"#272736",
         "text-button:string":"#FFFFFF",
-        "background-button":"#3A3F69"
+        "background-button":"#3A3F69",
+        "text-title:string":"#FFFFFF"
     },
     "resource":
     {

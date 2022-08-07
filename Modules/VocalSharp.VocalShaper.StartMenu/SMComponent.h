@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class SMComponent final : public juce::Component
@@ -17,28 +17,34 @@ private:
 		juce::Colour leftBar;
 		juce::Colour text_button;
 		juce::Colour background_button;
-	}colors;
+		juce::Colour text_title;
+	}colors;//界面颜色
 	struct Sizes final
 	{
+		double height_font;
 		double width_leftBar;
 		double width_leftBar_max;
+		double height_logo_topMargin;
 		double width_button;
 		double height_button;
 		double height_button_logo_split;
 		double height_button_split;
-	}sizes;
+		double height_titleBar;
+		double height_titleBar_max;
+		double width_title_leftMargin;
+	}sizes;//控件大小
 	struct Positions final
 	{
-		double posY_logo;
-	}positions;
+	}positions;//控件位置
 	struct Scales final
 	{
 		double width_logo;
-	}scales;
+		double height_title;
+	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		std::unique_ptr<juce::LookAndFeel_V4> button;
-	}lafs;
+		juce::LookAndFeel* button;
+	}lafs;//控件样式
 	
 	juce::Image logoImage;
 	std::unique_ptr<juce::TextButton> btNewProj, btOpenProj;
