@@ -5,5 +5,6 @@
   "tip_NewProject": "新建一个歌声合成工程",
   "tip_OpenProject": "从工程文件夹打开工程",
 
-  "lb_RecentProject": "最近工程"
+  "lb_RecentProject": "最近工程",
+  "lb_SearchEditor": "从列表中搜索工程"
 }

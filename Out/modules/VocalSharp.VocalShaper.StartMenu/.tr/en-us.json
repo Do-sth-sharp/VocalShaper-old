@@ -5,5 +5,6 @@
   "tip_NewProject": "Create a new voice synthesis project",
   "tip_OpenProject": "Open a project from a project folder",
 
-  "lb_RecentProject": "Recent Projects"
+  "lb_RecentProject": "Recent Projects",
+  "lb_SearchEditor": "Search project from the list"
 }

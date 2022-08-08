@@ -24,6 +24,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getStartMenuButtonLAF(fontHeight);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStartMenuTextEditorLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuTextEditorLAF();
+		}
+	);
 
 	return true;
 }

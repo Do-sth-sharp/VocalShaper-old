@@ -39,6 +39,30 @@ SMComponent::SMComponent()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "text-title", this->colors.text_title, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-search", this->colors.text_search, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-search-empty", this->colors.text_search_empty, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-search", this->colors.background_search, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-search-highlight", this->colors.text_search_highlight, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-search-highlight", this->colors.background_search_highlight, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "caret-search", this->colors.caret_search, result
+        );
 
     //size
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -85,7 +109,19 @@ SMComponent::SMComponent()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "width-title-leftMargin", this->sizes.width_title_leftMargin, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "size", "width-search-rightMargin", this->sizes.width_search_rightMargin, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "size", "width-title-search-split", this->sizes.width_title_search_split, result
+        );
     //position
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "position", "posX-search", this->positions.posX_search, result
+        );
     //scale
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -94,6 +130,10 @@ SMComponent::SMComponent()
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "scale", "height-title", this->scales.height_title, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "scale", "height-search", this->scales.height_search, result
         );
 
     //resource
@@ -121,7 +161,7 @@ SMComponent::SMComponent()
     juce::Rectangle<int> screenSize;
     this->screenSizeFunc(this, screenSize);
 
-    //以下构建按钮LookAndFeel
+    //以下构建按钮样式
     jmadf::CallInterface<int, juce::LookAndFeel*&>(
         "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF",
         screenSize.getHeight() * this->sizes.height_font, this->lafs.button
@@ -152,6 +192,49 @@ SMComponent::SMComponent()
 
     this->addAndMakeVisible(this->btNewProj.get());
     this->addAndMakeVisible(this->btOpenProj.get());
+
+    //以下构建搜索框样式
+    jmadf::CallInterface<juce::LookAndFeel*&>(
+        "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF",
+        this->lafs.textEditor
+        );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::textColourId, this->colors.text_search
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::backgroundColourId, this->colors.background_search
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::highlightedTextColourId, this->colors.text_search_highlight
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::highlightColourId, this->colors.background_search_highlight
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::focusedOutlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+    );
+    this->lafs.textEditor->setColour(
+        juce::TextEditor::ColourIds::shadowColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+    );
+    this->lafs.textEditor->setColour(
+        juce::CaretComponent::ColourIds::caretColourId, this->colors.caret_search
+    );
+
+    //以下初始化搜索框
+    this->teSearchProj = std::make_unique<juce::TextEditor>();
+    this->teSearchProj->setLookAndFeel(this->lafs.textEditor);
+    juce::Font searchFont = this->teSearchProj->getFont();
+    searchFont.setHeight(screenSize.getHeight()* this->sizes.height_font);
+    this->teSearchProj->setFont(searchFont);
+    this->teSearchProj->setMultiLine(false);
+    this->teSearchProj->setJustification(juce::Justification::centredLeft);
+    this->teSearchProj->setClicksOutsideDismissVirtualKeyboard(true);
+    this->teSearchProj->setTextToShowWhenEmpty(
+        this->tr("lb_SearchEditor"), this->colors.text_search_empty);
+    this->addAndMakeVisible(this->teSearchProj.get());
 }
 
 SMComponent::~SMComponent()
@@ -184,6 +267,18 @@ void SMComponent::resized()
     this->btOpenProj->setBounds(
         buttonWCenter - buttonWidth / 2, buttonHPos + buttonHeight + buttonSplitHeight,
         buttonWidth, buttonHeight
+    );
+
+    //计算搜索框大小
+    int titleBarHeight =
+        (int)std::min(screenSize.getHeight() * this->sizes.height_titleBar, this->sizes.height_titleBar_max);
+    int searchPosX = leftBarWidth + this->positions.posX_search * (this->getWidth() - leftBarWidth);
+    int searchWidth = this->getWidth() - this->sizes.width_search_rightMargin * screenSize.getWidth() - searchPosX;
+
+    //调整搜索框大小
+    this->teSearchProj->setBounds(
+        searchPosX, titleBarHeight * (1 - this->scales.height_search) / 2,
+        searchWidth, titleBarHeight * this->scales.height_search
     );
 }
 
@@ -233,9 +328,13 @@ void SMComponent::paint(juce::Graphics& g)
     g.setFont(titleFont);
 
     juce::String titleStr = this->tr("lb_RecentProject");
-    int titleWidth = titleFont.getStringWidth(titleStr);
+    int titlePosX = leftBarWidth + screenSize.getWidth() * this->sizes.width_title_leftMargin;
+    int searchPosX = leftBarWidth + this->positions.posX_search * (this->getWidth() - leftBarWidth);
+    int titleWidth =
+        (int)std::min((double)titleFont.getStringWidth(titleStr),
+            searchPosX - titlePosX - this->sizes.width_title_search_split * screenSize.getWidth());
     juce::Rectangle<int> titleRect(
-        leftBarWidth + screenSize.getWidth() * this->sizes.width_title_leftMargin, titleBarHeight / 2 * this->scales.height_title,
+        titlePosX, titleBarHeight * (1 - this->scales.height_title) / 2,
         titleWidth, titleBarHeight * this->scales.height_title
     );
 

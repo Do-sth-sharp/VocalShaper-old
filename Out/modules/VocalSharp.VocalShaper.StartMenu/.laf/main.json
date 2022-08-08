@@ -8,30 +8,40 @@
     {
         "width-leftBar:number":0.175,
         "width-leftBar-max:number":450,
-        "height-logo-topMargin":0.05,
+        "height-logo-topMargin:number":0.05,
         "width-button:number":0.5,
         "height-button:number":0.07,
         "height-button-logo-split:number":0.04,
         "height-button-split:number":0.02,
-        "height-titleBar:number":0.08,
+        "height-titleBar:number":0.15,
         "height-titleBar-max:number":200,
-        "width-title-leftMargin":0.03
+        "width-title-leftMargin:number":0.03,
+        "width-search-rightMargin:number":0.02,
+        "width-title-search-split:number":0.01
     },
     "position":
     {
+        "posX-search:number":0.5
     },
     "scale":
     {
         "width-logo:number":0.7,
-        "height-title:number":0.7
+        "height-title:number":0.4,
+        "height-search:number":0.3
     },
     "color":
     {
         "background:string":"$ThemeColorB2",
         "leftBar:string":"$ThemeColorB3",
         "text-button:string":"$ThemeColorD1",
-        "background-button":"$ThemeColorA1",
-        "text-title:string":"$ThemeColorD1"
+        "background-button:string":"$ThemeColorA1",
+        "text-title:string":"$ThemeColorD2",
+        "text-search:string":"$ThemeColorD2",
+        "text-search-empty:string":"$ThemeColorD2",
+        "background-search:string":"$ThemeColorB1",
+        "text-search-highlight:string":"$ThemeColorB1",
+        "background-search-highlight:string":"$ThemeColorD2",
+        "caret-search:string":"$ThemeColorD1"
     },
     "resource":
     {
