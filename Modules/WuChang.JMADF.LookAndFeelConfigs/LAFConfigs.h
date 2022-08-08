@@ -30,9 +30,19 @@ private:
 	};
 	
 private:
-	bool getDFS(const juce::String& caller, const juce::String& moduleName, const juce::String& className, const juce::String& group, const juce::String& attribute, const juce::String& type, juce::var& value);
+	enum class VarType
+	{
+		Number,
+		Boolean,
+		String
+	};
+
+	bool getDFS(const juce::String& caller, const juce::String& moduleName, const juce::String& className, const juce::String& group, const juce::String& attribute, VarType type, juce::var& value,
+		std::set<std::pair<juce::String, juce::String>>& inheritList);
 	bool load(const juce::String& caller, const juce::String& moduleName, const juce::String& className, juce::var*& data);
-	
+	bool getVar(const juce::String& caller, const juce::String& moduleName, const juce::String& className, const juce::String& variable, VarType type, juce::var& value,
+		std::set<std::pair<juce::String, juce::String>>& inheritList, std::set<juce::String>& refList);
+
 	inline uint8_t HexToDec(const juce::juce_wchar& s) const;
 private:
 	std::map<std::pair<juce::String, juce::String>, LAFFile> list;

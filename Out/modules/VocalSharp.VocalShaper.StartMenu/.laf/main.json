@@ -27,11 +27,11 @@
     },
     "color":
     {
-        "background:string":"#1B1B24",
-        "leftBar:string":"#272736",
-        "text-button:string":"#FFFFFF",
-        "background-button":"#3A3F69",
-        "text-title:string":"#FFFFFF"
+        "background:string":"$ThemeColorB2",
+        "leftBar:string":"$ThemeColorB3",
+        "text-button:string":"$ThemeColorD1",
+        "background-button":"$ThemeColorA1",
+        "text-title:string":"$ThemeColorD1"
     },
     "resource":
     {

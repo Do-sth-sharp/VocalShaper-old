@@ -1,7 +1,12 @@
 {
+    "parent":
+    {
+        "module":"VocalSharp.VocalShaper.Main",
+        "class":"main"
+    },
     "color":
     {
-        "background:string":"#12121A"
+        "background:string":"$ThemeColorB1"
     },
     "size":
     {
