@@ -30,6 +30,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getStartMenuTextEditorLAF();
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStartMenuListBoxLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuListBoxLAF();
+		}
+	);
 
 	return true;
 }

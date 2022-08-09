@@ -18,3 +18,12 @@ juce::LookAndFeel* LAFFactory::getStartMenuTextEditorLAF()
 	}
 	return this->lafs.startMenuTextEditor.get();
 }
+
+juce::LookAndFeel* LAFFactory::getStartMenuListBoxLAF()
+{
+	if (!this->lafs.startMenuListBox) {
+		this->lafs.startMenuListBox =
+			std::make_unique<juce::LookAndFeel_V4>();
+	}
+	return this->lafs.startMenuListBox.get();
+}
