@@ -8,11 +8,12 @@ public:
 	~ProjListModel() override = default;
 
 	void setScreenSize(juce::Rectangle<int> screenSize);
+	void setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onClick);
 
 	int getNumRows() override;
 	void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
 	juce::MouseCursor getMouseCursorForRow(int row) override;
-	juce::String getTooltipForRow(int row) override;
+	void listBoxItemClicked(int row, const juce::MouseEvent& event) override;
 
 private:
 	struct Colors final
@@ -34,5 +35,12 @@ private:
 	}sizes;//¿Ø¼þ´óÐ¡
 
 	juce::Rectangle<int> screenSize;
+
+	std::function<void(int, const juce::String&, const juce::String&)> onClick;
+
+	std::function<const juce::String(const juce::String&)> tr;
+
+	std::function<void(int&)> getSizeFunc;
+	std::function<void(int, juce::String&)> getNameFunc, getPathFunc, getTimeFunc;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjListModel)
 };

@@ -13,11 +13,14 @@ VocalSharp_VocalShaper_StartMenu::~VocalSharp_VocalShaper_StartMenu()
 
 bool VocalSharp_VocalShaper_StartMenu::init()
 {
-	jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs");
-	jmadf::LoadModule("WuChang.JMADF.DynamicRC");
-	jmadf::LoadModule("WuChang.JMADF.Device");
-	jmadf::LoadModule("WuChang.JMADF.Translates");
-	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
+	if (!(
+		jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs") &&
+		jmadf::LoadModule("WuChang.JMADF.DynamicRC") &&
+		jmadf::LoadModule("WuChang.JMADF.Device") &&
+		jmadf::LoadModule("WuChang.JMADF.Translates") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHistory")
+		)) {
 		return false;
 	}
 
@@ -27,13 +30,12 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		return false;
 	}
 
-	juce::Component* ptrSM = this->smComp.get();
+	auto ptrSM = this->smComp.get();
 	jmadf::RegisterInterface<juce::Component*&>(
 		"GetPtr",
 		[ptrSM](const juce::String& caller, juce::Component*& ptr) {
-			if (caller == "VocalSharp.VocalShaper.MainWindow") {
-				ptr = ptrSM;
-			}
+			ptrSM->setCaller(caller);
+			ptr = ptrSM;
 		}
 	);
 	

@@ -10,6 +10,13 @@ public:
 	
 	void paint(juce::Graphics& g) override;
 	void resized() override;
+
+	void setCaller(const juce::String& caller);
+
+	void listItemClicked(int row, const juce::String& name, const juce::String& path);
+	void newButtonClicked();
+	void openButtonClicked();
+	void filterChanged();
 	
 private:
 	struct Colors final
@@ -79,7 +86,15 @@ private:
 
 	juce::Rectangle<int> screenSizeTemp;
 
+	juce::String caller;
+
 	std::function<const juce::String(const juce::String&)> tr;
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
+
+	bool newProj(const juce::String& name, const juce::String& path);
+	bool openProj(const juce::String& name, const juce::String& path);
+
+	void refreshList();
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SMComponent)
 };

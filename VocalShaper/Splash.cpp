@@ -4,6 +4,7 @@ Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 	:Component()
 {
 	this->setAlwaysOnTop(true);
+	this->setMouseCursor(juce::MouseCursor::WaitCursor);
 	//this->setOpaque(false);
 
 	this->mesLabel = std::make_unique<juce::Label>();
@@ -19,6 +20,9 @@ Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 	this->verLabel->setJustificationType(juce::Justification::bottomRight);
 	this->verLabel->setAlwaysOnTop(true);
 	this->addAndMakeVisible(this->verLabel.get());
+
+	this->mesLabel->setMouseCursor(juce::MouseCursor::WaitCursor);
+	this->verLabel->setMouseCursor(juce::MouseCursor::WaitCursor);
 	
 	this->logo = std::make_unique<juce::Image>(
 		juce::ImageFileFormat::loadFrom(
@@ -75,6 +79,9 @@ void Splash::mouseDown(const juce::MouseEvent& e)
 
 void Splash::ready()
 {
+	this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->mesLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->verLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->isReady = true;
 }
 

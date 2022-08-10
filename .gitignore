@@ -63,5 +63,8 @@
 [Oo]ut/**/*.dylib
 [Oo]ut/VocalShaper
 
+# Runing data
+[Oo]ut/modules/*/.data/*.json
+
 # Resources
 *.aps

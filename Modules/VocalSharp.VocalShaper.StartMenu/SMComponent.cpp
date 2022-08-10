@@ -233,6 +233,13 @@ SMComponent::SMComponent()
     this->btOpenProj = std::make_unique<juce::TextButton>(
         this->tr("bt_OpenProject"), this->tr("tip_OpenProject"));
 
+    this->btNewProj->onClick = [this] {
+        this->newButtonClicked();
+    };
+    this->btOpenProj->onClick = [this] {
+        this->openButtonClicked();
+    };
+
     this->btNewProj->setWantsKeyboardFocus(false);
     this->btOpenProj->setWantsKeyboardFocus(false);
 
@@ -303,6 +310,9 @@ SMComponent::SMComponent()
     this->teSearchProj->setClicksOutsideDismissVirtualKeyboard(true);
     this->teSearchProj->setTextToShowWhenEmpty(
         this->tr("lb_SearchEditor"), this->colors.text_search_empty);
+    this->teSearchProj->onTextChange = [this] {
+        this->filterChanged();
+    };
     this->addAndMakeVisible(this->teSearchProj.get());
 
     //以下构建项目列表样式
@@ -339,7 +349,12 @@ SMComponent::SMComponent()
     //以下初始化项目列表模型
     this->lstModel = std::make_unique<ProjListModel>();
     this->lstModel->setScreenSize(screenSize);
-    this->lstProj->setModel(this->lstModel.get());
+    this->lstModel->setClickFunc(
+        [this](int row, const juce::String& name, const juce::String& path) {
+            this->listItemClicked(row, name, path);
+        }
+    );
+    this->refreshList();
 
     //空白处获取焦点
     this->setWantsKeyboardFocus(true);
@@ -506,4 +521,135 @@ void SMComponent::paint(juce::Graphics& g)
             1.0f
         );
     }
+}
+
+void SMComponent::setCaller(const juce::String& caller)
+{
+    this->caller = caller;
+}
+
+void SMComponent::listItemClicked(int row, const juce::String& name, const juce::String& path)
+{
+    if (this->openProj(name, path)) {
+        jmadf::CallInterface<int>(
+            "VocalSharp.VocalShaper.ProjectHistory", "Open",
+            row
+            );
+    }
+    else {
+        juce::AlertWindow::showMessageBox(
+            juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
+            this->tr("tip_CouldNotOpen"), this->tr("bt_OK")
+        );
+        jmadf::CallInterface<int>(
+            "VocalSharp.VocalShaper.ProjectHistory", "Remove",
+            row
+            );
+    }
+    this->refreshList();
+}
+
+void SMComponent::newButtonClicked()
+{
+    juce::FileChooser fileChooser(
+        this->tr("bt_NewProject"),
+        juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+    );
+    if (fileChooser.showDialog(
+        juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
+        juce::FileBrowserComponent::FileChooserFlags::doNotClearFileNameOnRootChange |
+        juce::FileBrowserComponent::FileChooserFlags::saveMode,
+        nullptr
+    )) {
+        juce::File file = fileChooser.getResult();
+        if (file.exists()) {
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+                this->tr("tip_FileExists"), this->tr("bt_OK")
+            );
+            return;
+        }
+        juce::File dir = file.getParentDirectory();
+        if (dir.getNumberOfChildFiles(
+            juce::File::TypesOfFileToFind::findFilesAndDirectories) > 0) {
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+                this->tr("tip_PathNotEmpty"), this->tr("bt_OK")
+            );
+            return;
+        }
+        dir.setAsCurrentWorkingDirectory();
+        juce::String path = dir.getFullPathName();
+        juce::String name = file.getFileNameWithoutExtension();
+        if (!this->newProj(name, path)) {
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+                this->tr("tip_CouldNotCreate"), this->tr("bt_OK")
+            );
+            return;
+        }
+        jmadf::CallInterface<const juce::String&, const juce::String&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "Add",
+            name, path
+            );
+        this->refreshList();
+    }
+}
+
+void SMComponent::openButtonClicked()
+{
+    juce::FileChooser fileChooser(
+        this->tr("bt_OpenProject"),
+        juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+    );
+    if (fileChooser.showDialog(
+        juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
+        juce::FileBrowserComponent::FileChooserFlags::openMode,
+        nullptr
+    )) {
+        juce::File file = fileChooser.getResult();
+        juce::File dir = file.getParentDirectory();
+        dir.setAsCurrentWorkingDirectory();
+
+        juce::String path = dir.getFullPathName();
+        juce::String name = file.getFileNameWithoutExtension();
+        if (!this->openProj(name, path)) {
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
+                this->tr("tip_CouldNotOpen"), this->tr("bt_OK")
+            );
+            return;
+        }
+        jmadf::CallInterface<const juce::String&, const juce::String&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "Open",
+            name, path
+            );
+        this->refreshList();
+    }
+}
+
+void SMComponent::filterChanged()
+{
+    jmadf::CallInterface<const juce::String&>(
+        "VocalSharp.VocalShaper.ProjectHistory", "SetFilter",
+        this->teSearchProj->getText()
+        );
+    this->refreshList();
+}
+
+bool SMComponent::newProj(const juce::String& name, const juce::String& path)
+{
+    return true;
+}
+
+bool SMComponent::openProj(const juce::String& name, const juce::String& path)
+{
+    return true;
+}
+
+void SMComponent::refreshList()
+{
+    this->lstProj->setModel(nullptr);
+    this->lstProj->setModel(this->lstModel.get());
+    this->lstProj->scrollToEnsureRowIsOnscreen(0);
 }

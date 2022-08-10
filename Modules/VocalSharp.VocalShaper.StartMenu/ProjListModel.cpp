@@ -3,6 +3,12 @@
 
 ProjListModel::ProjListModel()
 {
+    //获取翻译器
+    jmadf::CallInterface<std::function<const juce::String(const juce::String&)>&>(
+        "WuChang.JMADF.Translates", "GetFunc",
+        this->tr
+        );
+
     //以下获取界面属性
     bool result = false;
     //color
@@ -52,6 +58,23 @@ ProjListModel::ProjListModel()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "height-listItem-border", this->sizes.height_listItem_border, result
         );
+
+    this->getSizeFunc =
+        jmadf::GetInterface<int&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "GetSize"
+            );
+    this->getNameFunc =
+        jmadf::GetInterface<int, juce::String&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "GetName"
+            );
+    this->getPathFunc =
+        jmadf::GetInterface<int, juce::String&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "GetPath"
+            );
+    this->getTimeFunc =
+        jmadf::GetInterface<int, juce::String&>(
+            "VocalSharp.VocalShaper.ProjectHistory", "GetTime"
+            );
 }
 
 void ProjListModel::setScreenSize(juce::Rectangle<int> screenSize)
@@ -59,9 +82,16 @@ void ProjListModel::setScreenSize(juce::Rectangle<int> screenSize)
     this->screenSize = screenSize;
 }
 
+void ProjListModel::setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onClick)
+{
+    this->onClick = onClick;
+}
+
 int ProjListModel::getNumRows()
 {
-    return 10;
+    int size = 0;
+    this->getSizeFunc(size);
+    return size;
 }
 
 void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool /*rowIsSelected*/)
@@ -74,9 +104,19 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
         6.0f, this->sizes.height_listItem_border * this->screenSize.getHeight());
 
     //计算文字区域
-    juce::String nameStr = "Project Name";
-    juce::String pathStr = "/Path/to/project/directory";
-    juce::String timeStr = "0000-00-00 00:00:00";
+    juce::String nameStr, pathStr, timeStr;
+    this->getNameFunc(rowNumber, nameStr);
+    this->getPathFunc(rowNumber, pathStr);
+    this->getTimeFunc(rowNumber, timeStr);
+    if (nameStr.isEmpty()) {
+        nameStr = this->tr("lb_NoData");
+    }
+    if (pathStr.isEmpty()) {
+        pathStr = this->tr("lb_NoData");
+    }
+    if (timeStr.isEmpty()) {
+        timeStr = this->tr("lb_NoData");
+    }
     juce::Font timeFont = g.getCurrentFont();
     timeFont.setHeight(
         this->sizes.height_fontListItem_time * this->screenSize.getHeight()
@@ -132,7 +172,12 @@ juce::MouseCursor ProjListModel::getMouseCursorForRow(int /*row*/)
     return juce::MouseCursor::PointingHandCursor;
 }
 
-juce::String ProjListModel::getTooltipForRow(int row)
+void ProjListModel::listBoxItemClicked(int row, const juce::MouseEvent& event)
 {
-    return "Descriptions of the project...";
+    if (event.mods == juce::ModifierKeys::leftButtonModifier) {
+        juce::String nameStr, pathStr;
+        this->getNameFunc(row, nameStr);
+        this->getPathFunc(row, pathStr);
+        this->onClick(row, nameStr, pathStr);
+    }
 }
