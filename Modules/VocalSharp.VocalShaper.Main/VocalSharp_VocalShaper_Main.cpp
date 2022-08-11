@@ -14,13 +14,15 @@ VocalSharp_VocalShaper_Main::~VocalSharp_VocalShaper_Main()
 bool VocalSharp_VocalShaper_Main::init()
 {
 	//ªÒ»°…Ë÷√
-	if (!jmadf::LoadModule("WuChang.JMADF.Configs")) {
+	if (!(jmadf::LoadModule("WuChang.JMADF.Configs") &&
+		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs")
+		)) {
 		return false;
 	}
 	juce::var* config = nullptr;
 	bool ok = false;
 	jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
-		"WuChang.JMADF.Configs", "GetReference",
+		"WuChang.JMADF.GlobalConfigs", "GetReference",
 		"config", config, ok
 		);
 	juce::String lang;
@@ -80,4 +82,5 @@ void VocalSharp_VocalShaper_Main::destory()
 	jmadf::CallInterface<void>("WuChang.JMADF.Fonts", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.Translates", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
+	jmadf::CallInterface<void>("WuChang.JMADF.GlobalConfigs", "Close");
 }

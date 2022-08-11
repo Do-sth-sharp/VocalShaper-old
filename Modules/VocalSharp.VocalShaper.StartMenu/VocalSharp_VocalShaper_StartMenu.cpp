@@ -17,6 +17,7 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.DynamicRC") &&
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
+		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHistory")
@@ -45,6 +46,9 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 void VocalSharp_VocalShaper_StartMenu::destory()
 {
 	this->smComp = nullptr;
+	jmadf::CallInterface<void>(
+		"WuChang.JMADF.GlobalConfigs", "Close"
+		);
 	jmadf::CallInterface<void>(
 		"WuChang.JMADF.Translates", "Close"
 		);

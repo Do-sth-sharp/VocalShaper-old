@@ -16,6 +16,19 @@ SMComponent::SMComponent()
         this->tr
         );
 
+    //以下获取全局设置
+    juce::var* config = nullptr;
+    bool ok = false;
+    jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
+        "WuChang.JMADF.GlobalConfigs", "GetReference",
+        "config", config, ok
+        );
+    if (ok && (config != nullptr)) {
+        if ((*config)["Language"].isString()) {
+            this->projectExtension = (*config)["ProjectExtension"].toString();
+        }
+    }
+
     //以下获取界面属性
     bool result = false;
     //color
@@ -579,7 +592,7 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
         //创建副本并打开
         juce::FileChooser fileChooser(
             this->tr("bt_OpenAsCopy"),
-            juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+            juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
         );
         if (fileChooser.showDialog(
             juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
@@ -641,7 +654,7 @@ void SMComponent::newButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_NewProject"),
-        juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+        juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
     );
     if (fileChooser.showDialog(
         juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
@@ -688,7 +701,7 @@ void SMComponent::openButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_OpenProject"),
-        juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+        juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
     );
     if (fileChooser.showDialog(
         juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |

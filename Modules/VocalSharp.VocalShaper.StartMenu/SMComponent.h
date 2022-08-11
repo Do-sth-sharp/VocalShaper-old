@@ -87,6 +87,7 @@ private:
 	std::unique_ptr<ProjListModel> lstModel;
 
 	juce::Rectangle<int> screenSizeTemp;
+	juce::String projectExtension;
 
 	juce::String caller;
 
