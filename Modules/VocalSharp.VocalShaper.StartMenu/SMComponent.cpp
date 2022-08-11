@@ -83,6 +83,10 @@ SMComponent::SMComponent()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "track-list-scroller", this->colors.track_list_scroller, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-menu-warning", this->colors.text_menu_warning, result
+        );
 
     //size
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -351,9 +355,12 @@ SMComponent::SMComponent()
     this->lstModel->setScreenSize(screenSize);
     this->lstModel->setClickFunc(
         [this](int row, const juce::String& name, const juce::String& path) {
-            this->listItemClicked(row, name, path);
+            this->listItemLeftClicked(row, name, path);
+        },
+        [this](int row, const juce::String& name, const juce::String& path) {
+            this->listItemRightClicked(row, name, path);
         }
-    );
+        );
     this->refreshList();
 
     //空白处获取焦点
@@ -528,13 +535,15 @@ void SMComponent::setCaller(const juce::String& caller)
     this->caller = caller;
 }
 
-void SMComponent::listItemClicked(int row, const juce::String& name, const juce::String& path)
+void SMComponent::listItemLeftClicked(int row, const juce::String& name, const juce::String& path)
 {
     if (this->openProj(name, path)) {
         jmadf::CallInterface<int>(
             "VocalSharp.VocalShaper.ProjectHistory", "Open",
             row
             );
+        this->clearFilter();
+        return;
     }
     else {
         juce::AlertWindow::showMessageBox(
@@ -547,6 +556,85 @@ void SMComponent::listItemClicked(int row, const juce::String& name, const juce:
             );
     }
     this->refreshList();
+}
+
+void SMComponent::listItemRightClicked(int row, const juce::String& name, const juce::String& path)
+{
+    juce::PopupMenu menu;
+    menu.addSectionHeader(name);
+    menu.addItem(1, this->tr("bt_Open"));
+    menu.addItem(2, this->tr("bt_OpenAsCopy"));
+    menu.addColouredItem(3, this->tr("bt_Remove"), this->colors.text_menu_warning);
+    int result = menu.show();
+    switch (result)
+    {
+    case 1:
+    {
+        //打开
+        this->listItemLeftClicked(row, name, path);
+        break;
+    }
+    case 2:
+    {
+        //创建副本并打开
+        juce::FileChooser fileChooser(
+            this->tr("bt_OpenAsCopy"),
+            juce::File::getCurrentWorkingDirectory(), "*.vsp3"
+        );
+        if (fileChooser.showDialog(
+            juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
+            juce::FileBrowserComponent::FileChooserFlags::doNotClearFileNameOnRootChange |
+            juce::FileBrowserComponent::FileChooserFlags::saveMode,
+            nullptr
+        )) {
+            juce::File file = fileChooser.getResult();
+            if (file.exists()) {
+                juce::AlertWindow::showMessageBox(
+                    juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
+                    this->tr("tip_FileExists"), this->tr("bt_OK")
+                );
+                return;
+            }
+            juce::File dir = file.getParentDirectory();
+            if (dir.getNumberOfChildFiles(
+                juce::File::TypesOfFileToFind::findFilesAndDirectories) > 0) {
+                juce::AlertWindow::showMessageBox(
+                    juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
+                    this->tr("tip_PathNotEmpty"), this->tr("bt_OK")
+                );
+                return;
+            }
+            dir.setAsCurrentWorkingDirectory();
+            juce::String pathDst = dir.getFullPathName();
+            juce::String nameDst = file.getFileNameWithoutExtension();
+            if (!this->copyProj(nameDst, pathDst, name, path)) {
+                juce::AlertWindow::showMessageBox(
+                    juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
+                    this->tr("tip_CouldNotCreate"), this->tr("bt_OK")
+                );
+                return;
+            }
+            jmadf::CallInterface<const juce::String&, const juce::String&>(
+                "VocalSharp.VocalShaper.ProjectHistory", "Add",
+                nameDst, pathDst
+                );
+            this->clearFilter();
+        }
+        break;
+    }
+    case 3:
+    {
+        //移除
+        jmadf::CallInterface<int>(
+            "VocalSharp.VocalShaper.ProjectHistory", "Remove",
+            row
+            );
+        this->clearFilter();
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void SMComponent::newButtonClicked()
@@ -592,7 +680,7 @@ void SMComponent::newButtonClicked()
             "VocalSharp.VocalShaper.ProjectHistory", "Add",
             name, path
             );
-        this->refreshList();
+        this->clearFilter();
     }
 }
 
@@ -624,7 +712,7 @@ void SMComponent::openButtonClicked()
             "VocalSharp.VocalShaper.ProjectHistory", "Open",
             name, path
             );
-        this->refreshList();
+        this->clearFilter();
     }
 }
 
@@ -642,9 +730,21 @@ bool SMComponent::newProj(const juce::String& name, const juce::String& path)
     return true;
 }
 
+bool SMComponent::copyProj(const juce::String& name, const juce::String& path,
+    const juce::String& nameSrc, const juce::String& pathSrc)
+{
+    return true;
+}
+
 bool SMComponent::openProj(const juce::String& name, const juce::String& path)
 {
     return true;
+}
+
+void SMComponent::clearFilter()
+{
+    this->teSearchProj->setText(juce::String());
+    this->filterChanged();
 }
 
 void SMComponent::refreshList()

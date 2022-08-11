@@ -8,7 +8,8 @@ public:
 	~ProjListModel() override = default;
 
 	void setScreenSize(juce::Rectangle<int> screenSize);
-	void setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onClick);
+	void setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onLeftClick,
+		std::function<void(int, const juce::String&, const juce::String&)> onRightClick);
 
 	int getNumRows() override;
 	void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
@@ -36,7 +37,7 @@ private:
 
 	juce::Rectangle<int> screenSize;
 
-	std::function<void(int, const juce::String&, const juce::String&)> onClick;
+	std::function<void(int, const juce::String&, const juce::String&)> onLeftClick, onRightClick;
 
 	std::function<const juce::String(const juce::String&)> tr;
 

@@ -6,7 +6,20 @@
     },
     "color":
     {
-        "background:string":"$ThemeColorB1"
+        "background:string":"$ThemeColorB1",
+
+        "background-alert:string":"$ThemeColorB2",
+        "text-alert:string":"$ThemeColorD1",
+        "outline-alert:string":"$ThemeColorB2",
+        "background-alert-button:string":"$ThemeColorB1",
+        "text-alert-button:string":"$ThemeColorD2",
+
+        "background-menu:string":"$ThemeColorB2",
+        "text-menu:string":"$ThemeColorD1",
+        "header-menu:string":"$ThemeColorD2",
+        "background-menu-highlight:string":"$ThemeColorB1",
+        "text-menu-highlight:string":"$ThemeColorD1",
+        "text-menu-warning:string":"#FF2A00"
     },
     "size":
     {

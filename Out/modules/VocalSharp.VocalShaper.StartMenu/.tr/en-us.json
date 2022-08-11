@@ -15,5 +15,9 @@
   "tip_CouldNotCreate": "Could not create the project",
   "tip_CouldNotOpen": "Could not open the project",
 
-  "bt_OK": "OK"
+  "bt_OK": "OK",
+
+  "bt_Open": "Open",
+  "bt_OpenAsCopy": "Create a copy and open",
+  "bt_Remove": "Remove"
 }

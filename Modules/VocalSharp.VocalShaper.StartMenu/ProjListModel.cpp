@@ -82,9 +82,11 @@ void ProjListModel::setScreenSize(juce::Rectangle<int> screenSize)
     this->screenSize = screenSize;
 }
 
-void ProjListModel::setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onClick)
+void ProjListModel::setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onLeftClick,
+    std::function<void(int, const juce::String&, const juce::String&)> onRightClick)
 {
-    this->onClick = onClick;
+    this->onLeftClick = onLeftClick;
+    this->onRightClick = onRightClick;
 }
 
 int ProjListModel::getNumRows()
@@ -178,6 +180,12 @@ void ProjListModel::listBoxItemClicked(int row, const juce::MouseEvent& event)
         juce::String nameStr, pathStr;
         this->getNameFunc(row, nameStr);
         this->getPathFunc(row, pathStr);
-        this->onClick(row, nameStr, pathStr);
+        this->onLeftClick(row, nameStr, pathStr);
+    }
+    else if (event.mods == juce::ModifierKeys::rightButtonModifier) {
+        juce::String nameStr, pathStr;
+        this->getNameFunc(row, nameStr);
+        this->getPathFunc(row, pathStr);
+        this->onRightClick(row, nameStr, pathStr);
     }
 }

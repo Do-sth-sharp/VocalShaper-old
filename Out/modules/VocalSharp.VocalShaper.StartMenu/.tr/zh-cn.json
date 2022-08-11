@@ -15,5 +15,9 @@
   "tip_CouldNotCreate": "未能建立工程文件",
   "tip_CouldNotOpen": "未能打开工程文件",
 
-  "bt_OK": "确定"
+  "bt_OK": "确定",
+
+  "bt_Open": "打开",
+  "bt_OpenAsCopy": "创建副本并打开",
+  "bt_Remove": "移除"
 }

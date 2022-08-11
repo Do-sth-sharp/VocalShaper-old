@@ -23,6 +23,7 @@ MainWindow::MainWindow(juce::String name)
     this->setFullScreen(true);
 #endif
 
+    //设置窗口图标
     size_t iconSize = 0;
     void* iconPtr = nullptr;
     juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
@@ -39,6 +40,7 @@ MainWindow::MainWindow(juce::String name)
 	
     this->getPeer()->setIcon(iconImage);
 
+    //设置主窗口默认背景色
     juce::Colour cBackground;
     bool result = false;
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -48,6 +50,69 @@ MainWindow::MainWindow(juce::String name)
     if (result) {
         this->setBackgroundColour(cBackground);
     }
+
+    //设置默认提示框样式
+    juce::Colour cBackgroundAlert, cTextAlert, cOutlineAlert;
+    juce::Colour cBackgroundAlertButton, cTextAlertButton;
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-alert", cBackgroundAlert, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-alert", cTextAlert, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "outline-alert", cOutlineAlert, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-alert-button", cBackgroundAlertButton, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-alert-button", cTextAlertButton, result
+        );
+
+    auto& mainLAF = juce::LookAndFeel::getDefaultLookAndFeel();
+    mainLAF.setColour(juce::AlertWindow::ColourIds::backgroundColourId, cBackgroundAlert);
+    mainLAF.setColour(juce::AlertWindow::ColourIds::textColourId, cTextAlert);
+    mainLAF.setColour(juce::AlertWindow::ColourIds::outlineColourId, cOutlineAlert);
+    mainLAF.setColour(juce::TextButton::ColourIds::buttonColourId, cBackgroundAlertButton);
+    mainLAF.setColour(juce::TextButton::ColourIds::buttonOnColourId, cBackgroundAlertButton);
+    mainLAF.setColour(juce::TextButton::ColourIds::textColourOffId, cTextAlertButton);
+    mainLAF.setColour(juce::TextButton::ColourIds::textColourOnId, cTextAlertButton);
+    //mainLAF.setColour(juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0));
+
+    //设置默认菜单样式
+    juce::Colour cBackgroundMenu, cTextMenu, cHeaderMenu, cBackgroundMenuHighlight, cTextMenuHighlight;
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-menu", cBackgroundMenu, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-menu", cTextMenu, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "header-menu", cHeaderMenu, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-menu-highlight", cBackgroundMenuHighlight, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-menu-highlight", cTextMenuHighlight, result
+        );
+
+    mainLAF.setColour(juce::PopupMenu::ColourIds::backgroundColourId, cBackgroundMenu);
+    mainLAF.setColour(juce::PopupMenu::ColourIds::textColourId, cTextMenu);
+    mainLAF.setColour(juce::PopupMenu::ColourIds::headerTextColourId, cHeaderMenu);
+    mainLAF.setColour(juce::PopupMenu::ColourIds::highlightedBackgroundColourId, cBackgroundMenuHighlight);
+    mainLAF.setColour(juce::PopupMenu::ColourIds::highlightedTextColourId, cTextMenuHighlight);
 }
 
 void MainWindow::closeButtonPressed()

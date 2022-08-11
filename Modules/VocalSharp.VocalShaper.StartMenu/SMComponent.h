@@ -13,7 +13,8 @@ public:
 
 	void setCaller(const juce::String& caller);
 
-	void listItemClicked(int row, const juce::String& name, const juce::String& path);
+	void listItemLeftClicked(int row, const juce::String& name, const juce::String& path);
+	void listItemRightClicked(int row, const juce::String& name, const juce::String& path);
 	void newButtonClicked();
 	void openButtonClicked();
 	void filterChanged();
@@ -37,6 +38,7 @@ private:
 		juce::Colour background_list_scroller;
 		juce::Colour thumb_list_scroller;
 		juce::Colour track_list_scroller;
+		juce::Colour text_menu_warning;
 	}colors;//界面颜色
 	struct Sizes final
 	{
@@ -92,8 +94,11 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	bool newProj(const juce::String& name, const juce::String& path);
+	bool copyProj(const juce::String& name, const juce::String& path,
+		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
 
+	void clearFilter();
 	void refreshList();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SMComponent)
