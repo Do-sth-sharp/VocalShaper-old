@@ -12,8 +12,9 @@ MainWindow::MainWindow(juce::String name)
             "WuChang.JMADF.Device", "GetScreenSize"
             );
 
+    this->mComp = new MainComponent();
     this->setUsingNativeTitleBar(true);
-    this->setContentOwned(new MainComponent(), true);
+    this->setContentOwned(this->mComp, true);
 
 #if JUCE_IOS || JUCE_ANDROID
     this->setFullScreen(true);
@@ -117,7 +118,14 @@ MainWindow::MainWindow(juce::String name)
 
 void MainWindow::closeButtonPressed()
 {
-    juce::JUCEApplication::getInstance()->systemRequestedQuit();
+    bool closeOk = false;
+    jmadf::CallInterface<bool&>(
+        "VocalSharp.VocalShaper.MainUI", "CloseIsAvailable",
+        closeOk
+        );
+    if (closeOk) {
+        juce::JUCEApplication::getInstance()->systemRequestedQuit();
+    }
 }
 
 void MainWindow::resized()
@@ -129,4 +137,20 @@ void MainWindow::resized()
         screenSize.getWidth() * 2, screenSize.getHeight() * 2
     );
     this->DocumentWindow::resized();
+}
+
+bool MainWindow::newProj(const juce::String& name, const juce::String& path)
+{
+    return this->mComp->newProj(name, path);
+}
+
+bool MainWindow::copyProj(const juce::String& name, const juce::String& path,
+    const juce::String& nameSrc, const juce::String& pathSrc)
+{
+    return this->mComp->copyProj(name, path, nameSrc, pathSrc);
+}
+
+bool MainWindow::openProj(const juce::String& name, const juce::String& path)
+{
+    return this->mComp->openProj(name, path);
 }

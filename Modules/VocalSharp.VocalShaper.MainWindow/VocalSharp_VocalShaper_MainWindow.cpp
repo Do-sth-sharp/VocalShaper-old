@@ -17,6 +17,7 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs");
 	jmadf::LoadModule("WuChang.JMADF.DynamicRC");
 	jmadf::LoadModule("WuChang.JMADF.Device");
+	jmadf::LoadModule("VocalSharp.VocalShaper.MainUI");
 	jmadf::LoadModule("VocalSharp.VocalShaper.StartMenu");
 
 	if (!jmadf::GetException().isEmpty()) {
@@ -33,6 +34,32 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String& caller, juce::DocumentWindow*& ptr)
 		{
 			ptr = this->mainWindow.get();
+		}
+	);
+
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"NewProject",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->mainWindow->newProj(name, path);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
+		"CopyProject",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path,
+			const juce::String& nameSrc, const juce::String& pathSrc, bool& result)
+		{
+			result = this->mainWindow->copyProj(name, path, nameSrc, pathSrc);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"OpenProject",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->mainWindow->openProj(name, path);
 		}
 	);
 	

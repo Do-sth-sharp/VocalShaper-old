@@ -740,18 +740,33 @@ void SMComponent::filterChanged()
 
 bool SMComponent::newProj(const juce::String& name, const juce::String& path)
 {
-    return true;
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+        this->caller, "NewProject",
+        name, path, result
+        );
+    return result;
 }
 
 bool SMComponent::copyProj(const juce::String& name, const juce::String& path,
     const juce::String& nameSrc, const juce::String& pathSrc)
 {
-    return true;
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
+        this->caller, "CopyProject",
+        name, path, nameSrc, pathSrc, result
+        );
+    return result;
 }
 
 bool SMComponent::openProj(const juce::String& name, const juce::String& path)
 {
-    return true;
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+        this->caller, "OpenProject",
+        name, path, result
+        );
+    return result;
 }
 
 void SMComponent::clearFilter()
