@@ -15,7 +15,8 @@ bool VocalSharp_VocalShaper_Main::init()
 {
 	//ªÒ»°…Ë÷√
 	if (!(jmadf::LoadModule("WuChang.JMADF.Configs") &&
-		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs")
+		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub")
 		)) {
 		return false;
 	}

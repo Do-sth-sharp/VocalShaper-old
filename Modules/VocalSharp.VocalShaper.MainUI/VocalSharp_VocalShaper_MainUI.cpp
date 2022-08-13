@@ -20,7 +20,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")
+		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub")
 		)) {
 		return false;
 	}
