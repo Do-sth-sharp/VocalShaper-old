@@ -27,3 +27,12 @@ juce::LookAndFeel* LAFFactory::getStartMenuListBoxLAF()
 	}
 	return this->lafs.startMenuListBox.get();
 }
+
+juce::LookAndFeel* LAFFactory::getMainMenuButtonLAF()
+{
+	if (!this->lafs.mainMenuButton) {
+		this->lafs.mainMenuButton =
+			std::make_unique<juce::LookAndFeel_V4>();
+	}
+	return this->lafs.mainMenuButton.get();
+}

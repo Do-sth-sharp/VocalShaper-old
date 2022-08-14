@@ -37,6 +37,13 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		}
 	);
 
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetMainMenuButtonLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf) {
+			laf = this->factory->getMainMenuButtonLAF();
+		}
+	);
+
 	return true;
 }
 

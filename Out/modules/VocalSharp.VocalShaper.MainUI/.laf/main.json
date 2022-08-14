@@ -1,0 +1,28 @@
+{
+    "parent":
+    {
+        "module":"VocalSharp.VocalShaper.MainWindow",
+        "class":"main"
+    },
+    "size":
+    {
+        "height-tabBar:number":0.05
+    },
+    "position":
+    {
+    },
+    "scale":
+    {
+        "icon-mainMenuButton:number":0.5
+    },
+    "color":
+    {
+        "background:string":"$ThemeColorB2",
+        "icon-mainMenuButton:string":"$ThemeColorD2",
+        "background-mainMenuButton:string":"$ThemeColorB2"
+    },
+    "resource":
+    {
+        "icon-mainMenu:string":"/rc/third-party/RemixIcon/icons/System/menu-line.svg"
+    }
+}
