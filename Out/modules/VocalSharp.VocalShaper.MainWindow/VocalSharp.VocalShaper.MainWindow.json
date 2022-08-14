@@ -6,6 +6,11 @@
     "entry":"VocalSharp.VocalShaper.MainWindow",
     "description":"VocalShaper编辑器主模块",
     "dependencies":[
-        "VocalSharp.VocalShaper.Main"
+        "WuChang.JMADF.LookAndFeelConfigs",
+        "WuChang.JMADF.DynamicRC",
+        "WuChang.JMADF.Device",
+        "VocalSharp.VocalShaper.MainUI",
+        "VocalSharp.VocalShaper.StartMenu",
+        "WuChang.JMADF.OpenGLComponentRender"
     ]
 }

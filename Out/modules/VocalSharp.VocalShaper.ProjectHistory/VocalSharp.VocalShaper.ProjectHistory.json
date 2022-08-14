@@ -6,6 +6,6 @@
   "entry": "VocalSharp.VocalShaper.ProjectHistory",
   "description": "VocalShaper编辑器工程历史记录",
   "dependencies": [
-    "VocalSharp.VocalShaper.Main"
+    "WuChang.JMADF.Configs"
   ]
 }

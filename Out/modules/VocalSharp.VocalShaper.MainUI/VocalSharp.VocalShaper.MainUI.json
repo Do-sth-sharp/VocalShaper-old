@@ -6,6 +6,12 @@
   "entry": "VocalSharp.VocalShaper.MainUI",
   "description": "VocalShaper编辑器主界面",
   "dependencies": [
-    "VocalSharp.VocalShaper.Main"
+    "WuChang.JMADF.LookAndFeelConfigs",
+    "WuChang.JMADF.DynamicRC",
+    "WuChang.JMADF.Device",
+    "WuChang.JMADF.GlobalConfigs",
+    "WuChang.JMADF.Translates",
+    "VocalSharp.VocalShaper.LookAndFeelFactory",
+    "VocalSharp.VocalShaper.ProjectHub"
   ]
 }

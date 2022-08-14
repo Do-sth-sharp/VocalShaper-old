@@ -5,5 +5,7 @@
     "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
     "entry":"VocalSharp.VocalShaper.LookAndFeelFactory",
     "description":"VocalShaper编辑器界面样式工厂模块",
-    "dependencies":[]
+    "dependencies":[
+        "WuChang.JMADF.LookAndFeelConfigs"
+    ]
 }

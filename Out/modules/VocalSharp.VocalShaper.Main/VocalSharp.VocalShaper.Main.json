@@ -5,5 +5,13 @@
     "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
     "entry":"VocalSharp.VocalShaper.Main",
     "description":"VocalShaper编辑器主模块",
-    "dependencies":[]
+    "dependencies":[
+        "WuChang.JMADF.Configs",
+        "WuChang.JMADF.GlobalConfigs",
+        "VocalSharp.VocalShaper.ProjectHub",
+        "WuChang.JMADF.Translates",
+        "WuChang.JMADF.Fonts",
+        "VocalSharp.VocalShaper.LookAndFeelFactory",
+        "VocalSharp.VocalShaper.MainWindow"
+    ]
 }

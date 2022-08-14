@@ -5,5 +5,7 @@
   "productId": "{08338208-B752-4A90-9C73-4163152D6818}",
   "entry": "WuChang.JMADF.Fonts",
   "description": "VocalShaper字体模块",
-  "dependencies": []
+  "dependencies": [
+    "WuChang.JMADF.DynamicRC"
+  ]
 }
