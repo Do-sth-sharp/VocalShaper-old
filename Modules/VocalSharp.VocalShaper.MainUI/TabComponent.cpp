@@ -85,6 +85,10 @@ TabComponent::TabComponent()
     this->mainMenuButton->setWantsKeyboardFocus(false);
     this->mainMenuButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
     this->addAndMakeVisible(this->mainMenuButton.get());
+
+    //以下初始化标签列表
+    this->tabList = std::make_unique<TabList>();
+    this->addAndMakeVisible(this->tabList.get());
 }
 
 void TabComponent::resized()
@@ -120,10 +124,37 @@ void TabComponent::resized()
             juce::RectanglePlacement::centred);
         this->mainMenuButton->setImages(this->iconMainMenu.get());
     }
+
+    //调整标签列表大小
+    this->tabList->setBounds(
+        rectMenuButton.getWidth(), 0,
+        this->getWidth() - rectMenuButton.getWidth(), this->getHeight()
+    );
 }
 
 void TabComponent::paint(juce::Graphics& g)
 {
     //填充背景
     g.fillAll(this->colors.background);
+}
+
+bool TabComponent::newProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabList->newProj(name, path);
+}
+
+bool TabComponent::copyProj(const juce::String& name, const juce::String& path,
+    const juce::String& nameSrc, const juce::String& pathSrc)
+{
+    return this->tabList->copyProj(name, path, nameSrc, pathSrc);
+}
+
+bool TabComponent::openProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabList->openProj(name, path);
+}
+
+bool TabComponent::wannaClose()
+{
+    return this->tabList->wannaClose();
 }

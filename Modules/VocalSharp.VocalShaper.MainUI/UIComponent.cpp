@@ -54,3 +54,24 @@ void UIComponent::setCaller(const juce::String& caller)
 {
     this->caller = caller;
 }
+
+bool UIComponent::newProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabBar->newProj(name, path);
+}
+
+bool UIComponent::copyProj(const juce::String& name, const juce::String& path,
+    const juce::String& nameSrc, const juce::String& pathSrc)
+{
+    return this->tabBar->copyProj(name, path, nameSrc, pathSrc);
+}
+
+bool UIComponent::openProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabBar->openProj(name, path);
+}
+
+bool UIComponent::wannaClose()
+{
+    return this->tabBar->wannaClose();
+}

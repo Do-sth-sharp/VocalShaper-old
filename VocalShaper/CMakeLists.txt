@@ -109,6 +109,7 @@ add_executable (
 target_link_libraries (
 	${TARGET_NAME}
 	JUCE
+	libVocalShaper
 )
 
 #设置目标位置
@@ -125,4 +126,5 @@ add_dependencies (
 	${TARGET_NAME}
 	${MODULE_LIST}
 	JUCE
+	libVocalShaper
 )

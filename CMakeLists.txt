@@ -22,8 +22,10 @@ set (RC_DIR ${CMAKE_SOURCE_DIR}/Resources)
 set (LIBJMODULE_DIR ${JMADF_DIR}/libJModule)
 set (JUCEHEADER_DIR ${CMAKE_SOURCE_DIR}/JuceLibraryCode)
 set (JUCELIBRARY_DIR ${CMAKE_SOURCE_DIR}/JUCE/modules)
+set (VSLIBRARY_DIR ${CMAKE_SOURCE_DIR}/libVocalShaper)
 
 #编译目标
 add_subdirectory (JUCE_Library)
+add_subdirectory (libVocalShaper)
 add_subdirectory (Modules)
 add_subdirectory (VocalShaper)

@@ -43,35 +43,35 @@ bool VocalSharp_VocalShaper_MainUI::init()
 
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
 		"NewProject",
-		[this](const juce::String& caller,
+		[ptrUI](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = true;
+			result = ptrUI->newProj(name, path);
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
 		"CopyProject",
-		[this](const juce::String& caller,
+		[ptrUI](const juce::String& caller,
 			const juce::String& name, const juce::String& path,
 			const juce::String& nameSrc, const juce::String& pathSrc, bool& result)
 		{
-			result = true;
+			result = ptrUI->copyProj(name, path, nameSrc, pathSrc);
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
 		"OpenProject",
-		[this](const juce::String& caller,
+		[ptrUI](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = true;
+			result = ptrUI->openProj(name, path);
 		}
 	);
 
 	jmadf::RegisterInterface<bool&>(
 		"CloseIsAvailable",
-		[this](const juce::String& caller, bool& result)
+		[ptrUI](const juce::String& caller, bool& result)
 		{
-			result = true;
+			result = ptrUI->wannaClose();
 		}
 	);
 

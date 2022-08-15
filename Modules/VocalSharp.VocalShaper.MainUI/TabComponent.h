@@ -1,5 +1,6 @@
 #pragma once
 #include <JuceHeader.h>
+#include "TabList.h"
 
 class TabComponent final : public juce::Component
 {
@@ -9,6 +10,12 @@ public:
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
+
+	bool newProj(const juce::String& name, const juce::String& path);
+	bool copyProj(const juce::String& name, const juce::String& path,
+		const juce::String& nameSrc, const juce::String& pathSrc);
+	bool openProj(const juce::String& name, const juce::String& path);
+	bool wannaClose();
 
 private:
 	struct Colors final
@@ -31,6 +38,7 @@ private:
 
 	std::unique_ptr<juce::Drawable> iconMainMenu;
 	std::unique_ptr<juce::DrawableButton> mainMenuButton;
+	std::unique_ptr<TabList> tabList;
 
 	int heightTemp = 0;
 

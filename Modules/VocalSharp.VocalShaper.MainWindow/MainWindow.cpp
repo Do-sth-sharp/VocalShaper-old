@@ -84,7 +84,7 @@ MainWindow::MainWindow(juce::String name)
     mainLAF.setColour(juce::TextButton::ColourIds::buttonOnColourId, cBackgroundAlertButton);
     mainLAF.setColour(juce::TextButton::ColourIds::textColourOffId, cTextAlertButton);
     mainLAF.setColour(juce::TextButton::ColourIds::textColourOnId, cTextAlertButton);
-    //mainLAF.setColour(juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0));
+    mainLAF.setColour(juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0));
 
     //设置默认菜单样式
     juce::Colour cBackgroundMenu, cTextMenu, cHeaderMenu, cBackgroundMenuHighlight, cTextMenuHighlight;
