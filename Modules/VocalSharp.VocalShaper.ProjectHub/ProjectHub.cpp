@@ -2,6 +2,7 @@
 
 bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -11,6 +12,7 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	const juce::String& nameSrc, const juce::String& pathSrc)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -19,6 +21,7 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 
 bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -27,6 +30,7 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 
 void ProjectHub::setCurrent(int index)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		this->currentIndex = index;
 	}
@@ -34,6 +38,7 @@ void ProjectHub::setCurrent(int index)
 
 void ProjectHub::setCurrentAndToFront(int index)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index > 0 && index < this->projList.size()) {
 		this->projList.move(index, 0);
 		this->currentIndex = 0;
@@ -42,6 +47,7 @@ void ProjectHub::setCurrentAndToFront(int index)
 
 void ProjectHub::close(int index)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		this->projList.remove(index);
 		if (this->currentIndex == index) {
@@ -59,6 +65,7 @@ void ProjectHub::close(int index)
 
 bool ProjectHub::checkForClose(int index)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		return this->projList.getUnchecked(index)->getSaved();
 	}
@@ -67,6 +74,7 @@ bool ProjectHub::checkForClose(int index)
 
 vocalshaper::Project* ProjectHub::get(int index)
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		return this->projList.getUnchecked(index);
 	}
@@ -75,6 +83,7 @@ vocalshaper::Project* ProjectHub::get(int index)
 
 int ProjectHub::getCurrent()
 {
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	return this->currentIndex;
 }
 
