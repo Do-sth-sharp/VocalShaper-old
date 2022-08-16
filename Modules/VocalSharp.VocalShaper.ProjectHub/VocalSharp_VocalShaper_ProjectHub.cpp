@@ -1,5 +1,6 @@
 #include "VocalSharp_VocalShaper_ProjectHub.h"
 #include <libJModule.h>
+#include <libVocalShaper.h>
 
 VocalSharp_VocalShaper_ProjectHub::VocalSharp_VocalShaper_ProjectHub()
 	:Module()
@@ -37,6 +38,43 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			const juce::String& name, const juce::String& path, bool& result)
 		{
 			result = this->projects->openProj(name, path);
+		}
+	);
+
+	jmadf::RegisterInterface<int>(
+		"SetCurrent",
+		[this](const juce::String&, int index) {
+			this->projects->setCurrent(index);
+		}
+	);
+	jmadf::RegisterInterface<int>(
+		"SetCurrentAndToFront",
+		[this](const juce::String&, int index) {
+			this->projects->setCurrentAndToFront(index);
+		}
+	);
+	jmadf::RegisterInterface<int>(
+		"CloseProj",
+		[this](const juce::String&, int index) {
+			this->projects->close(index);
+		}
+	);
+	jmadf::RegisterInterface<int, bool&>(
+		"CheckForClose",
+		[this](const juce::String&, int index, bool& result) {
+			result = this->projects->checkForClose(index);
+		}
+	);
+	jmadf::RegisterInterface<int, vocalshaper::Project*&>(
+		"GetPtr",
+		[this](const juce::String&, int index, vocalshaper::Project*& result) {
+			result = this->projects->get(index);
+		}
+	);
+	jmadf::RegisterInterface<int&>(
+		"GetCurrent",
+		[this](const juce::String&, int& result) {
+			result = this->projects->getCurrent();
 		}
 	);
 	return true;

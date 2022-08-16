@@ -13,6 +13,18 @@ public:
 		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
 
+	void setCurrent(int index);
+	void setCurrentAndToFront(int index);
+	void close(int index);
+	bool checkForClose(int index);
+	vocalshaper::Project* get(int index);
+	int getCurrent();
+
 private:
+	juce::OwnedArray<vocalshaper::Project> projList;
+	int currentIndex = -1;
+
+	inline vocalshaper::Project* create(const juce::String& name, const juce::String& path) const;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectHub)
 };
