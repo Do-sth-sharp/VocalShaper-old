@@ -3,6 +3,14 @@
 bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+
+	int openedIndex = this->findOpened(name, path);
+	if (openedIndex >= 0) {
+		this->projList.move(openedIndex, 0);
+		this->currentIndex = 0;
+		return true;
+	}
+
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -14,6 +22,14 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	const juce::String& nameSrc, const juce::String& pathSrc)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+
+	int openedIndex = this->findOpened(name, path);
+	if (openedIndex >= 0) {
+		this->projList.move(openedIndex, 0);
+		this->currentIndex = 0;
+		return true;
+	}
+
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -24,6 +40,14 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+
+	int openedIndex = this->findOpened(name, path);
+	if (openedIndex >= 0) {
+		this->projList.move(openedIndex, 0);
+		this->currentIndex = 0;
+		return true;
+	}
+
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -96,12 +120,23 @@ int ProjectHub::getSize()
 	return this->projList.size();
 }
 
+void ProjectHub::save(int index)
+{
+	//TODO
+}
+
 vocalshaper::Project* ProjectHub::create(const juce::String& name, const juce::String& path) const
 {
 	return new vocalshaper::Project(name, path);
 }
 
-void ProjectHub::save(int index)
+int ProjectHub::findOpened(const juce::String& name, const juce::String& path) const
 {
-	//TODO
+	for (int i = 0; i < this->projList.size(); i++) {
+		auto item = this->projList.getUnchecked(i);
+		if (item->getName() == name && item->getPath() == path) {
+			return i;
+		}
+	}
+	return -1;
 }

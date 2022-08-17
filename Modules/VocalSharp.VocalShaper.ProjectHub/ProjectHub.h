@@ -29,6 +29,7 @@ private:
 	juce::SpinLock lock;
 
 	inline vocalshaper::Project* create(const juce::String& name, const juce::String& path) const;
+	inline int findOpened(const juce::String& name, const juce::String& path) const;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectHub)
 };
