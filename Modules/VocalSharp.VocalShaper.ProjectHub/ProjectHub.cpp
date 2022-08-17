@@ -6,6 +6,7 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	//TODO
 	return true;
 }
 
@@ -16,6 +17,7 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	//TODO
 	return true;
 }
 
@@ -25,6 +27,7 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 	auto proj = this->create(name, path);
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	//TODO
 	return true;
 }
 
@@ -87,7 +90,18 @@ int ProjectHub::getCurrent()
 	return this->currentIndex;
 }
 
+int ProjectHub::getSize()
+{
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	return this->projList.size();
+}
+
 vocalshaper::Project* ProjectHub::create(const juce::String& name, const juce::String& path) const
 {
 	return new vocalshaper::Project(name, path);
+}
+
+void ProjectHub::save(int index)
+{
+	//TODO
 }

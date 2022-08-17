@@ -15,6 +15,9 @@ public:
         const juce::String& nameSrc, const juce::String& pathSrc);
     bool openProj(const juce::String& name, const juce::String& path);
 
+    void setSMVisible(bool isVisible);
+    bool getSMVisible();
+
 private:
     juce::Component* ptrStartMenu = nullptr;
     juce::Component* ptrMainUI = nullptr;

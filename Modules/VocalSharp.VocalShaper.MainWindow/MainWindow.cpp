@@ -118,6 +118,9 @@ MainWindow::MainWindow(juce::String name)
 
 void MainWindow::closeButtonPressed()
 {
+    bool SMIsVisible = this->mComp->getSMVisible();
+    this->mComp->setSMVisible(false);
+
     bool closeOk = false;
     jmadf::CallInterface<bool&>(
         "VocalSharp.VocalShaper.MainUI", "CloseIsAvailable",
@@ -125,6 +128,9 @@ void MainWindow::closeButtonPressed()
         );
     if (closeOk) {
         juce::JUCEApplication::getInstance()->systemRequestedQuit();
+    }
+    else {
+        this->mComp->setSMVisible(SMIsVisible);
     }
 }
 

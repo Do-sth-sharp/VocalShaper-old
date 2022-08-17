@@ -15,6 +15,8 @@ VocalSharp_VocalShaper_ProjectHub::~VocalSharp_VocalShaper_ProjectHub()
 
 bool VocalSharp_VocalShaper_ProjectHub::init()
 {
+	this->projects = std::make_unique<ProjectHub>();
+
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
 		"NewProject",
 		[this](const juce::String& caller,
@@ -77,9 +79,22 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			result = this->projects->getCurrent();
 		}
 	);
+	jmadf::RegisterInterface<int&>(
+		"GetSize",
+		[this](const juce::String&, int& result) {
+			result = this->projects->getSize();
+		}
+	);
+	jmadf::RegisterInterface<int>(
+		"SaveProj",
+		[this](const juce::String&, int index) {
+			this->projects->save(index);
+		}
+	);
 	return true;
 }
 
 void VocalSharp_VocalShaper_ProjectHub::destory()
 {
+	this->projects = nullptr;
 }

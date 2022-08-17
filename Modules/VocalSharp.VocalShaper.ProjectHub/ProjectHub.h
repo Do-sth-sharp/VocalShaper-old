@@ -19,6 +19,8 @@ public:
 	bool checkForClose(int index);
 	vocalshaper::Project* get(int index);
 	int getCurrent();
+	int getSize();
+	void save(int index);
 
 private:
 	juce::OwnedArray<vocalshaper::Project> projList;

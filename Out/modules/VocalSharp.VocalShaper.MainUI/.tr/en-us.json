@@ -1,0 +1,8 @@
+{
+  "bt_Yes": "Yes",
+  "bt_No": "No",
+  "bt_Cancel": "Cancel",
+
+  "bt_CloseProject": "Close Project",
+  "tip_SaveBeforeClose": "Save the project before close it"
+}

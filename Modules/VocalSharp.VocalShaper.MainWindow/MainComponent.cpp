@@ -92,3 +92,13 @@ bool MainComponent::openProj(const juce::String& name, const juce::String& path)
     }
     return result;
 }
+
+void MainComponent::setSMVisible(bool isVisible)
+{
+    this->ptrStartMenu->setVisible(isVisible);
+}
+
+bool MainComponent::getSMVisible()
+{
+    return this->ptrStartMenu->isVisible();
+}
