@@ -453,6 +453,7 @@ void SMComponent::resized()
         listPosX, listPosY,
         listWidth, listHeight
     );
+    this->lstProj->scrollToEnsureRowIsOnscreen(0);
 }
 
 void SMComponent::paint(juce::Graphics& g)
