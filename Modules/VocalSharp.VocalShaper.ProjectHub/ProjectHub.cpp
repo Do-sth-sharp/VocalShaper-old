@@ -79,8 +79,16 @@ void ProjectHub::close(int index)
 		this->projList.remove(index);
 		if (this->currentIndex == index) {
 			//关闭的是当前文档
-			if (this->currentIndex >= this->projList.size()) {
+			if (this->currentIndex > 0) {
+				//前面有文档则当前文档为关闭的前一个文档
 				this->currentIndex--;
+			}
+			else if (this->projList.size() > 0) {
+				//后面有文档则后一个文档为当前文档
+			}
+			else {
+				//全部关闭后置当前文档为-1
+				this->currentIndex = -1;
 			}
 		}
 		else if (this->currentIndex > index) {

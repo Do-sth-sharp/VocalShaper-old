@@ -15,6 +15,7 @@ private:
 		std::unique_ptr<juce::LookAndFeel> startMenuListBox;
 
 		std::unique_ptr<juce::LookAndFeel> mainMenuButton;
+		std::unique_ptr<juce::LookAndFeel> tabCloseButton;
 	}lafs;
 
 
@@ -24,6 +25,7 @@ public:
 	juce::LookAndFeel* getStartMenuListBoxLAF();
 
 	juce::LookAndFeel* getMainMenuButtonLAF();
+	juce::LookAndFeel* getTabCloseButtonLAF();
 private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFFactory)
 };

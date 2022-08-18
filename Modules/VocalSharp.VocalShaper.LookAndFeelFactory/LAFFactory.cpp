@@ -36,3 +36,12 @@ juce::LookAndFeel* LAFFactory::getMainMenuButtonLAF()
 	}
 	return this->lafs.mainMenuButton.get();
 }
+
+juce::LookAndFeel* LAFFactory::getTabCloseButtonLAF()
+{
+	if (!this->lafs.tabCloseButton) {
+		this->lafs.tabCloseButton =
+			std::make_unique<juce::LookAndFeel_V4>();
+	}
+	return this->lafs.tabCloseButton.get();
+}

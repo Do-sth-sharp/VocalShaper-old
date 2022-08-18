@@ -43,6 +43,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getMainMenuButtonLAF();
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetTabCloseButtonLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf) {
+			laf = this->factory->getTabCloseButtonLAF();
+		}
+	);
 
 	return true;
 }

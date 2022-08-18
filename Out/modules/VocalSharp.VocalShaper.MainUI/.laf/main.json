@@ -6,23 +6,36 @@
     },
     "size":
     {
-        "height-tabBar:number":0.05
+        "height-tabBar:number":0.05,
+
+        "width-tabBorder:number":0.01,
+        "width-tabMarginRight:number":0.01
     },
     "position":
     {
     },
     "scale":
     {
-        "icon-mainMenuButton:number":0.5
+        "icon-mainMenuButton:number":0.5,
+        "height-closeButton:number":0.5
     },
     "color":
     {
         "background:string":"$ThemeColorB2",
         "icon-mainMenuButton:string":"$ThemeColorD2",
-        "background-mainMenuButton:string":"$ThemeColorB2"
+        "background-mainMenuButton:string":"$ThemeColorB2",
+
+        "text-tabList:string":"$ThemeColorD2",
+        "background-tabList:string":"$ThemeColorB2",
+        "text-tabList-highlight:string":"$ThemeColorD2",
+        "background-tabList-highlight:string":"$ThemeColorB3"
     },
     "resource":
     {
-        "icon-mainMenu:string":"/rc/third-party/RemixIcon/icons/System/menu-line.svg"
+        "icon-mainMenu:string":"/rc/third-party/RemixIcon/icons/System/menu-line.svg",
+
+        "icon-closeButton:string":"/rc/third-party/RemixIcon/icons/System/close-line.svg",
+        "icon-addButton:string":"/rc/third-party/RemixIcon/icons/System/add-line.svg",
+        "icon-moreButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-down-s-line.svg"
     }
 }
