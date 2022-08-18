@@ -325,6 +325,7 @@ SMComponent::SMComponent()
     this->teSearchProj->setMultiLine(false);
     this->teSearchProj->setJustification(juce::Justification::centredLeft);
     this->teSearchProj->setClicksOutsideDismissVirtualKeyboard(true);
+    this->teSearchProj->setPopupMenuEnabled(false);
     this->teSearchProj->setTextToShowWhenEmpty(
         this->tr("lb_SearchEditor"), this->colors.text_search_empty);
     this->teSearchProj->onTextChange = [this] {
