@@ -1,15 +1,15 @@
-#include "ProjListModel.h"
+ï»¿#include "ProjListModel.h"
 #include <libJModule.h>
 
 ProjListModel::ProjListModel()
 {
-    //»ñÈ¡·­ÒëÆ÷
+    //è·å–ç¿»è¯‘å™¨
     jmadf::CallInterface<std::function<const juce::String(const juce::String&)>&>(
         "WuChang.JMADF.Translates", "GetFunc",
         this->tr
         );
 
-    //ÒÔÏÂ»ñÈ¡½çÃæÊôĞÔ
+    //ä»¥ä¸‹è·å–ç•Œé¢å±æ€§
     bool result = false;
     //color
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -98,14 +98,14 @@ int ProjListModel::getNumRows()
 
 void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool /*rowIsSelected*/)
 {
-    //»æÖÆ±³¾°
+    //ç»˜åˆ¶èƒŒæ™¯
     g.setColour(this->colors.background_listItem);
     g.fillRoundedRectangle(0, 0, width, height, 6.0f);
     g.setColour(this->colors.background_list);
     g.drawRoundedRectangle(0, 0, width, height,
         6.0f, this->sizes.height_listItem_border * this->screenSize.getHeight());
 
-    //¼ÆËãÎÄ×ÖÇøÓò
+    //è®¡ç®—æ–‡å­—åŒºåŸŸ
     juce::String nameStr, pathStr, timeStr;
     this->getNameFunc(rowNumber, nameStr);
     this->getPathFunc(rowNumber, pathStr);
@@ -130,7 +130,7 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
     int splitPosY = marginHeight + (height - marginHeight * 2)
         * (this->sizes.height_fontListItem_name / (this->sizes.height_fontListItem_name + this->sizes.height_fontListItem_path));
 
-    //»æÖÆÃû³Æ
+    //ç»˜åˆ¶åç§°
     g.setColour(this->colors.text_listItem_name);
     juce::Font nameFont = g.getCurrentFont();
     nameFont.setHeight(
@@ -142,9 +142,9 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
         splitPosX - marginWidth, splitPosY - marginHeight
     );
     g.drawFittedText(nameStr, nameRect,
-        juce::Justification::centredLeft, 1);
+        juce::Justification::centredLeft, 1, 1.0f);
 
-    //»æÖÆÂ·¾¶
+    //ç»˜åˆ¶è·¯å¾„
     g.setColour(this->colors.text_listItem_path);
     juce::Font pathFont = g.getCurrentFont();
     pathFont.setHeight(
@@ -156,9 +156,9 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
         width - marginWidth * 2, height - marginHeight - splitPosY
     );
     g.drawFittedText(pathStr, pathRect,
-        juce::Justification::centredLeft, 1);
+        juce::Justification::centredLeft, 1, 1.0f);
 
-    //»æÖÆÊ±¼ä
+    //ç»˜åˆ¶æ—¶é—´
     g.setColour(this->colors.text_listItem_time);
     g.setFont(timeFont);
     juce::Rectangle<int> timeRect(
@@ -166,7 +166,7 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
         width - marginWidth - splitPosX, splitPosY - marginHeight
     );
     g.drawFittedText(timeStr, timeRect,
-        juce::Justification::centredRight, 1);
+        juce::Justification::centredRight, 1, 1.0f);
 }
 
 juce::MouseCursor ProjListModel::getMouseCursorForRow(int /*row*/)

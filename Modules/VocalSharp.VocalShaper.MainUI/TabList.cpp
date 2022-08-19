@@ -86,10 +86,6 @@ TabList::TabList()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "scale", "height-closeButton", this->scales.height_closeButton, result
         );
-    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-        "main", "scale", "icon-mainMenuButton", this->scales.icon_mainMenuButton, result
-        );
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "scale", "height-splitLine", this->scales.height_splitLine, result
@@ -261,7 +257,7 @@ TabList::TabList()
 
 	//初始化添加按钮
 	this->btAdd = std::make_unique<juce::DrawableButton>(
-		"bt_TabAdd", juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize);
+		"bt_TabAdd", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btAdd->setImages(this->iconAdd.get());
 	this->btAdd->setLookAndFeel(this->lafs.tabBarButton);
 	this->btAdd->setWantsKeyboardFocus(false);
@@ -273,7 +269,7 @@ TabList::TabList()
 
 	//初始化更多按钮
 	this->btMore = std::make_unique<juce::DrawableButton>(
-		"bt_TabMore", juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize);
+		"bt_TabMore", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btMore->setImages(this->iconMore.get());
 	this->btMore->setLookAndFeel(this->lafs.tabBarButton);
 	this->btMore->setWantsKeyboardFocus(false);
@@ -347,44 +343,6 @@ void TabList::resized()
 
 	//更新标签
 	this->refreshCompCache();
-
-	//调整添加按钮图标大小
-	if (heightChanged) {
-		auto buttonBounds = this->btAdd->getBounds();
-		juce::Rectangle<int> areaButton(
-			0, 0,
-			buttonBounds.getHeight(), buttonBounds.getHeight()
-		);
-		juce::Rectangle<float> iconBoundsToFit(
-			areaButton.getWidth() * (1 - this->scales.icon_mainMenuButton) / 2,
-			areaButton.getHeight() * (1 - this->scales.icon_mainMenuButton) / 2,
-			areaButton.getWidth() * this->scales.icon_mainMenuButton,
-			areaButton.getHeight() * this->scales.icon_mainMenuButton
-		);
-		this->iconAdd->setTransformToFit(
-			iconBoundsToFit,
-			juce::RectanglePlacement::centred);
-		this->btAdd->setImages(this->iconAdd.get());
-	}
-
-	//调整更多按钮图标大小
-	if (heightChanged) {
-		auto buttonBounds = this->btMore->getBounds();
-		juce::Rectangle<int> areaButton(
-			0, 0,
-			buttonBounds.getHeight(), buttonBounds.getHeight()
-		);
-		juce::Rectangle<float> iconBoundsToFit(
-			areaButton.getWidth() * (1 - this->scales.icon_mainMenuButton) / 2,
-			areaButton.getHeight() * (1 - this->scales.icon_mainMenuButton) / 2,
-			areaButton.getWidth() * this->scales.icon_mainMenuButton,
-			areaButton.getHeight() * this->scales.icon_mainMenuButton
-		);
-		this->iconMore->setTransformToFit(
-			iconBoundsToFit,
-			juce::RectanglePlacement::centred);
-		this->btMore->setImages(this->iconMore.get());
-	}
 }
 
 void TabList::paint(juce::Graphics& g)
@@ -470,13 +428,13 @@ void TabList::paint(juce::Graphics& g)
 	}
 
 	//绘末尾分割线
-	if (
+	/*if (
 		this->tabShow.size() == 0 ||
 		(this->tabShow.size() - 1) != this->currentIndex
 		) {
 		g.setColour(this->colors.split);
 		g.fillRect(totalWidth - splitWidth / 2, splitPosY, splitWidth, splitHeight);
-	}
+	}*/
 }
 
 void TabList::mouseMove(const juce::MouseEvent& event)
@@ -497,6 +455,8 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 				//修改鼠标指针
 				this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 
+				//TODO 显示弹出提示
+				
 				//修改覆盖状态
 				this->hoverIndex = i;
 				this->refreshComp();
@@ -511,6 +471,8 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 
 	//未命中任何标签页则修改鼠标指针
 	this->setMouseCursor(juce::MouseCursor::NormalCursor);
+
+	//TODO 关闭弹出提示
 }
 
 void TabList::mouseDown(const juce::MouseEvent& event)
@@ -568,6 +530,8 @@ void TabList::mouseExit(const juce::MouseEvent& event)
 	if (!(posX > 0 && posX < totalWidth && posY > 0 && posY < this->getHeight())) {
 		//修改鼠标指针
 		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+
+		//TODO 关闭弹出提示
 
 		//修改覆盖状态
 		this->hoverIndex = -1;

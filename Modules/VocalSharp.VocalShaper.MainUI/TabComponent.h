@@ -26,10 +26,6 @@ private:
 		juce::Colour icon_mainMenuButton;
 		juce::Colour background_mainMenuButton;
 	}colors;//界面颜色
-	struct Scales final
-	{
-		double icon_mainMenuButton;
-	}scales;//控件缩放
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* mainMenuButton;

@@ -53,7 +53,6 @@ private:
 	}sizes;//控件大小
 	struct Scales final
 	{
-		double icon_mainMenuButton;
 		double height_closeButton;
 		double height_splitLine;
 	}scales;//控件缩放

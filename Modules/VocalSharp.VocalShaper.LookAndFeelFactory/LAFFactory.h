@@ -8,16 +8,7 @@ public:
 	~LAFFactory() = default;
 
 private:
-	struct LAF final
-	{
-		std::unique_ptr<juce::LookAndFeel> startMenuButton;
-		std::unique_ptr<juce::LookAndFeel> startMenuTextEditor;
-		std::unique_ptr<juce::LookAndFeel> startMenuListBox;
-
-		std::unique_ptr<juce::LookAndFeel> mainMenuButton;
-		std::unique_ptr<juce::LookAndFeel> tabCloseButton;
-	}lafs;
-
+	juce::OwnedArray<juce::LookAndFeel> lafs;
 
 public:
 	juce::LookAndFeel* getStartMenuButtonLAF(int fontHeight);

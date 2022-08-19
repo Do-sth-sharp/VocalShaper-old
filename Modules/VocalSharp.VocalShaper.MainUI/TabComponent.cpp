@@ -29,10 +29,6 @@ TabComponent::TabComponent()
     //size
     //position
     //scale
-    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-        "main", "scale", "icon-mainMenuButton", this->scales.icon_mainMenuButton, result
-        );
 
     //resource
     juce::String iconMainMenuFile;
@@ -109,24 +105,6 @@ void TabComponent::resized()
         this->getHeight(), this->getHeight()
     );
     this->mainMenuButton->setBounds(rectMenuButton);
-
-    //调整主菜单按钮图标大小
-    if (heightChanged) {
-        juce::Rectangle<int> areaButton(
-            0, 0,
-            rectMenuButton.getWidth(), rectMenuButton.getHeight()
-        );
-        juce::Rectangle<float> iconBoundsToFit(
-            areaButton.getWidth() * (1 - this->scales.icon_mainMenuButton) / 2,
-            areaButton.getHeight() * (1 - this->scales.icon_mainMenuButton) / 2,
-            areaButton.getWidth() * this->scales.icon_mainMenuButton,
-            areaButton.getHeight() * this->scales.icon_mainMenuButton
-        );
-        this->iconMainMenu->setTransformToFit(
-            iconBoundsToFit,
-            juce::RectanglePlacement::centred);
-        this->mainMenuButton->setImages(this->iconMainMenu.get());
-    }
 
     //调整标签列表大小
     this->tabList->setBounds(

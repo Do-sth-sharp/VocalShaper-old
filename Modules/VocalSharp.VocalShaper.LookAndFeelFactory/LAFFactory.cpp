@@ -3,45 +3,35 @@
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(int fontHeight)
 {
-	if (!this->lafs.startMenuButton) {
-		this->lafs.startMenuButton =
-			std::make_unique<StartMenuButtonLAF>(fontHeight);
-	}
-	return this->lafs.startMenuButton.get();
+	auto ptrLAF = new StartMenuButtonLAF(fontHeight);
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
 }
 
 juce::LookAndFeel* LAFFactory::getStartMenuTextEditorLAF()
 {
-	if (!this->lafs.startMenuTextEditor) {
-		this->lafs.startMenuTextEditor =
-			std::make_unique<juce::LookAndFeel_V4>();
-	}
-	return this->lafs.startMenuTextEditor.get();
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
 }
 
 juce::LookAndFeel* LAFFactory::getStartMenuListBoxLAF()
 {
-	if (!this->lafs.startMenuListBox) {
-		this->lafs.startMenuListBox =
-			std::make_unique<juce::LookAndFeel_V4>();
-	}
-	return this->lafs.startMenuListBox.get();
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
 }
 
 juce::LookAndFeel* LAFFactory::getMainMenuButtonLAF()
 {
-	if (!this->lafs.mainMenuButton) {
-		this->lafs.mainMenuButton =
-			std::make_unique<juce::LookAndFeel_V4>();
-	}
-	return this->lafs.mainMenuButton.get();
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
 }
 
 juce::LookAndFeel* LAFFactory::getTabCloseButtonLAF()
 {
-	if (!this->lafs.tabCloseButton) {
-		this->lafs.tabCloseButton =
-			std::make_unique<juce::LookAndFeel_V4>();
-	}
-	return this->lafs.tabCloseButton.get();
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
 }
