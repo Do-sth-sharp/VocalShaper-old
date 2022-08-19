@@ -194,10 +194,10 @@ TabList::TabList()
 		this->lafs.tabCloseButton
 		);
 	this->lafs.tabCloseButton->setColour(
-		juce::TextButton::ColourIds::buttonColourId, this->colors.background_tabList
+		juce::TextButton::ColourIds::buttonColourId, this->colors.background_tabList.contrasting(0.05f)
 	);
 	this->lafs.tabCloseButton->setColour(
-		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_tabList
+		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_tabList.contrasting(0.05f)
 	);
 	this->lafs.tabCloseButton->setColour(
 		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
