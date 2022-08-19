@@ -52,7 +52,7 @@ void UIComponent::resized()
 
 void UIComponent::setCaller(const juce::String& caller)
 {
-    this->caller = caller;
+    this->tabBar->setCaller(caller);
 }
 
 bool UIComponent::newProj(const juce::String& name, const juce::String& path)

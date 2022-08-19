@@ -160,3 +160,8 @@ bool MainWindow::openProj(const juce::String& name, const juce::String& path)
 {
     return this->mComp->openProj(name, path);
 }
+
+void MainWindow::showStartMenu()
+{
+    this->mComp->setSMVisible(true);
+}

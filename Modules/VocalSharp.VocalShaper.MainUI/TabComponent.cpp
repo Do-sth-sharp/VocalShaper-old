@@ -71,15 +71,18 @@ TabComponent::TabComponent()
         this->lafs.mainMenuButton
         );
     this->lafs.mainMenuButton->setColour(
-        juce::DrawableButton::ColourIds::backgroundColourId, this->colors.background_mainMenuButton
+        juce::TextButton::ColourIds::buttonColourId, this->colors.background_mainMenuButton
     );
     this->lafs.mainMenuButton->setColour(
-        juce::DrawableButton::ColourIds::backgroundOnColourId, this->colors.background_mainMenuButton
+        juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_mainMenuButton
+    );
+    this->lafs.mainMenuButton->setColour(
+        juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
     );
 
     //以下初始化主菜单按钮
     this->mainMenuButton = std::make_unique<juce::DrawableButton>(
-        "bt_MainMenu", juce::DrawableButton::ButtonStyle::ImageRaw);
+        "bt_MainMenu", juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize);
     this->mainMenuButton->setImages(this->iconMainMenu.get());
     this->mainMenuButton->setLookAndFeel(this->lafs.mainMenuButton);
     this->mainMenuButton->setWantsKeyboardFocus(false);
@@ -157,4 +160,9 @@ bool TabComponent::openProj(const juce::String& name, const juce::String& path)
 bool TabComponent::wannaClose()
 {
     return this->tabList->wannaClose();
+}
+
+void TabComponent::setCaller(const juce::String& caller)
+{
+    this->tabList->setCaller(caller);
 }

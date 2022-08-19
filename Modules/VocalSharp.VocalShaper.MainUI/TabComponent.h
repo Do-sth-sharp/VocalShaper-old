@@ -17,6 +17,8 @@ public:
 	bool openProj(const juce::String& name, const juce::String& path);
 	bool wannaClose();
 
+	void setCaller(const juce::String& caller);
+
 private:
 	struct Colors final
 	{

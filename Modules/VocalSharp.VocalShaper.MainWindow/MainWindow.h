@@ -15,6 +15,8 @@ public:
     bool copyProj(const juce::String& name, const juce::String& path,
         const juce::String& nameSrc, const juce::String& pathSrc);
     bool openProj(const juce::String& name, const juce::String& path);
+
+    void showStartMenu();
 	
 private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc

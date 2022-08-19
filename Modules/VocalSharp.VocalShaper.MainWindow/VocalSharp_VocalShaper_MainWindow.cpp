@@ -62,6 +62,16 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			result = this->mainWindow->openProj(name, path);
 		}
 	);
+
+	jmadf::RegisterInterface<void>(
+		"ShowStartMenu",
+		[this](const juce::String& caller)
+		{
+			if (this->mainWindow) {
+				this->mainWindow->showStartMenu();
+			}
+		}
+	);
 	
 	this->mainWindow = std::make_unique<MainWindow>("VocalShaper");
 	if (!this->mainWindow) {

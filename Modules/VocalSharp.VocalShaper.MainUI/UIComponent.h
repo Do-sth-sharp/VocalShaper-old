@@ -28,8 +28,6 @@ private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
         = [](juce::Component*, juce::Rectangle<int>&) {};
 
-    juce::String caller;
-
     std::unique_ptr<TabComponent> tabBar;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UIComponent)

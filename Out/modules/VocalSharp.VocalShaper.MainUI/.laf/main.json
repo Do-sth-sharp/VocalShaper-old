@@ -8,8 +8,11 @@
     {
         "height-tabBar:number":0.05,
 
-        "width-tabBorder:number":0.01,
-        "width-tabMarginRight:number":0.01
+        "width-tab-max:number":0.2,
+
+        "width-tabBorder:number":0.005,
+        "width-tabMarginRight:number":0.005,
+        "width-splitLine:number":0.00075
     },
     "position":
     {
@@ -17,7 +20,8 @@
     "scale":
     {
         "icon-mainMenuButton:number":0.5,
-        "height-closeButton:number":0.5
+        "height-closeButton:number":0.5,
+        "height-splitLine:number":0.5
     },
     "color":
     {
@@ -25,10 +29,15 @@
         "icon-mainMenuButton:string":"$ThemeColorD2",
         "background-mainMenuButton:string":"$ThemeColorB2",
 
+        "icon-tabBarButton:string":"$ThemeColorD2",
+        "background-tabBarButton:string":"$ThemeColorB2",
+
         "text-tabList:string":"$ThemeColorD2",
         "background-tabList:string":"$ThemeColorB2",
         "text-tabList-highlight:string":"$ThemeColorD2",
-        "background-tabList-highlight:string":"$ThemeColorB3"
+        "background-tabList-highlight:string":"$ThemeColorB3",
+
+        "split:string":"$ThemeColorD3"
     },
     "resource":
     {
