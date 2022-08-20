@@ -365,6 +365,7 @@ void TabList::paint(juce::Graphics& g)
 	int splitWidth = this->sizes.width_splitLine * screenSize.getWidth();
 	int splitHeight = this->scales.height_splitLine * this->getHeight();
 	int splitPosY = this->getHeight() / 2 - splitHeight / 2;
+	float roundSize = 6.0f;
 
 	//绘制标签页
 	int totalWidth = 0;
@@ -377,9 +378,17 @@ void TabList::paint(juce::Graphics& g)
 		int itemWidth = item.first;
 		int strWidth = itemWidth - 3 * tabBorderWidth - closeButtonHeight;
 
-		juce::Rectangle<int> tabRect(
+		juce::Rectangle<float> tabRect(
 			totalWidth, 0,
 			itemWidth, this->getHeight()
+		);
+		juce::Rectangle<float> tabRectTop(
+			totalWidth, 0,
+			itemWidth, this->getHeight() / 2
+		);
+		juce::Rectangle<float> tabRectBottom(
+			totalWidth, this->getHeight() / 2,
+			itemWidth, this->getHeight() / 2
 		);
 		juce::Rectangle<int> textRect(
 			totalWidth + tabBorderWidth, 0,
@@ -388,17 +397,21 @@ void TabList::paint(juce::Graphics& g)
 
 		//绘背景
 		if (i == this->currentIndex) {
+			//当前标签已激活
+			g.setColour(this->colors.background_tabList);
+			g.fillRect(tabRectTop);
 			g.setColour(this->colors.background_tabList_highlight);
+			g.fillRect(tabRectBottom);
+			g.fillRoundedRectangle(tabRect, roundSize);
 		}
 		else {
+			g.setColour(this->colors.background_tabList);
+			g.fillRect(tabRect);
 			if (i == this->hoverIndex) {
 				g.setColour(this->colors.background_tabList.contrasting(0.05f));
-			}
-			else {
-				g.setColour(this->colors.background_tabList);
+				g.fillRoundedRectangle(tabRect, roundSize);
 			}
 		}
-		g.fillRect(tabRect);
 
 		//绘文本
 		if (i == this->currentIndex) {
@@ -479,7 +492,6 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 
 	//关闭弹出提示
 	this->setTooltip(juce::String());
-	this->toolTip->hideTip();
 }
 
 void TabList::mouseDown(const juce::MouseEvent& event)
@@ -736,7 +748,6 @@ void TabList::refreshComp()
 	//进行清理
 	this->btCloseCurrent->setVisible(false);
 	this->btCloseHover->setVisible(false);
-	this->toolTip->hideTip();
 
 	//获取屏幕相关属性
 	juce::Rectangle<int> screenSize;

@@ -32,11 +32,11 @@
         "background-tabBarButton:string":"$ThemeColorB2",
 
         "text-tabList:string":"$ThemeColorD2",
-        "background-tabList:string":"$ThemeColorB3",
+        "background-tabList:string":"$ThemeColorB2",
         "text-tabList-highlight:string":"$ThemeColorD1",
-        "background-tabList-highlight:string":"$ThemeColorB1",
+        "background-tabList-highlight:string":"$ThemeColorB3",
 
-        "split:string":"$ThemeColorB2"
+        "split:string":"$ThemeColorB4"
     },
     "resource":
     {

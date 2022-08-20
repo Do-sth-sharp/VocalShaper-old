@@ -84,7 +84,6 @@ private:
 	std::unique_ptr<juce::DrawableButton> btCloseCurrent, btCloseHover;
 	std::unique_ptr<juce::DrawableButton> btAdd, btMore;
 	std::unique_ptr<juce::Label> lbDefaultFont;
-	juce::SharedResourcePointer<juce::TooltipWindow> toolTip;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TabList)
 };
