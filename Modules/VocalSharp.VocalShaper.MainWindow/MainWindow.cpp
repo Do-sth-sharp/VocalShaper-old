@@ -114,6 +114,21 @@ MainWindow::MainWindow(juce::String name)
     mainLAF.setColour(juce::PopupMenu::ColourIds::headerTextColourId, cHeaderMenu);
     mainLAF.setColour(juce::PopupMenu::ColourIds::highlightedBackgroundColourId, cBackgroundMenuHighlight);
     mainLAF.setColour(juce::PopupMenu::ColourIds::highlightedTextColourId, cTextMenuHighlight);
+
+    //设置默认弹出提示样式
+    juce::Colour cBackgroundToolTip, cTextToolTip;
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "background-toolTip", cBackgroundToolTip, result
+        );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "text-toolTip", cTextToolTip, result
+        );
+
+    mainLAF.setColour(juce::TooltipWindow::ColourIds::backgroundColourId, cBackgroundToolTip);
+    mainLAF.setColour(juce::TooltipWindow::ColourIds::textColourId, cTextToolTip);
+    mainLAF.setColour(juce::TooltipWindow::ColourIds::outlineColourId, cBackgroundToolTip);
 }
 
 void MainWindow::closeButtonPressed()

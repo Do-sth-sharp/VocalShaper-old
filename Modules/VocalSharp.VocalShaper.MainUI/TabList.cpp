@@ -442,12 +442,16 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 	//获取鼠标位置
 	int posX = event.getPosition().getX();
 
+	//获取控件位置
+	auto screenBounds = this->getScreenBounds();
+
 	//计算鼠标所在标签页
 	int totalWidth = 0;
 	for (int i = 0; i < this->tabShow.size(); i++) {
 		//获取引用
 		auto& item = this->tabShow.getReference(i);
 		int itemWidth = item.first;
+		auto itemPtr = item.second;
 
 		//如果当前标签页命中
 		if (totalWidth <= posX && totalWidth + itemWidth > posX) {
@@ -455,7 +459,8 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 				//修改鼠标指针
 				this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 
-				//TODO 显示弹出提示
+				//显示弹出提示
+				this->setTooltip(itemPtr->getPath());
 				
 				//修改覆盖状态
 				this->hoverIndex = i;
@@ -472,7 +477,9 @@ void TabList::mouseMove(const juce::MouseEvent& event)
 	//未命中任何标签页则修改鼠标指针
 	this->setMouseCursor(juce::MouseCursor::NormalCursor);
 
-	//TODO 关闭弹出提示
+	//关闭弹出提示
+	this->setTooltip(juce::String());
+	this->toolTip->hideTip();
 }
 
 void TabList::mouseDown(const juce::MouseEvent& event)
@@ -530,8 +537,6 @@ void TabList::mouseExit(const juce::MouseEvent& event)
 	if (!(posX > 0 && posX < totalWidth && posY > 0 && posY < this->getHeight())) {
 		//修改鼠标指针
 		this->setMouseCursor(juce::MouseCursor::NormalCursor);
-
-		//TODO 关闭弹出提示
 
 		//修改覆盖状态
 		this->hoverIndex = -1;
@@ -731,6 +736,7 @@ void TabList::refreshComp()
 	//进行清理
 	this->btCloseCurrent->setVisible(false);
 	this->btCloseHover->setVisible(false);
+	this->toolTip->hideTip();
 
 	//获取屏幕相关属性
 	juce::Rectangle<int> screenSize;

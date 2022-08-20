@@ -23,5 +23,8 @@ private:
     juce::Component* ptrMainUI = nullptr;
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
         = [](juce::Component*, juce::Rectangle<int>&) {};
+
+    juce::SharedResourcePointer<juce::TooltipWindow> toolTip;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

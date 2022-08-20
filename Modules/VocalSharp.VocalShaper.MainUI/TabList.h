@@ -2,7 +2,7 @@
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 
-class TabList final : public juce::Component
+class TabList final : public juce::Component, public juce::SettableTooltipClient
 {
 public:
 	TabList();
@@ -84,6 +84,7 @@ private:
 	std::unique_ptr<juce::DrawableButton> btCloseCurrent, btCloseHover;
 	std::unique_ptr<juce::DrawableButton> btAdd, btMore;
 	std::unique_ptr<juce::Label> lbDefaultFont;
+	juce::SharedResourcePointer<juce::TooltipWindow> toolTip;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TabList)
 };

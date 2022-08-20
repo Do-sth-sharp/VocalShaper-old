@@ -11,6 +11,8 @@ MainComponent::MainComponent()
 
     setSize (600, 400);
 
+    this->addChildComponent(this->toolTip.get());
+
     jmadf::CallInterface<juce::Component*&>(
         "VocalSharp.VocalShaper.MainUI", "GetPtr",
         this->ptrMainUI
