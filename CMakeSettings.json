@@ -33,8 +33,7 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "Ubuntu20.04LTS",
-      "variables": []
+      "wslPath": "${defaultWSLPath}"
     },
     {
       "name": "WSL-GCC-Release",
@@ -47,8 +46,7 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "Ubuntu20.04LTS",
-      "variables": []
+      "wslPath": "${defaultWSLPath}"
     }
   ]
 }

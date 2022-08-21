@@ -17,18 +17,18 @@ public:
 	void setCurrentAndToFront(int index);
 	void close(int index);
 	bool checkForClose(int index);
-	vocalshaper::Project* get(int index);
+	vocalshaper::ProjectDAO* get(int index);
 	int getCurrent();
 	int getSize();
 	void save(int index);
 
 private:
-	juce::OwnedArray<vocalshaper::Project> projList;
+	juce::OwnedArray<vocalshaper::ProjectDAO> projList;
 	int currentIndex = -1;
 
 	juce::SpinLock lock;
 
-	inline vocalshaper::Project* create(const juce::String& name, const juce::String& path) const;
+	inline vocalshaper::ProjectDAO* create(const juce::String& name, const juce::String& path) const;
 	inline int findOpened(const juce::String& name, const juce::String& path) const;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectHub)

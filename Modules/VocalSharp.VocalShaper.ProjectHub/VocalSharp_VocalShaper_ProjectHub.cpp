@@ -67,9 +67,9 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			result = this->projects->checkForClose(index);
 		}
 	);
-	jmadf::RegisterInterface<int, vocalshaper::Project*&>(
+	jmadf::RegisterInterface<int, vocalshaper::ProjectDAO*&>(
 		"GetPtr",
-		[this](const juce::String&, int index, vocalshaper::Project*& result) {
+		[this](const juce::String&, int index, vocalshaper::ProjectDAO*& result) {
 			result = this->projects->get(index);
 		}
 	);

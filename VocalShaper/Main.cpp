@@ -15,10 +15,17 @@ public:
     void initialise (const juce::String& /*commandLine*/) override
     {
         this->splash.reset(new Splash(this->getApplicationVersion(), jmadf::getComplieTime(__DATE__, __TIME__)));
-        const juce::Rectangle<int>& displayArea =
-            juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
-        int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);
-        this->splash->centreWithSize(sizeBase * 25, sizeBase * 10);
+        juce::Rectangle<int> displayArea(0, 0, 1920, 1080);
+        if (auto display = 
+            juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()) {
+            displayArea = display->totalArea;
+            int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);
+            this->splash->centreWithSize(sizeBase * 25, sizeBase * 10);
+        }
+        else {
+            int sizeBase = (int)(std::min(displayArea.getWidth(), displayArea.getHeight()) * 0.03);
+            this->splash->setSize(sizeBase * 25, sizeBase * 10);
+        }
 		this->splash->setVisible(true);
         this->splash->addToDesktop(juce::ComponentPeer::windowHasDropShadow);
         this->splash->toFront(true);
