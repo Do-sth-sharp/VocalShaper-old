@@ -42,7 +42,7 @@ bool WuChang_JMADF_OpenGLComponentRender::init()
 
 void WuChang_JMADF_OpenGLComponentRender::destory()
 {
-	if (this->glContext && this->glContext->isAttached()) {
+	if (this->glContext) {
 		this->glContext->detach();
 	}
 	this->glContext = nullptr;

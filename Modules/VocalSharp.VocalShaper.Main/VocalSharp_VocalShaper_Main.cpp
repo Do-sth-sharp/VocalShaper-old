@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_Main.h"
+ï»¿#include "VocalSharp_VocalShaper_Main.h"
 
 VocalSharp_VocalShaper_Main::VocalSharp_VocalShaper_Main()
 	:Module()
@@ -13,13 +13,15 @@ VocalSharp_VocalShaper_Main::~VocalSharp_VocalShaper_Main()
 
 bool VocalSharp_VocalShaper_Main::init()
 {
-	//»ñÈ¡ÉèÖÃ
 	if (!(jmadf::LoadModule("WuChang.JMADF.Configs") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub")
 		)) {
 		return false;
 	}
+	jmadf::LoadModule("WuChang.JMADF.OpenGLComponentRender");
+
+	//è·å–è®¾ç½®
 	juce::var* config = nullptr;
 	bool ok = false;
 	jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
@@ -37,14 +39,14 @@ bool VocalSharp_VocalShaper_Main::init()
 		}
 	}
 
-	//ÉèÖÃÓïÑÔ
+	//è®¾ç½®è¯­è¨€
 	jmadf::LoadModule("WuChang.JMADF.Translates");
 	jmadf::CallInterface<const juce::String&>(
 		"WuChang.JMADF.Translates", "SetCurrentLang",
 		lang
 		);
 
-	//ÉèÖÃ×ÖÌå
+	//è®¾ç½®å­—ä½“
 	if (!jmadf::LoadModule("WuChang.JMADF.Fonts")) {
 		return false;
 	}
@@ -64,12 +66,12 @@ bool VocalSharp_VocalShaper_Main::init()
 			.setDefaultSansSerifTypeface(ptrFont);
 	}
 
-	//³õÊ¼»¯ÑùÊ½¹¤³§
+	//åˆå§‹åŒ–æ ·å¼å·¥å‚
 	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
 		return false;
 	}
 
-	//Ö÷½çÃæ³õÊ¼»¯
+	//ä¸»ç•Œé¢åˆå§‹åŒ–
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {
 		jmadf::RaiseException("@ERROR " + juce::String(mainWindowName));
