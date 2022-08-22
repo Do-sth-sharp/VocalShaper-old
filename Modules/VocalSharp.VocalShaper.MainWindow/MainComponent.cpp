@@ -53,6 +53,10 @@ void MainComponent::resized()
         this->ptrStartMenu->setSize(this->getWidth(), this->getHeight());
         this->ptrStartMenu->toFront(true);
     }
+    if (this->splash) {
+        this->splash->centreWithSize(this->splash->getWidth(), this->splash->getHeight());
+        this->splash->toFront(true);
+    }
 }
 
 bool MainComponent::newProj(const juce::String& name, const juce::String& path)
@@ -103,4 +107,15 @@ void MainComponent::setSMVisible(bool isVisible)
 bool MainComponent::getSMVisible()
 {
     return this->ptrStartMenu->isVisible();
+}
+
+void MainComponent::moveSplashIn(juce::Component* splash)
+{
+    if (splash) {
+        this->splash = splash;
+        this->splash->removeFromDesktop();
+        this->addAndMakeVisible(splash);
+        this->splash->centreWithSize(this->splash->getWidth(), this->splash->getHeight());
+        this->toFront(true);
+    }
 }

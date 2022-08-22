@@ -77,6 +77,15 @@ bool VocalSharp_VocalShaper_Main::init()
 		jmadf::RaiseException("@ERROR " + juce::String(mainWindowName));
 		return false;
 	}
+	jmadf::RegisterInterface<juce::Component*>(
+		"MoveToMainWindow",
+		[this, mainWindowName](const juce::String&, juce::Component* comp) {
+			jmadf::CallInterface<juce::Component*>(
+				mainWindowName, "MoveToMainWindow",
+				comp
+				);
+		}
+	);
 	return true;
 }
 

@@ -74,6 +74,10 @@ public:
             return;
         }
 		
+        InterfaceDao<juce::Component*>::callFromLoader(
+            "VocalSharp.VocalShaper.Main", "MoveToMainWindow",
+            this->splash.get()
+        );
         this->splash->ready();
         if (openglLoaded) {
             this->splash->showMessage("Ready with OpenGL.");

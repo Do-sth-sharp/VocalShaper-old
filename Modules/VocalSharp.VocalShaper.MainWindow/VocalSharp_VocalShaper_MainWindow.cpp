@@ -72,12 +72,22 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			}
 		}
 	);
+
+	jmadf::RegisterInterface<juce::Component*>(
+		"MoveToMainWindow",
+		[this](const juce::String&, juce::Component* comp) {
+			if (this->mainWindow) {
+				this->mainWindow->moveSplashIn(comp);
+			}
+		}
+	);
 	
 	this->mainWindow = std::make_unique<MainWindow>("VocalShaper");
 	if (!this->mainWindow) {
 		jmadf::RaiseException("Can't alloc memory space for main window!");
 		return false;
 	}
+	this->mainWindow->toFront(true);
 	if (openglLoaded) {
 		jmadf::CallInterface<juce::Component*>(
 			"WuChang.JMADF.OpenGLComponentRender", "Attach",

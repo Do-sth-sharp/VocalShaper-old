@@ -18,6 +18,8 @@ public:
     void setSMVisible(bool isVisible);
     bool getSMVisible();
 
+    void moveSplashIn(juce::Component* splash);
+
 private:
     juce::Component* ptrStartMenu = nullptr;
     juce::Component* ptrMainUI = nullptr;
@@ -25,6 +27,8 @@ private:
         = [](juce::Component*, juce::Rectangle<int>&) {};
 
     juce::SharedResourcePointer<juce::TooltipWindow> toolTip;
+
+    juce::Component* splash = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

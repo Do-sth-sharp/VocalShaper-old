@@ -180,3 +180,10 @@ void MainWindow::showStartMenu()
 {
     this->mComp->setSMVisible(true);
 }
+
+void MainWindow::moveSplashIn(juce::Component* splash)
+{
+    if (this->mComp) {
+        this->mComp->moveSplashIn(splash);
+    }
+}
