@@ -1,11 +1,13 @@
 {
     "parent":
     {
-        "module":"VocalSharp.VocalShaper.MainWindow",
-        "class":"main"
+        "module":"VocalSharp.VocalShaper.ColorfulTheme",
+        "class":"VocalSharp.VocalShaper.StartMenu"
     },
     "size":
     {
+        "height-font:number":0.025,
+        
         "width-leftBar:number":0.175,
         "width-leftBar-max:number":450,
 
@@ -47,38 +49,5 @@
         "height-title:number":0.4,
         "height-search:number":0.3,
         "height-icon-search:number":0.6
-    },
-    "color":
-    {
-        "background:string":"$ThemeColorB2",
-        "leftBar:string":"$ThemeColorB3",
-
-        "text-button:string":"$ThemeColorD1",
-        "background-button:string":"$ThemeColorA1",
-
-        "text-title:string":"$ThemeColorD2",
-
-        "text-search:string":"$ThemeColorD2",
-        "text-search-empty:string":"$ThemeColorD3",
-        "background-search:string":"$ThemeColorB1",
-        "text-search-highlight:string":"$ThemeColorB1",
-        "background-search-highlight:string":"$ThemeColorD2",
-        "caret-search:string":"$ThemeColorD1",
-        "icon-search:string":"$ThemeColorD2",
-
-        "background-list:string":"$ThemeColorB2",
-        "background-listItem:string":"$ThemeColorB3",
-        "text-listItem-name:string":"$ThemeColorD1",
-        "text-listItem-time:string":"$ThemeColorD1",
-        "text-listItem-path:string":"$ThemeColorD2",
-
-        "background-list-scroller:string":"$ThemeColorB2",
-        "thumb-list-scroller:string":"$ThemeColorD3",
-        "track-list-scroller:string":"$ThemeColorB2"
-    },
-    "resource":
-    {
-        "logo:string":"/rc/dark.png",
-        "icon-search:string":"/rc/third-party/RemixIcon/icons/System/search-line.svg"
     }
 }
