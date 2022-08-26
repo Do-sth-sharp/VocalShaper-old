@@ -16,6 +16,15 @@ bool VocalSharp_VocalShaper_ProjectHistory::init()
 	if (!jmadf::LoadModule("WuChang.JMADF.Configs")) {
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.Configs", "GetReference") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Configs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
+		return false;
+	}
 
 	this->hm = std::make_unique<HistoryManager>();
 	jmadf::RegisterInterface<int&>(

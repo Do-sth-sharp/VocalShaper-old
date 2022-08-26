@@ -5,6 +5,17 @@ bool WuChang_JMADF_Fonts::init()
 	if (!jmadf::LoadModule("WuChang.JMADF.DynamicRC")) {
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC", "GetRC") ||
+		!jmadf::CheckInterface<const juce::String&>(
+			"WuChang.JMADF.DynamicRC", "ReleaseRC") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.DynamicRC", "Unload")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
+		return false;
+	}
 	this->fonts = std::make_unique<Fonts>();
 	
 	jmadf::RegisterInterface<const juce::String&, juce::Typeface::Ptr&, bool&>(

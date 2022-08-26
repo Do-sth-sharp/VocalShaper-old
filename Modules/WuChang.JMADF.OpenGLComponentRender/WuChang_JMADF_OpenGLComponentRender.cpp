@@ -5,6 +5,15 @@ bool WuChang_JMADF_OpenGLComponentRender::init()
 	if (!jmadf::LoadModule("WuChang.JMADF.Configs")) {
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.Configs", "GetReference") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Configs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
+		return false;
+	}
 	juce::var* config = nullptr;
 	bool ok = false;
 	jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(

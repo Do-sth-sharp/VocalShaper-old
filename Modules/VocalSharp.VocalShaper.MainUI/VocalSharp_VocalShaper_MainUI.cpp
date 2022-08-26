@@ -1,5 +1,6 @@
 #include "VocalSharp_VocalShaper_MainUI.h"
 #include <libJModule.h>
+#include <libVocalShaper.h>
 
 VocalSharp_VocalShaper_MainUI::VocalSharp_VocalShaper_MainUI()
 	:Module()
@@ -23,6 +24,87 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub")
 		)) {
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetNumber") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetString") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC", "GetRC") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.DynamicRC", "Unload")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::Component*, juce::Rectangle<int>&>(
+			"WuChang.JMADF.Device", "GetScreenSize")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Device:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.GlobalConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
+			"WuChang.JMADF.Translates", "GetFunc") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Translates", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTabCloseButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<int, vocalshaper::ProjectDAO*&>(
+			"VocalSharp.VocalShaper.ProjectHub", "GetPtr") ||
+		!jmadf::CheckInterface<int&>(
+			"VocalSharp.VocalShaper.ProjectHub", "GetCurrent") ||
+		!jmadf::CheckInterface<int&>(
+			"VocalSharp.VocalShaper.ProjectHub", "GetSize") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "NewProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "CopyProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "OpenProject") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHub", "SetCurrent") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHub", "SetCurrentAndToFront") ||
+		!jmadf::CheckInterface<int, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "CheckForClose") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHub", "SaveProj") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHub", "CloseProj")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
 	}
 

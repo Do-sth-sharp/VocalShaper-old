@@ -74,6 +74,16 @@ public:
             return;
         }
 		
+        if (!InterfaceDao<juce::Component*>::checkFromLoader(
+            "VocalSharp.VocalShaper.Main", "MoveToMainWindow")) {
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, "Main Module Fatal Error",
+                "Bad Interfaces!", juce::String(),
+                this->splash.get()
+            );
+            quit();
+            return;
+        }
         InterfaceDao<juce::Component*>::callFromLoader(
             "VocalSharp.VocalShaper.Main", "MoveToMainWindow",
             this->splash.get()

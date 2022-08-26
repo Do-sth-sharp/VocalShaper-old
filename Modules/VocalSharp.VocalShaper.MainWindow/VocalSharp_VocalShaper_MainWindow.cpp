@@ -23,6 +23,53 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	if (!jmadf::GetException().isEmpty()) {
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC", "GetRC") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.DynamicRC", "Unload")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::Component*, juce::Rectangle<int>&>(
+			"WuChang.JMADF.Device", "GetScreenSize")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Device:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.MainUI", "CloseIsAvailable") ||
+		!jmadf::CheckInterface<juce::Component*&>(
+			"VocalSharp.VocalShaper.MainUI", "GetPtr") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainUI", "NewProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainUI", "CopyProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainUI", "OpenProject")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.MainUI:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::Component*&>(
+			"VocalSharp.VocalShaper.StartMenu", "GetPtr")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.StartMenu:Bad Interfaces!");
+		return false;
+	}
 
 	bool openglLoaded = jmadf::LoadModule("WuChang.JMADF.OpenGLComponentRender");
 	if (!jmadf::GetException().isEmpty()) {
@@ -89,10 +136,17 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	}
 	this->mainWindow->toFront(true);
 	if (openglLoaded) {
-		jmadf::CallInterface<juce::Component*>(
-			"WuChang.JMADF.OpenGLComponentRender", "Attach",
-			this->mainWindow.get()
-			);
+		if (
+			jmadf::CheckInterface<juce::Component*>(
+				"WuChang.JMADF.OpenGLComponentRender", "Attach") &&
+			jmadf::CheckInterface<void>(
+				"WuChang.JMADF.OpenGLComponentRender", "Detach")
+			) {
+			jmadf::CallInterface<juce::Component*>(
+				"WuChang.JMADF.OpenGLComponentRender", "Attach",
+				this->mainWindow.get()
+				);
+		}
 	}
 	return true;
 }

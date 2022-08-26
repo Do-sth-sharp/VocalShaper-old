@@ -20,6 +20,22 @@ bool VocalSharp_VocalShaper_Main::init()
 		return false;
 	}
 	jmadf::LoadModule("WuChang.JMADF.OpenGLComponentRender");
+	if (
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Configs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference")||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.GlobalConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
+		return false;
+	}
 
 	//获取设置
 	juce::var* config = nullptr;
@@ -40,7 +56,18 @@ bool VocalSharp_VocalShaper_Main::init()
 	}
 
 	//设置语言
-	jmadf::LoadModule("WuChang.JMADF.Translates");
+	if (!jmadf::LoadModule("WuChang.JMADF.Translates")) {
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&>(
+			"WuChang.JMADF.Translates", "SetCurrentLang") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Translates", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
+		return false;
+	}
 	jmadf::CallInterface<const juce::String&>(
 		"WuChang.JMADF.Translates", "SetCurrentLang",
 		lang
@@ -48,6 +75,17 @@ bool VocalSharp_VocalShaper_Main::init()
 
 	//设置字体
 	if (!jmadf::LoadModule("WuChang.JMADF.Fonts")) {
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&>(
+			"WuChang.JMADF.Fonts", "SetDefaultFont") ||
+		!jmadf::CheckInterface<juce::Typeface::Ptr&, bool&>(
+			"WuChang.JMADF.Fonts", "GetDefault") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Fonts", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Fonts:Bad Interfaces!");
 		return false;
 	}
 	jmadf::CallInterface<const juce::String&>(
@@ -75,6 +113,21 @@ bool VocalSharp_VocalShaper_Main::init()
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {
 		jmadf::RaiseException("@ERROR " + juce::String(mainWindowName));
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainWindow", "NewProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainWindow", "CopyProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainWindow", "OpenProject") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.MainWindow", "ShowStartMenu") ||
+		!jmadf::CheckInterface<juce::Component*>(
+			"VocalSharp.VocalShaper.MainWindow", "MoveToMainWindow")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.MainWindow:Bad Interfaces!");
 		return false;
 	}
 	jmadf::RegisterInterface<juce::Component*>(

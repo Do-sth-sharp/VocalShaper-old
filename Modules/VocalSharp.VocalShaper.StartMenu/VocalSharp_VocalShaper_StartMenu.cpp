@@ -24,6 +24,85 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		)) {
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetNumber") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+			"WuChang.JMADF.LookAndFeelConfigs", "GetString") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC", "GetRC") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.DynamicRC", "Unload")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::Component*, juce::Rectangle<int>&>(
+			"WuChang.JMADF.Device", "GetScreenSize")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Device:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.GlobalConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
+			"WuChang.JMADF.Translates", "GetFunc") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.Translates", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<int, juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuListBoxLAF")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<int&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "GetSize") ||
+		!jmadf::CheckInterface<int, juce::String&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "GetName") ||
+		!jmadf::CheckInterface<int, juce::String&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "GetPath") ||
+		!jmadf::CheckInterface<int, juce::String&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "GetTime") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHistory", "Open") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ProjectHistory", "Remove") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "Add") ||
+		!jmadf::CheckInterface<const juce::String&>(
+			"VocalSharp.VocalShaper.ProjectHistory", "SetFilter")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHistory:Bad Interfaces!");
+		return false;
+	}
 
 	this->smComp = std::make_unique<SMComponent>();
 	if (!this->smComp) {
