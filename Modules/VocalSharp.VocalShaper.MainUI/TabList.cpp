@@ -17,7 +17,7 @@ TabList::TabList()
 		);
 
 	//初始化工程状态获取函数
-	this->getPtrFunc = jmadf::GetInterface<int, vocalshaper::ProjectDAO*&>(
+	this->getPtrFunc = jmadf::GetInterface<int, vocalshaper::ProjectProxy*&>(
 		"VocalSharp.VocalShaper.ProjectHub", "GetPtr"
 		);
 	this->getCurrentFunc = jmadf::GetInterface<int&>(
@@ -697,7 +697,7 @@ void TabList::refreshCompCache(bool loopFlag)
 
 	for (int i = 0; i < totalSize; i++) {
 		//获取当前指针
-		vocalshaper::ProjectDAO* ptrItem = nullptr;
+		vocalshaper::ProjectProxy* ptrItem = nullptr;
 		this->getPtrFunc(i, ptrItem);
 
 		if (!foldFlag) {

@@ -107,7 +107,7 @@ bool ProjectHub::checkForClose(int index)
 	return true;
 }
 
-vocalshaper::ProjectDAO* ProjectHub::get(int index)
+vocalshaper::ProjectProxy* ProjectHub::get(int index)
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
@@ -133,9 +133,9 @@ void ProjectHub::save(int index)
 	//TODO
 }
 
-vocalshaper::ProjectDAO* ProjectHub::create(const juce::String& name, const juce::String& path) const
+vocalshaper::ProjectProxy* ProjectHub::create(const juce::String& name, const juce::String& path) const
 {
-	return new vocalshaper::ProjectDAO(name, path);
+	return new vocalshaper::ProjectProxy(name, path);
 }
 
 int ProjectHub::findOpened(const juce::String& name, const juce::String& path) const

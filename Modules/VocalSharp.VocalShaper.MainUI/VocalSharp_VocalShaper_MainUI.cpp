@@ -81,7 +81,7 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		return false;
 	}
 	if (
-		!jmadf::CheckInterface<int, vocalshaper::ProjectDAO*&>(
+		!jmadf::CheckInterface<int, vocalshaper::ProjectProxy*&>(
 			"VocalSharp.VocalShaper.ProjectHub", "GetPtr") ||
 		!jmadf::CheckInterface<int&>(
 			"VocalSharp.VocalShaper.ProjectHub", "GetCurrent") ||

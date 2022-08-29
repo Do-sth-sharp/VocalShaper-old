@@ -63,7 +63,7 @@ private:
 		juce::LookAndFeel* tabBarButton;
 	}lafs;//¿Ø¼þÑùÊ½
 
-	std::function<void(int, vocalshaper::ProjectDAO*&)> getPtrFunc;
+	std::function<void(int, vocalshaper::ProjectProxy*&)> getPtrFunc;
 	std::function<void(int&)> getCurrentFunc, getSizeFunc;
 
 	std::function<const juce::String(const juce::String&)> tr;
@@ -73,8 +73,8 @@ private:
 	void refreshCompCache(bool loopFlag = false);
 	void refreshComp();
 
-	juce::Array<std::pair<int, vocalshaper::ProjectDAO*>> tabShow;
-	juce::Array<vocalshaper::ProjectDAO*> tabHide;
+	juce::Array<std::pair<int, vocalshaper::ProjectProxy*>> tabShow;
+	juce::Array<vocalshaper::ProjectProxy*> tabHide;
 	int currentIndex = -1, hoverIndex = -1;
 
 	int heightTemp = 0;
