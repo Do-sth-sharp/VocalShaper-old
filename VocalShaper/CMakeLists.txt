@@ -5,6 +5,7 @@ include_directories (${JUCELIBRARY_DIR})
 include_directories (${JMADF_DIR})
 include_directories (${LIBJMODULE_DIR})
 include_directories (${RC_DIR})
+include_directories (${VSLIBRARY_DIR})
 
 #设置语言标准
 set(CMAKE_CXX_STANDARD 20)#使用C++20

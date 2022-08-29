@@ -2,6 +2,7 @@
 #include "Splash.h"
 #include "JMADF/JMADF.h"
 #include "JMADF/libJModule/Utils.h"
+#include <libVocalShaper.h>
 
 class VocalShaperApplication final : public juce::JUCEApplication
 {
@@ -101,6 +102,7 @@ public:
     {
         this->splash = nullptr;
         JMADF::destroy();
+        google::protobuf::ShutdownProtobufLibrary();
     }
 
     void systemRequestedQuit() override
