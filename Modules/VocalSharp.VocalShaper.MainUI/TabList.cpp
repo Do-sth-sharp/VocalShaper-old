@@ -323,12 +323,10 @@ bool TabList::wannaClose()
 		this->getCurrentFunc(current);
 		if (!this->checkThenClose(current)) {
 			//如取消
-			this->refreshCompCache();
 			return false;
 		}
 		this->getSizeFunc(size);
 	}
-	this->refreshCompCache();
 	return true;
 }
 
@@ -650,6 +648,7 @@ bool TabList::checkThenClose(int index)
 		"VocalSharp.VocalShaper.ProjectHub", "CloseProj",
 		index
 		);
+	this->refreshCompCache();
 	return true;
 }
 
