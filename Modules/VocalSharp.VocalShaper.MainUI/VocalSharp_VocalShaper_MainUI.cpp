@@ -99,7 +99,7 @@ bool VocalSharp_VocalShaper_MainUI::init()
 			"VocalSharp.VocalShaper.ProjectHub", "SetCurrentAndToFront") ||
 		!jmadf::CheckInterface<int, bool&>(
 			"VocalSharp.VocalShaper.ProjectHub", "CheckForClose") ||
-		!jmadf::CheckInterface<int>(
+		!jmadf::CheckInterface<int, bool&>(
 			"VocalSharp.VocalShaper.ProjectHub", "SaveProj") ||
 		!jmadf::CheckInterface<int>(
 			"VocalSharp.VocalShaper.ProjectHub", "CloseProj")

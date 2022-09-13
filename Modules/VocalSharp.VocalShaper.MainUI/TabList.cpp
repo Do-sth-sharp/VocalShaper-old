@@ -629,12 +629,23 @@ bool TabList::checkThenClose(int index)
 		switch (result)
 		{
 		case 1:
+		{
 			//是
-			jmadf::CallInterface<int>(
+			bool saveOK = false;
+			jmadf::CallInterface<int, bool&>(
 				"VocalSharp.VocalShaper.ProjectHub", "SaveProj",
-				index
+				index, saveOK
 				);
+			if (!saveOK) {
+				juce::AlertWindow::showMessageBox(
+					juce::MessageBoxIconType::WarningIcon,
+					this->tr("tip_SaveProject"), this->tr("tip_SaveProjectError"),
+					this->tr("bt_OK")
+				);
+				return false;
+			}
 			break;
+		}
 		case 2:
 			//否
 			break;

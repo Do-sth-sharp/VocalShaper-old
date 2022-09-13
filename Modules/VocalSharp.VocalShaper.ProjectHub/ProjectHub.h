@@ -20,7 +20,7 @@ public:
 	vocalshaper::ProjectProxy* get(int index);
 	int getCurrent();
 	int getSize();
-	void save(int index);
+	bool save(int index);
 
 private:
 	juce::OwnedArray<vocalshaper::ProjectProxy> projList;

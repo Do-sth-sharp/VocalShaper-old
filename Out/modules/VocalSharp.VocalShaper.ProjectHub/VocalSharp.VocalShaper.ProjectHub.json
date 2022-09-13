@@ -6,5 +6,6 @@
   "entry": "VocalSharp.VocalShaper.ProjectHub",
   "description": "VocalShaper编辑器工程托管器",
   "dependencies": [
+    "VocalSharp.VocalShaper.ProjectIO"
   ]
 }

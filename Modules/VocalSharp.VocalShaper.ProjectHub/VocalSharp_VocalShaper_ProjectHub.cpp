@@ -15,6 +15,21 @@ VocalSharp_VocalShaper_ProjectHub::~VocalSharp_VocalShaper_ProjectHub()
 
 bool VocalSharp_VocalShaper_ProjectHub::init()
 {
+	if (!(
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectIO")
+		)) {
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<vocalshaper::ProjectProxy*, bool&>(
+			"VocalSharp.VocalShaper.ProjectIO", "ReadProject") ||
+		!jmadf::CheckInterface<vocalshaper::ProjectProxy*, bool&>(
+			"VocalSharp.VocalShaper.ProjectIO", "WriteProject")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectIO:Bad Interfaces!");
+		return false;
+	}
+
 	this->projects = std::make_unique<ProjectHub>();
 
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
@@ -85,10 +100,10 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			result = this->projects->getSize();
 		}
 	);
-	jmadf::RegisterInterface<int>(
+	jmadf::RegisterInterface<int, bool&>(
 		"SaveProj",
-		[this](const juce::String&, int index) {
-			this->projects->save(index);
+		[this](const juce::String&, int index, bool& result) {
+			result = this->projects->save(index);
 		}
 	);
 	return true;

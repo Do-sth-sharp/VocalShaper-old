@@ -2,7 +2,10 @@
   "bt_Yes": "是",
   "bt_No": "否",
   "bt_Cancel": "取消",
+  "bt_OK": "确定",
 
   "bt_CloseProject": "关闭工程",
-  "tip_SaveBeforeClose": "是否要在关闭前保存工程"
+  "tip_SaveBeforeClose": "是否要在关闭前保存工程",
+  "tip_SaveProject": "保存工程",
+  "tip_SaveProjectError": "无法保存工程"
 }

@@ -594,7 +594,7 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
         //创建副本并打开
         juce::FileChooser fileChooser(
             this->tr("bt_OpenAsCopy"),
-            juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
+            juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
         );
         if (fileChooser.showDialog(
             juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
@@ -656,7 +656,7 @@ void SMComponent::newButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_NewProject"),
-        juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
+        juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
     );
     if (fileChooser.showDialog(
         juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
@@ -703,7 +703,7 @@ void SMComponent::openButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_OpenProject"),
-        juce::File::getCurrentWorkingDirectory(), "*." + this->projectExtension
+        juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
     );
     if (fileChooser.showDialog(
         juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
@@ -724,7 +724,7 @@ void SMComponent::openButtonClicked()
             return;
         }
         jmadf::CallInterface<const juce::String&, const juce::String&>(
-            "VocalSharp.VocalShaper.ProjectHistory", "Open",
+            "VocalSharp.VocalShaper.ProjectHistory", "Add",
             name, path
             );
         this->clearFilter();

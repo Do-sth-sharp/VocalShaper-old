@@ -1,4 +1,6 @@
 ﻿#include "ProjectHub.h"
+#include <libJModule.h>
+#include <libVocalShaper.h>
 
 bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 {
@@ -12,9 +14,25 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 	}
 
 	auto proj = this->create(name, path);
+	auto metaBackup = proj->getMeta()->backup();
+	proj->getMeta()->wannaSave();
+	bool result = false;
+	jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
+		"VocalSharp.VocalShaper.ProjectIO", "WriteProject",
+		proj, result
+		);
+	if (!result) {
+		//proj->getMeta()->recover(metaBackup);
+		delete proj;
+		return false;
+	}
+	vocalshaper::ProjectDAO::save(proj->getPtr());
+
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+
 	//TODO
+
 	return true;
 }
 
@@ -30,10 +48,40 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 		return true;
 	}
 
+	auto source = this->create(nameSrc, pathSrc);
+	bool result = false;
+	jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
+		"VocalSharp.VocalShaper.ProjectIO", "ReadProject",
+		source, result
+		);
+	if (!result) {
+		delete source;
+		return false;
+	}
+
 	auto proj = this->create(name, path);
+	proj->swallow(source);
+	source = nullptr;
+
+	auto metaBackup = proj->getMeta()->backup();
+	proj->getMeta()->wannaSave();
+	result = false;
+	jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
+		"VocalSharp.VocalShaper.ProjectIO", "WriteProject",
+		proj, result
+		);
+	if (!result) {
+		//proj->getMeta().recover(metaBackup);
+		delete proj;
+		return false;
+	}
+	vocalshaper::ProjectDAO::save(proj->getPtr());
+
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+
 	//TODO
+
 	return true;
 }
 
@@ -49,9 +97,23 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 	}
 
 	auto proj = this->create(name, path);
+
+	bool result = false;
+	jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
+		"VocalSharp.VocalShaper.ProjectIO", "ReadProject",
+		proj, result
+		);
+	if (!result) {
+		delete proj;
+		return false;
+	}
+	vocalshaper::ProjectDAO::save(proj->getPtr());
+
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+
 	//TODO
+
 	return true;
 }
 
@@ -128,9 +190,25 @@ int ProjectHub::getSize()
 	return this->projList.size();
 }
 
-void ProjectHub::save(int index)
+bool ProjectHub::save(int index)
 {
-	//TODO
+	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	if (index >= 0 && index < this->projList.size()) {
+		auto ptr = this->projList.getUnchecked(index);
+		auto metaBackup = ptr->getMeta()->backup();
+		ptr->getMeta()->wannaSave();
+		bool result = false;
+		jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
+			"VocalSharp.VocalShaper.ProjectIO", "WriteProject",
+			ptr, result
+			);
+		if (result) {
+			vocalshaper::ProjectDAO::save(ptr->getPtr());
+			return true;
+		}
+		ptr->getMeta()->recover(metaBackup);
+	}
+	return false;
 }
 
 vocalshaper::ProjectProxy* ProjectHub::create(const juce::String& name, const juce::String& path) const
