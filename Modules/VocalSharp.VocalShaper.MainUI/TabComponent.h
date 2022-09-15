@@ -19,6 +19,8 @@ public:
 
 	void setCaller(const juce::String& caller);
 
+	void showMainMenu();
+
 private:
 	struct Colors final
 	{
@@ -33,6 +35,8 @@ private:
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
 		= [](juce::Component*, juce::Rectangle<int>&) {};
+	std::function<void(juce::PopupMenu&)> mainMenuCreateFunc
+		= [](juce::PopupMenu&) {};
 
 	std::unique_ptr<juce::Drawable> iconMainMenu;
 	std::unique_ptr<juce::DrawableButton> mainMenuButton;

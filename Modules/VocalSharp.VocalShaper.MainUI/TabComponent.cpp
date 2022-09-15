@@ -1,16 +1,22 @@
-#include "TabComponent.h"
+ï»¿#include "TabComponent.h"
 #include <libJModule.h>
 
 TabComponent::TabComponent()
 	:Component("Main UI Tab Component")
 {
-    //»ñÈ¡ÆÁÄ»ÊôĞÔ½Ó¿Ú
+    //è·å–å±å¹•å±æ€§æ¥å£
     this->screenSizeFunc =
         jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
             "WuChang.JMADF.Device", "GetScreenSize"
             );
 
-    //ÒÔÏÂ»ñÈ¡½çÃæÊôĞÔ
+    //è·å–ä¸»èœå•æ¥å£
+    this->mainMenuCreateFunc =
+        jmadf::GetInterface<juce::PopupMenu&>(
+            "VocalSharp.VocalShaper.MainMenu", "GetMenu"
+            );
+
+    //ä»¥ä¸‹è·å–ç•Œé¢å±æ€§
     bool result = false;
     //color
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -37,7 +43,7 @@ TabComponent::TabComponent()
         "main", "resource", "icon-mainMenu", iconMainMenuFile, result
         );
 
-    //ÒÔÏÂ»ñÈ¡Ö÷²Ëµ¥°´Å¥Í¼±ê
+    //ä»¥ä¸‹è·å–ä¸»èœå•æŒ‰é’®å›¾æ ‡
     size_t iconMainMenuSize = 0;
     void* iconMainMenuPtr = nullptr;
     juce::String iconMainMenuPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
@@ -61,7 +67,7 @@ TabComponent::TabComponent()
         }
     }
 
-    //ÒÔÏÂ¹¹½¨Ö÷²Ëµ¥°´Å¥ÑùÊ½
+    //ä»¥ä¸‹æ„å»ºä¸»èœå•æŒ‰é’®æ ·å¼
     jmadf::CallInterface<juce::LookAndFeel*&>(
         "VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF",
         this->lafs.mainMenuButton
@@ -76,37 +82,40 @@ TabComponent::TabComponent()
         juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
     );
 
-    //ÒÔÏÂ³õÊ¼»¯Ö÷²Ëµ¥°´Å¥
+    //ä»¥ä¸‹åˆå§‹åŒ–ä¸»èœå•æŒ‰é’®
     this->mainMenuButton = std::make_unique<juce::DrawableButton>(
         "bt_MainMenu", juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize);
     this->mainMenuButton->setImages(this->iconMainMenu.get());
     this->mainMenuButton->setLookAndFeel(this->lafs.mainMenuButton);
     this->mainMenuButton->setWantsKeyboardFocus(false);
     this->mainMenuButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    this->mainMenuButton->onClick = [this] {
+        this->showMainMenu();
+    };
     this->addAndMakeVisible(this->mainMenuButton.get());
 
-    //ÒÔÏÂ³õÊ¼»¯±êÇ©ÁĞ±í
+    //ä»¥ä¸‹åˆå§‹åŒ–æ ‡ç­¾åˆ—è¡¨
     this->tabList = std::make_unique<TabList>();
     this->addAndMakeVisible(this->tabList.get());
 }
 
 void TabComponent::resized()
 {
-    //¸ß¶È»º´æ
+    //é«˜åº¦ç¼“å­˜
     bool heightChanged = false;
     if (this->heightTemp != this->getHeight()) {
         this->heightTemp = this->getHeight();
         heightChanged = true;
     }
 
-    //µ÷ÕûÖ÷²Ëµ¥°´Å¥´óĞ¡
+    //è°ƒæ•´ä¸»èœå•æŒ‰é’®å¤§å°
     juce::Rectangle<int> rectMenuButton(
         0, 0,
         this->getHeight(), this->getHeight()
     );
     this->mainMenuButton->setBounds(rectMenuButton);
 
-    //µ÷Õû±êÇ©ÁĞ±í´óĞ¡
+    //è°ƒæ•´æ ‡ç­¾åˆ—è¡¨å¤§å°
     this->tabList->setBounds(
         rectMenuButton.getWidth(), 0,
         this->getWidth() - rectMenuButton.getWidth(), this->getHeight()
@@ -115,7 +124,7 @@ void TabComponent::resized()
 
 void TabComponent::paint(juce::Graphics& g)
 {
-    //Ìî³ä±³¾°
+    //å¡«å……èƒŒæ™¯
     g.fillAll(this->colors.background);
 }
 
@@ -143,4 +152,19 @@ bool TabComponent::wannaClose()
 void TabComponent::setCaller(const juce::String& caller)
 {
     this->tabList->setCaller(caller);
+}
+
+void TabComponent::showMainMenu()
+{
+    juce::PopupMenu menu;
+    this->mainMenuCreateFunc(menu);
+    int result = menu.showAt(
+        this->mainMenuButton.get()
+    );
+    if (result > 0) {
+        jmadf::CallInterface<int>(
+            "VocalSharp.VocalShaper.MainMenu", "MenuActived",
+            result
+            );
+    }
 }

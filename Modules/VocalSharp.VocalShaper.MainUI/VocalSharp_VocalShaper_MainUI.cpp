@@ -22,7 +22,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub")
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu")
 		)) {
 		return false;
 	}
@@ -105,6 +106,15 @@ bool VocalSharp_VocalShaper_MainUI::init()
 			"VocalSharp.VocalShaper.ProjectHub", "CloseProj")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::PopupMenu&>(
+			"VocalSharp.VocalShaper.MainMenu", "GetMenu") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.MainMenu", "MenuActived")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.MainMenu:Bad Interfaces!");
 		return false;
 	}
 
