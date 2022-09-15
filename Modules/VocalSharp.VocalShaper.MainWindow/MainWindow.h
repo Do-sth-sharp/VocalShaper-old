@@ -18,6 +18,8 @@ public:
 
     void showStartMenu();
     void moveSplashIn(juce::Component* splash);
+
+    void openProjFromUrl(const juce::String& name, const juce::String& path);
 	
 private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc

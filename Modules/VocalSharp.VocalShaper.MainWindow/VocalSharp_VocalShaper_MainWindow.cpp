@@ -65,7 +65,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	}
 	if (
 		!jmadf::CheckInterface<juce::Component*&>(
-			"VocalSharp.VocalShaper.StartMenu", "GetPtr")
+			"VocalSharp.VocalShaper.StartMenu", "GetPtr") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&>(
+			"VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.StartMenu:Bad Interfaces!");
 		return false;
@@ -125,6 +127,17 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String&, juce::Component* comp) {
 			if (this->mainWindow) {
 				this->mainWindow->moveSplashIn(comp);
+			}
+		}
+	);
+
+	jmadf::RegisterInterface<const juce::String&, const juce::String&>(
+		"OpenProjectFromUrl",
+		[this](const juce::String&,
+			const juce::String& name, const juce::String& path)
+		{
+			if (this->mainWindow) {
+				this->mainWindow->openProjFromUrl(name, path);
 			}
 		}
 	);

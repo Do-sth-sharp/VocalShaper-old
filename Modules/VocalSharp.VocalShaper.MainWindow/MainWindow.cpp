@@ -187,3 +187,14 @@ void MainWindow::moveSplashIn(juce::Component* splash)
         this->mComp->moveSplashIn(splash);
     }
 }
+
+void MainWindow::openProjFromUrl(const juce::String& name, const juce::String& path)
+{
+    if (this->mComp) {
+        if (!this->isActiveWindow()) {
+            this->setVisible(true);
+            this->toFront(false);
+        }
+        this->mComp->openProjFromUrl(name, path);
+    }
+}

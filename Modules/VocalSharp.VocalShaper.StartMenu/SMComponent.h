@@ -18,6 +18,8 @@ public:
 	void newButtonClicked();
 	void openButtonClicked();
 	void filterChanged();
+
+	void openProjFromUrl(const juce::String& name, const juce::String& path);
 	
 private:
 	struct Colors final

@@ -19,6 +19,7 @@ public:
     bool getSMVisible();
 
     void moveSplashIn(juce::Component* splash);
+    void openProjFromUrl(const juce::String& name, const juce::String& path);
 
 private:
     juce::Component* ptrStartMenu = nullptr;

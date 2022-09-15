@@ -46,12 +46,16 @@ bool VocalSharp_VocalShaper_Main::init()
 		);
 	juce::String lang;
 	juce::String font;
+	juce::String projectExtension;
 	if (ok && (config != nullptr)) {
 		if ((*config)["Language"].isString()) {
 			lang = (*config)["Language"].toString();
 		}
 		if ((*config)["Font"].isString()) {
 			font = (*config)["Font"].toString();
+		}
+		if ((*config)["ProjectExtension"].isString()) {
+			projectExtension = (*config)["ProjectExtension"].toString();
 		}
 	}
 
@@ -125,20 +129,40 @@ bool VocalSharp_VocalShaper_Main::init()
 		!jmadf::CheckInterface<void>(
 			"VocalSharp.VocalShaper.MainWindow", "ShowStartMenu") ||
 		!jmadf::CheckInterface<juce::Component*>(
-			"VocalSharp.VocalShaper.MainWindow", "MoveToMainWindow")
+			"VocalSharp.VocalShaper.MainWindow", "MoveToMainWindow") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&>(
+			"VocalSharp.VocalShaper.MainWindow", "OpenProjectFromUrl")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.MainWindow:Bad Interfaces!");
 		return false;
 	}
+
 	jmadf::RegisterInterface<juce::Component*>(
 		"MoveToMainWindow",
-		[this, mainWindowName](const juce::String&, juce::Component* comp) {
+		[mainWindowName](const juce::String&, juce::Component* comp) {
 			jmadf::CallInterface<juce::Component*>(
 				mainWindowName, "MoveToMainWindow",
 				comp
 				);
 		}
 	);
+	jmadf::RegisterInterface<const juce::String&>(
+		"ParseCommand",
+		[mainWindowName, projectExtension](const juce::String&, const juce::String& command) {
+			juce::File file(command);
+			if (file.existsAsFile()) {
+				juce::String extension = file.getFileExtension();
+				if (extension == projectExtension) {
+					jmadf::CallInterface<const juce::String&, const juce::String&>(
+						mainWindowName, "OpenProjectFromUrl",
+						file.getFileNameWithoutExtension(),
+						file.getParentDirectory().getFullPathName()
+						);
+				}
+			}
+		}
+	);
+
 	return true;
 }
 

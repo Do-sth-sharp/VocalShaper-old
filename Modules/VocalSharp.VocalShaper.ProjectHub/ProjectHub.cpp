@@ -31,7 +31,8 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
 
-	//TODO
+	proj->getProcesser()->processEvent(
+		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
 
 	return true;
 }
@@ -80,7 +81,8 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
 
-	//TODO
+	proj->getProcesser()->processEvent(
+		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
 
 	return true;
 }
@@ -112,7 +114,8 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
 
-	//TODO
+	proj->getProcesser()->processEvent(
+		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
 
 	return true;
 }
@@ -213,7 +216,11 @@ bool ProjectHub::save(int index)
 
 vocalshaper::ProjectProxy* ProjectHub::create(const juce::String& name, const juce::String& path) const
 {
-	return new vocalshaper::ProjectProxy(name, path);
+	auto ptr = new vocalshaper::ProjectProxy(name, path);
+
+	//TODO 设置事件处理插件接口
+
+	return ptr;
 }
 
 int ProjectHub::findOpened(const juce::String& name, const juce::String& path) const

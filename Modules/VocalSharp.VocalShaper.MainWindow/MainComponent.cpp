@@ -119,3 +119,11 @@ void MainComponent::moveSplashIn(juce::Component* splash)
         this->toFront(true);
     }
 }
+
+void MainComponent::openProjFromUrl(const juce::String& name, const juce::String& path)
+{
+    jmadf::CallInterface<const juce::String&, const juce::String&>(
+        "VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl",
+        name, path
+        );
+}

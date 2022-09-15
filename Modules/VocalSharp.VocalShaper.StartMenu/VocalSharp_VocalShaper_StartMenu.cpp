@@ -118,6 +118,13 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 			ptr = ptrSM;
 		}
 	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&>(
+		"OpenProjectFromUrl",
+		[ptrSM](const juce::String&,
+			const juce::String& name, const juce::String& path) {
+				ptrSM->openProjFromUrl(name, path);
+		}
+	);
 	
 	return true;
 }

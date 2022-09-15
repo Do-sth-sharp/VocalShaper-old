@@ -740,6 +740,22 @@ void SMComponent::filterChanged()
     this->refreshList();
 }
 
+void SMComponent::openProjFromUrl(const juce::String& name, const juce::String& path)
+{
+    if (!this->openProj(name, path)) {
+        juce::AlertWindow::showMessageBox(
+            juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
+            this->tr("tip_CouldNotOpen"), this->tr("bt_OK")
+        );
+        return;
+    }
+    jmadf::CallInterface<const juce::String&, const juce::String&>(
+        "VocalSharp.VocalShaper.ProjectHistory", "Add",
+        name, path
+        );
+    this->clearFilter();
+}
+
 bool SMComponent::newProj(const juce::String& name, const juce::String& path)
 {
     bool result = false;

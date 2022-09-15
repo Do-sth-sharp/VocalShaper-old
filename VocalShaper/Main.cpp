@@ -13,7 +13,7 @@ public:
     const juce::String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override             { return false; }
 
-    void initialise (const juce::String& /*commandLine*/) override
+    void initialise (const juce::String& commandLine) override
     {
         this->splash.reset(new Splash(this->getApplicationVersion(), jmadf::getComplieTime(__DATE__, __TIME__)));
         juce::Rectangle<int> displayArea(0, 0, 1920, 1080);
@@ -76,7 +76,9 @@ public:
         }
 		
         if (!InterfaceDao<juce::Component*>::checkFromLoader(
-            "VocalSharp.VocalShaper.Main", "MoveToMainWindow")) {
+            "VocalSharp.VocalShaper.Main", "MoveToMainWindow") ||
+            !InterfaceDao<const juce::String&>::checkFromLoader(
+                "VocalSharp.VocalShaper.Main", "ParseCommand")) {
             juce::AlertWindow::showMessageBox(
                 juce::MessageBoxIconType::WarningIcon, "Main Module Fatal Error",
                 "Bad Interfaces!", juce::String(),
@@ -96,6 +98,11 @@ public:
         else {
             this->splash->showMessage("Ready.");
         }
+
+        InterfaceDao<const juce::String&>::callFromLoader(
+            "VocalSharp.VocalShaper.Main", "ParseCommand",
+            commandLine
+        );
     }
 
     void shutdown() override
@@ -110,8 +117,12 @@ public:
         quit();
     }
 
-    void anotherInstanceStarted (const juce::String& /*commandLine*/) override
+    void anotherInstanceStarted (const juce::String& commandLine) override
     {
+        InterfaceDao<const juce::String&>::callFromLoader(
+            "VocalSharp.VocalShaper.Main", "ParseCommand",
+            commandLine
+        );
     }
 	
 private:
