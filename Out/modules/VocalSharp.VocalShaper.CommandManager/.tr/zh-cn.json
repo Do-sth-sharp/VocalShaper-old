@@ -1,0 +1,17 @@
+{
+  "cn_File": "文件",
+  "cn_Edit": "编辑",
+  "cn_View": "视图",
+  "cn_Modify": "修改",
+  "cn_Project": "工程",
+  "cn_Transport": "播放控制",
+  "cn_Automatic": "自动化",
+  "cn_Config": "设置",
+  "cn_Misc": "其它",
+
+  "sn_NewProject": "新建工程",
+  "sn_OpenProject": "打开工程",
+
+  "ds_NewProject": "新建一个歌声合成工程",
+  "ds_OpenProject": "从工程文件夹打开工程"
+}

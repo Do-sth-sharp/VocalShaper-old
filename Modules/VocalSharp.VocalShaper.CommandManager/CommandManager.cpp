@@ -14,6 +14,20 @@ CommandManager::CommandManager()
 	this->acm = std::make_unique<juce::ApplicationCommandManager>();
 
 	//初始化命令列表
+	this->infoList.add({
+		.name = "New Project",
+		.shortName = this->tr("sn_NewProject"),
+		.description = this->tr("ds_NewProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Open Project",
+		.shortName = this->tr("sn_OpenProject"),
+		.description = this->tr("ds_OpenProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
 
 	//应用命令列表
 	this->acm->registerAllCommandsForTarget(this);

@@ -1,0 +1,17 @@
+{
+  "cn_File": "File",
+  "cn_Edit": "Edit",
+  "cn_View": "View",
+  "cn_Modify": "Modify",
+  "cn_Project": "Project",
+  "cn_Transport": "Transport",
+  "cn_Automatic": "Automatic",
+  "cn_Config": "Config",
+  "cn_Misc": "Misc",
+
+  "sn_NewProject": "New Project",
+  "sn_OpenProject": "Open Project",
+
+  "ds_NewProject": "Create a new voice synthesis project",
+  "ds_OpenProject": "Open a project from a project folder"
+}
