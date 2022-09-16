@@ -28,6 +28,35 @@ CommandManager::CommandManager()
 		.categoryName = this->tr("cn_File"),
 		.defaultKeypresses = {juce::KeyPress('o', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
+	this->infoList.add({
+		.name = "Show Start Menu",
+		.shortName = this->tr("sn_ShowStartMenu"),
+		.description = this->tr("ds_ShowStartMenu"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Close Project",
+		.shortName = this->tr("sn_CloseProject"),
+		.description = this->tr("ds_CloseProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Close All Project",
+		.shortName = this->tr("sn_CloseAllProject"),
+		.description = this->tr("ds_CloseAllProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Close Editor",
+		.shortName = this->tr("sn_CloseEditor"),
+		.description = this->tr("ds_CloseEditor"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+
 
 	//应用命令列表
 	this->acm->registerAllCommandsForTarget(this);

@@ -113,6 +113,24 @@ bool VocalSharp_VocalShaper_Main::init()
 		return false;
 	}
 
+	//命令初始化
+	if (!jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")) {
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const std::function<void(void)>&>(
+			"VocalSharp.VocalShaper.CommandManager", "RegisterFunction") ||
+		!jmadf::CheckInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
+		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.CommandManager", "Close")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
+		return false;
+	}
+
 	//主界面初始化
 	const char* mainWindowName = "VocalSharp.VocalShaper.MainWindow";
 	if (!jmadf::LoadModule(mainWindowName)) {
@@ -172,4 +190,5 @@ void VocalSharp_VocalShaper_Main::destory()
 	jmadf::CallInterface<void>("WuChang.JMADF.Translates", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
 	jmadf::CallInterface<void>("WuChang.JMADF.GlobalConfigs", "Close");
+	jmadf::CallInterface<void>("VocalSharp.VocalShaper.CommandManager", "Close");
 }

@@ -24,6 +24,24 @@ MainWindow::MainWindow(juce::String name)
     this->setFullScreen(true);
 #endif
 
+    //以下获取命令管理器
+    jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+        this->commandManager
+        );
+
+    //以下获取命令ID
+    jmadf::CallInterface<const juce::String&, int&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+        "Close Editor", this->closeEditorCommandID
+        );
+
+    //以下注册命令回调
+    jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+        "VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+        "Close Editor", [this] {this->closeEditor(); }
+    );
+
     //设置窗口图标
     size_t iconSize = 0;
     void* iconPtr = nullptr;
@@ -133,19 +151,8 @@ MainWindow::MainWindow(juce::String name)
 
 void MainWindow::closeButtonPressed()
 {
-    bool SMIsVisible = this->mComp->getSMVisible();
-    this->mComp->setSMVisible(false);
-
-    bool closeOk = false;
-    jmadf::CallInterface<bool&>(
-        "VocalSharp.VocalShaper.MainUI", "CloseIsAvailable",
-        closeOk
-        );
-    if (closeOk) {
-        juce::JUCEApplication::getInstance()->systemRequestedQuit();
-    }
-    else {
-        this->mComp->setSMVisible(SMIsVisible);
+    if (this->commandManager) {
+        this->commandManager->invokeDirectly(this->closeEditorCommandID, false);
     }
 }
 
@@ -196,5 +203,23 @@ void MainWindow::openProjFromUrl(const juce::String& name, const juce::String& p
             this->toFront(false);
         }
         this->mComp->openProjFromUrl(name, path);
+    }
+}
+
+void MainWindow::closeEditor()
+{
+    bool SMIsVisible = this->mComp->getSMVisible();
+    this->mComp->setSMVisible(false);
+
+    bool closeOk = false;
+    jmadf::CallInterface<bool&>(
+        "VocalSharp.VocalShaper.MainUI", "CloseIsAvailable",
+        closeOk
+        );
+    if (closeOk) {
+        juce::JUCEApplication::getInstance()->systemRequestedQuit();
+    }
+    else {
+        this->mComp->setSMVisible(SMIsVisible);
     }
 }

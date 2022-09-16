@@ -11,7 +11,15 @@
 
   "sn_NewProject": "New Project",
   "sn_OpenProject": "Open Project",
+  "sn_ShowStartMenu": "Start Menu",
+  "sn_CloseProject": "Close Project",
+  "sn_CloseAllProject": "Close All Project",
+  "sn_CloseEditor": "Close Editor",
 
   "ds_NewProject": "Create a new voice synthesis project",
-  "ds_OpenProject": "Open a project from a project folder"
+  "ds_OpenProject": "Open a project from a project folder",
+  "ds_ShowStartMenu": "Show start menu",
+  "ds_CloseProject": "Close current project",
+  "ds_CloseAllProject": "Close all opened project",
+  "ds_CloseEditor": "Close VocalShaper Editor"
 }

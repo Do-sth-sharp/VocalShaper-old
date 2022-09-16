@@ -27,6 +27,44 @@ TabList::TabList()
 		"VocalSharp.VocalShaper.ProjectHub", "GetSize"
 		);
 
+	//以下获取命令管理器
+	jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+		this->commandManager
+		);
+
+	//以下获取命令ID
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close Project", this->closeProjCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close All Project", this->closeAllProjCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Show Start Menu", this->showStartMenuCommandID
+		);
+
+	//以下注册命令回调
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Close Project", [this] {this->highlightCloseButtonClicked(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Close All Project", [this] {
+			if (this->wannaClose()) {
+				this->addButtonClicked();
+			}
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Show Start Menu", [this] {this->addButtonClicked(); }
+	);
+
     //以下获取界面属性
     bool result = false;
     //color
@@ -235,9 +273,7 @@ TabList::TabList()
 	this->btCloseCurrent->setLookAndFeel(this->lafs.tabHighlightCloseButton);
 	this->btCloseCurrent->setWantsKeyboardFocus(false);
 	this->btCloseCurrent->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->btCloseCurrent->onClick = [this] {
-		this->highlightCloseButtonClicked();
-	};
+	this->btCloseCurrent->setCommandToTrigger(this->commandManager, this->closeProjCommandID, false);
 	this->addChildComponent(this->btCloseCurrent.get());
 
 	//以下构建主菜单按钮样式
@@ -262,9 +298,7 @@ TabList::TabList()
 	this->btAdd->setLookAndFeel(this->lafs.tabBarButton);
 	this->btAdd->setWantsKeyboardFocus(false);
 	this->btAdd->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->btAdd->onClick = [this] {
-		this->addButtonClicked();
-	};
+	this->btAdd->setCommandToTrigger(this->commandManager, this->showStartMenuCommandID, false);
 	this->addAndMakeVisible(this->btAdd.get());
 
 	//初始化更多按钮

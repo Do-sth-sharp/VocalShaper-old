@@ -85,5 +85,8 @@ private:
 	std::unique_ptr<juce::DrawableButton> btAdd, btMore;
 	std::unique_ptr<juce::Label> lbDefaultFont;
 
+	int closeProjCommandID = -1, closeAllProjCommandID = -1, showStartMenuCommandID = -1;
+	juce::ApplicationCommandManager* commandManager = nullptr;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TabList)
 };

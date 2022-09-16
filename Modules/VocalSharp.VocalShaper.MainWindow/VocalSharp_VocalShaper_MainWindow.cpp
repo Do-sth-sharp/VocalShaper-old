@@ -19,6 +19,7 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	jmadf::LoadModule("WuChang.JMADF.Device");
 	jmadf::LoadModule("VocalSharp.VocalShaper.MainUI");
 	jmadf::LoadModule("VocalSharp.VocalShaper.StartMenu");
+	jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager");
 
 	if (!jmadf::GetException().isEmpty()) {
 		return false;
@@ -70,6 +71,19 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			"VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.StartMenu:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const std::function<void(void)>&>(
+			"VocalSharp.VocalShaper.CommandManager", "RegisterFunction") ||
+		!jmadf::CheckInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
+		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.CommandManager", "Close")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
 	}
 
@@ -168,15 +182,13 @@ void VocalSharp_VocalShaper_MainWindow::destory()
 {
 	if (jmadf::ModuleIsLoaded("WuChang.JMADF.OpenGLComponentRender")) {
 		jmadf::CallInterface<void>(
-			"WuChang.JMADF.OpenGLComponentRender", "Detach"
-			);
+			"WuChang.JMADF.OpenGLComponentRender", "Detach");
 	}
 	this->mainWindow = nullptr;
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.LookAndFeelConfigs", "Close"
-		);
+		"WuChang.JMADF.LookAndFeelConfigs", "Close");
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC",
-		"Unload"
-		);
+		"WuChang.JMADF.DynamicRC", "Unload");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.CommandManager", "Close");
 }

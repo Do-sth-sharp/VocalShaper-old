@@ -20,10 +20,14 @@ public:
     void moveSplashIn(juce::Component* splash);
 
     void openProjFromUrl(const juce::String& name, const juce::String& path);
+
+    void closeEditor();
 	
 private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
         = [](juce::Component*, juce::Rectangle<int>&) {};
     MainComponent* mComp = nullptr;
+    int closeEditorCommandID = -1;
+    juce::ApplicationCommandManager* commandManager = nullptr;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };
