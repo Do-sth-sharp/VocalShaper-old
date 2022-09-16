@@ -30,11 +30,11 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 
 	this->commands = std::make_unique<CommandManager>();
 
-	jmadf::RegisterInterface<const juce::String&, CommandManager::CommandFunction>(
+	jmadf::RegisterInterface<const juce::String&, const CommandManager::CommandFunction&>(
 		"RegisterFunction",
-		[this](const juce::String&,
-			const juce::String& name, CommandManager::CommandFunction func) {
-				this->commands->addCommandFunc(name, func);
+		[this](const juce::String& caller,
+			const juce::String& name, const CommandManager::CommandFunction& func) {
+				this->commands->addCommandFunc(name, func, caller);
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, int&>(
@@ -47,6 +47,12 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 		"GetCommandManager",
 		[this](const juce::String&, juce::ApplicationCommandManager*& ref) {
 			ref = this->commands->getManager();
+		}
+	);
+	jmadf::RegisterInterface<void>(
+		"Close",
+		[this](const juce::String& caller) {
+			this->commands->release(caller);
 		}
 	);
 

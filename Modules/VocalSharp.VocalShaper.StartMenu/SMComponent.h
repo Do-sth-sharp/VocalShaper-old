@@ -104,5 +104,8 @@ private:
 	void clearFilter();
 	void refreshList();
 
+	int newProjCommandID = -1, openProjCommandID = -1;
+	juce::ApplicationCommandManager* commandManager = nullptr;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SMComponent)
 };

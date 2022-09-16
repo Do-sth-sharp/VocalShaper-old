@@ -20,7 +20,8 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHistory")
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHistory") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")
 		)) {
 		return false;
 	}
@@ -103,6 +104,19 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHistory:Bad Interfaces!");
 		return false;
 	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, const std::function<void(void)>&>(
+			"VocalSharp.VocalShaper.CommandManager", "RegisterFunction") ||
+		!jmadf::CheckInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
+		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.CommandManager", "Close")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
+		return false;
+	}
 
 	this->smComp = std::make_unique<SMComponent>();
 	if (!this->smComp) {
@@ -133,16 +147,13 @@ void VocalSharp_VocalShaper_StartMenu::destory()
 {
 	this->smComp = nullptr;
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.GlobalConfigs", "Close"
-		);
+		"WuChang.JMADF.GlobalConfigs", "Close");
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.Translates", "Close"
-		);
+		"WuChang.JMADF.Translates", "Close");
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.LookAndFeelConfigs", "Close"
-		);
+		"WuChang.JMADF.LookAndFeelConfigs", "Close");
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC",
-		"Unload"
-		);	
+		"WuChang.JMADF.DynamicRC","Unload");	
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.CommandManager", "Close");
 }

@@ -29,6 +29,32 @@ SMComponent::SMComponent()
         }
     }
 
+    //以下获取命令管理器
+    jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+        this->commandManager
+        );
+
+    //以下获取命令ID
+    jmadf::CallInterface<const juce::String&, int&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+        "New Project", this->newProjCommandID
+        );
+    jmadf::CallInterface<const juce::String&, int&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+        "Open Project", this->openProjCommandID
+        );
+
+    //以下注册命令回调
+    jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+        "VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+        "New Project", [this] {this->newButtonClicked(); }
+    );
+    jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+        "VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+        "Open Project", [this] {this->openButtonClicked(); }
+    );
+
     //以下获取界面属性
     bool result = false;
     //color
@@ -250,12 +276,8 @@ SMComponent::SMComponent()
     this->btOpenProj = std::make_unique<juce::TextButton>(
         this->tr("bt_OpenProject"), this->tr("tip_OpenProject"));
 
-    this->btNewProj->onClick = [this] {
-        this->newButtonClicked();
-    };
-    this->btOpenProj->onClick = [this] {
-        this->openButtonClicked();
-    };
+    this->btNewProj->setCommandToTrigger(this->commandManager, this->newProjCommandID, true);
+    this->btOpenProj->setCommandToTrigger(this->commandManager, this->openProjCommandID, true);
 
     this->btNewProj->setWantsKeyboardFocus(false);
     this->btOpenProj->setWantsKeyboardFocus(false);

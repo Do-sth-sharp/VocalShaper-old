@@ -3,15 +3,28 @@
 
 std::function<const juce::String(const juce::String&)> MainMenu::tr;
 
-constexpr int idFile = 0x01;
-constexpr int idEdit = 0x02;
-constexpr int idView = 0x03;
-constexpr int idModify = 0x04;
-constexpr int idProject = 0x05;
-constexpr int idTransport = 0x06;
-constexpr int idAutomatic = 0x07;
-constexpr int idConfig = 0x08;
-constexpr int idMisc = 0x09;
+juce::ApplicationCommandManager* commandManager = nullptr;
+
+int 
+commandNewProj = -1,
+commandOpenProj = -1;
+
+enum GroupID {
+	IDFile = 0x01,
+	IDEdit,
+	IDView,
+	IDModify,
+	IDProject,
+	IDTransport,
+	IDAutomatic,
+	IDConfig,
+	IDMisc
+};
+
+enum FileID {
+	IDNewProj = 0x00,
+	IDOpenProj
+};
 
 juce::PopupMenu MainMenu::create()
 {
@@ -20,6 +33,25 @@ juce::PopupMenu MainMenu::create()
 		jmadf::CallInterface<std::function<const juce::String(const juce::String&)>&>(
 			"WuChang.JMADF.Translates", "GetFunc",
 			MainMenu::tr
+			);
+	}
+
+	//获取命令
+	if (!::commandManager) {
+		//获取管理器
+		jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+			::commandManager
+			);
+
+		//获取ID
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"New Project", ::commandNewProj
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Open Project", ::commandOpenProj
 			);
 	}
 
@@ -45,15 +77,18 @@ void MainMenu::active(int id)
 
 juce::PopupMenu MainMenu::createFileMenu()
 {
-	int sectionId = idFile;
+	int sectionId = GroupID::IDFile;
 	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandNewProj);
+	menu.addCommandItem(::commandManager, ::commandOpenProj);
 
 	return menu;
 }
 
 juce::PopupMenu MainMenu::createEditMenu()
 {
-	int sectionId = idEdit;
+	int sectionId = GroupID::IDEdit;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -61,7 +96,7 @@ juce::PopupMenu MainMenu::createEditMenu()
 
 juce::PopupMenu MainMenu::createViewMenu()
 {
-	int sectionId = idView;
+	int sectionId = GroupID::IDView;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -69,7 +104,7 @@ juce::PopupMenu MainMenu::createViewMenu()
 
 juce::PopupMenu MainMenu::createModifyMenu()
 {
-	int sectionId = idModify;
+	int sectionId = GroupID::IDModify;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -77,7 +112,7 @@ juce::PopupMenu MainMenu::createModifyMenu()
 
 juce::PopupMenu MainMenu::createProjectMenu()
 {
-	int sectionId = idProject;
+	int sectionId = GroupID::IDProject;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -85,7 +120,7 @@ juce::PopupMenu MainMenu::createProjectMenu()
 
 juce::PopupMenu MainMenu::createTransportMenu()
 {
-	int sectionId = idTransport;
+	int sectionId = GroupID::IDTransport;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -93,7 +128,7 @@ juce::PopupMenu MainMenu::createTransportMenu()
 
 juce::PopupMenu MainMenu::createAutomaticMenu()
 {
-	int sectionId = idAutomatic;
+	int sectionId = GroupID::IDAutomatic;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -101,7 +136,7 @@ juce::PopupMenu MainMenu::createAutomaticMenu()
 
 juce::PopupMenu MainMenu::createConfigMenu()
 {
-	int sectionId = idConfig;
+	int sectionId = GroupID::IDConfig;
 	juce::PopupMenu menu;
 
 	return menu;
@@ -109,7 +144,7 @@ juce::PopupMenu MainMenu::createConfigMenu()
 
 juce::PopupMenu MainMenu::createMiscMenu()
 {
-	int sectionId = idMisc;
+	int sectionId = GroupID::IDMisc;
 	juce::PopupMenu menu;
 
 	return menu;

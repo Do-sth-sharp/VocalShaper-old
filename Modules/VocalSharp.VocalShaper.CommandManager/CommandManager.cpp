@@ -11,7 +11,7 @@ CommandManager::CommandManager()
 		);
 
 	//创建管理器
-	this->acm = std::make_unique<juce::ApplicationCommandManager>();
+	this->acm = std::make_unique<Manager>(this);
 
 	//初始化命令列表
 	this->infoList.add({
@@ -33,14 +33,15 @@ CommandManager::CommandManager()
 	this->acm->registerAllCommandsForTarget(this);
 }
 
-void CommandManager::addCommandFunc(const juce::String& name, CommandFunction func)
+void CommandManager::addCommandFunc(const juce::String& name, const CommandFunction& func, const juce::String& caller)
 {
 	int commandID = this->getCommandID(name);
 	if (commandID == -1) {
 		return;
 	}
 
-	this->funcList.insert(std::make_pair(commandID, func));
+	juce::ScopedWriteLock locker(this->funcLock);
+	this->funcList.insert(std::make_pair(commandID, std::make_pair(caller, func)));
 }
 
 int CommandManager::getCommandID(const juce::String& name)
@@ -48,7 +49,7 @@ int CommandManager::getCommandID(const juce::String& name)
 	int index = -1;
 	for (int i = 0; i < this->infoList.size(); i++) {
 		if (this->infoList.getReference(i).name == name) {
-			index = i;
+			index = i + 1;
 			break;
 		}
 	}
@@ -60,6 +61,18 @@ juce::ApplicationCommandManager* CommandManager::getManager()
 	return this->acm.get();
 }
 
+void CommandManager::release(const juce::String& caller)
+{
+	juce::ScopedWriteLock locker(this->funcLock);
+	for (auto it = this->funcList.begin(); it != this->funcList.end();) {
+		if ((*it).second.first == caller) {
+			it = this->funcList.erase(it);
+			continue;
+		}
+		it++;
+	}
+}
+
 juce::ApplicationCommandTarget* CommandManager::getNextCommandTarget()
 {
 	return nullptr;
@@ -69,30 +82,44 @@ void CommandManager::getAllCommands(juce::Array<juce::CommandID>& commands)
 {
 	commands.clear();
 	for (int i = 0; i < this->infoList.size(); i++) {
-		commands.add(i);
+		commands.add(i + 1);
 	}
 }
 
 void CommandManager::getCommandInfo(
 	juce::CommandID commandID, juce::ApplicationCommandInfo& result)
 {
-	if (commandID >= 0 && commandID < this->infoList.size()) {
-		auto& info = this->infoList.getReference(commandID);
+	if (commandID >= 1 && commandID <= this->infoList.size()) {
+		auto& info = this->infoList.getReference(commandID - 1);
 		result.commandID = commandID;
 		result.shortName = info.shortName;
 		result.description = info.description;
 		result.categoryName = info.categoryName;
 		result.defaultKeypresses = info.defaultKeypresses;
+		result.flags = 0;
 	}
 }
 
 bool CommandManager::perform(const juce::ApplicationCommandTarget::InvocationInfo& info)
 {
+	juce::ScopedReadLock locker(this->funcLock);
 	auto it = this->funcList.find(info.commandID);
 	if (it == this->funcList.end()) {
 		return false;
 	}
 
-	(*it).second();
+	(*it).second.second();
 	return true;
+}
+
+//
+
+CommandManager::Manager::Manager(juce::ApplicationCommandTarget* target)
+	:ApplicationCommandManager(),
+	target(target)
+{}
+
+juce::ApplicationCommandTarget* CommandManager::Manager::getFirstCommandTarget(juce::CommandID)
+{
+	return this->target;
 }
