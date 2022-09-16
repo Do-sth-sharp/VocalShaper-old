@@ -30,5 +30,7 @@ private:
 
     std::unique_ptr<TabComponent> tabBar;
 
+    juce::ApplicationCommandManager* commandManager = nullptr;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UIComponent)
 };

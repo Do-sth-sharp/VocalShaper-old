@@ -10,6 +10,15 @@ UIComponent::UIComponent()
             "WuChang.JMADF.Device", "GetScreenSize"
             );
 
+    //获取键盘监听器
+    jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+        "VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+        this->commandManager
+        );
+    if (this->commandManager) {
+        this->addKeyListener(this->commandManager->getKeyMappings());
+    }
+
     //以下获取界面属性
     bool result = false;
     //color
@@ -27,6 +36,9 @@ UIComponent::UIComponent()
     //建立标签栏
     this->tabBar = std::make_unique<TabComponent>();
     this->addAndMakeVisible(this->tabBar.get());
+
+    //空白处获取焦点
+    this->setWantsKeyboardFocus(true);
 }
 
 UIComponent::~UIComponent()

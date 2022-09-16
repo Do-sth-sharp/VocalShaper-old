@@ -276,8 +276,8 @@ SMComponent::SMComponent()
     this->btOpenProj = std::make_unique<juce::TextButton>(
         this->tr("bt_OpenProject"), this->tr("tip_OpenProject"));
 
-    this->btNewProj->setCommandToTrigger(this->commandManager, this->newProjCommandID, true);
-    this->btOpenProj->setCommandToTrigger(this->commandManager, this->openProjCommandID, true);
+    this->btNewProj->setCommandToTrigger(this->commandManager, this->newProjCommandID, false);
+    this->btOpenProj->setCommandToTrigger(this->commandManager, this->openProjCommandID, false);
 
     this->btNewProj->setWantsKeyboardFocus(false);
     this->btOpenProj->setWantsKeyboardFocus(false);

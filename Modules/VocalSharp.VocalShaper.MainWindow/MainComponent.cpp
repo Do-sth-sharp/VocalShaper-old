@@ -26,7 +26,7 @@ MainComponent::MainComponent()
     if (this->ptrMainUI) {
         this->addChildComponent(this->ptrMainUI);
         this->ptrMainUI->setSize(this->getWidth(), this->getHeight());
-        this->ptrMainUI->setVisible(true);
+        //this->ptrMainUI->setVisible(true);
     }
 
     if (this->ptrStartMenu) {
@@ -67,7 +67,7 @@ bool MainComponent::newProj(const juce::String& name, const juce::String& path)
         name, path, result
         );
     if (result) {
-        this->ptrStartMenu->setVisible(false);
+        this->setSMVisible(false);
     }
     return result;
 }
@@ -81,7 +81,7 @@ bool MainComponent::copyProj(const juce::String& name, const juce::String& path,
         name, path, nameSrc, pathSrc, result
         );
     if (result) {
-        this->ptrStartMenu->setVisible(false);
+        this->setSMVisible(false);
     }
     return result;
 }
@@ -94,7 +94,7 @@ bool MainComponent::openProj(const juce::String& name, const juce::String& path)
         name, path, result
         );
     if (result) {
-        this->ptrStartMenu->setVisible(false);
+        this->setSMVisible(false);
     }
     return result;
 }
@@ -102,6 +102,13 @@ bool MainComponent::openProj(const juce::String& name, const juce::String& path)
 void MainComponent::setSMVisible(bool isVisible)
 {
     this->ptrStartMenu->setVisible(isVisible);
+    this->ptrMainUI->setVisible(!isVisible);
+    if (isVisible) {
+        this->ptrStartMenu->grabKeyboardFocus();
+    }
+    else {
+        this->ptrMainUI->grabKeyboardFocus();
+    }
 }
 
 bool MainComponent::getSMVisible()

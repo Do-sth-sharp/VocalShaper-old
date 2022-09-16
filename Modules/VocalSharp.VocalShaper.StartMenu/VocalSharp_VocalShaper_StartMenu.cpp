@@ -153,7 +153,7 @@ void VocalSharp_VocalShaper_StartMenu::destory()
 	jmadf::CallInterface<void>(
 		"WuChang.JMADF.LookAndFeelConfigs", "Close");
 	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC","Unload");	
+		"WuChang.JMADF.DynamicRC", "Unload");	
 	jmadf::CallInterface<void>(
 		"VocalSharp.VocalShaper.CommandManager", "Close");
 }

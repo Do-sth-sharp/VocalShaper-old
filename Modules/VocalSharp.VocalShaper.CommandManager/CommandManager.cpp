@@ -19,14 +19,14 @@ CommandManager::CommandManager()
 		.shortName = this->tr("sn_NewProject"),
 		.description = this->tr("ds_NewProject"),
 		.categoryName = this->tr("cn_File"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress('n', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 	this->infoList.add({
 		.name = "Open Project",
 		.shortName = this->tr("sn_OpenProject"),
 		.description = this->tr("ds_OpenProject"),
 		.categoryName = this->tr("cn_File"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress('o', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 
 	//应用命令列表
