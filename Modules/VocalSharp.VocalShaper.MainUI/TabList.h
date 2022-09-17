@@ -13,6 +13,8 @@ public:
 		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
 	bool wannaClose();
+	void saveCurrent();
+	void saveAll();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -70,6 +72,7 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	bool checkThenClose(int index);
+	bool save(int index);
 	void refreshCompCache(bool loopFlag = false);
 	void refreshComp();
 

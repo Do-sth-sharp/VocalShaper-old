@@ -36,6 +36,20 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 	this->infoList.add({
+		.name = "Save Project",
+		.shortName = this->tr("sn_SaveProject"),
+		.description = this->tr("ds_SaveProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {juce::KeyPress('s', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Save All Project",
+		.shortName = this->tr("sn_SaveAllProject"),
+		.description = this->tr("ds_SaveAllProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {juce::KeyPress('s', juce::ModifierKeys::Flags::ctrlModifier | juce::ModifierKeys::Flags::shiftModifier, 0)}
+		});
+	this->infoList.add({
 		.name = "Close Project",
 		.shortName = this->tr("sn_CloseProject"),
 		.description = this->tr("ds_CloseProject"),

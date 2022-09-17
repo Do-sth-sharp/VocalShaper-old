@@ -9,6 +9,8 @@ int
 commandNewProj = -1,
 commandOpenProj = -1,
 commandShowStartMenu = -1,
+commandSaveProj = -1,
+commandSaveAllProj = -1,
 commandCloseProj = -1,
 commandCloseAllProj = -1,
 commandCloseEditor = -1
@@ -30,6 +32,8 @@ enum FileID {
 	IDNewProj = 0x00,
 	IDOpenProj,
 	IDShowStartMenu,
+	IDSaveProj,
+	IDSaveAllProj,
 	IDCloseProj,
 	IDCloseAllProj,
 	IDCloseEditor
@@ -65,6 +69,14 @@ juce::PopupMenu MainMenu::create()
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Show Start Menu", ::commandShowStartMenu
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Save Project", ::commandSaveProj
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Save All Project", ::commandSaveAllProj
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
@@ -108,6 +120,10 @@ juce::PopupMenu MainMenu::createFileMenu()
 	menu.addCommandItem(::commandManager, ::commandNewProj);
 	menu.addCommandItem(::commandManager, ::commandOpenProj);
 	menu.addCommandItem(::commandManager, ::commandShowStartMenu);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandSaveProj);
+	menu.addCommandItem(::commandManager, ::commandSaveAllProj);
+	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandCloseProj);
 	menu.addCommandItem(::commandManager, ::commandCloseAllProj);
 	menu.addSeparator();

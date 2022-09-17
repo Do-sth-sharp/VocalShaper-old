@@ -64,6 +64,14 @@ TabList::TabList()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Show Start Menu", [this] {this->addButtonClicked(); }
 	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Save Project", [this] {this->saveCurrent(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Save All Project", [this] {this->saveAll(); }
+	);
 
     //以下获取界面属性
     bool result = false;
@@ -362,6 +370,20 @@ bool TabList::wannaClose()
 		this->getSizeFunc(size);
 	}
 	return true;
+}
+
+void TabList::saveCurrent()
+{
+	this->save(this->currentIndex);
+}
+
+void TabList::saveAll()
+{
+	int size = 0;
+	this->getSizeFunc(size);
+	for (int i = 0; i < size; i++) {
+		this->save(i);
+	}
 }
 
 void TabList::resized()
@@ -694,6 +716,34 @@ bool TabList::checkThenClose(int index)
 		index
 		);
 	this->refreshCompCache();
+	return true;
+}
+
+bool TabList::save(int index)
+{
+	//检查是否已保存
+	bool isSaved = false;
+	jmadf::CallInterface<int, bool&>(
+		"VocalSharp.VocalShaper.ProjectHub", "CheckForClose",
+		index, isSaved
+		);
+
+	//如果未保存
+	if (!isSaved) {
+		bool saveOK = false;
+		jmadf::CallInterface<int, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "SaveProj",
+			index, saveOK
+			);
+		if (!saveOK) {
+			juce::AlertWindow::showMessageBox(
+				juce::MessageBoxIconType::WarningIcon,
+				this->tr("tip_SaveProject"), this->tr("tip_SaveProjectError"),
+				this->tr("bt_OK")
+			);
+			return false;
+		}
+	}
 	return true;
 }
 

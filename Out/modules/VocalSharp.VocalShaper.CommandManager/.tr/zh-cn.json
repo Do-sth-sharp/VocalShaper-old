@@ -12,6 +12,8 @@
   "sn_NewProject": "新建工程",
   "sn_OpenProject": "打开工程",
   "sn_ShowStartMenu": "开始菜单",
+  "sn_SaveProject": "保存工程",
+  "sn_SaveAllProject": "保存所有工程",
   "sn_CloseProject": "关闭当前工程",
   "sn_CloseAllProject": "关闭所有工程",
   "sn_CloseEditor": "关闭编辑器",
@@ -19,6 +21,8 @@
   "ds_NewProject": "新建一个歌声合成工程",
   "ds_OpenProject": "从工程文件夹打开工程",
   "ds_ShowStartMenu": "显示开始菜单",
+  "ds_SaveProject": "保存当前正在编辑的工程",
+  "ds_SaveAllProject": "保存所有打开的工程",
   "ds_CloseProject": "关闭当前正在编辑的工程",
   "ds_CloseAllProject": "关闭所有打开的工程",
   "ds_CloseEditor": "关闭VocalShaper编辑器"
