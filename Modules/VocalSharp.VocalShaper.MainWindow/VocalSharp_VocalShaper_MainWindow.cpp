@@ -155,6 +155,16 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			}
 		}
 	);
+	jmadf::RegisterInterface<void>(
+		"Show",
+		[this](const juce::String&)
+		{
+			if (this->mainWindow) {
+				this->mainWindow->setVisible(true);
+				this->mainWindow->toFront(false);
+			}
+		}
+	);
 	
 	this->mainWindow = std::make_unique<MainWindow>("VocalShaper");
 	if (!this->mainWindow) {

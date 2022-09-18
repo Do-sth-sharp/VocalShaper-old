@@ -149,7 +149,9 @@ bool VocalSharp_VocalShaper_Main::init()
 		!jmadf::CheckInterface<juce::Component*>(
 			"VocalSharp.VocalShaper.MainWindow", "MoveToMainWindow") ||
 		!jmadf::CheckInterface<const juce::String&, const juce::String&>(
-			"VocalSharp.VocalShaper.MainWindow", "OpenProjectFromUrl")
+			"VocalSharp.VocalShaper.MainWindow", "OpenProjectFromUrl") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.MainWindow", "Show")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.MainWindow:Bad Interfaces!");
 		return false;
@@ -176,8 +178,11 @@ bool VocalSharp_VocalShaper_Main::init()
 						file.getFileNameWithoutExtension(),
 						file.getParentDirectory().getFullPathName()
 						);
+					return;
 				}
 			}
+			jmadf::CallInterface<void>(
+				mainWindowName, "Show");
 		}
 	);
 
