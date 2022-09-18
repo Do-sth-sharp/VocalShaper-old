@@ -37,6 +37,13 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 				this->commands->addCommandFunc(name, func, caller);
 		}
 	);
+	jmadf::RegisterInterface<const juce::String&, const CommandManager::FlagFunction&>(
+		"RegisterFlagHook",
+		[this](const juce::String& caller,
+			const juce::String& name, const CommandManager::FlagFunction& func) {
+				this->commands->addFlagFunc(name, func, caller);
+		}
+	);
 	jmadf::RegisterInterface<const juce::String&, int&>(
 		"GetCommandID",
 		[this](const juce::String&, const juce::String& name, int& result) {

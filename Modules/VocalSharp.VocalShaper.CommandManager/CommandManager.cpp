@@ -87,6 +87,17 @@ void CommandManager::addCommandFunc(const juce::String& name, const CommandFunct
 	this->funcList.insert(std::make_pair(commandID, std::make_pair(caller, func)));
 }
 
+void CommandManager::addFlagFunc(const juce::String& name, const FlagFunction& func, const juce::String& caller)
+{
+	int commandID = this->getCommandID(name);
+	if (commandID == -1) {
+		return;
+	}
+
+	juce::ScopedWriteLock locker(this->flagLock);
+	this->flagList.insert(std::make_pair(commandID, std::make_pair(caller, func)));
+}
+
 int CommandManager::getCommandID(const juce::String& name)
 {
 	int index = -1;
@@ -106,10 +117,17 @@ juce::ApplicationCommandManager* CommandManager::getManager()
 
 void CommandManager::release(const juce::String& caller)
 {
-	juce::ScopedWriteLock locker(this->funcLock);
+	juce::ScopedWriteLock locker1(this->funcLock), locker2(this->flagLock);
 	for (auto it = this->funcList.begin(); it != this->funcList.end();) {
 		if ((*it).second.first == caller) {
 			it = this->funcList.erase(it);
+			continue;
+		}
+		it++;
+	}
+	for (auto it = this->flagList.begin(); it != this->flagList.end();) {
+		if ((*it).second.first == caller) {
+			it = this->flagList.erase(it);
 			continue;
 		}
 		it++;
@@ -133,13 +151,17 @@ void CommandManager::getCommandInfo(
 	juce::CommandID commandID, juce::ApplicationCommandInfo& result)
 {
 	if (commandID >= 1 && commandID <= this->infoList.size()) {
+		juce::ScopedReadLock locker(this->flagLock);
 		auto& info = this->infoList.getReference(commandID - 1);
 		result.commandID = commandID;
 		result.shortName = info.shortName;
 		result.description = info.description;
 		result.categoryName = info.categoryName;
 		result.defaultKeypresses = info.defaultKeypresses;
-		result.flags = 0;
+
+		//查询flag
+		auto it = this->flagList.find(commandID);
+		result.flags = (it == this->flagList.end()) ? 0 : (*it).second.second();
 	}
 }
 
