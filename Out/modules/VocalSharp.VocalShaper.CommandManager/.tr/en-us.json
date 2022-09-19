@@ -35,5 +35,27 @@
   "ds_CopyPath": "Copy project directory path",
   "ds_CopyName": "Copy project name",
   "ds_CopyFullUrl": "Copy the full directory of project file",
-  "ds_OpenPathInSystem": "Open the project directory in system"
+  "ds_OpenPathInSystem": "Open the project directory in system",
+
+  "sn_Undo": "Undo",
+  "sn_Redo": "Redo",
+  "sn_Cut": "Cut",
+  "sn_Copy": "Copy",
+  "sn_Paste": "Paste",
+  "sn_CutBoard": "Cut Board",
+  "sn_CleanCutBoard": "Clean Cut Board",
+  "sn_CreateCopy": "Create Copy",
+  "sn_Delete": "Delete",
+  "sn_SelectAll": "Select All",
+
+  "ds_Undo": "Undo",
+  "ds_Redo": "Redo",
+  "ds_Cut": "Cut",
+  "ds_Copy": "Copy",
+  "ds_Paste": "Paste",
+  "ds_CutBoard": "Show cut board",
+  "ds_CleanCutBoard": "Clean cut board",
+  "ds_CreateCopy": "Create a copy",
+  "ds_Delete": "Delete",
+  "ds_SelectAll": "Select all"
 }

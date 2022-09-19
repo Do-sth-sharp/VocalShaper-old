@@ -35,5 +35,27 @@
   "ds_CopyPath": "复制工程目录路径",
   "ds_CopyName": "复制工程名称",
   "ds_CopyFullUrl": "复制工程文件完整路径",
-  "ds_OpenPathInSystem": "在系统中打开工程目录"
+  "ds_OpenPathInSystem": "在系统中打开工程目录",
+
+  "sn_Undo": "撤销",
+  "sn_Redo": "重做",
+  "sn_Cut": "剪切",
+  "sn_Copy": "复制",
+  "sn_Paste": "粘贴",
+  "sn_CutBoard": "剪贴板",
+  "sn_CleanCutBoard": "清空剪贴板",
+  "sn_CreateCopy": "创建副本",
+  "sn_Delete": "删除",
+  "sn_SelectAll": "全选",
+
+  "ds_Undo": "撤销上一步操作",
+  "ds_Redo": "重做撤销的操作",
+  "ds_Cut": "剪切",
+  "ds_Copy": "复制",
+  "ds_Paste": "粘贴",
+  "ds_CutBoard": "显示剪贴板",
+  "ds_CleanCutBoard": "清空剪贴板",
+  "ds_CreateCopy": "创建副本",
+  "ds_Delete": "删除",
+  "ds_SelectAll": "全选"
 }

@@ -16,6 +16,19 @@ commandCloseAllProj = -1,
 commandCloseEditor = -1
 ;
 
+int
+commandUndo = -1,
+commandRedo = -1,
+commandCut = -1,
+commandCopy = -1,
+commandPaste = -1,
+commandCutBoard = -1,
+commandCleanCutBoard = -1,
+commandCreateCopy = -1,
+commmandDelete = -1,
+commandSelectAll = -1
+;
+
 enum GroupID {
 	IDFile = 0x01,
 	IDEdit,
@@ -37,6 +50,19 @@ enum FileID {
 	IDCloseProj,
 	IDCloseAllProj,
 	IDCloseEditor
+};
+
+enum EditID {
+	IDUndo = 0x00,
+	IDRedo,
+	IDCut,
+	IDCopy,
+	IDPaste,
+	IDCutBoard,
+	IDCleanCutBoard,
+	IDCreateCopy,
+	IDDelete,
+	IDSelectAll
 };
 
 juce::PopupMenu MainMenu::create()
@@ -90,6 +116,47 @@ juce::PopupMenu MainMenu::create()
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Close Editor", ::commandCloseEditor
 			);
+
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Undo", ::commandUndo
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Redo", ::commandRedo
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Cut", ::commandCut
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Copy", ::commandCopy
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Paste", ::commandPaste
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Cut Board", ::commandCutBoard
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Clean Cut Board", ::commandCleanCutBoard
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Create Copy", ::commandCreateCopy
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Delete", ::commmandDelete
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Select All", ::commandSelectAll
+			);
 	}
 
 	juce::PopupMenu menu;
@@ -136,6 +203,18 @@ juce::PopupMenu MainMenu::createEditMenu()
 {
 	int sectionId = GroupID::IDEdit;
 	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandUndo);
+	menu.addCommandItem(::commandManager, ::commandRedo);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandCut);
+	menu.addCommandItem(::commandManager, ::commandCopy);
+	menu.addCommandItem(::commandManager, ::commandPaste);
+	menu.addCommandItem(::commandManager, ::commandCutBoard);
+	menu.addCommandItem(::commandManager, ::commandCleanCutBoard);
+	menu.addCommandItem(::commandManager, ::commmandDelete);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandSelectAll);
 
 	return menu;
 }

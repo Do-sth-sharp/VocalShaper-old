@@ -106,6 +106,78 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 
+	this->infoList.add({
+		.name = "Undo",
+		.shortName = this->tr("sn_Undo"),
+		.description = this->tr("ds_Undo"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('z', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Redo",
+		.shortName = this->tr("sn_Redo"),
+		.description = this->tr("ds_Redo"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {
+			juce::KeyPress('z', juce::ModifierKeys::Flags::ctrlModifier | juce::ModifierKeys::Flags::shiftModifier, 0),
+			juce::KeyPress('y', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Cut",
+		.shortName = this->tr("sn_Cut"),
+		.description = this->tr("ds_Cut"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('x', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Copy",
+		.shortName = this->tr("sn_Copy"),
+		.description = this->tr("ds_Copy"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('c', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Paste",
+		.shortName = this->tr("sn_Paste"),
+		.description = this->tr("ds_Paste"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('v', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Cut Board",
+		.shortName = this->tr("sn_CutBoard"),
+		.description = this->tr("ds_CutBoard"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('v', juce::ModifierKeys::Flags::ctrlModifier | juce::ModifierKeys::Flags::shiftModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Clean Cut Board",
+		.shortName = this->tr("sn_CleanCutBoard"),
+		.description = this->tr("ds_CleanCutBoard"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Create Copy",
+		.shortName = this->tr("sn_CreateCopy"),
+		.description = this->tr("ds_CreateCopy"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('d', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Delete",
+		.shortName = this->tr("sn_Delete"),
+		.description = this->tr("ds_Delete"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("delete")}
+		});
+	this->infoList.add({
+		.name = "Select All",
+		.shortName = this->tr("sn_SelectAll"),
+		.description = this->tr("ds_SelectAll"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {juce::KeyPress('a', juce::ModifierKeys::Flags::ctrlModifier, 0)}
+		});
 
 	//应用命令列表
 	this->acm->registerAllCommandsForTarget(this);
