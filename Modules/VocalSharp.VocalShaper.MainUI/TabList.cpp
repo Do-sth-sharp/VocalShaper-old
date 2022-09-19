@@ -16,6 +16,21 @@ TabList::TabList()
 		this->tr
 		);
 
+	//以下获取全局设置
+	{
+		juce::var* config = nullptr;
+		bool ok = false;
+		jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference",
+			"config", config, ok
+			);
+		if (ok && (config != nullptr)) {
+			if ((*config)["Language"].isString()) {
+				this->projectExtension = (*config)["ProjectExtension"].toString();
+			}
+		}
+	}
+
 	//初始化工程状态获取函数
 	this->getPtrFunc = jmadf::GetInterface<int, vocalshaper::ProjectProxy*&>(
 		"VocalSharp.VocalShaper.ProjectHub", "GetPtr"
@@ -40,17 +55,49 @@ TabList::TabList()
 		);
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close Other Project", this->closeOtherProjCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Close All Project", this->closeAllProjCommandID
 		);
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Show Start Menu", this->showStartMenuCommandID
 		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Save Project", this->saveProjCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Save All Project", this->saveAllProjCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy Path", this->copyPathCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy Name", this->copyNameCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy Full Url", this->copyFullUrlCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Open Path In System", this->openPathInSystemCommandID
+		);
 
 	//以下注册命令回调
 	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Close Project", [this] {this->highlightCloseButtonClicked(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Close Other Project", [this] {this->closeOther(); }
 	);
 	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
@@ -71,6 +118,39 @@ TabList::TabList()
 	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Save All Project", [this] {this->saveAll(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Copy Path", [this] {this->copyPath(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Copy Name", [this] {this->copyName(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Copy Full Url", [this] {this->copyFullUrl(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Open Path In System", [this] {this->openPathInSystem(); }
+	);
+
+	//以下注册Flag获取函数
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Close Other Project", [this]()->int {
+			int size = 0;
+			jmadf::CallInterface<int&>(
+				"VocalSharp.VocalShaper.ProjectHub", "GetSize",
+				size);
+
+			int flag = 0;
+			if (size <= 1) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
 	);
 
     //以下获取界面属性
@@ -386,6 +466,75 @@ void TabList::saveAll()
 	}
 }
 
+void TabList::closeOther()
+{
+	int size = 0;
+	this->getSizeFunc(size);
+	int current = this->currentIndex;
+	for (int i = size - 1; i >= 0; i--) {
+		if (i > current || i < current) {
+			if (!this->checkThenClose(i)) {
+				break;
+			}
+		}
+		if (i < current) {
+			current--;
+		}
+	}
+}
+
+void TabList::copyPath()
+{
+	if (this->currentIndex >= 0 && this->currentIndex < this->tabShow.size()) {
+		//获取引用
+		auto& item = this->tabShow.getReference(this->currentIndex);
+		auto ptrItem = item.second;
+
+		//复制路径
+		juce::SystemClipboard::copyTextToClipboard(ptrItem->getPath());
+	}
+}
+
+void TabList::copyName()
+{
+	if (this->currentIndex >= 0 && this->currentIndex < this->tabShow.size()) {
+		//获取引用
+		auto& item = this->tabShow.getReference(this->currentIndex);
+		auto ptrItem = item.second;
+
+		//复制名称
+		juce::SystemClipboard::copyTextToClipboard(ptrItem->getName());
+	}
+}
+
+void TabList::copyFullUrl()
+{
+	if (this->currentIndex >= 0 && this->currentIndex < this->tabShow.size()) {
+		//获取引用
+		auto& item = this->tabShow.getReference(this->currentIndex);
+		auto ptrItem = item.second;
+
+		//获取路径
+		juce::String url = juce::File(ptrItem->getPath() + "/" 
+			+ ptrItem->getName() + this->projectExtension).getFullPathName();
+
+		//复制名称
+		juce::SystemClipboard::copyTextToClipboard(url);
+	}
+}
+
+void TabList::openPathInSystem()
+{
+	if (this->currentIndex >= 0 && this->currentIndex < this->tabShow.size()) {
+		//获取引用
+		auto& item = this->tabShow.getReference(this->currentIndex);
+		auto ptrItem = item.second;
+
+		//打开路径
+		juce::Process::openDocument(ptrItem->getPath(), juce::String());
+	}
+}
+
 void TabList::resized()
 {
 	//高度缓存
@@ -562,12 +711,18 @@ void TabList::mouseDown(const juce::MouseEvent& event)
 
 		//如果当前标签页命中
 		if (totalWidth <= posX && totalWidth + itemWidth > posX) {
+			//设置当前标签页
 			if (this->currentIndex != i) {
 				jmadf::CallInterface<int>(
 					"VocalSharp.VocalShaper.ProjectHub", "SetCurrent",
 					i
 					);
 				this->refreshCompCache();
+			}
+
+			//显示右键菜单
+			if (event.mods.isPopupMenu()) {
+				this->showPopupMenu();
 			}
 			return;
 		}
@@ -895,4 +1050,24 @@ void TabList::refreshComp()
 		this->getHeight(), this->getHeight()
 	);
 	this->btMore->setVisible(this->tabHide.size() > 0);
+}
+
+void TabList::showPopupMenu()
+{
+	juce::PopupMenu menu;
+
+	menu.addCommandItem(this->commandManager, this->saveProjCommandID);
+	menu.addCommandItem(this->commandManager, this->saveAllProjCommandID);
+	menu.addCommandItem(this->commandManager, this->closeProjCommandID);
+	menu.addCommandItem(this->commandManager, this->closeOtherProjCommandID);
+	menu.addCommandItem(this->commandManager, this->closeAllProjCommandID);
+	menu.addSeparator();
+	menu.addCommandItem(this->commandManager, this->copyNameCommandID);
+	menu.addCommandItem(this->commandManager, this->copyPathCommandID);
+	menu.addCommandItem(this->commandManager, this->copyFullUrlCommandID);
+	menu.addCommandItem(this->commandManager, this->openPathInSystemCommandID);
+	menu.addSeparator();
+	menu.addCommandItem(this->commandManager, this->showStartMenuCommandID);
+
+	menu.show();
 }

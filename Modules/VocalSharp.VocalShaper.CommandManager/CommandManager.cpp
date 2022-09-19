@@ -57,6 +57,13 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 	this->infoList.add({
+		.name = "Close Other Project",
+		.shortName = this->tr("sn_CloseOtherProject"),
+		.description = this->tr("ds_CloseOtherProject"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
 		.name = "Close All Project",
 		.shortName = this->tr("sn_CloseAllProject"),
 		.description = this->tr("ds_CloseAllProject"),
@@ -67,6 +74,34 @@ CommandManager::CommandManager()
 		.name = "Close Editor",
 		.shortName = this->tr("sn_CloseEditor"),
 		.description = this->tr("ds_CloseEditor"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Copy Path",
+		.shortName = this->tr("sn_CopyPath"),
+		.description = this->tr("ds_CopyPath"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Copy Name",
+		.shortName = this->tr("sn_CopyName"),
+		.description = this->tr("ds_CopyName"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Copy Full Url",
+		.shortName = this->tr("sn_CopyFullUrl"),
+		.description = this->tr("ds_CopyFullUrl"),
+		.categoryName = this->tr("cn_File"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Open Path In System",
+		.shortName = this->tr("sn_OpenPathInSystem"),
+		.description = this->tr("ds_OpenPathInSystem"),
 		.categoryName = this->tr("cn_File"),
 		.defaultKeypresses = {}
 		});

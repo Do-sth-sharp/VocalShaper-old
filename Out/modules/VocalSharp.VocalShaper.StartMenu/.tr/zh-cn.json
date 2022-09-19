@@ -19,5 +19,9 @@
 
   "bt_Open": "打开",
   "bt_OpenAsCopy": "创建副本并打开",
+  "bt_CopyName": "复制名称",
+  "bt_CopyPath": "复制目录路径",
+  "bt_CopyFullUrl": "复制完整路径",
+  "bt_OpenDirectory": "打开目录",
   "bt_Remove": "移除"
 }

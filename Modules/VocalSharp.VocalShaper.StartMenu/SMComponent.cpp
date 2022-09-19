@@ -601,7 +601,13 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
     menu.addSectionHeader(name);
     menu.addItem(1, this->tr("bt_Open"));
     menu.addItem(2, this->tr("bt_OpenAsCopy"));
-    menu.addColouredItem(3, this->tr("bt_Remove"), this->colors.text_menu_warning);
+    menu.addSeparator();
+    menu.addItem(3, this->tr("bt_CopyName"));
+    menu.addItem(4, this->tr("bt_CopyPath"));
+    menu.addItem(5, this->tr("bt_CopyFullUrl"));
+    menu.addItem(6, this->tr("bt_OpenDirectory"));
+    menu.addSeparator();
+    menu.addColouredItem(7, this->tr("bt_Remove"), this->colors.text_menu_warning);
     int result = menu.show();
     switch (result)
     {
@@ -660,6 +666,32 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
         break;
     }
     case 3:
+    {
+        //复制名称
+        juce::SystemClipboard::copyTextToClipboard(name);
+        break;
+    }
+    case 4:
+    {
+        //复制目录
+        juce::SystemClipboard::copyTextToClipboard(path);
+        break;
+    }
+    case 5:
+    {
+        //复制完整路径
+        juce::String url = juce::File(path + "/"
+            + name + this->projectExtension).getFullPathName();
+        juce::SystemClipboard::copyTextToClipboard(url);
+        break;
+    }
+    case 6:
+    {
+        //打开目录
+        juce::Process::openDocument(path, juce::String());
+        break;
+    }
+    case 7:
     {
         //移除
         jmadf::CallInterface<int>(

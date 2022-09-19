@@ -19,5 +19,9 @@
 
   "bt_Open": "Open",
   "bt_OpenAsCopy": "Create a copy and open",
+  "bt_CopyName": "Copy Project Name",
+  "bt_CopyPath": "Copy Directory Path",
+  "bt_CopyFullUrl": "Copy full url",
+  "bt_OpenDirectory": "Open directory",
   "bt_Remove": "Remove"
 }

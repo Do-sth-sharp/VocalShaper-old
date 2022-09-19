@@ -58,6 +58,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		return false;
 	}
 	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
 		!jmadf::CheckInterface<void>(
 			"WuChang.JMADF.GlobalConfigs", "Close")
 		) {
@@ -121,6 +123,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 	if (
 		!jmadf::CheckInterface<const juce::String&, const std::function<void(void)>&>(
 			"VocalSharp.VocalShaper.CommandManager", "RegisterFunction") ||
+		!jmadf::CheckInterface<const juce::String&, const std::function<int(void)>&>(
+			"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook") ||
 		!jmadf::CheckInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
 		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(

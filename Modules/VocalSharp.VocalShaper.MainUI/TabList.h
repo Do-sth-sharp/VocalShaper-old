@@ -15,6 +15,11 @@ public:
 	bool wannaClose();
 	void saveCurrent();
 	void saveAll();
+	void closeOther();
+	void copyPath();
+	void copyName();
+	void copyFullUrl();
+	void openPathInSystem();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -75,6 +80,7 @@ private:
 	bool save(int index);
 	void refreshCompCache(bool loopFlag = false);
 	void refreshComp();
+	void showPopupMenu();
 
 	juce::Array<std::pair<int, vocalshaper::ProjectProxy*>> tabShow;
 	juce::Array<vocalshaper::ProjectProxy*> tabHide;
@@ -82,13 +88,17 @@ private:
 
 	int heightTemp = 0;
 	juce::String caller;
+	juce::String projectExtension;
 
 	std::unique_ptr<juce::Drawable> iconClose, iconCloseHighlight, iconAdd, iconMore;
 	std::unique_ptr<juce::DrawableButton> btCloseCurrent, btCloseHover;
 	std::unique_ptr<juce::DrawableButton> btAdd, btMore;
 	std::unique_ptr<juce::Label> lbDefaultFont;
 
-	int closeProjCommandID = -1, closeAllProjCommandID = -1, showStartMenuCommandID = -1;
+	int closeProjCommandID = -1, closeAllProjCommandID = -1, showStartMenuCommandID = -1,
+		closeOtherProjCommandID = -1, saveProjCommandID = -1, saveAllProjCommandID = -1,
+		copyPathCommandID = -1, copyNameCommandID = -1, copyFullUrlCommandID = -1,
+		openPathInSystemCommandID = -1;
 	juce::ApplicationCommandManager* commandManager = nullptr;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TabList)
