@@ -25,7 +25,7 @@ TabList::TabList()
 			"config", config, ok
 			);
 		if (ok && (config != nullptr)) {
-			if ((*config)["Language"].isString()) {
+			if ((*config)["ProjectExtension"].isString()) {
 				this->projectExtension = (*config)["ProjectExtension"].toString();
 			}
 		}

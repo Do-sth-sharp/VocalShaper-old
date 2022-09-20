@@ -28,6 +28,10 @@ UIComponent::UIComponent()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "height-tabBar", this->sizes.height_tabBar, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "size", "height-playBar", this->sizes.height_playBar, result
+        );
     //position
     //scale
 
@@ -36,6 +40,10 @@ UIComponent::UIComponent()
     //建立标签栏
     this->tabBar = std::make_unique<TabComponent>();
     this->addAndMakeVisible(this->tabBar.get());
+
+    //建立标签栏
+    this->playBar = std::make_unique<PlayBar>();
+    this->addAndMakeVisible(this->playBar.get());
 
     //空白处获取焦点
     this->setWantsKeyboardFocus(true);
@@ -59,6 +67,12 @@ void UIComponent::resized()
     this->tabBar->setBounds(
         0, 0,
         this->getWidth(), screenSize.getHeight() * this->sizes.height_tabBar
+    );
+
+    //调整播放控制栏大小
+    this->playBar->setBounds(
+        0, this->tabBar->getHeight(),
+        this->getWidth(), screenSize.getHeight() * this->sizes.height_playBar
     );
 }
 

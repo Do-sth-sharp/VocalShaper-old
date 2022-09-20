@@ -7,5 +7,8 @@
   "bt_CloseProject": "Close Project",
   "tip_SaveBeforeClose": "Save the project before close it",
   "tip_SaveProject": "Save Project",
-  "tip_SaveProjectError": "Could not save the project"
+  "tip_SaveProjectError": "Could not save the project",
+
+  "lb_Adsorb": "Adsorb",
+  "lb_Grid": "Grid"
 }

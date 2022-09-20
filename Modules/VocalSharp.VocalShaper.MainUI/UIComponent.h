@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "TabComponent.h"
+#include "PlayBar.h"
 
 class UIComponent final : public juce::Component
 {
@@ -23,12 +24,14 @@ private:
     struct Size final
     {
         double height_tabBar;
+        double height_playBar;
     }sizes;
 
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
         = [](juce::Component*, juce::Rectangle<int>&) {};
 
     std::unique_ptr<TabComponent> tabBar;
+    std::unique_ptr<PlayBar> playBar;
 
     juce::ApplicationCommandManager* commandManager = nullptr;
 

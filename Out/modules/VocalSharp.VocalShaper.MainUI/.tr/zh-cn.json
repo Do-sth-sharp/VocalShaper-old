@@ -7,5 +7,8 @@
   "bt_CloseProject": "关闭工程",
   "tip_SaveBeforeClose": "是否要在关闭前保存工程",
   "tip_SaveProject": "保存工程",
-  "tip_SaveProjectError": "无法保存工程"
+  "tip_SaveProjectError": "无法保存工程",
+
+  "lb_Adsorb": "吸附",
+  "lb_Grid": "网格"
 }

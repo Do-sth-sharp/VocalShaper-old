@@ -179,6 +179,194 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {juce::KeyPress('a', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 
+	this->infoList.add({
+		.name = "Play",
+		.shortName = this->tr("sn_Play"),
+		.description = this->tr("ds_Play"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("spacebar"),
+		juce::KeyPress::createFromDescription("play")}
+		});
+	this->infoList.add({
+		.name = "Stop",
+		.shortName = this->tr("sn_Stop"),
+		.description = this->tr("ds_Stop"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("stop")}
+		});
+	this->infoList.add({
+		.name = "Begin",
+		.shortName = this->tr("sn_Begin"),
+		.description = this->tr("ds_Begin"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("home"),
+		juce::KeyPress::createFromDescription("rewind")}
+		});
+	this->infoList.add({
+		.name = "End",
+		.shortName = this->tr("sn_End"),
+		.description = this->tr("ds_End"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("end"),
+		juce::KeyPress::createFromDescription("fast forward")}
+		});
+	this->infoList.add({
+		.name = "Loop",
+		.shortName = this->tr("sn_Loop"),
+		.description = this->tr("ds_Loop"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Follow",
+		.shortName = this->tr("sn_Follow"),
+		.description = this->tr("ds_Follow"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Back On Stop",
+		.shortName = this->tr("sn_BackOnStop"),
+		.description = this->tr("ds_BackOnStop"),
+		.categoryName = this->tr("cn_Transport"),
+		.defaultKeypresses = {}
+		});
+
+	this->infoList.add({
+		.name = "Adsorb 1 Beat",
+		.shortName = this->tr("sn_Adsorb1Beat"),
+		.description = this->tr("ds_Adsorb1Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/2 Beat",
+		.shortName = this->tr("sn_Adsorb1/2Beat"),
+		.description = this->tr("ds_Adsorb1/2Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/4 Beat",
+		.shortName = this->tr("sn_Adsorb1/4Beat"),
+		.description = this->tr("ds_Adsorb1/4Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/6 Beat",
+		.shortName = this->tr("sn_Adsorb1/6Beat"),
+		.description = this->tr("ds_Adsorb1/6Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/8 Beat",
+		.shortName = this->tr("sn_Adsorb1/8Beat"),
+		.description = this->tr("ds_Adsorb1/8Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/12 Beat",
+		.shortName = this->tr("sn_Adsorb1/12Beat"),
+		.description = this->tr("ds_Adsorb1/12Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/16 Beat",
+		.shortName = this->tr("sn_Adsorb1/16Beat"),
+		.description = this->tr("ds_Adsorb1/16Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/24 Beat",
+		.shortName = this->tr("sn_Adsorb1/24Beat"),
+		.description = this->tr("ds_Adsorb1/24Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb 1/32 Beat",
+		.shortName = this->tr("sn_Adsorb1/32Beat"),
+		.description = this->tr("ds_Adsorb1/32Beat"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Adsorb Off",
+		.shortName = this->tr("sn_AdsorbOff"),
+		.description = this->tr("ds_AdsorbOff"),
+		.categoryName = this->tr("cn_Adsorb"),
+		.defaultKeypresses = {}
+		});
+
+	this->infoList.add({
+		.name = "Grid 1 Beat",
+		.shortName = this->tr("sn_Grid1Beat"),
+		.description = this->tr("ds_Grid1Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/2 Beat",
+		.shortName = this->tr("sn_Grid1/2Beat"),
+		.description = this->tr("ds_Grid1/2Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/4 Beat",
+		.shortName = this->tr("sn_Grid1/4Beat"),
+		.description = this->tr("ds_Grid1/4Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/6 Beat",
+		.shortName = this->tr("sn_Grid1/6Beat"),
+		.description = this->tr("ds_Grid1/6Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/8 Beat",
+		.shortName = this->tr("sn_Grid1/8Beat"),
+		.description = this->tr("ds_Grid1/8Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/12 Beat",
+		.shortName = this->tr("sn_Grid1/12Beat"),
+		.description = this->tr("ds_Grid1/12Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/16 Beat",
+		.shortName = this->tr("sn_Grid1/16Beat"),
+		.description = this->tr("ds_Grid1/16Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/24 Beat",
+		.shortName = this->tr("sn_Grid1/24Beat"),
+		.description = this->tr("ds_Grid1/24Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Grid 1/32 Beat",
+		.shortName = this->tr("sn_Grid1/32Beat"),
+		.description = this->tr("ds_Grid1/32Beat"),
+		.categoryName = this->tr("cn_Grid"),
+		.defaultKeypresses = {}
+		});
+
 	//应用命令列表
 	this->acm->registerAllCommandsForTarget(this);
 }

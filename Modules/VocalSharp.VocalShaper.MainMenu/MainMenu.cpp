@@ -29,6 +29,16 @@ commmandDelete = -1,
 commandSelectAll = -1
 ;
 
+int
+commandPlay = -1,
+commandStop = -1,
+commandBegin = -1,
+commandEnd = -1,
+commandLoop = -1,
+commandFollow = -1,
+commandBackOnStop = -1
+;
+
 enum GroupID {
 	IDFile = 0x01,
 	IDEdit,
@@ -63,6 +73,16 @@ enum EditID {
 	IDCreateCopy,
 	IDDelete,
 	IDSelectAll
+};
+
+enum TransportID {
+	IDPlay = 0x00,
+	IDStop,
+	IDBegin,
+	IDEnd,
+	IDLoop,
+	IDFollow,
+	IDBackOnStop
 };
 
 juce::PopupMenu MainMenu::create()
@@ -157,6 +177,35 @@ juce::PopupMenu MainMenu::create()
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Select All", ::commandSelectAll
 			);
+
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Play", ::commandPlay
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Stop", ::commandStop
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Begin", ::commandBegin
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"End", ::commandEnd
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Loop", ::commandLoop
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Follow", ::commandFollow
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Back On Stop", ::commandBackOnStop
+			);
 	}
 
 	juce::PopupMenu menu;
@@ -247,6 +296,16 @@ juce::PopupMenu MainMenu::createTransportMenu()
 {
 	int sectionId = GroupID::IDTransport;
 	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandPlay);
+	menu.addCommandItem(::commandManager, ::commandStop);
+	menu.addCommandItem(::commandManager, ::commandBegin);
+	menu.addCommandItem(::commandManager, ::commandEnd);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandLoop);
+	menu.addCommandItem(::commandManager, ::commandFollow);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandBackOnStop);
 
 	return menu;
 }

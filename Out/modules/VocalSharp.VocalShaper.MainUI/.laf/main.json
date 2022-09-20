@@ -12,7 +12,19 @@
 
         "width-tabBorder:number":0.005,
         "width-tabMarginRight:number":0.005,
-        "width-splitLine:number":0.00075
+        "width-splitLine:number":0.00075,
+
+        "height-playBar:number":0.065,
+
+        "width-playMarginLeft:number":0.005,
+        "width-playMarginRight:number":0.005,
+        "width-playButtonSplit:number":0.005,
+        "width-playButtonGroupSplit:number":0.01,
+        "width-playTextGroupSplit:number":0.01,
+        "width-playTextItemSplit:number":0.005,
+        "width-playTextSplit:number":0.0025,
+
+        "width-playSplitLine:number":0.00075
     },
     "position":
     {
@@ -20,6 +32,10 @@
     "scale":
     {
         "height-closeButton:number":0.5,
-        "height-splitLine:number":0.5
+        "height-splitLine:number":0.5,
+
+        "height-playButton:number":0.6,
+        "height-playText:number":0.5,
+        "height-playSplitLine:number":0.5
     }
 }

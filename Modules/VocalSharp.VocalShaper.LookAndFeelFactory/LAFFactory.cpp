@@ -35,3 +35,17 @@ juce::LookAndFeel* LAFFactory::getTabCloseButtonLAF()
 	this->lafs.add(ptrLAF);
 	return ptrLAF;
 }
+
+juce::LookAndFeel* LAFFactory::getPlayButtonLAF()
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getToolButtonLAF()
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
+}
