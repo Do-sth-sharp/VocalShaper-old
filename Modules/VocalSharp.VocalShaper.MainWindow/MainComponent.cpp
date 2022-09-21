@@ -1,13 +1,29 @@
-#include "MainComponent.h"
+﻿#include "MainComponent.h"
 #include <libJModule.h>
 
 MainComponent::MainComponent()
     : Component("Main Window Central Component")
 {
+    //获取屏幕属性接口
     this->screenSizeFunc =
         jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
             "WuChang.JMADF.Device", "GetScreenSize"
             );
+
+    //以下获取全局设置
+    {
+        juce::var* config = nullptr;
+        bool ok = false;
+        jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
+            "WuChang.JMADF.GlobalConfigs", "GetReference",
+            "config", config, ok
+            );
+        if (ok && (config != nullptr)) {
+            if ((*config)["ProjectExtension"].isString()) {
+                this->projectExtension = (*config)["ProjectExtension"].toString();
+            }
+        }
+    }
 
     setSize (600, 400);
 
@@ -133,4 +149,56 @@ void MainComponent::openProjFromUrl(const juce::String& name, const juce::String
         "VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl",
         name, path
         );
+}
+
+bool MainComponent::isInterestedInTextDrag(const juce::String& text)
+{
+    return this->checkStringCouldOpen(text);
+}
+
+void MainComponent::textDropped(const juce::String& text, int, int)
+{
+    this->stringOpen(text);
+}
+
+bool MainComponent::isInterestedInFileDrag(const juce::StringArray& files)
+{
+    for (auto& i : files) {
+        if (!this->checkStringCouldOpen(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void MainComponent::filesDropped(const juce::StringArray& files, int, int)
+{
+    for (auto& i : files) {
+        this->stringOpen(i);
+    }
+}
+
+bool MainComponent::checkStringCouldOpen(const juce::String& string)
+{
+    juce::File file(string);
+    if (file.existsAsFile()) {
+        juce::String extension = file.getFileExtension();
+        if (extension == this->projectExtension) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void MainComponent::stringOpen(const juce::String& string)
+{
+    juce::File file(string);
+    if (file.existsAsFile()) {
+        juce::String extension = file.getFileExtension();
+        if (extension == this->projectExtension) {
+            this->openProjFromUrl(file.getFileNameWithoutExtension(),
+                file.getParentDirectory().getFullPathName());
+            return;
+        }
+    }
 }

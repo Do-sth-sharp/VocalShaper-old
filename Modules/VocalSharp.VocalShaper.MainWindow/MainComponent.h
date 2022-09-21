@@ -1,7 +1,10 @@
 #pragma once
 #include <JuceHeader.h>
 
-class MainComponent final : public juce::Component
+class MainComponent final
+    : public juce::Component,
+    public juce::FileDragAndDropTarget,
+    public juce::TextDragAndDropTarget
 {
 public:
     MainComponent();
@@ -21,6 +24,11 @@ public:
     void moveSplashIn(juce::Component* splash);
     void openProjFromUrl(const juce::String& name, const juce::String& path);
 
+    bool isInterestedInTextDrag(const juce::String& text) override;
+    void textDropped(const juce::String& text, int, int) override;
+    bool isInterestedInFileDrag(const juce::StringArray& files) override;
+    void filesDropped(const juce::StringArray& files, int, int) override;
+
 private:
     juce::Component* ptrStartMenu = nullptr;
     juce::Component* ptrMainUI = nullptr;
@@ -30,6 +38,10 @@ private:
     juce::SharedResourcePointer<juce::TooltipWindow> toolTip;
 
     juce::Component* splash = nullptr;
+    juce::String projectExtension;
+
+    bool checkStringCouldOpen(const juce::String& string);
+    void stringOpen(const juce::String& string);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

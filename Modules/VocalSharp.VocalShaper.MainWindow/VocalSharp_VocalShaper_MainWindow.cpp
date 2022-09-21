@@ -22,6 +22,7 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	jmadf::LoadModule("VocalSharp.VocalShaper.StartMenu");
 	jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager");
 	jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub");
+	jmadf::LoadModule("WuChang.JMADF.GlobalConfigs");
 
 	if (!jmadf::GetException().isEmpty()) {
 		return false;
@@ -95,6 +96,15 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			"VocalSharp.VocalShaper.ProjectHub", "Release")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
+		!jmadf::CheckInterface<void>(
+			"WuChang.JMADF.GlobalConfigs", "Close")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;
 	}
 
