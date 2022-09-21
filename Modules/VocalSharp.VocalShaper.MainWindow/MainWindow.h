@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "MainComponent.h"
+#include <libVocalShaper.h>
 
 class MainWindow final : public juce::DocumentWindow
 {
@@ -29,5 +30,8 @@ private:
     MainComponent* mComp = nullptr;
     int closeEditorCommandID = -1;
     juce::ApplicationCommandManager* commandManager = nullptr;
+
+    void refreshTitle(const vocalshaper::ProjectProxy* project);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

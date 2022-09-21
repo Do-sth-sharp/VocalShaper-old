@@ -3,6 +3,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 include_directories (${JUCEHEADER_DIR})
 include_directories (${JUCELIBRARY_DIR})
 include_directories (${LIBJMODULE_DIR})
+include_directories (${VSLIBRARY_DIR})
 
 #设置语言标准
 set(CMAKE_CXX_STANDARD 20)#使用C++20
@@ -109,6 +110,7 @@ add_library (
 target_link_libraries (
 	${TARGET_NAME}
 	JUCE
+	libVocalShaper
 )
 
 #设置目标位置
@@ -125,4 +127,5 @@ set_target_properties (
 add_dependencies (
 	${TARGET_NAME}
 	JUCE
+	libVocalShaper
 )

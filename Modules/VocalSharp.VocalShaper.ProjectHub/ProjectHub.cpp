@@ -4,12 +4,13 @@
 
 bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 
 	int openedIndex = this->findOpened(name, path);
 	if (openedIndex >= 0) {
 		this->projList.move(openedIndex, 0);
 		this->currentIndex = 0;
+		this->callNotice();
 		return true;
 	}
 
@@ -30,6 +31,7 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	this->callNotice();
 
 	proj->getProcesser()->processEvent(
 		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
@@ -40,12 +42,13 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	const juce::String& nameSrc, const juce::String& pathSrc)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 
 	int openedIndex = this->findOpened(name, path);
 	if (openedIndex >= 0) {
 		this->projList.move(openedIndex, 0);
 		this->currentIndex = 0;
+		this->callNotice();
 		return true;
 	}
 
@@ -80,6 +83,7 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	this->callNotice();
 
 	proj->getProcesser()->processEvent(
 		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
@@ -89,12 +93,13 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 
 bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 
 	int openedIndex = this->findOpened(name, path);
 	if (openedIndex >= 0) {
 		this->projList.move(openedIndex, 0);
 		this->currentIndex = 0;
+		this->callNotice();
 		return true;
 	}
 
@@ -113,6 +118,7 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
+	this->callNotice();
 
 	proj->getProcesser()->processEvent(
 		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
@@ -122,24 +128,26 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 
 void ProjectHub::setCurrent(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		this->currentIndex = index;
+		this->callNotice();
 	}
 }
 
 void ProjectHub::setCurrentAndToFront(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index > 0 && index < this->projList.size()) {
 		this->projList.move(index, 0);
 		this->currentIndex = 0;
+		this->callNotice();
 	}
 }
 
 void ProjectHub::close(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		this->projList.remove(index);
 		if (this->currentIndex == index) {
@@ -160,12 +168,13 @@ void ProjectHub::close(int index)
 			//关闭的文档在当前文档以前
 			this->currentIndex--;
 		}
+		this->callNotice();
 	}
 }
 
 bool ProjectHub::checkForClose(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		return this->projList.getUnchecked(index)->getSaved();
 	}
@@ -174,7 +183,7 @@ bool ProjectHub::checkForClose(int index)
 
 vocalshaper::ProjectProxy* ProjectHub::get(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		return this->projList.getUnchecked(index);
 	}
@@ -183,19 +192,19 @@ vocalshaper::ProjectProxy* ProjectHub::get(int index)
 
 int ProjectHub::getCurrent()
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	return this->currentIndex;
 }
 
 int ProjectHub::getSize()
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	return this->projList.size();
 }
 
 bool ProjectHub::save(int index)
 {
-	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
 		auto ptr = this->projList.getUnchecked(index);
 		auto metaBackup = ptr->getMeta()->backup();
@@ -214,11 +223,29 @@ bool ProjectHub::save(int index)
 	return false;
 }
 
+void ProjectHub::addNotice(const juce::String& caller, const ChangeNoticeFunction& func)
+{
+	juce::ScopedWriteLock locker(this->funcLock);
+	this->funcList.insert(std::make_pair(caller, func));
+}
+
+void ProjectHub::release(const juce::String& caller)
+{
+	juce::ScopedWriteLock locker(this->funcLock);
+	for (auto it = this->funcList.begin(); it != this->funcList.end();) {
+		if ((*it).first == caller) {
+			it = this->funcList.erase(it);
+			continue;
+		}
+		it++;
+	}
+}
+
 vocalshaper::ProjectProxy* ProjectHub::create(const juce::String& name, const juce::String& path) const
 {
 	auto ptr = new vocalshaper::ProjectProxy(name, path);
 
-	//TODO 设置事件处理插件接口
+	//TODO 设置事件回调接口
 
 	return ptr;
 }
@@ -232,4 +259,14 @@ int ProjectHub::findOpened(const juce::String& name, const juce::String& path) c
 		}
 	}
 	return -1;
+}
+
+void ProjectHub::callNotice()
+{
+	juce::ScopedReadLock locker(this->funcLock);
+	const vocalshaper::ProjectProxy* ptr = this->get(this->currentIndex);
+
+	for (auto& i : this->funcList) {
+		i.second(ptr);
+	}
 }

@@ -1,5 +1,6 @@
 #include "VocalSharp_VocalShaper_MainWindow.h"
 #include <libJModule.h>
+#include <libVocalShaper.h>
 
 VocalSharp_VocalShaper_MainWindow::VocalSharp_VocalShaper_MainWindow()
 	:Module()
@@ -20,6 +21,7 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	jmadf::LoadModule("VocalSharp.VocalShaper.MainUI");
 	jmadf::LoadModule("VocalSharp.VocalShaper.StartMenu");
 	jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager");
+	jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub");
 
 	if (!jmadf::GetException().isEmpty()) {
 		return false;
@@ -84,6 +86,15 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			"VocalSharp.VocalShaper.CommandManager", "Close")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
+			"VocalSharp.VocalShaper.ProjectHub", "AddNotice") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ProjectHub", "Release")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
 	}
 
@@ -201,4 +212,6 @@ void VocalSharp_VocalShaper_MainWindow::destory()
 		"WuChang.JMADF.DynamicRC", "Unload");
 	jmadf::CallInterface<void>(
 		"VocalSharp.VocalShaper.CommandManager", "Close");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ProjectHub", "Release");
 }

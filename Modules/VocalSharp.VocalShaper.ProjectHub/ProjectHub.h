@@ -22,14 +22,22 @@ public:
 	int getSize();
 	bool save(int index);
 
+	using ChangeNoticeFunction = std::function<void(const vocalshaper::ProjectProxy*)>;
+	void addNotice(const juce::String& caller, const ChangeNoticeFunction& func);
+	void release(const juce::String& caller);
+
 private:
 	juce::OwnedArray<vocalshaper::ProjectProxy> projList;
 	int currentIndex = -1;
 
-	juce::SpinLock lock;
+	juce::CriticalSection lock;
+
+	std::map<juce::String, ChangeNoticeFunction> funcList;
+	juce::ReadWriteLock funcLock;
 
 	inline vocalshaper::ProjectProxy* create(const juce::String& name, const juce::String& path) const;
 	inline int findOpened(const juce::String& name, const juce::String& path) const;
+	void callNotice();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectHub)
 };

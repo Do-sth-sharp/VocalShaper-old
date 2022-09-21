@@ -1,5 +1,5 @@
 ﻿#include "MainWindow.h"
-#include "libJModule.h"
+#include <libJModule.h>
 
 MainWindow::MainWindow(juce::String name)
     : DocumentWindow(name,
@@ -23,6 +23,14 @@ MainWindow::MainWindow(juce::String name)
     this->centreWithSize(this->getWidth(), this->getHeight());
     this->setFullScreen(true);
 #endif
+
+    //注册标题修改
+    jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
+        "VocalSharp.VocalShaper.ProjectHub", "AddNotice",
+        [this](const vocalshaper::ProjectProxy* project) {
+            this->refreshTitle(project);
+        }
+    );
 
     //以下获取命令管理器
     jmadf::CallInterface<juce::ApplicationCommandManager*&>(
@@ -222,4 +230,13 @@ void MainWindow::closeEditor()
     else {
         this->mComp->setSMVisible(SMIsVisible);
     }
+}
+
+void MainWindow::refreshTitle(const vocalshaper::ProjectProxy* project)
+{
+    juce::String title("VocalShaper");
+    if (project) {
+        title += juce::String(" - ") + project->getName();
+    }
+    this->getPeer()->setTitle(title);
 }

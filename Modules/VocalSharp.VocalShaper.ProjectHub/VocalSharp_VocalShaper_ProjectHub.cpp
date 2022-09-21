@@ -106,6 +106,18 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			result = this->projects->save(index);
 		}
 	);
+	jmadf::RegisterInterface<const ProjectHub::ChangeNoticeFunction&>(
+		"AddNotice",
+		[this](const juce::String& caller, const ProjectHub::ChangeNoticeFunction& func) {
+			this->projects->addNotice(caller, func);
+		}
+	);
+	jmadf::RegisterInterface<void>(
+		"Release",
+		[this](const juce::String& caller) {
+			this->projects->release(caller);
+		}
+	);
 	return true;
 }
 
