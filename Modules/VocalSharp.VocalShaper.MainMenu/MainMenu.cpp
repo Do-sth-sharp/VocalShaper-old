@@ -22,10 +22,12 @@ commandRedo = -1,
 commandCut = -1,
 commandCopy = -1,
 commandPaste = -1,
-commandCutBoard = -1,
-commandCleanCutBoard = -1,
+commandClipBoard = -1,
+commandCleanClipBoard = -1,
 commandCreateCopy = -1,
-commmandDelete = -1,
+commandDelete = -1,
+commandCopyToSystem = -1,
+commandPasteFromSystem = -1,
 commandSelectAll = -1
 ;
 
@@ -93,10 +95,12 @@ enum EditID {
 	IDCut,
 	IDCopy,
 	IDPaste,
-	IDCutBoard,
-	IDCleanCutBoard,
+	IDClipBoard,
+	IDCleanClipBoard,
 	IDCreateCopy,
 	IDDelete,
+	IDCopyToSystem,
+	IDPasteFromSystem,
 	IDSelectAll
 };
 
@@ -216,11 +220,11 @@ juce::PopupMenu MainMenu::create()
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Cut Board", ::commandCutBoard
+			"Clip Board", ::commandClipBoard
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Clean Cut Board", ::commandCleanCutBoard
+			"Clean Clip Board", ::commandCleanClipBoard
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
@@ -228,7 +232,15 @@ juce::PopupMenu MainMenu::create()
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Delete", ::commmandDelete
+			"Delete", ::commandDelete
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Copy To System", ::commandCopyToSystem
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Paste From System", ::commandPasteFromSystem
 			);
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
@@ -397,9 +409,12 @@ juce::PopupMenu MainMenu::createEditMenu()
 	menu.addCommandItem(::commandManager, ::commandCut);
 	menu.addCommandItem(::commandManager, ::commandCopy);
 	menu.addCommandItem(::commandManager, ::commandPaste);
-	menu.addCommandItem(::commandManager, ::commandCutBoard);
-	menu.addCommandItem(::commandManager, ::commandCleanCutBoard);
-	menu.addCommandItem(::commandManager, ::commmandDelete);
+	menu.addCommandItem(::commandManager, ::commandClipBoard);
+	menu.addCommandItem(::commandManager, ::commandCleanClipBoard);
+	menu.addCommandItem(::commandManager, ::commandDelete);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandCopyToSystem);
+	menu.addCommandItem(::commandManager, ::commandPasteFromSystem);
 	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandSelectAll);
 

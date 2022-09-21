@@ -146,16 +146,16 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {juce::KeyPress('v', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 	this->infoList.add({
-		.name = "Cut Board",
-		.shortName = this->tr("sn_CutBoard"),
-		.description = this->tr("ds_CutBoard"),
+		.name = "Clip Board",
+		.shortName = this->tr("sn_ClipBoard"),
+		.description = this->tr("ds_ClipBoard"),
 		.categoryName = this->tr("cn_Edit"),
 		.defaultKeypresses = {juce::KeyPress('v', juce::ModifierKeys::Flags::ctrlModifier | juce::ModifierKeys::Flags::shiftModifier, 0)}
 		});
 	this->infoList.add({
-		.name = "Clean Cut Board",
-		.shortName = this->tr("sn_CleanCutBoard"),
-		.description = this->tr("ds_CleanCutBoard"),
+		.name = "Clean Clip Board",
+		.shortName = this->tr("sn_CleanClipBoard"),
+		.description = this->tr("ds_CleanClipBoard"),
 		.categoryName = this->tr("cn_Edit"),
 		.defaultKeypresses = {}
 		});
@@ -172,6 +172,20 @@ CommandManager::CommandManager()
 		.description = this->tr("ds_Delete"),
 		.categoryName = this->tr("cn_Edit"),
 		.defaultKeypresses = {juce::KeyPress::createFromDescription("delete")}
+		});
+	this->infoList.add({
+		.name = "Copy To System",
+		.shortName = this->tr("sn_CopyToSystem"),
+		.description = this->tr("ds_CopyToSystem"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Paste From System",
+		.shortName = this->tr("sn_PasteFromSystem"),
+		.description = this->tr("ds_PasteFromSystem"),
+		.categoryName = this->tr("cn_Edit"),
+		.defaultKeypresses = {}
 		});
 	this->infoList.add({
 		.name = "Select All",
