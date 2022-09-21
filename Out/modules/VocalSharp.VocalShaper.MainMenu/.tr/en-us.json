@@ -7,5 +7,8 @@
   "mb_Transport": "Transport",
   "mb_Automatic": "Automatic",
   "mb_Config": "Config",
-  "mb_Misc": "Misc"
+  "mb_Misc": "Misc",
+
+  "mb_Adsorb": "Adsorb",
+  "mb_Grid": "Grid"
 }

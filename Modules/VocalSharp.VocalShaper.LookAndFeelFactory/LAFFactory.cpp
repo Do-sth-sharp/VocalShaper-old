@@ -1,5 +1,6 @@
 #include "LAFFactory.h"
 #include "StartMenuButtonLAF.h"
+#include "PlayBarTextButtonLAF.h"
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(int fontHeight)
 {
@@ -39,6 +40,13 @@ juce::LookAndFeel* LAFFactory::getTabCloseButtonLAF()
 juce::LookAndFeel* LAFFactory::getPlayButtonLAF()
 {
 	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getPlayTextButtonLAF()
+{
+	auto ptrLAF = new PlayBarTextButtonLAF;
 	this->lafs.add(ptrLAF);
 	return ptrLAF;
 }

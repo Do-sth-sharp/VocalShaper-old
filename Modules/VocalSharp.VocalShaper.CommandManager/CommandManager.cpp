@@ -14,6 +14,7 @@ CommandManager::CommandManager()
 	this->acm = std::make_unique<Manager>(this);
 
 	//初始化命令列表
+	//File
 	this->infoList.add({
 		.name = "New Project",
 		.shortName = this->tr("sn_NewProject"),
@@ -106,6 +107,7 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 
+	//Edit
 	this->infoList.add({
 		.name = "Undo",
 		.shortName = this->tr("sn_Undo"),
@@ -179,6 +181,7 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {juce::KeyPress('a', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 
+	//Transport
 	this->infoList.add({
 		.name = "Play",
 		.shortName = this->tr("sn_Play"),
@@ -232,6 +235,7 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 
+	//Adsorb
 	this->infoList.add({
 		.name = "Adsorb 1 Beat",
 		.shortName = this->tr("sn_Adsorb1Beat"),
@@ -303,6 +307,8 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {}
 		});
 
+
+	//Grid
 	this->infoList.add({
 		.name = "Grid 1 Beat",
 		.shortName = this->tr("sn_Grid1Beat"),

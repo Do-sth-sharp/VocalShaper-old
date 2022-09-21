@@ -56,6 +56,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetPlayTextButtonLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf) {
+			laf = this->factory->getPlayTextButtonLAF();
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetToolButtonLAF",
 		[this](const juce::String&, juce::LookAndFeel*& laf) {
 			laf = this->factory->getToolButtonLAF();

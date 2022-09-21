@@ -23,124 +23,13 @@ PlayBar::PlayBar()
 		);
 
 	//以下获取命令ID
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Play", this->playCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Stop", this->stopCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Begin", this->beginCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"End", this->endCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Loop", this->loopCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Follow", this->followCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Back On Stop", this->backOnStopCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Undo", this->undoCommandID
-		);
-	jmadf::CallInterface<const juce::String&, int&>(
-		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-		"Redo", this->redoCommandID
-		);
+	this->initCommandID();
 
 	//以下注册命令回调
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Play", [this] {this->play(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Stop", [this] {this->stop(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Begin", [this] {this->begin(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"End", [this] {this->end(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Loop", [this] {this->loop(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Follow", [this] {this->follow(); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Back On Stop", [this] {this->backOnStop(); }
-	);
+	this->initCommandFunction();
 
 	//以下注册Flag获取函数
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Play", [this]()->int {
-			int flag = 0;
-			if (this->isPlaying()) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Stop", [this]()->int {
-			int flag = 0;
-			if (!this->isPlaying()) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Loop", [this]()->int {
-			int flag = 0;
-			if (this->isLoop()) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Follow", [this]()->int {
-			int flag = 0;
-			if (this->isFollow()) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Back On Stop", [this]()->int {
-			int flag = 0;
-			if (this->isBackOnStop()) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
+	this->initCommandFlagHook();
 
 	//以下获取界面属性
 	bool result = false;
@@ -197,6 +86,10 @@ PlayBar::PlayBar()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-playTextButtonMargin", this->sizes.width_playTextButtonMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-playTextGroupSplit", this->sizes.width_playTextGroupSplit, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -220,7 +113,7 @@ PlayBar::PlayBar()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "scale", "height-playText", this->scales.height_playText, result
+		"main", "scale", "height-playTextButton", this->scales.height_playTextButton, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -631,6 +524,51 @@ PlayBar::PlayBar()
 	//预生成字符串
 	this->textAdsorb = this->tr("lb_Adsorb");
 	this->textGrid = this->tr("lb_Grid");
+
+	//建立选择按钮样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayTextButtonLAF",
+		this->lafs.playTextButton
+		);
+	this->lafs.playTextButton->setColour(
+		juce::TextButton::ColourIds::buttonColourId, this->colors.background_playBar
+	);
+	this->lafs.playTextButton->setColour(
+		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_playBar
+	);
+	this->lafs.playTextButton->setColour(
+		juce::TextButton::ColourIds::textColourOnId, this->colors.text_playBar_value
+	);
+	this->lafs.playTextButton->setColour(
+		juce::TextButton::ColourIds::textColourOffId, this->colors.text_playBar_value
+	);
+	this->lafs.playTextButton->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+
+	//初始化吸附按钮
+	this->adsorbButton = std::make_unique<juce::TextButton>(
+		juce::String(), this->textAdsorb);
+	this->adsorbButton->setWantsKeyboardFocus(false);
+	this->adsorbButton->setFocusContainerType(juce::Component::FocusContainerType::none);
+	this->adsorbButton->setLookAndFeel(this->lafs.playTextButton);
+	this->adsorbButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->adsorbButton->onClick = [this] {this->showAdsorbMenu(); };
+	this->addAndMakeVisible(this->adsorbButton.get());
+
+	//初始化网格按钮
+	this->gridButton = std::make_unique<juce::TextButton>(
+		juce::String(), this->textGrid);
+	this->gridButton->setWantsKeyboardFocus(false);
+	this->gridButton->setFocusContainerType(juce::Component::FocusContainerType::none);
+	this->gridButton->setLookAndFeel(this->lafs.playTextButton);
+	this->gridButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->gridButton->onClick = [this] {this->showGridMenu(); };
+	this->addAndMakeVisible(this->gridButton.get());
+
+	//更新按钮
+	this->refreshAdsorbButton();
+	this->refreshGridButton();
 }
 
 void PlayBar::play()
@@ -709,6 +647,26 @@ void PlayBar::resized()
 
 	int width_rightMargin = this->sizes.width_playMarginRight * screenSize.getWidth();
 
+	int width_textButtonMargin = this->sizes.width_playTextButtonMargin * screenSize.getWidth();
+	int width_textSplit = this->sizes.width_playTextSplit * screenSize.getWidth();
+	int width_textItemSplit = this->sizes.width_playTextItemSplit * screenSize.getWidth();
+	int width_textGroupSplit = this->sizes.width_playTextGroupSplit * screenSize.getWidth();
+	int height_textButton = this->scales.height_playTextButton * this->getHeight();
+
+	//通过label作为字体标准
+	juce::Font font =
+		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->adsorbButton.get()), height_textButton);
+
+	//计算文字宽度
+	int width_textAdsorb = font.getStringWidth(this->textAdsorb);
+	int width_textGrid = font.getStringWidth(this->textGrid);
+	int width_textAdsorbButton = font.getStringWidth(this->adsorbButton->getButtonText());
+	int width_textGridButton = font.getStringWidth(this->gridButton->getButtonText());
+
+	//计算文字按钮宽度
+	int width_adsorbButton = width_textAdsorbButton + width_textButtonMargin * 2;
+	int width_gridButton = width_textGridButton + width_textButtonMargin * 2;
+
 	//调整左侧按钮位置
 	this->playButton->setBounds(
 		width_leftMargin + width_splitLine * 0 + width_button * 0 + width_buttonGroupSplit * 0,
@@ -759,6 +717,21 @@ void PlayBar::resized()
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
+
+	//调整右侧选项位置
+	this->gridButton->setBounds(
+		this->getWidth() - width_rightMargin - width_button - width_buttonGroupSplit
+		- width_gridButton,
+		this->getHeight() / 2 - height_textButton / 2,
+		width_gridButton, height_textButton
+	);
+	this->adsorbButton->setBounds(
+		this->getWidth() - width_rightMargin - width_button - width_buttonGroupSplit
+		- width_gridButton - width_textSplit - width_textGrid - width_textItemSplit
+		- width_adsorbButton,
+		this->getHeight() / 2 - height_textButton / 2,
+		width_adsorbButton, height_textButton
+	);
 }
 
 void PlayBar::paint(juce::Graphics& g)
@@ -780,6 +753,27 @@ void PlayBar::paint(juce::Graphics& g)
 	int height_splitLine = this->scales.height_playSplitLine * this->getHeight();
 
 	int width_rightMargin = this->sizes.width_playMarginRight * screenSize.getWidth();
+
+	int width_textButtonMargin = this->sizes.width_playTextButtonMargin * screenSize.getWidth();
+	int width_textSplit = this->sizes.width_playTextSplit * screenSize.getWidth();
+	int width_textItemSplit = this->sizes.width_playTextItemSplit * screenSize.getWidth();
+	int width_textGroupSplit = this->sizes.width_playTextGroupSplit * screenSize.getWidth();
+	int height_textButton = this->scales.height_playTextButton * this->getHeight();
+
+	//通过label作为字体标准
+	juce::Font font =
+		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->adsorbButton.get()), height_textButton);
+	g.setFont(font);
+
+	//计算文字宽度
+	int width_textAdsorb = font.getStringWidth(this->textAdsorb);
+	int width_textGrid = font.getStringWidth(this->textGrid);
+	int width_textAdsorbButton = font.getStringWidth(this->adsorbButton->getButtonText());
+	int width_textGridButton = font.getStringWidth(this->gridButton->getButtonText());
+
+	//计算文字按钮宽度
+	int width_adsorbButton = width_textAdsorbButton + width_textButtonMargin * 2;
+	int width_gridButton = width_textGridButton + width_textButtonMargin * 2;
 	
 	//计算分割线位置
 	int posXLine1 = width_leftMargin + width_splitLine * 4 + width_button * 4
@@ -799,4 +793,649 @@ void PlayBar::paint(juce::Graphics& g)
 		posXLine2, this->getHeight() / 2.f + height_splitLine / 2.f,
 		width_splitLine
 	);
+
+	//计算右侧文字位置
+	juce::Rectangle<int> rectTextGrid(
+		this->getWidth() - width_rightMargin - width_button - width_buttonGroupSplit
+		- width_gridButton - width_textSplit - width_textGrid,
+		this->getHeight() / 2 - height_textButton / 2,
+		width_textGrid, height_textButton
+	);
+	juce::Rectangle<int> rectTextAdsorb(
+		this->getWidth() - width_rightMargin - width_button - width_buttonGroupSplit
+		- width_gridButton - width_textSplit - width_textGrid - width_textItemSplit
+		- width_adsorbButton - width_textSplit - width_textAdsorb,
+		this->getHeight() / 2 - height_textButton / 2,
+		width_textAdsorb, height_textButton
+	);
+
+	//绘制右侧文字
+	g.setColour(this->colors.text_playBar);
+	g.drawFittedText(this->textAdsorb, rectTextAdsorb,
+		juce::Justification::centred, 1);
+	g.drawFittedText(this->textGrid, rectTextGrid,
+		juce::Justification::centred, 1);
+}
+
+PlayBar::AdsorbState PlayBar::getAdsorb()
+{
+	return this->adsorbState;
+}
+
+void PlayBar::setAdsorb(PlayBar::AdsorbState state)
+{
+	this->adsorbState = state;
+	this->refreshAdsorbButton();
+}
+
+PlayBar::GridState PlayBar::getGrid()
+{
+	return this->gridState;
+}
+
+void PlayBar::setGrid(PlayBar::GridState state)
+{
+	this->gridState = state;
+	this->refreshGridButton();
+}
+
+void PlayBar::showAdsorbMenu()
+{
+	this->createAdsorbMenu().showAt(this->adsorbButton.get());
+}
+
+void PlayBar::showGridMenu()
+{
+	this->createGridMenu().showAt(this->gridButton.get());
+}
+
+void PlayBar::initCommandID()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Play", this->playCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Stop", this->stopCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Begin", this->beginCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"End", this->endCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Loop", this->loopCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Follow", this->followCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Back On Stop", this->backOnStopCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Undo", this->undoCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Redo", this->redoCommandID
+		);
+	//Adsorb
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1 Beat", this->commandAdsorb1Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/2 Beat", this->commandAdsorb1_2Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/4 Beat", this->commandAdsorb1_4Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/6 Beat", this->commandAdsorb1_6Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/8 Beat", this->commandAdsorb1_8Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/12 Beat", this->commandAdsorb1_12Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/16 Beat", this->commandAdsorb1_16Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/24 Beat", this->commandAdsorb1_24Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/32 Beat", this->commandAdsorb1_32Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb Off", this->commandAdsorbOff
+		);
+
+	//Grid
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1 Beat", this->commandGrid1Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/2 Beat", this->commandGrid1_2Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/4 Beat", this->commandGrid1_4Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/6 Beat", this->commandGrid1_6Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/8 Beat", this->commandGrid1_8Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/12 Beat", this->commandGrid1_12Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/16 Beat", this->commandGrid1_16Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/24 Beat", this->commandGrid1_24Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/32 Beat", this->commandGrid1_32Beat
+		);
+}
+
+void PlayBar::initCommandFunction()
+{
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Play", [this] {this->play(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Stop", [this] {this->stop(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Begin", [this] {this->begin(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"End", [this] {this->end(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Loop", [this] {this->loop(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Follow", [this] {this->follow(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Back On Stop", [this] {this->backOnStop(); }
+	);
+	//Adsorb
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/2 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_2Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/4 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_4Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/6 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_6Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/8 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_8Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/12 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_12Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/16 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_16Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/24 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_24Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb 1/32 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_32Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Adsorb Off", [this] {this->setAdsorb(AdsorbState::AdsorbOff); }
+	);
+	//Grid
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1 Beat", [this] {this->setGrid(GridState::Grid1Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/2 Beat", [this] {this->setGrid(GridState::Grid1_2Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/4 Beat", [this] {this->setGrid(GridState::Grid1_4Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/6 Beat", [this] {this->setGrid(GridState::Grid1_6Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/8 Beat", [this] {this->setGrid(GridState::Grid1_8Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/12 Beat", [this] {this->setGrid(GridState::Grid1_12Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/16 Beat", [this] {this->setGrid(GridState::Grid1_16Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/24 Beat", [this] {this->setGrid(GridState::Grid1_24Beat); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Grid 1/32 Beat", [this] {this->setGrid(GridState::Grid1_32Beat); }
+	);
+}
+
+void PlayBar::initCommandFlagHook()
+{
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Play", [this]()->int {
+			int flag = 0;
+			if (this->isPlaying()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Stop", [this]()->int {
+			int flag = 0;
+			if (!this->isPlaying()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Loop", [this]()->int {
+			int flag = 0;
+			if (this->isLoop()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Follow", [this]()->int {
+			int flag = 0;
+			if (this->isFollow()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Back On Stop", [this]()->int {
+			int flag = 0;
+			if (this->isBackOnStop()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	//Adsorb
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/2 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_2Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/4 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_4Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/6 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_6Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/8 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_8Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/12 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_12Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/16 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_16Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/24 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_24Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb 1/32 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::Adsorb1_32Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Adsorb Off", [this]()->int {
+			int flag = 0;
+			if (this->getAdsorb() == AdsorbState::AdsorbOff) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	//Grid
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/2 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_2Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/4 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_4Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/6 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_6Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/8 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_8Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/12 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_12Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/16 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_16Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/24 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_24Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Grid 1/32 Beat", [this]()->int {
+			int flag = 0;
+			if (this->getGrid() == GridState::Grid1_32Beat) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+}
+
+void PlayBar::refreshAdsorbButton()
+{
+	juce::String buttonText;
+	switch (this->adsorbState)
+	{
+	case AdsorbState::Adsorb1Beat:
+		buttonText = this->tr("sn_Adsorb1Beat");
+		break;
+	case AdsorbState::Adsorb1_2Beat:
+		buttonText = this->tr("sn_Adsorb1/2Beat");
+		break;
+	case AdsorbState::Adsorb1_4Beat:
+		buttonText = this->tr("sn_Adsorb1/4Beat");
+		break;
+	case AdsorbState::Adsorb1_6Beat:
+		buttonText = this->tr("sn_Adsorb1/6Beat");
+		break;
+	case AdsorbState::Adsorb1_8Beat:
+		buttonText = this->tr("sn_Adsorb1/8Beat");
+		break;
+	case AdsorbState::Adsorb1_12Beat:
+		buttonText = this->tr("sn_Adsorb1/12Beat");
+		break;
+	case AdsorbState::Adsorb1_16Beat:
+		buttonText = this->tr("sn_Adsorb1/16Beat");
+		break;
+	case AdsorbState::Adsorb1_24Beat:
+		buttonText = this->tr("sn_Adsorb1/24Beat");
+		break;
+	case AdsorbState::Adsorb1_32Beat:
+		buttonText = this->tr("sn_Adsorb1/32Beat");
+		break;
+	case AdsorbState::AdsorbOff:
+		buttonText = this->tr("sn_AdsorbOff");
+		break;
+	}
+
+	this->adsorbButton->setButtonText(buttonText);
+	this->resized();
+	this->repaint();
+}
+
+void PlayBar::refreshGridButton()
+{
+	juce::String buttonText;
+	switch (this->gridState)
+	{
+	case GridState::Grid1Beat:
+		buttonText = this->tr("sn_Grid1Beat");
+		break;
+	case GridState::Grid1_2Beat:
+		buttonText = this->tr("sn_Grid1/2Beat");
+		break;
+	case GridState::Grid1_4Beat:
+		buttonText = this->tr("sn_Grid1/4Beat");
+		break;
+	case GridState::Grid1_6Beat:
+		buttonText = this->tr("sn_Grid1/6Beat");
+		break;
+	case GridState::Grid1_8Beat:
+		buttonText = this->tr("sn_Grid1/8Beat");
+		break;
+	case GridState::Grid1_12Beat:
+		buttonText = this->tr("sn_Grid1/12Beat");
+		break;
+	case GridState::Grid1_16Beat:
+		buttonText = this->tr("sn_Grid1/16Beat");
+		break;
+	case GridState::Grid1_24Beat:
+		buttonText = this->tr("sn_Grid1/24Beat");
+		break;
+	case GridState::Grid1_32Beat:
+		buttonText = this->tr("sn_Grid1/32Beat");
+		break;
+	}
+
+	this->gridButton->setButtonText(buttonText);
+	this->resized();
+	this->repaint();
+}
+
+juce::PopupMenu PlayBar::createAdsorbMenu()
+{
+	juce::PopupMenu menu;
+
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_2Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_4Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_6Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_8Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_12Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_16Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_24Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorb1_32Beat);
+	menu.addCommandItem(this->commandManager, this->commandAdsorbOff);
+
+	return menu;
+}
+
+juce::PopupMenu PlayBar::createGridMenu()
+{
+	juce::PopupMenu menu;
+
+	menu.addCommandItem(this->commandManager, this->commandGrid1Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_2Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_4Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_6Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_8Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_12Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_16Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_24Beat);
+	menu.addCommandItem(this->commandManager, this->commandGrid1_32Beat);
+
+	return menu;
 }

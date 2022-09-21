@@ -81,7 +81,9 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayButtonLAF")
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayTextButtonLAF")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;

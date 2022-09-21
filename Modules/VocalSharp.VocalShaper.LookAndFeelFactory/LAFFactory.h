@@ -18,6 +18,7 @@ public:
 	juce::LookAndFeel* getMainMenuButtonLAF();
 	juce::LookAndFeel* getTabCloseButtonLAF();
 	juce::LookAndFeel* getPlayButtonLAF();
+	juce::LookAndFeel* getPlayTextButtonLAF();
 	juce::LookAndFeel* getToolButtonLAF();
 private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFFactory)

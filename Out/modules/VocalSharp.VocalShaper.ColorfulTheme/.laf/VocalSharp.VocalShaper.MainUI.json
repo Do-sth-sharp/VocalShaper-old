@@ -25,7 +25,7 @@
         "icon-playBarButton-highlight:string":"$ThemeColorD1",
         "background-playBarButton-highlight:string":"$ThemeColorB2",
         "text-playBar:string":"$ThemeColorD2",
-        "text-playBar-value:string":"ThemeColorA2",
+        "text-playBar-value:string":"$ThemeColorA2",
 
         "split-playBar:string":"$ThemeColorD4"
     },

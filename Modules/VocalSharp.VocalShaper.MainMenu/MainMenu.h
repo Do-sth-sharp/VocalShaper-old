@@ -21,4 +21,7 @@ private:
 	static juce::PopupMenu createAutomaticMenu();
 	static juce::PopupMenu createConfigMenu();
 	static juce::PopupMenu createMiscMenu();
+
+	static juce::PopupMenu createAdsorbMenu();
+	static juce::PopupMenu createGridMenu();
 };

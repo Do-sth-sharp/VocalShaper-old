@@ -10,5 +10,26 @@
   "tip_SaveProjectError": "Could not save the project",
 
   "lb_Adsorb": "Adsorb",
-  "lb_Grid": "Grid"
+  "lb_Grid": "Grid",
+
+  "sn_Adsorb1Beat": "1 Beat",
+  "sn_Adsorb1/2Beat": "1/2 Beat",
+  "sn_Adsorb1/4Beat": "1/4 Beat",
+  "sn_Adsorb1/6Beat": "1/6 Beat",
+  "sn_Adsorb1/8Beat": "1/8 Beat",
+  "sn_Adsorb1/12Beat": "1/12 Beat",
+  "sn_Adsorb1/16Beat": "1/16 Beat",
+  "sn_Adsorb1/24Beat": "1/24 Beat",
+  "sn_Adsorb1/32Beat": "1/32 Beat",
+  "sn_AdsorbOff": "Off",
+
+  "sn_Grid1Beat": "1 Beat",
+  "sn_Grid1/2Beat": "1/2 Beat",
+  "sn_Grid1/4Beat": "1/4 Beat",
+  "sn_Grid1/6Beat": "1/6 Beat",
+  "sn_Grid1/8Beat": "1/8 Beat",
+  "sn_Grid1/12Beat": "1/12 Beat",
+  "sn_Grid1/16Beat": "1/16 Beat",
+  "sn_Grid1/24Beat": "1/24 Beat",
+  "sn_Grid1/32Beat": "1/32 Beat"
 }

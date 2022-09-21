@@ -7,5 +7,8 @@
   "mb_Transport": "播放控制",
   "mb_Automatic": "自动化",
   "mb_Config": "设置",
-  "mb_Misc": "其它"
+  "mb_Misc": "其它",
+
+  "mb_Adsorb": "吸附",
+  "mb_Grid": "网格"
 }

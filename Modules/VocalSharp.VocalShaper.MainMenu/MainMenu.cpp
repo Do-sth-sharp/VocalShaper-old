@@ -39,6 +39,31 @@ commandFollow = -1,
 commandBackOnStop = -1
 ;
 
+int
+commandAdsorb1Beat = -1,
+commandAdsorb1_2Beat = -1,
+commandAdsorb1_4Beat = -1,
+commandAdsorb1_6Beat = -1,
+commandAdsorb1_8Beat = -1,
+commandAdsorb1_12Beat = -1,
+commandAdsorb1_16Beat = -1,
+commandAdsorb1_24Beat = -1,
+commandAdsorb1_32Beat = -1,
+commandAdsorbOff = -1
+;
+
+int
+commandGrid1Beat = -1,
+commandGrid1_2Beat = -1,
+commandGrid1_4Beat = -1,
+commandGrid1_6Beat = -1,
+commandGrid1_8Beat = -1,
+commandGrid1_12Beat = -1,
+commandGrid1_16Beat = -1,
+commandGrid1_24Beat = -1,
+commandGrid1_32Beat = -1
+;
+
 enum GroupID {
 	IDFile = 0x01,
 	IDEdit,
@@ -75,6 +100,11 @@ enum EditID {
 	IDSelectAll
 };
 
+enum ViewID {
+	IDAdsorb = 0x00,
+	IDGrid
+};
+
 enum TransportID {
 	IDPlay = 0x00,
 	IDStop,
@@ -83,6 +113,31 @@ enum TransportID {
 	IDLoop,
 	IDFollow,
 	IDBackOnStop
+};
+
+enum AdsorbID {
+	IDAdsorb1Beat = 0x00,
+	IDAdsorb1_2Beat,
+	IDAdsorb1_4Beat,
+	IDAdsorb1_6Beat,
+	IDAdsorb1_8Beat,
+	IDAdsorb1_12Beat,
+	IDAdsorb1_16Beat,
+	IDAdsorb1_24Beat,
+	IDAdsorb1_32Beat,
+	IDAdsorbOff
+};
+
+enum GridID {
+	IDGrid1Beat = 0x00,
+	IDGrid1_2Beat,
+	IDGrid1_4Beat,
+	IDGrid1_6Beat,
+	IDGrid1_8Beat,
+	IDGrid1_12Beat,
+	IDGrid1_16Beat,
+	IDGrid1_24Beat,
+	IDGrid1_32Beat
 };
 
 juce::PopupMenu MainMenu::create()
@@ -104,6 +159,7 @@ juce::PopupMenu MainMenu::create()
 			);
 
 		//获取ID
+		//File
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"New Project", ::commandNewProj
@@ -137,6 +193,7 @@ juce::PopupMenu MainMenu::create()
 			"Close Editor", ::commandCloseEditor
 			);
 
+		//Edit
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Undo", ::commandUndo
@@ -178,6 +235,7 @@ juce::PopupMenu MainMenu::create()
 			"Select All", ::commandSelectAll
 			);
 
+		//Transport
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Play", ::commandPlay
@@ -205,6 +263,86 @@ juce::PopupMenu MainMenu::create()
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 			"Back On Stop", ::commandBackOnStop
+			);
+
+		//Adsorb
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1 Beat", ::commandAdsorb1Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/2 Beat", ::commandAdsorb1_2Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/4 Beat", ::commandAdsorb1_4Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/6 Beat", ::commandAdsorb1_6Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/8 Beat", ::commandAdsorb1_8Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/12 Beat", ::commandAdsorb1_12Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/16 Beat", ::commandAdsorb1_16Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/24 Beat", ::commandAdsorb1_24Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb 1/32 Beat", ::commandAdsorb1_32Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Adsorb Off", ::commandAdsorbOff
+			);
+
+		//Grid
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1 Beat", ::commandGrid1Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/2 Beat", ::commandGrid1_2Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/4 Beat", ::commandGrid1_4Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/6 Beat", ::commandGrid1_6Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/8 Beat", ::commandGrid1_8Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/12 Beat", ::commandGrid1_12Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/16 Beat", ::commandGrid1_16Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/24 Beat", ::commandGrid1_24Beat
+			);
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Grid 1/32 Beat", ::commandGrid1_32Beat
 			);
 	}
 
@@ -273,6 +411,9 @@ juce::PopupMenu MainMenu::createViewMenu()
 	int sectionId = GroupID::IDView;
 	juce::PopupMenu menu;
 
+	menu.addSubMenu(MainMenu::tr("mb_Adsorb"), MainMenu::createAdsorbMenu());
+	menu.addSubMenu(MainMenu::tr("mb_Grid"), MainMenu::createGridMenu());
+
 	return menu;
 }
 
@@ -330,6 +471,43 @@ juce::PopupMenu MainMenu::createMiscMenu()
 {
 	int sectionId = GroupID::IDMisc;
 	juce::PopupMenu menu;
+
+	return menu;
+}
+
+juce::PopupMenu MainMenu::createAdsorbMenu()
+{
+	int sectionId = ViewID::IDAdsorb << 8; 
+	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandAdsorb1Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_2Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_4Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_6Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_8Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_12Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_16Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_24Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorb1_32Beat);
+	menu.addCommandItem(::commandManager, ::commandAdsorbOff);
+
+	return menu;
+}
+
+juce::PopupMenu MainMenu::createGridMenu()
+{
+	int sectionId = ViewID::IDGrid << 8;
+	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandGrid1Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_2Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_4Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_6Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_8Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_12Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_16Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_24Beat);
+	menu.addCommandItem(::commandManager, ::commandGrid1_32Beat);
 
 	return menu;
 }

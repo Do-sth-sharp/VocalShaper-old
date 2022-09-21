@@ -20,8 +20,9 @@
         "width-playMarginRight:number":0.005,
         "width-playButtonSplit:number":0.005,
         "width-playButtonGroupSplit:number":0.01,
+        "width-playTextButtonMargin:number":0.005,
         "width-playTextGroupSplit:number":0.01,
-        "width-playTextItemSplit:number":0.005,
+        "width-playTextItemSplit:number":0.0075,
         "width-playTextSplit:number":0.0025,
 
         "width-playSplitLine:number":0.00075
@@ -35,7 +36,7 @@
         "height-splitLine:number":0.5,
 
         "height-playButton:number":0.6,
-        "height-playText:number":0.5,
+        "height-playTextButton:number":0.5,
         "height-playSplitLine:number":0.5
     }
 }
