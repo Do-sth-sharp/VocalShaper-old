@@ -45,6 +45,16 @@ UIComponent::UIComponent()
     this->playBar = std::make_unique<PlayBar>();
     this->addAndMakeVisible(this->playBar.get());
 
+    //获取编辑器
+    jmadf::CallInterface<juce::Component*&>(
+        "VocalSharp.VocalShaper.MainEditor", "GetPtr",
+        this->ptrEditor);
+
+    //建立编辑器
+    if (this->ptrEditor) {
+        this->addAndMakeVisible(this->ptrEditor);
+    }
+
     //空白处获取焦点
     this->setWantsKeyboardFocus(true);
 }
@@ -74,6 +84,14 @@ void UIComponent::resized()
         0, this->tabBar->getHeight(),
         this->getWidth(), screenSize.getHeight() * this->sizes.height_playBar
     );
+
+    //调整编辑器大小
+    if (this->ptrEditor) {
+        this->ptrEditor->setBounds(
+            0, this->tabBar->getHeight() + this->playBar->getHeight(),
+            this->getWidth(), this->getHeight() - this->tabBar->getHeight() - this->playBar->getHeight()
+        );
+    }
 }
 
 void UIComponent::setCaller(const juce::String& caller)

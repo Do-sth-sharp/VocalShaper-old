@@ -195,6 +195,15 @@ CommandManager::CommandManager()
 		.defaultKeypresses = {juce::KeyPress('a', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 
+	//View
+	this->infoList.add({
+		.name = "Show Mixture Editor",
+		.shortName = this->tr("sn_ShowMixtureEditor"),
+		.description = this->tr("ds_ShowMixtureEditor"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+
 	//Transport
 	this->infoList.add({
 		.name = "Play",

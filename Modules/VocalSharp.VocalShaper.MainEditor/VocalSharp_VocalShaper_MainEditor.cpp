@@ -1,19 +1,19 @@
-#include "VocalSharp_VocalShaper_MainUI.h"
+#include "VocalSharp_VocalShaper_MainEditor.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
-VocalSharp_VocalShaper_MainUI::VocalSharp_VocalShaper_MainUI()
+VocalSharp_VocalShaper_MainEditor::VocalSharp_VocalShaper_MainEditor()
 	:Module()
 {
 	
 }
 
-VocalSharp_VocalShaper_MainUI::~VocalSharp_VocalShaper_MainUI()
+VocalSharp_VocalShaper_MainEditor::~VocalSharp_VocalShaper_MainEditor()
 {
 	
 }
 
-bool VocalSharp_VocalShaper_MainUI::init()
+bool VocalSharp_VocalShaper_MainEditor::init()
 {
 	if (!(
 		jmadf::LoadModule("WuChang.JMADF.LookAndFeelConfigs") &&
@@ -24,8 +24,7 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.MainEditor")
+		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")
 		)) {
 		return false;
 	}
@@ -77,14 +76,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		return false;
 	}
 	if (
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTabCloseButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayTextButtonLAF")
+		!jmadf::CheckInterface<juce::LookAndFeel*&, juce::Colour>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStretchableBarLAF")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
@@ -140,69 +133,27 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
 	}
-	if (
-		!jmadf::CheckInterface<juce::Component*&>(
-			"VocalSharp.VocalShaper.MainEditor", "GetPtr")
-		) {
-		jmadf::RaiseException("@VocalSharp.VocalShaper.MainEditor:Bad Interfaces!");
+
+	this->editorComp = std::make_unique<EditorComponent>();
+	if (!this->editorComp) {
+		jmadf::RaiseException("Can't alloc memory space for editor!");
 		return false;
 	}
 
-	this->UIComp = std::make_unique<UIComponent>();
-	if (!this->UIComp) {
-		jmadf::RaiseException("Can't alloc memory space for main UI!");
-		return false;
-	}
-
-	auto ptrUI = this->UIComp.get();
+	auto ptrEditor = this->editorComp.get();
 	jmadf::RegisterInterface<juce::Component*&>(
 		"GetPtr",
-		[ptrUI](const juce::String& caller, juce::Component*& ptr) {
-			ptrUI->setCaller(caller);
-			ptr = ptrUI;
-		}
-	);
-
-	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
-		"NewProject",
-		[ptrUI](const juce::String& caller,
-			const juce::String& name, const juce::String& path, bool& result)
-		{
-			result = ptrUI->newProj(name, path);
-		}
-	);
-	jmadf::RegisterInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
-		"CopyProject",
-		[ptrUI](const juce::String& caller,
-			const juce::String& name, const juce::String& path,
-			const juce::String& nameSrc, const juce::String& pathSrc, bool& result)
-		{
-			result = ptrUI->copyProj(name, path, nameSrc, pathSrc);
-		}
-	);
-	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
-		"OpenProject",
-		[ptrUI](const juce::String& caller,
-			const juce::String& name, const juce::String& path, bool& result)
-		{
-			result = ptrUI->openProj(name, path);
-		}
-	);
-
-	jmadf::RegisterInterface<bool&>(
-		"CloseIsAvailable",
-		[ptrUI](const juce::String& caller, bool& result)
-		{
-			result = ptrUI->wannaClose();
+		[ptrEditor](const juce::String& caller, juce::Component*& ptr) {
+			ptr = ptrEditor;
 		}
 	);
 
 	return true;
 }
 
-void VocalSharp_VocalShaper_MainUI::destory()
+void VocalSharp_VocalShaper_MainEditor::destory()
 {
-	this->UIComp = nullptr;
+	this->editorComp = nullptr;
 	jmadf::CallInterface<void>(
 		"WuChang.JMADF.GlobalConfigs", "Close");
 	jmadf::CallInterface<void>(

@@ -1,0 +1,13 @@
+{
+    "parent":
+    {
+        "class":"VocalSharp.VocalShaper.MainUI"
+    },
+    "color":
+    {
+        "stretchableBar:string":"$ThemeColorA1"
+    },
+    "resource":
+    {
+    }
+}

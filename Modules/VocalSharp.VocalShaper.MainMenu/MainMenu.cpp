@@ -32,6 +32,10 @@ commandSelectAll = -1
 ;
 
 int
+commandShowMixtureEditor = -1
+;
+
+int
 commandPlay = -1,
 commandStop = -1,
 commandBegin = -1,
@@ -106,7 +110,8 @@ enum EditID {
 
 enum ViewID {
 	IDAdsorb = 0x00,
-	IDGrid
+	IDGrid,
+	IDShowMixtureEditor
 };
 
 enum TransportID {
@@ -247,6 +252,12 @@ juce::PopupMenu MainMenu::create()
 			"Select All", ::commandSelectAll
 			);
 
+		//View
+		jmadf::CallInterface<const juce::String&, int&>(
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+			"Show Mixture Editor", ::commandShowMixtureEditor
+			);
+
 		//Transport
 		jmadf::CallInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
@@ -360,6 +371,7 @@ juce::PopupMenu MainMenu::create()
 
 	juce::PopupMenu menu;
 
+	menu.addSectionHeader("VocalShaper");
 	menu.addSubMenu(MainMenu::tr("mb_File"), MainMenu::createFileMenu());
 	menu.addSubMenu(MainMenu::tr("mb_Edit"), MainMenu::createEditMenu());
 	menu.addSubMenu(MainMenu::tr("mb_View"), MainMenu::createViewMenu());
@@ -428,6 +440,8 @@ juce::PopupMenu MainMenu::createViewMenu()
 
 	menu.addSubMenu(MainMenu::tr("mb_Adsorb"), MainMenu::createAdsorbMenu());
 	menu.addSubMenu(MainMenu::tr("mb_Grid"), MainMenu::createGridMenu());
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandShowMixtureEditor);
 
 	return menu;
 }

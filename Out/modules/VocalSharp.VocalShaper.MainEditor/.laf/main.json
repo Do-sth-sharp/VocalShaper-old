@@ -1,0 +1,23 @@
+{
+    "parent":
+    {
+        "module":"VocalSharp.VocalShaper.ThemeManager",
+        "class":"VocalSharp.VocalShaper.MainEditor"
+    },
+    "size":
+    {
+        "height-stretchableBar:number":0.005
+    },
+    "position":
+    {
+    },
+    "scale":
+    {
+        "height-top-max:number":0.6,
+        "height-top-min:number":0.2,
+        "height-top-prefer:number":0.4,
+        "height-bottom-max:number":0.8,
+        "height-bottom-min:number":0.4,
+        "height-bottom-prefer:number":0.6
+    }
+}

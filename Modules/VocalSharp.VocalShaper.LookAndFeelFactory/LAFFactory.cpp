@@ -1,6 +1,7 @@
 #include "LAFFactory.h"
 #include "StartMenuButtonLAF.h"
 #include "PlayBarTextButtonLAF.h"
+#include "StretchableBarLAF.h"
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(int fontHeight)
 {
@@ -54,6 +55,13 @@ juce::LookAndFeel* LAFFactory::getPlayTextButtonLAF()
 juce::LookAndFeel* LAFFactory::getToolButtonLAF()
 {
 	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->lafs.add(ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getStretchableBarLAF(juce::Colour mainColour)
+{
+	auto ptrLAF = new StretchableBarLAF(mainColour);
 	this->lafs.add(ptrLAF);
 	return ptrLAF;
 }

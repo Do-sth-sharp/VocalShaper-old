@@ -66,6 +66,10 @@
   "ds_PasteFromSystem": "以json序列格式从系统剪贴板粘贴",
   "ds_SelectAll": "全选",
 
+  "sn_ShowMixtureEditor": "显示混合编辑器",
+
+  "ds_ShowMixtureEditor": "在界面下半部分显示混合编辑器",
+
   "sn_Play": "播放",
   "sn_Stop": "停止",
   "sn_Begin": "到最前",

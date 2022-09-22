@@ -1,0 +1,17 @@
+{
+  "id": "VocalSharp.VocalShaper.MainEditor",
+  "version": "0.0.1",
+  "group": "VocalShaper.OfficialModules",
+  "productId": "{08338208-B752-4A90-9C73-4163152D6818}",
+  "entry": "VocalSharp.VocalShaper.MainEditor",
+  "description": "VocalShaper编辑器",
+  "dependencies": [
+    "WuChang.JMADF.LookAndFeelConfigs",
+    "WuChang.JMADF.DynamicRC",
+    "WuChang.JMADF.Device",
+    "WuChang.JMADF.GlobalConfigs",
+    "WuChang.JMADF.Translates",
+    "VocalSharp.VocalShaper.LookAndFeelFactory",
+    "VocalSharp.VocalShaper.ProjectHub"
+  ]
+}

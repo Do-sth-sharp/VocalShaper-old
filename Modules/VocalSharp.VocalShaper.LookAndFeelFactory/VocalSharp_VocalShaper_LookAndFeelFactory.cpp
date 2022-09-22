@@ -67,6 +67,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getToolButtonLAF();
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&, juce::Colour>(
+		"GetStretchableBarLAF",
+		[this](const juce::String&, juce::LookAndFeel*& laf, juce::Colour mainColour) {
+			laf = this->factory->getStretchableBarLAF(mainColour);
+		}
+	);
 
 	return true;
 }

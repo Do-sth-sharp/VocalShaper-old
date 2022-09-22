@@ -20,6 +20,8 @@ public:
 	juce::LookAndFeel* getPlayButtonLAF();
 	juce::LookAndFeel* getPlayTextButtonLAF();
 	juce::LookAndFeel* getToolButtonLAF();
+	juce::LookAndFeel* getStretchableBarLAF(juce::Colour mainColour);
+
 private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFFactory)
 };

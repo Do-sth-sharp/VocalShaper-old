@@ -66,6 +66,10 @@
   "ds_PasteFromSystem": "Paste from system clipboard as json",
   "ds_SelectAll": "Select all",
 
+  "sn_ShowMixtureEditor": "Show Mixture Editor",
+
+  "ds_ShowMixtureEditor": "Show mixture editor at the bottom",
+
   "sn_Play": "Play",
   "sn_Stop": "Stop",
   "sn_Begin": "To Begin",
