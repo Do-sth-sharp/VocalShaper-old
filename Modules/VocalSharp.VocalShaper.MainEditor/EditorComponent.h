@@ -2,6 +2,7 @@
 #include <JuceHeader.h>
 #include "TopEditor.h"
 #include "BottomEditor.h"
+#include <libVocalShaper.h>
 
 class EditorComponent final : public juce::Component
 {
@@ -11,6 +12,33 @@ public:
 
 	void setTrackOpen(bool trackOpen);
 	bool isTrackOpen();
+
+	void projectChanged(const vocalshaper::ProjectProxy* ptr);
+
+	void undo();
+	void redo();
+	void cut();
+	void copy();
+	void paste();
+	void clipBoard();
+	void cleanClipBoard();
+	void createCopy();
+	void delete_();
+	void copyToSystem();
+	void pasteFromSystem();
+	void selectAll();
+
+	bool couldUndo();
+	bool couldRedo();
+	bool couldCut();
+	bool couldCopy();
+	bool couldPaste();
+	bool couldCleanClipBoard();
+	bool couldCreateCopy();
+	bool couldDelete();
+	bool couldCopyToSystem();
+	bool couldPasteFromSystem();
+	bool couldSelectAll();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -53,6 +81,9 @@ private:
 	std::unique_ptr<juce::StretchableLayoutResizerBar> slBar;
 
 	bool trackOpenStateChanged = false;
+
+	vocalshaper::ProjectProxy* project = nullptr;
+	juce::ReadWriteLock projectLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorComponent)
 };

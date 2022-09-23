@@ -111,7 +111,11 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		!jmadf::CheckInterface<int, bool&>(
 			"VocalSharp.VocalShaper.ProjectHub", "SaveProj") ||
 		!jmadf::CheckInterface<int>(
-			"VocalSharp.VocalShaper.ProjectHub", "CloseProj")
+			"VocalSharp.VocalShaper.ProjectHub", "CloseProj") ||
+		!jmadf::CheckInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
+			"VocalSharp.VocalShaper.ProjectHub", "AddNotice") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ProjectHub", "Release")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
@@ -213,4 +217,6 @@ void VocalSharp_VocalShaper_MainUI::destory()
 		"WuChang.JMADF.DynamicRC", "Unload");
 	jmadf::CallInterface<void>(
 		"VocalSharp.VocalShaper.CommandManager", "Close");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ProjectHub", "Release");
 }

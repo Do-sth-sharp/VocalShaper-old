@@ -1,5 +1,6 @@
 #pragma once
 #include <JuceHeader.h>
+#include <libVocalShaper.h>
 
 class PlayBar final : public juce::Component
 {
@@ -19,6 +20,8 @@ public:
 	bool isLoop();
 	bool isFollow();
 	bool isBackOnStop();
+
+	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -139,6 +142,8 @@ private:
 		commandGrid1_32Beat = -1;
 
 	juce::ApplicationCommandManager* commandManager = nullptr;
+	vocalshaper::ProjectProxy* project = nullptr;
+	juce::ReadWriteLock projectLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayBar)
 };

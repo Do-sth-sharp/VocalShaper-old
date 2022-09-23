@@ -566,6 +566,14 @@ PlayBar::PlayBar()
 	this->gridButton->onClick = [this] {this->showGridMenu(); };
 	this->addAndMakeVisible(this->gridButton.get());
 
+	//添加项目回调
+	jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
+		"VocalSharp.VocalShaper.ProjectHub", "AddNotice",
+		[this](const vocalshaper::ProjectProxy* project) {
+			this->projectChanged(project);
+		}
+	);
+
 	//更新按钮
 	this->refreshAdsorbButton();
 	this->refreshGridButton();
@@ -628,6 +636,16 @@ bool PlayBar::isBackOnStop()
 {
 	//TODO
 	return false;
+}
+
+void PlayBar::projectChanged(const vocalshaper::ProjectProxy* ptr)
+{
+	juce::ScopedWriteLock locker(this->projectLock);
+	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->playButton->enablementChanged();
+	this->stopButton->enablementChanged();
+	this->undoButton->enablementChanged();
+	this->redoButton->enablementChanged();
 }
 
 void PlayBar::resized()

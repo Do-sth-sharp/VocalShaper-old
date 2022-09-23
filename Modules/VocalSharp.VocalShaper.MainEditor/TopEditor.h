@@ -1,11 +1,14 @@
 #pragma once
 #include <JuceHeader.h>
+#include <libVocalShaper.h>
 
 class TopEditor final : public juce::Component
 {
 public:
 	TopEditor();
 	~TopEditor() override = default;
+
+	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
 	void paint(juce::Graphics& g) override;
 

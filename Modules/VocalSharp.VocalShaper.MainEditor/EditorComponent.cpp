@@ -88,6 +88,14 @@ EditorComponent::EditorComponent()
 	this->slBar->setLookAndFeel(this->lafs.stretchableBar);
 	this->addChildComponent(this->slBar.get());
 
+	//添加项目回调
+	jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
+		"VocalSharp.VocalShaper.ProjectHub", "AddNotice",
+		[this](const vocalshaper::ProjectProxy* project) {
+			this->projectChanged(project);
+		}
+	);
+
 	//显示模式
 	this->setTrackOpen(false);
 }
@@ -110,6 +118,147 @@ void EditorComponent::setTrackOpen(bool trackOpen)
 bool EditorComponent::isTrackOpen()
 {
 	return this->bottomEditor->isVisible();
+}
+
+void EditorComponent::projectChanged(const vocalshaper::ProjectProxy* ptr)
+{
+	juce::ScopedWriteLock locker(this->projectLock);
+	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->topEditor->projectChanged(ptr);
+	this->bottomEditor->projectChanged(ptr);
+}
+
+void EditorComponent::undo()
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	return this->project->getProcesser()->undo();
+}
+
+void EditorComponent::redo()
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	return this->project->getProcesser()->redo();
+}
+
+void EditorComponent::cut()
+{
+
+}
+
+void EditorComponent::copy()
+{
+
+}
+
+void EditorComponent::paste()
+{
+
+}
+
+void EditorComponent::clipBoard()
+{
+
+}
+
+void EditorComponent::cleanClipBoard()
+{
+
+}
+
+void EditorComponent::createCopy()
+{
+
+}
+
+void EditorComponent::delete_()
+{
+
+}
+
+void EditorComponent::copyToSystem()
+{
+
+}
+
+void EditorComponent::pasteFromSystem()
+{
+
+}
+
+void EditorComponent::selectAll()
+{
+
+}
+
+bool EditorComponent::couldUndo()
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	if (this->project) {
+		auto ptrProcesser = this->project->getProcesser();
+		if (ptrProcesser) {
+			return ptrProcesser->couldUndo();
+		}
+	}
+	return false;
+}
+
+bool EditorComponent::couldRedo()
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	if (this->project) {
+		auto ptrProcesser = this->project->getProcesser();
+		if (ptrProcesser) {
+			return ptrProcesser->couldRedo();
+		}
+	}
+	return false;
+}
+
+bool EditorComponent::couldCut()
+{
+	return false;
+}
+
+bool EditorComponent::couldCopy()
+{
+	return false;
+}
+
+bool EditorComponent::couldPaste()
+{
+	return false;
+}
+
+bool EditorComponent::couldCleanClipBoard()
+{
+	return false;
+}
+
+bool EditorComponent::couldCreateCopy()
+{
+	return false;
+}
+
+bool EditorComponent::couldDelete()
+{
+	return false;
+}
+
+bool EditorComponent::couldCopyToSystem()
+{
+	return false;
+}
+
+bool EditorComponent::couldPasteFromSystem()
+{
+	juce::String str = juce::SystemClipboard::getTextFromClipboard();
+	juce::var var;
+	return juce::JSON::parse(str, var).wasOk();
+}
+
+bool EditorComponent::couldSelectAll()
+{
+	return false;
 }
 
 void EditorComponent::resized()
@@ -191,6 +340,55 @@ void EditorComponent::initCommandFunction()
 			this->setTrackOpen(!this->isTrackOpen());
 		}
 	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Undo", [this] {this->undo(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Redo", [this] {this->redo(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Cut", [this] {this->cut(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Copy", [this] {this->copy(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Paste", [this] {this->paste(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Clip Board", [this] {this->clipBoard(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Clean Clip Board", [this] {this->cleanClipBoard(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Create Copy", [this] {this->createCopy(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Delete", [this] {this->delete_(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Copy To System", [this] {this->copyToSystem(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Paste From System", [this] {this->pasteFromSystem(); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Select All", [this] {this->selectAll(); }
+	);
 }
 
 void EditorComponent::initCommandFlagHook()
@@ -201,6 +399,117 @@ void EditorComponent::initCommandFlagHook()
 			int flag = 0;
 			if (this->isTrackOpen()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Undo", [this]()->int {
+			int flag = 0;
+			if (!this->couldUndo()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Redo", [this]()->int {
+			int flag = 0;
+			if (!this->couldRedo()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Cut", [this]()->int {
+			int flag = 0;
+			if (!this->couldCut()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Copy", [this]()->int {
+			int flag = 0;
+			if (!this->couldCopy()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Paste", [this]()->int {
+			int flag = 0;
+			if (!this->couldPaste()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Clean Clip Board", [this]()->int {
+			int flag = 0;
+			if (!this->couldCleanClipBoard()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Create Copy", [this]()->int {
+			int flag = 0;
+			if (!this->couldCreateCopy()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Delete", [this]()->int {
+			int flag = 0;
+			if (!this->couldDelete()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Copy To System", [this]()->int {
+			int flag = 0;
+			if (!this->couldCopyToSystem()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Paste From System", [this]()->int {
+			int flag = 0;
+			if (!this->couldPasteFromSystem()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Select All", [this]()->int {
+			int flag = 0;
+			if (!this->couldSelectAll()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			return flag;
 		}

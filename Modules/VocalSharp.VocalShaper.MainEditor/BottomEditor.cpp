@@ -6,6 +6,11 @@ BottomEditor::BottomEditor()
 
 }
 
+void BottomEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
+{
+
+}
+
 void BottomEditor::paint(juce::Graphics& g)
 {
 	//g.fillAll(juce::Colours::blueviolet);
