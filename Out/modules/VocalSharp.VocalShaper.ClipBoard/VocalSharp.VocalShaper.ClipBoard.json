@@ -1,0 +1,9 @@
+{
+  "id": "VocalSharp.VocalShaper.ClipBoard",
+  "version": "0.0.1",
+  "group": "VocalShaper.OfficialModules",
+  "productId": "{08338208-B752-4A90-9C73-4163152D6818}",
+  "entry": "VocalSharp.VocalShaper.ClipBoard",
+  "description": "VocalShaper编辑器剪贴板",
+  "dependencies": []
+}
