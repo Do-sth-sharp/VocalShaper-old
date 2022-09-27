@@ -333,14 +333,14 @@ void CommandManager::initViewCommand()
 		.shortName = this->tr("sn_ViewMode"),
 		.description = this->tr("ds_ViewMode"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {juce::KeyPress('1', juce::ModifierKeys::Flags::altModifier, 0)}
+		.defaultKeypresses = {juce::KeyPress('1', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 	this->infoList.add({
 		.name = "Edit Mode",
 		.shortName = this->tr("sn_EditMode"),
 		.description = this->tr("ds_EditMode"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {juce::KeyPress('2', juce::ModifierKeys::Flags::altModifier, 0)}
+		.defaultKeypresses = {juce::KeyPress('2', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
 }
 
