@@ -1,24 +1,25 @@
 #pragma once
 #include <JuceHeader.h>
-#include <libVocalShaper.h>
+#include "TopLevelEditorBase.h"
 
-class BottomEditor final : public juce::Component
+class BottomEditor final : public TopLevelEditorBase
 {
 public:
 	BottomEditor();
 	~BottomEditor() override = default;
 
-	void projectChanged(const vocalshaper::ProjectProxy* ptr);
+	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
+	void setEditMode(bool editMode) override;
 
 	bool isActive();
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy();
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut();
-	bool wannaDelete();
-	bool wannaCopy();
-	bool wannaSelectAll();
-	bool wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list);
-	bool wannaPaste(const juce::StringArray& list);
-	int showClipBoard(const juce::StringArray& list);
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut() override;
+	bool wannaDelete() override;
+	bool wannaCopy() override;
+	bool wannaSelectAll() override;
+	bool wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list) override;
+	bool wannaPaste(const juce::StringArray& list) override;
+	int showClipBoard(const juce::StringArray& list) override;
 
 	void paint(juce::Graphics& g) override;
 

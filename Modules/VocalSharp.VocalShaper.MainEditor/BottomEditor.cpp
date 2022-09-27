@@ -1,12 +1,17 @@
 ﻿#include "BottomEditor.h"
 
 BottomEditor::BottomEditor()
-	: Component("Bottom Editor")
+	: TopLevelEditorBase()
 {
 
 }
 
 void BottomEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
+{
+	//TODO
+}
+
+void BottomEditor::setEditMode(bool editMode)
 {
 	//TODO
 }

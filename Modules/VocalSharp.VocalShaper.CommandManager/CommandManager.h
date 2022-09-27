@@ -23,6 +23,20 @@ protected:
 	bool perform(const juce::ApplicationCommandTarget::InvocationInfo& info) override;
 
 private:
+	void initFileCommand();
+	void initEditCommand();
+	void initViewCommand();
+	void initModifyCommand();
+	void initProjectCommand();
+	void initTransportCommand();
+	void initAutomaticCommand();
+	void initConfigCommand();
+	void initMiscCommand();
+
+	void initAdsorbCommand();
+	void initGridCommand();
+
+private:
 	struct CommandInfo {
 		juce::String name;
 		juce::String shortName;

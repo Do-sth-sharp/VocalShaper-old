@@ -1,12 +1,17 @@
 ﻿#include "TopEditor.h"
 
 TopEditor::TopEditor()
-	: Component("Top Editor")
+	: TopLevelEditorBase()
 {
 
 }
 
 void TopEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
+{
+	//TODO
+}
+
+void TopEditor::setEditMode(bool editMode)
 {
 	//TODO
 }

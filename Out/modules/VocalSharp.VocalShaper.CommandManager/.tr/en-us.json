@@ -67,8 +67,12 @@
   "ds_SelectAll": "Select all",
 
   "sn_ShowMixtureEditor": "Show Mixture Editor",
+  "sn_ViewMode": "View Mode",
+  "sn_EditMode": "Edit Mode",
 
   "ds_ShowMixtureEditor": "Show mixture editor at the bottom",
+  "ds_ViewMode": "Set editor to view mode",
+  "ds_EditMode": "Set editor to edit mode",
 
   "sn_Play": "Play",
   "sn_Stop": "Stop",

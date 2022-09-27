@@ -405,6 +405,18 @@ bool EditorComponent::couldSelectAll()
 	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
+bool EditorComponent::isEditMode()
+{
+	return this->editModeFlag;
+}
+
+void EditorComponent::setEditMode(bool editMode)
+{
+	this->editModeFlag = editMode;
+	this->topEditor->setEditMode(editMode);
+	this->bottomEditor->setEditMode(editMode);
+}
+
 void EditorComponent::resized()
 {
 	//获取屏幕相关属性
@@ -533,6 +545,15 @@ void EditorComponent::initCommandFunction()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Select All", [this] {this->selectAll(); }
 	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"View Mode", [this] {this->setEditMode(false); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Edit Mode", [this] {this->setEditMode(true); }
+	);
 }
 
 void EditorComponent::initCommandFlagHook()
@@ -654,6 +675,27 @@ void EditorComponent::initCommandFlagHook()
 			int flag = 0;
 			if (!this->couldSelectAll()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"View Mode", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Edit Mode", [this]()->int {
+			int flag = 0;
+			if (this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
 			}
 			return flag;
 		}

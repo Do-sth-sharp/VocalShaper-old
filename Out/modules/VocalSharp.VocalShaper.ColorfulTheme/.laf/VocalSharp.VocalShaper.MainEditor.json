@@ -5,9 +5,21 @@
     },
     "color":
     {
-        "stretchableBar:string":"$ThemeColorA1"
+        "stretchableBar:string":"$ThemeColorA1",
+
+        "background-toolBar:string":"$ThemeColorB3",
+
+        "icon-toolBarButton:string":"$ThemeColorD2",
+        "background-toolBarButton:string":"$ThemeColorB3",
+        "icon-toolBarButton-highlight:string":"$ThemeColorD1",
+        "background-toolBarButton-highlight:string":"$ThemeColorB2",
+
+        "split-toolBar:string":"$ThemeColorD4",
+        "border-toolBar:string":"$ThemeColorB1"
     },
     "resource":
     {
+        "icon-viewModeButton:string":"/rc/third-party/RemixIcon/icons/Development/cursor-fill.svg",
+        "icon-editModeButton:string":"/rc/third-party/RemixIcon/icons/Design/edit-2-fill.svg"
     }
 }

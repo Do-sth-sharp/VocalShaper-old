@@ -67,8 +67,12 @@
   "ds_SelectAll": "全选",
 
   "sn_ShowMixtureEditor": "显示混合编辑器",
+  "sn_ViewMode": "浏览模式",
+  "sn_EditMode": "编辑模式",
 
   "ds_ShowMixtureEditor": "在界面下半部分显示混合编辑器",
+  "ds_ViewMode": "将编辑器设为浏览模式",
+  "ds_EditMode": "将编辑器设为编辑模式",
 
   "sn_Play": "播放",
   "sn_Stop": "停止",

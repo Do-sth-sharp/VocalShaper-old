@@ -10,6 +10,20 @@ public:
 	static void active(int id);
 
 private:
+	static void initFileCommand();
+	static void initEditCommand();
+	static void initViewCommand();
+	static void initModifyCommand();
+	static void initProjectCommand();
+	static void initTransportCommand();
+	static void initAutomaticCommand();
+	static void initConfigCommand();
+	static void initMiscCommand();
+
+	static void initAdsorbCommand();
+	static void initGridCommand();
+
+private:
 	static std::function<const juce::String(const juce::String&)> tr;
 
 	static juce::PopupMenu createFileMenu();

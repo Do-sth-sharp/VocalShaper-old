@@ -40,6 +40,11 @@ public:
 	bool couldPasteFromSystem();
 	bool couldSelectAll();
 
+public:
+	bool isEditMode();
+	void setEditMode(bool editMode);
+
+public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
@@ -81,6 +86,7 @@ private:
 	std::unique_ptr<juce::StretchableLayoutResizerBar> slBar;
 
 	bool trackOpenStateChanged = false;
+	bool editModeFlag = false;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	juce::ReadWriteLock projectLock;

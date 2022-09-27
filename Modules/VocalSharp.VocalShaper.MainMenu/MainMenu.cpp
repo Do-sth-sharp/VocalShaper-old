@@ -32,7 +32,9 @@ commandSelectAll = -1
 ;
 
 int
-commandShowMixtureEditor = -1
+commandShowMixtureEditor = -1,
+commandViewMode = -1,
+commandEditMode = -1
 ;
 
 int
@@ -111,7 +113,9 @@ enum EditID {
 enum ViewID {
 	IDAdsorb = 0x00,
 	IDGrid,
-	IDShowMixtureEditor
+	IDShowMixtureEditor,
+	IDViewMode,
+	IDEditMode
 };
 
 enum TransportID {
@@ -168,207 +172,17 @@ juce::PopupMenu MainMenu::create()
 			);
 
 		//获取ID
-		//File
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"New Project", ::commandNewProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Open Project", ::commandOpenProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Show Start Menu", ::commandShowStartMenu
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Save Project", ::commandSaveProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Save All Project", ::commandSaveAllProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Close Project", ::commandCloseProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Close All Project", ::commandCloseAllProj
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Close Editor", ::commandCloseEditor
-			);
-
-		//Edit
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Undo", ::commandUndo
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Redo", ::commandRedo
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Cut", ::commandCut
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Copy", ::commandCopy
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Paste", ::commandPaste
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Clip Board", ::commandClipBoard
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Clean Clip Board", ::commandCleanClipBoard
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Create Copy", ::commandCreateCopy
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Delete", ::commandDelete
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Copy To System", ::commandCopyToSystem
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Paste From System", ::commandPasteFromSystem
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Select All", ::commandSelectAll
-			);
-
-		//View
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Show Mixture Editor", ::commandShowMixtureEditor
-			);
-
-		//Transport
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Play", ::commandPlay
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Stop", ::commandStop
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Begin", ::commandBegin
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"End", ::commandEnd
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Loop", ::commandLoop
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Follow", ::commandFollow
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Back On Stop", ::commandBackOnStop
-			);
-
-		//Adsorb
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1 Beat", ::commandAdsorb1Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/2 Beat", ::commandAdsorb1_2Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/4 Beat", ::commandAdsorb1_4Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/6 Beat", ::commandAdsorb1_6Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/8 Beat", ::commandAdsorb1_8Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/12 Beat", ::commandAdsorb1_12Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/16 Beat", ::commandAdsorb1_16Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/24 Beat", ::commandAdsorb1_24Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb 1/32 Beat", ::commandAdsorb1_32Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Adsorb Off", ::commandAdsorbOff
-			);
-
-		//Grid
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1 Beat", ::commandGrid1Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/2 Beat", ::commandGrid1_2Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/4 Beat", ::commandGrid1_4Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/6 Beat", ::commandGrid1_6Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/8 Beat", ::commandGrid1_8Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/12 Beat", ::commandGrid1_12Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/16 Beat", ::commandGrid1_16Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/24 Beat", ::commandGrid1_24Beat
-			);
-		jmadf::CallInterface<const juce::String&, int&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
-			"Grid 1/32 Beat", ::commandGrid1_32Beat
-			);
+		MainMenu::initFileCommand();
+		MainMenu::initEditCommand();
+		MainMenu::initViewCommand();
+		MainMenu::initModifyCommand();
+		MainMenu::initProjectCommand();
+		MainMenu::initTransportCommand();
+		MainMenu::initAutomaticCommand();
+		MainMenu::initConfigCommand();
+		MainMenu::initMiscCommand();
 	}
-
+	
 	juce::PopupMenu menu;
 
 	menu.addSectionHeader("VocalShaper");
@@ -388,6 +202,251 @@ juce::PopupMenu MainMenu::create()
 void MainMenu::active(int id)
 {
 
+}
+
+void MainMenu::initFileCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"New Project", ::commandNewProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Open Project", ::commandOpenProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Show Start Menu", ::commandShowStartMenu
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Save Project", ::commandSaveProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Save All Project", ::commandSaveAllProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close Project", ::commandCloseProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close All Project", ::commandCloseAllProj
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Close Editor", ::commandCloseEditor
+		);
+}
+
+void MainMenu::initEditCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Undo", ::commandUndo
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Redo", ::commandRedo
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Cut", ::commandCut
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy", ::commandCopy
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Paste", ::commandPaste
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Clip Board", ::commandClipBoard
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Clean Clip Board", ::commandCleanClipBoard
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Create Copy", ::commandCreateCopy
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Delete", ::commandDelete
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy To System", ::commandCopyToSystem
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Paste From System", ::commandPasteFromSystem
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Select All", ::commandSelectAll
+		);
+}
+
+void MainMenu::initViewCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Show Mixture Editor", ::commandShowMixtureEditor
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"View Mode", ::commandViewMode
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Edit Mode", ::commandEditMode
+		);
+}
+
+void MainMenu::initModifyCommand()
+{
+
+}
+
+void MainMenu::initProjectCommand()
+{
+
+}
+
+void MainMenu::initTransportCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Play", ::commandPlay
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Stop", ::commandStop
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Begin", ::commandBegin
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"End", ::commandEnd
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Loop", ::commandLoop
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Follow", ::commandFollow
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Back On Stop", ::commandBackOnStop
+		);
+}
+
+void MainMenu::initAutomaticCommand()
+{
+
+}
+
+void MainMenu::initConfigCommand()
+{
+
+}
+
+void MainMenu::initMiscCommand()
+{
+
+}
+
+void initAdsorbCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1 Beat", ::commandAdsorb1Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/2 Beat", ::commandAdsorb1_2Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/4 Beat", ::commandAdsorb1_4Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/6 Beat", ::commandAdsorb1_6Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/8 Beat", ::commandAdsorb1_8Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/12 Beat", ::commandAdsorb1_12Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/16 Beat", ::commandAdsorb1_16Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/24 Beat", ::commandAdsorb1_24Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb 1/32 Beat", ::commandAdsorb1_32Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Adsorb Off", ::commandAdsorbOff
+		);
+}
+
+void initGridCommand()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1 Beat", ::commandGrid1Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/2 Beat", ::commandGrid1_2Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/4 Beat", ::commandGrid1_4Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/6 Beat", ::commandGrid1_6Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/8 Beat", ::commandGrid1_8Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/12 Beat", ::commandGrid1_12Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/16 Beat", ::commandGrid1_16Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/24 Beat", ::commandGrid1_24Beat
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Grid 1/32 Beat", ::commandGrid1_32Beat
+		);
 }
 
 juce::PopupMenu MainMenu::createFileMenu()
@@ -440,6 +499,9 @@ juce::PopupMenu MainMenu::createViewMenu()
 
 	menu.addSubMenu(MainMenu::tr("mb_Adsorb"), MainMenu::createAdsorbMenu());
 	menu.addSubMenu(MainMenu::tr("mb_Grid"), MainMenu::createGridMenu());
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandViewMode);
+	menu.addCommandItem(::commandManager, ::commandEditMode);
 	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandShowMixtureEditor);
 

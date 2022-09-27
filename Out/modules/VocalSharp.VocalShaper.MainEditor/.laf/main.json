@@ -6,7 +6,16 @@
     },
     "size":
     {
-        "height-stretchableBar:number":0.005
+        "height-stretchableBar:number":0.005,
+
+        "width-toolBar:number":0.030,
+
+        "height-toolMarginTop:number":0.01,
+        "height-toolButtonSplit:number":0.005,
+        "height-toolButtonGroupSplit:number":0.01,
+
+        "height-toolSplitLine:number":0.002,
+        "height-toolBorderTop:number":0.0015
     },
     "position":
     {
@@ -18,6 +27,9 @@
         "height-top-prefer:number":0.4,
         "height-bottom-max:number":0.8,
         "height-bottom-min:number":0.4,
-        "height-bottom-prefer:number":0.6
+        "height-bottom-prefer:number":0.6,
+
+        "width-toolButton:number":0.7,
+        "width-toolSplitLine:number":0.5
     }
 }
