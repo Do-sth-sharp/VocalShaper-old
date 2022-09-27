@@ -23,32 +23,13 @@ bool ProjectIO::read(vocalshaper::ProjectProxy* project) const
     if (!project) {
         return false;
     }
-    juce::ScopedWriteLock locker(project->getLock());
-
+    
     juce::String fileUrl = project->getPath() + "/" + project->getName()
         + this->projectExtension;
     juce::File file(fileUrl);
     juce::FileInputStream istream(file);
-    if (!istream.openedOk()) {
-        return false;
-    }
 
-    std::unique_ptr<vocalshaper::files::vsp3::Project> ptrProto
-        = std::make_unique<vocalshaper::files::vsp3::Project>();
-    vocalshaper::ProjectMeta::MetaObject meta;
-
-    if (!vocalshaper::files::vsp3::FilePacker::unpackData(istream, ptrProto.get())) {
-        return false;
-    }
-
-    if (!vocalshaper::files::vsp3::ProtoConverter::parseFromProto(
-        ptrProto.get(), project->getPtr(), &meta)) {
-        return false;
-    }
-
-    project->getMeta()->resetMeta(meta);
-
-    return true;
+    return vocalshaper::files::vsp3::readProject(project, istream);
 }
 
 bool ProjectIO::write(vocalshaper::ProjectProxy* project) const
@@ -56,29 +37,11 @@ bool ProjectIO::write(vocalshaper::ProjectProxy* project) const
     if (!project) {
         return false;
     }
-    juce::ScopedReadLock locker(project->getLock());
-
-    std::unique_ptr<vocalshaper::files::vsp3::Project> ptrProto
-        = std::make_unique<vocalshaper::files::vsp3::Project>();
-    if (!vocalshaper::files::vsp3::ProtoConverter::serilazeToProto(
-        project->getPtr(), &project->getMeta()->toMeta(), ptrProto.get())) {
-        return false;
-    }
 
     juce::String fileUrl = project->getPath() + "/" + project->getName()
         + this->projectExtension;
     juce::File file(fileUrl);
     juce::FileOutputStream ostream(file);
-    if (!ostream.openedOk()) {
-        return false;
-    }
-    if (!ostream.truncate().wasOk()) {
-        return false;
-    }
-
-    if (!vocalshaper::files::vsp3::FilePacker::packData(ptrProto.get(), ostream)) {
-        return false;
-    }
-
-    return true;
+    
+    return vocalshaper::files::vsp3::writeProject(project, ostream);
 }

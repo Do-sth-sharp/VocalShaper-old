@@ -142,52 +142,182 @@ void EditorComponent::redo()
 
 void EditorComponent::cut()
 {
-
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
+	if (this->topEditor->isActive()) {
+		temp = this->topEditor->getCut();
+	}
+	else if (this->bottomEditor->isActive()) {
+		temp = this->bottomEditor->getCut();
+	}
+	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut",
+		std::move(temp));
 }
 
 void EditorComponent::copy()
 {
-
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
+	if (this->topEditor->isActive()) {
+		temp = this->topEditor->getCopy();
+	}
+	else if (this->bottomEditor->isActive()) {
+		temp = this->bottomEditor->getCopy();
+	}
+	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut",
+		std::move(temp));
 }
 
 void EditorComponent::paste()
 {
-
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
+	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&>(
+		"VocalSharp.VocalShaper.ClipBoard", "Paste",
+		temp);
+	if (this->topEditor->isActive()) {
+		this->topEditor->wannaPaste(std::move(temp));
+	}
+	else if (this->bottomEditor->isActive()) {
+		this->bottomEditor->wannaPaste(std::move(temp));
+	}
 }
 
 void EditorComponent::clipBoard()
 {
+	juce::StringArray clipList;
+	jmadf::CallInterface<juce::StringArray&>(
+		"VocalSharp.VocalShaper.ClipBoard", "GetList",
+		clipList);
 
+	int result = -1;
+	if (this->topEditor->isActive()) {
+		result = this->topEditor->showClipBoard(clipList);
+	}
+	else if (this->bottomEditor->isActive()) {
+		result = this->bottomEditor->showClipBoard(clipList);
+	}
+
+	if (result > -1) {
+		juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
+		jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&, int>(
+			"VocalSharp.VocalShaper.ClipBoard", "PasteItem",
+			temp, result);
+		if (this->topEditor->isActive()) {
+			this->topEditor->wannaPaste(std::move(temp));
+		}
+		else if (this->bottomEditor->isActive()) {
+			this->bottomEditor->wannaPaste(std::move(temp));
+		}
+	}
 }
 
 void EditorComponent::cleanClipBoard()
 {
-
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "Clean");
 }
 
 void EditorComponent::createCopy()
 {
-
+	if (this->topEditor->isActive()) {
+		this->topEditor->wannaCopy();
+	}
+	else if (this->bottomEditor->isActive()) {
+		this->bottomEditor->wannaCopy();
+	}
 }
 
 void EditorComponent::delete_()
 {
-
+	if (this->topEditor->isActive()) {
+		this->topEditor->wannaDelete();
+	}
+	else if (this->bottomEditor->isActive()) {
+		this->bottomEditor->wannaDelete();
+	}
 }
 
 void EditorComponent::copyToSystem()
 {
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
+	if (this->topEditor->isActive()) {
+		temp = this->topEditor->getCopy();
+	}
+	else if (this->bottomEditor->isActive()) {
+		temp = this->bottomEditor->getCopy();
+	}
+	else {
+		juce::ScopedReadLock locker1(this->projectLock);
+		juce::ScopedReadLock locker2(this->project->getLock());
+		temp.add(vocalshaper::ProjectCopier::copy(this->project->getPtr()));
+	}
+	{
+		//判断是否多元素
+		bool arrayMode = false;
+		if (temp.size() > 1) {
+			arrayMode = true;
+		}
 
+		//多元素添加列表头
+		juce::String tempS;
+		if (arrayMode) {
+			tempS += "[\n";
+		}
+		for (auto o : temp) {
+			//Json序列化
+			juce::String tempStr;
+			if (vocalshaper::files::vsp3::ProtoConverter::serilazeToJson(o, tempStr, true)) {
+				tempS += tempStr;
+				//多元素加分隔
+				if (arrayMode) {
+					tempS += "\n,\n";
+				}
+			}
+		}
+		//多元素添尾
+		if (arrayMode) {
+			tempS.dropLastCharacters(2);
+			tempS += "]";
+		}
+		juce::SystemClipboard::copyTextToClipboard(tempS);
+	}
 }
 
 void EditorComponent::pasteFromSystem()
 {
-
+	juce::String str = juce::SystemClipboard::getTextFromClipboard();
+	juce::StringArray clipList;
+	{
+		juce::var var;
+		if (!juce::JSON::parse(str, var).wasOk()) {
+			return;
+		}
+		if (var.isArray()) {
+			auto array = var.getArray();
+			for (auto& i : *array) {
+				clipList.add(juce::JSON::toString(i, true));
+			}
+		}
+		else {
+			clipList.add(str);
+		}
+	}
+	if (this->topEditor->isActive()) {
+		this->topEditor->wannaPaste(clipList);
+	}
+	else if (this->bottomEditor->isActive()) {
+		this->bottomEditor->wannaPaste(clipList);
+	}
 }
 
 void EditorComponent::selectAll()
 {
-
+	if (this->topEditor->isActive()) {
+		this->topEditor->wannaSelectAll();
+	}
+	else if (this->bottomEditor->isActive()) {
+		this->bottomEditor->wannaSelectAll();
+	}
 }
 
 bool EditorComponent::couldUndo()
@@ -216,37 +346,51 @@ bool EditorComponent::couldRedo()
 
 bool EditorComponent::couldCut()
 {
-	return false;
+	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
 bool EditorComponent::couldCopy()
 {
-	return false;
+	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
 bool EditorComponent::couldPaste()
 {
-	return false;
+	if (!this->topEditor->isActive() && !this->bottomEditor->isActive()) {
+		return false;
+	}
+	int size = 0;
+	jmadf::CallInterface<int&>(
+		"VocalSharp.VocalShaper.ClipBoard", "GetSize",
+		size
+		);
+	return size > 0;
 }
 
 bool EditorComponent::couldCleanClipBoard()
 {
-	return false;
+	int size = 0;
+	jmadf::CallInterface<int&>(
+		"VocalSharp.VocalShaper.ClipBoard", "GetSize",
+		size
+		);
+	return size > 0;
 }
 
 bool EditorComponent::couldCreateCopy()
 {
-	return false;
+	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
 bool EditorComponent::couldDelete()
 {
-	return false;
+	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
 bool EditorComponent::couldCopyToSystem()
 {
-	return false;
+	//return this->topEditor->isActive() || this->bottomEditor->isActive();
+	return true;
 }
 
 bool EditorComponent::couldPasteFromSystem()
@@ -258,7 +402,7 @@ bool EditorComponent::couldPasteFromSystem()
 
 bool EditorComponent::couldSelectAll()
 {
-	return false;
+	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
 void EditorComponent::resized()

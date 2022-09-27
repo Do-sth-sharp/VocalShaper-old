@@ -109,7 +109,7 @@ public:
     {
         this->splash = nullptr;
         JMADF::destroy();
-        google::protobuf::ShutdownProtobufLibrary();
+        vocalshaper::files::vsp3::shutDownProtobufLibrary();
     }
 
     void systemRequestedQuit() override

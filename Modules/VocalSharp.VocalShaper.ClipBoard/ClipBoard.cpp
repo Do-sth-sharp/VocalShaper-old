@@ -3,49 +3,55 @@
 void ClipBoard::copyAndCut(ClipBoard::ArrayType&& array)
 {
 	juce::ScopedWriteLock locker(this->lock);
-	ArrayType temp;
-	temp.swapWith(array);
-	this->list.add(std::move(temp));
-	if (this->list.size() > 1) {
-		this->list.swap(1, this->list.size() - 1);
-	}
+	auto ptrData = new juce::OwnedArray(std::move(array));
+	this->list.insert(0, ptrData);
 }
 
-const ClipBoard::ArrayType& ClipBoard::paste()
+ClipBoard::ArrayType ClipBoard::paste()
 {
 	juce::ScopedReadLock locker(this->lock);
 	if (this->list.size() > 0) {
-		return this->list.getReference(this->list.size() - 1);
+		auto ptrData = this->list.getUnchecked(this->list.size() - 1);
+		ArrayType temp;
+		for (auto i : *ptrData) {
+			temp.add(vocalshaper::ProjectCopier::copy(i));
+		}
+		return temp;
 	}
-	return this->empty;
+	return ArrayType();
 }
 
-const ClipBoard::ArrayType& ClipBoard::paste(int index)
+ClipBoard::ArrayType ClipBoard::paste(int index)
 {
 	juce::ScopedReadLock locker(this->lock);
 	if (index >= 0 && index <this->list.size()) {
-		return this->list.getReference(index);
+		auto ptrData = this->list.getUnchecked(index);
+		ArrayType temp;
+		for (auto i : *ptrData) {
+			temp.add(vocalshaper::ProjectCopier::copy(i));
+		}
+		return temp;
 	}
-	return this->empty;
+	return ArrayType();
 }
 
 juce::StringArray ClipBoard::getList()
 {
 	juce::ScopedReadLock locker(this->lock);
 	juce::StringArray result;
-	for (auto& i : this->list) {
+	for (auto i : this->list) {
 		//判断是否多元素
 		bool arrayMode = false;
-		if (i.size() > 1) {
+		if (i->size() > 1) {
 			arrayMode = true;
 		}
 
 		//多元素添加列表头
 		juce::String temp;
 		if (arrayMode) {
-			temp += juce::String::formatted("<%d> [", i.size());
+			temp += juce::String::formatted("<%d> [", i->size());
 		}
-		for (auto o : i) {
+		for (auto o : *i) {
 			//Json序列化
 			juce::String tempStr;
 			if (vocalshaper::files::vsp3::ProtoConverter::serilazeToJson(o, tempStr, false)) {
@@ -63,6 +69,12 @@ juce::StringArray ClipBoard::getList()
 		result.add(temp);
 	}
 	return result;
+}
+
+int ClipBoard::size()
+{
+	juce::ScopedReadLock locker(this->lock);
+	return this->list.size();
 }
 
 void ClipBoard::clean()

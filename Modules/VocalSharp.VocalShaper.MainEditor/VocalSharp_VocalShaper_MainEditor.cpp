@@ -24,7 +24,8 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")
+		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard")
 		)) {
 		return false;
 	}
@@ -135,6 +136,23 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"VocalSharp.VocalShaper.CommandManager", "Close")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut") ||
+		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&>(
+			"VocalSharp.VocalShaper.ClipBoard", "Paste") ||
+		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&, int>(
+			"VocalSharp.VocalShaper.ClipBoard", "PasteItem") ||
+		!jmadf::CheckInterface<juce::StringArray&>(
+			"VocalSharp.VocalShaper.ClipBoard", "GetList") ||
+		!jmadf::CheckInterface<int&>(
+			"VocalSharp.VocalShaper.ClipBoard", "GetSize") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "Clean")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ClipBoard:Bad Interfaces!");
 		return false;
 	}
 

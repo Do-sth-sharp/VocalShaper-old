@@ -10,6 +10,16 @@ public:
 
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
+	bool isActive();
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy();
+	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut();
+	bool wannaDelete();
+	bool wannaCopy();
+	bool wannaSelectAll();
+	bool wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list);
+	bool wannaPaste(const juce::StringArray& list);
+	int showClipBoard(const juce::StringArray& list);
+
 	void paint(juce::Graphics& g) override;
 
 private:
