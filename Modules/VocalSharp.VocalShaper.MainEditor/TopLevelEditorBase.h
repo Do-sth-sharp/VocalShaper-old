@@ -26,15 +26,16 @@ public:
 	virtual void resized() override;
 
 protected:
+	struct Size
+	{
+		double width_toolBar;
+	};//控件大小
+
 	std::unique_ptr<ToolBar> toolBar;
 
 private:
-	struct Size final
-	{
-		double width_toolBar;
-	}sizes;//控件大小
-
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
+	Size sizes;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopLevelEditorBase)
 };

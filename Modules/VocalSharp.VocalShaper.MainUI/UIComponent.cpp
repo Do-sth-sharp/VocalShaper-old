@@ -89,7 +89,7 @@ void UIComponent::resized()
     if (this->ptrEditor) {
         this->ptrEditor->setBounds(
             0, this->tabBar->getHeight() + this->playBar->getHeight() + 1,
-            this->getWidth(), this->getHeight() - this->tabBar->getHeight() - this->playBar->getHeight()
+            this->getWidth(), this->getHeight() - this->tabBar->getHeight() - this->playBar->getHeight() - 1
         );
     }
 }

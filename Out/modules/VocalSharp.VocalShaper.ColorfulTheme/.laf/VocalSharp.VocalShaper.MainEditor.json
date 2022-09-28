@@ -15,7 +15,13 @@
         "background-toolBarButton-highlight:string":"$ThemeColorB2",
 
         "split-toolBar:string":"$ThemeColorD4",
-        "border-toolBar:string":"$ThemeColorB1"
+        "border-toolBar:string":"$ThemeColorB1",
+
+        "background-statusBar:string":"$ThemeColorB3",
+        "border-statusBar:string":"$ThemeColorB1",
+
+        "text-statusButton:string":"$ThemeColorD1",
+        "background-statusButton:string":"$ThemeColorA1"
     },
     "resource":
     {

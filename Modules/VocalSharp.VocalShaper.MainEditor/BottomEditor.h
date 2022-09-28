@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "TopLevelEditorBase.h"
+#include "StatusBar.h"
 
 class BottomEditor final : public TopLevelEditorBase
 {
@@ -22,8 +23,18 @@ public:
 	bool wannaPaste(const juce::StringArray& list) override;
 	int showClipBoard(const juce::StringArray& list) override;
 
+	void resized() override;
 	void paint(juce::Graphics& g) override;
 
 private:
+	struct Size final : public TopLevelEditorBase::Size
+	{
+		double height_statusBar;
+	}sizes;//¿Ø¼þ´óÐ¡
+
+	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
+
+	std::unique_ptr<StatusBar> statusBar;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BottomEditor)
 };
