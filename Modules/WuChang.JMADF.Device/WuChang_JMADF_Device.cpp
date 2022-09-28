@@ -5,13 +5,30 @@ bool WuChang_JMADF_Device::init()
 	jmadf::RegisterInterface<juce::Component*, juce::Rectangle<int>&>(
 		"GetScreenSize",
 		[](const juce::String&, juce::Component* component, juce::Rectangle<int>& result) {
-			auto rect = WuChang_JMADF_Device::getScreenSize(component);
-			if (rect.getWidth() >= rect.getHeight()) {
-				result = rect;
-				return;
+			static juce::Rectangle<int> rect;
+			rect = WuChang_JMADF_Device::getScreenSize(component);
+			static int width = 0, height = 0;
+			width = rect.getWidth();
+			height = rect.getHeight();
+
+			if (rect.getWidth() < rect.getHeight()) {
+				int temp = width;
+				width = height;
+				height = temp;
 			}
-			result.setWidth(rect.getHeight());
-			result.setHeight(rect.getWidth());
+
+			constexpr double proportion = 816.0 / 1536.0;
+
+			static double pNow = static_cast<double>(height) / static_cast<double>(width);
+			if (pNow > proportion) {
+				height = width * proportion;
+			}
+			else if (pNow < proportion) {
+				width = height / proportion;
+			}
+
+			result.setWidth(width);
+			result.setHeight(height);
 		}
 	);
 	jmadf::RegisterInterface<juce::Component*, juce::Rectangle<int>&>(
