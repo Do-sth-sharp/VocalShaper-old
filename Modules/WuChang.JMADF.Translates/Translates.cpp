@@ -5,6 +5,7 @@ bool Translates::getReference(const juce::String& caller, const juce::String& fi
 {
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	juce::var* result = nullptr;
+
 	if (!this->load(caller, fileName, result)) {
 		return false;
 	}
@@ -66,23 +67,42 @@ bool Translates::load(const juce::String& caller, const juce::String& fileName, 
 	return true;
 }
 
+const juce::String Translates::trDefault(const juce::String& caller, const juce::String& str)
+{
+	juce::String result;
+	juce::var* trans = nullptr;
+	for (auto& i : this->defaultList) {
+		this->getReference(caller, i, trans);
+		if ((result = this->tr(trans, str)).isNotEmpty()) {
+			return result;
+		}
+	}
+	return result;
+}
+
 const juce::String Translates::tr(const juce::String& caller, const juce::String& str)
 {
 	juce::var* trans = nullptr;
-	if ((!this->getReference(caller, this->currentLang, trans)) ||
-		(trans == nullptr)) {
-		return str;
-	}
-	return this->tr(trans, str);
+	this->getReference(caller, this->currentLang, trans);
+
+	return this->trFast(caller, trans, str);
+}
+
+const juce::String Translates::trFast(const juce::String& caller, const juce::var* list, const juce::String& str)
+{
+	juce::String result;
+	return (result = this->tr(list, str)).isEmpty() 
+		? ((result = this->trDefault(caller, str)).isEmpty() ? str : result) 
+		: result;
 }
 
 const juce::String Translates::tr(const juce::var* list, const juce::String& str)
 {
 	if (list == nullptr) {
-		return str;
+		return juce::String();
 	}
 	if (!(*list)[str.toStdString().c_str()].isString()) {
-		return str;
+		return juce::String();
 	}
 	return (*list)[str.toStdString().c_str()].toString();
 }
@@ -95,4 +115,9 @@ void Translates::setCurrentLang(const juce::String& lang)
 const juce::String Translates::getCurrentLang()
 {
 	return this->currentLang;
+}
+
+void Translates::setDefaultLang(const juce::StringArray& langArray)
+{
+	this->defaultList = langArray;
 }

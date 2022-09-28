@@ -66,12 +66,18 @@ bool VocalSharp_VocalShaper_Main::init()
 	if (
 		!jmadf::CheckInterface<const juce::String&>(
 			"WuChang.JMADF.Translates", "SetCurrentLang") ||
+		!jmadf::CheckInterface<const juce::StringArray&>(
+			"WuChang.JMADF.Translates", "SetDefaultLang") ||
 		!jmadf::CheckInterface<void>(
 			"WuChang.JMADF.Translates", "Close")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
 	}
+	jmadf::CallInterface<const juce::StringArray&>(
+		"WuChang.JMADF.Translates", "SetDefaultLang",
+		{ "zh-cn", "en-us" }
+	);
 	jmadf::CallInterface<const juce::String&>(
 		"WuChang.JMADF.Translates", "SetCurrentLang",
 		lang
