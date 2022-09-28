@@ -417,6 +417,16 @@ void EditorComponent::setEditMode(bool editMode)
 	this->bottomEditor->setEditMode(editMode);
 }
 
+uint8_t EditorComponent::getToolID()
+{
+	return this->toolID;
+}
+
+void EditorComponent::setToolID(uint8_t toolID)
+{
+	this->toolID = toolID;
+}
+
 void EditorComponent::resized()
 {
 	//获取屏幕相关属性
@@ -553,6 +563,27 @@ void EditorComponent::initCommandFunction()
 	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Edit Mode", [this] {this->setEditMode(true); }
+	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Tool 1", [this] {this->setToolID(1); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Tool 2", [this] {this->setToolID(2); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Tool 3", [this] {this->setToolID(3); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Tool 4", [this] {this->setToolID(4); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Tool 5", [this] {this->setToolID(5); }
 	);
 }
 
@@ -695,6 +726,72 @@ void EditorComponent::initCommandFlagHook()
 		"Edit Mode", [this]()->int {
 			int flag = 0;
 			if (this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Tool 1", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			if (this->getToolID() == 1) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Tool 2", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			if (this->getToolID() == 2) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Tool 3", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			if (this->getToolID() == 3) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Tool 4", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			if (this->getToolID() == 4) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Tool 5", [this]()->int {
+			int flag = 0;
+			if (!this->isEditMode()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			if (this->getToolID() == 5) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
 			}
 			return flag;

@@ -18,8 +18,8 @@
 
         "width-playMarginLeft:number":0.005,
         "width-playMarginRight:number":0.005,
-        "width-playButtonSplit:number":0.005,
-        "width-playButtonGroupSplit:number":0.01,
+        "width-playButtonSplit:number":0.004,
+        "width-playButtonGroupSplit:number":0.0125,
         "width-playTextButtonMargin:number":0.005,
         "width-playTextGroupSplit:number":0.01,
         "width-playTextItemSplit:number":0.0075,

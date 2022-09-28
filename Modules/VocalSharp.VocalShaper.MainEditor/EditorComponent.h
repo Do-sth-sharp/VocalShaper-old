@@ -44,6 +44,9 @@ public:
 	bool isEditMode();
 	void setEditMode(bool editMode);
 
+	uint8_t getToolID();
+	void setToolID(uint8_t toolID);
+
 public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -87,6 +90,7 @@ private:
 
 	bool trackOpenStateChanged = false;
 	bool editModeFlag = false;
+	uint8_t toolID = 1;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	juce::ReadWriteLock projectLock;

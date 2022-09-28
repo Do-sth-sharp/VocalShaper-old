@@ -687,32 +687,32 @@ void PlayBar::resized()
 
 	//调整左侧按钮位置
 	this->playButton->setBounds(
-		width_leftMargin + width_splitLine * 0 + width_button * 0 + width_buttonGroupSplit * 0,
+		width_leftMargin + width_buttonSplit * 0 + width_button * 0 + width_buttonGroupSplit * 0,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
 	this->stopButton->setBounds(
-		width_leftMargin + width_splitLine * 1 + width_button * 1 + width_buttonGroupSplit * 0,
+		width_leftMargin + width_buttonSplit * 1 + width_button * 1 + width_buttonGroupSplit * 0,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
 	this->beginButton->setBounds(
-		width_leftMargin + width_splitLine * 2 + width_button * 2 + width_buttonGroupSplit * 0,
+		width_leftMargin + width_buttonSplit * 2 + width_button * 2 + width_buttonGroupSplit * 0,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
 	this->endButton->setBounds(
-		width_leftMargin + width_splitLine * 3 + width_button * 3 + width_buttonGroupSplit * 0,
+		width_leftMargin + width_buttonSplit * 3 + width_button * 3 + width_buttonGroupSplit * 0,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
 	this->loopButton->setBounds(
-		width_leftMargin + width_splitLine * 4 + width_button * 4 + width_buttonGroupSplit * 1,
+		width_leftMargin + width_buttonSplit * 3 + width_button * 4 + width_buttonGroupSplit * 1,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
 	this->followButton->setBounds(
-		width_leftMargin + width_splitLine * 5 + width_button * 5 + width_buttonGroupSplit * 1,
+		width_leftMargin + width_buttonSplit * 4 + width_button * 5 + width_buttonGroupSplit * 1,
 		this->getHeight() / 2 - height_button / 2,
 		width_button, height_button
 	);
@@ -794,7 +794,7 @@ void PlayBar::paint(juce::Graphics& g)
 	int width_gridButton = width_textGridButton + width_textButtonMargin * 2;
 	
 	//计算分割线位置
-	int posXLine1 = width_leftMargin + width_splitLine * 4 + width_button * 4
+	int posXLine1 = width_leftMargin + width_buttonSplit * 3 + width_button * 4
 		+ width_buttonGroupSplit / 2;
 	int posXLine2 = this->getWidth() - width_rightMargin - width_button
 		- width_buttonGroupSplit / 2;

@@ -12,7 +12,7 @@
 
         "height-toolMarginTop:number":0.01,
         "height-toolButtonSplit:number":0.005,
-        "height-toolButtonGroupSplit:number":0.01,
+        "height-toolButtonGroupSplit:number":0.02,
 
         "height-toolSplitLine:number":0.002,
         "height-toolBorderTop:number":0.0015

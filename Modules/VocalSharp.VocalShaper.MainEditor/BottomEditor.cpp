@@ -16,6 +16,11 @@ void BottomEditor::setEditMode(bool editMode)
 	//TODO
 }
 
+void BottomEditor::setToolID(uint8_t toolID)
+{
+	//TODO
+}
+
 bool BottomEditor::isActive()
 {
 	//TODO 判定活动区

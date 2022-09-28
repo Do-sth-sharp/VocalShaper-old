@@ -20,6 +20,12 @@
     "resource":
     {
         "icon-viewModeButton:string":"/rc/third-party/RemixIcon/icons/Development/cursor-fill.svg",
-        "icon-editModeButton:string":"/rc/third-party/RemixIcon/icons/Design/edit-2-fill.svg"
+        "icon-editModeButton:string":"/rc/third-party/RemixIcon/icons/Design/edit-2-fill.svg",
+
+        "icon-tool1Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-1.svg",
+        "icon-tool2Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-2.svg",
+        "icon-tool3Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-3.svg",
+        "icon-tool4Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-4.svg",
+        "icon-tool5Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-5.svg"
     }
 }

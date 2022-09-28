@@ -10,6 +10,7 @@ public:
 
 	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
 	void setEditMode(bool editMode) override;
+	void setToolID(uint8_t toolID) override;
 
 	bool isActive() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;

@@ -342,6 +342,41 @@ void CommandManager::initViewCommand()
 		.categoryName = this->tr("cn_View"),
 		.defaultKeypresses = {juce::KeyPress('2', juce::ModifierKeys::Flags::ctrlModifier, 0)}
 		});
+	this->infoList.add({
+		.name = "Tool 1",
+		.shortName = this->tr("sn_Tool1"),
+		.description = this->tr("ds_Tool1"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {juce::KeyPress('1', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Tool 2",
+		.shortName = this->tr("sn_Tool2"),
+		.description = this->tr("ds_Tool2"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {juce::KeyPress('2', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Tool 3",
+		.shortName = this->tr("sn_Tool3"),
+		.description = this->tr("ds_Tool3"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {juce::KeyPress('3', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Tool 4",
+		.shortName = this->tr("sn_Tool4"),
+		.description = this->tr("ds_Tool4"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {juce::KeyPress('4', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Tool 5",
+		.shortName = this->tr("sn_Tool5"),
+		.description = this->tr("ds_Tool5"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {juce::KeyPress('5', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
 }
 
 void CommandManager::initModifyCommand()

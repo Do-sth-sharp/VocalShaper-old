@@ -34,7 +34,12 @@ commandSelectAll = -1
 int
 commandShowMixtureEditor = -1,
 commandViewMode = -1,
-commandEditMode = -1
+commandEditMode = -1,
+commandTool1 = -1,
+commandTool2 = -1,
+commandTool3 = -1,
+commandTool4 = -1,
+commandTool5 = -1
 ;
 
 int
@@ -115,7 +120,12 @@ enum ViewID {
 	IDGrid,
 	IDShowMixtureEditor,
 	IDViewMode,
-	IDEditMode
+	IDEditMode,
+	IDTool1,
+	IDTool2,
+	IDTool3,
+	IDTool4,
+	IDTool5
 };
 
 enum TransportID {
@@ -305,6 +315,26 @@ void MainMenu::initViewCommand()
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Edit Mode", ::commandEditMode
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 1", ::commandTool1
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 2", ::commandTool2
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 3", ::commandTool3
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 4", ::commandTool4
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 5", ::commandTool5
 		);
 }
 
@@ -502,6 +532,12 @@ juce::PopupMenu MainMenu::createViewMenu()
 	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandViewMode);
 	menu.addCommandItem(::commandManager, ::commandEditMode);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandTool1);
+	menu.addCommandItem(::commandManager, ::commandTool2);
+	menu.addCommandItem(::commandManager, ::commandTool3);
+	menu.addCommandItem(::commandManager, ::commandTool4);
+	menu.addCommandItem(::commandManager, ::commandTool5);
 	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandShowMixtureEditor);
 

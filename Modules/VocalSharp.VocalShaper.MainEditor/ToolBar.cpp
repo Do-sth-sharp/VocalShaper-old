@@ -92,6 +92,8 @@ ToolBar::ToolBar()
 
 	//resource
 	juce::String iconViewModeButton, iconEditModeButton;
+	juce::String iconTool1Button, iconTool2Button, iconTool3Button, iconTool4Button,
+		iconTool5Button;
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
 		"main", "resource", "icon-viewModeButton", iconViewModeButton, result
@@ -99,6 +101,27 @@ ToolBar::ToolBar()
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
 		"main", "resource", "icon-editModeButton", iconEditModeButton, result
+		);
+
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-tool1Button", iconTool1Button, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-tool2Button", iconTool2Button, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-tool3Button", iconTool3Button, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-tool4Button", iconTool4Button, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-tool5Button", iconTool5Button, result
 		);
 	
 	//加载浏览模式按钮图标
@@ -165,6 +188,166 @@ ToolBar::ToolBar()
 		}
 	}
 
+	//加载工具1按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconTool1Button;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconTool1 = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconTool1Highlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconTool1) {
+					this->iconTool1->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton
+					);
+				}
+				if (this->iconTool1Highlight) {
+					this->iconTool1Highlight->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载工具2按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconTool2Button;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconTool2 = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconTool2Highlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconTool2) {
+					this->iconTool2->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton
+					);
+				}
+				if (this->iconTool2Highlight) {
+					this->iconTool2Highlight->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载工具3按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconTool3Button;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconTool3 = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconTool3Highlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconTool3) {
+					this->iconTool3->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton
+					);
+				}
+				if (this->iconTool3Highlight) {
+					this->iconTool3Highlight->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载工具4按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconTool4Button;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconTool4 = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconTool4Highlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconTool4) {
+					this->iconTool4->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton
+					);
+				}
+				if (this->iconTool4Highlight) {
+					this->iconTool4Highlight->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载工具5按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconTool5Button;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconTool5 = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconTool5Highlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconTool5) {
+					this->iconTool5->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton
+					);
+				}
+				if (this->iconTool5Highlight) {
+					this->iconTool5Highlight->replaceColour(
+						juce::Colours::black, this->colors.icon_toolBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
 	//建立按钮样式
 	jmadf::CallInterface<juce::LookAndFeel*&>(
 		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF",
@@ -201,6 +384,61 @@ ToolBar::ToolBar()
 	this->editModeButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->editModeButton->setCommandToTrigger(this->commandManager, this->editModeCommandID, true);
 	this->addAndMakeVisible(this->editModeButton.get());
+
+	//初始化工具1按钮
+	this->tool1Button = std::make_unique<juce::DrawableButton>(
+		"bt_Tool1", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+	this->tool1Button->setImages(this->iconTool1.get(), nullptr, nullptr, nullptr,
+		this->iconTool1Highlight.get(), nullptr, nullptr, nullptr);
+	this->tool1Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool1Button->setWantsKeyboardFocus(false);
+	this->tool1Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->tool1Button->setCommandToTrigger(this->commandManager, this->tool1CommandID, true);
+	this->addAndMakeVisible(this->tool1Button.get());
+
+	//初始化工具2按钮
+	this->tool2Button = std::make_unique<juce::DrawableButton>(
+		"bt_Tool2", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+	this->tool2Button->setImages(this->iconTool2.get(), nullptr, nullptr, nullptr,
+		this->iconTool2Highlight.get(), nullptr, nullptr, nullptr);
+	this->tool2Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool2Button->setWantsKeyboardFocus(false);
+	this->tool2Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->tool2Button->setCommandToTrigger(this->commandManager, this->tool2CommandID, true);
+	this->addAndMakeVisible(this->tool2Button.get());
+
+	//初始化工具3按钮
+	this->tool3Button = std::make_unique<juce::DrawableButton>(
+		"bt_Tool3", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+	this->tool3Button->setImages(this->iconTool3.get(), nullptr, nullptr, nullptr,
+		this->iconTool3Highlight.get(), nullptr, nullptr, nullptr);
+	this->tool3Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool3Button->setWantsKeyboardFocus(false);
+	this->tool3Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->tool3Button->setCommandToTrigger(this->commandManager, this->tool3CommandID, true);
+	this->addAndMakeVisible(this->tool3Button.get());
+
+	//初始化工具4按钮
+	this->tool4Button = std::make_unique<juce::DrawableButton>(
+		"bt_Tool4", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+	this->tool4Button->setImages(this->iconTool4.get(), nullptr, nullptr, nullptr,
+		this->iconTool4Highlight.get(), nullptr, nullptr, nullptr);
+	this->tool4Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool4Button->setWantsKeyboardFocus(false);
+	this->tool4Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->tool4Button->setCommandToTrigger(this->commandManager, this->tool4CommandID, true);
+	this->addAndMakeVisible(this->tool4Button.get());
+
+	//初始化工具5按钮
+	this->tool5Button = std::make_unique<juce::DrawableButton>(
+		"bt_Tool5", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+	this->tool5Button->setImages(this->iconTool5.get(), nullptr, nullptr, nullptr,
+		this->iconTool5Highlight.get(), nullptr, nullptr, nullptr);
+	this->tool5Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool5Button->setWantsKeyboardFocus(false);
+	this->tool5Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->tool5Button->setCommandToTrigger(this->commandManager, this->tool5CommandID, true);
+	this->addAndMakeVisible(this->tool5Button.get());
 }
 
 void ToolBar::resized()
@@ -231,6 +469,32 @@ void ToolBar::resized()
 		height_topBorder + height_topMargin + height_buttonSplit * 1 + height_button * 1 + height_buttonGroupSplit * 0,
 		width_button, height_button
 	);
+
+	this->tool1Button->setBounds(
+		this->getWidth() / 2 - width_button / 2,
+		height_topBorder + height_topMargin + height_buttonSplit * 1 + height_button * 2 + height_buttonGroupSplit * 1,
+		width_button, height_button
+	);
+	this->tool2Button->setBounds(
+		this->getWidth() / 2 - width_button / 2,
+		height_topBorder + height_topMargin + height_buttonSplit * 2 + height_button * 3 + height_buttonGroupSplit * 1,
+		width_button, height_button
+	);
+	this->tool3Button->setBounds(
+		this->getWidth() / 2 - width_button / 2,
+		height_topBorder + height_topMargin + height_buttonSplit * 3 + height_button * 4 + height_buttonGroupSplit * 1,
+		width_button, height_button
+	);
+	this->tool4Button->setBounds(
+		this->getWidth() / 2 - width_button / 2,
+		height_topBorder + height_topMargin + height_buttonSplit * 4 + height_button * 5 + height_buttonGroupSplit * 1,
+		width_button, height_button
+	);
+	this->tool5Button->setBounds(
+		this->getWidth() / 2 - width_button / 2,
+		height_topBorder + height_topMargin + height_buttonSplit * 5 + height_button * 6 + height_buttonGroupSplit * 1,
+		width_button, height_button
+	);
 }
 
 void ToolBar::paint(juce::Graphics& g)
@@ -242,14 +506,36 @@ void ToolBar::paint(juce::Graphics& g)
 	//填充背景
 	g.fillAll(this->colors.background_toolBar);
 
-	//计算上边框大小并绘制
+	//计算控件大小
 	int height_topBorder = this->sizes.height_toolBorderTop * screenSize.getHeight();
+
+	int height_topMargin = this->sizes.height_toolMarginTop * screenSize.getHeight();
+	int height_buttonSplit = this->sizes.height_toolButtonSplit * screenSize.getHeight();
+	int height_buttonGroupSplit = this->sizes.height_toolButtonGroupSplit * screenSize.getHeight();
+	int height_splitLine = this->sizes.height_toolSplitLine * screenSize.getHeight();
+	int width_button = this->scales.width_toolButton * this->getWidth();
+	int height_button = width_button;
+	int width_splitLine = this->scales.width_toolSplitLine * this->getWidth();
+
+	//绘制上边框
 	juce::Rectangle<int> rectTopBorder(
 		0, 0,
 		this->getWidth(), height_topBorder
 	);
 	g.setColour(this->colors.border_toolBar);
 	g.fillRect(rectTopBorder);
+
+	//计算分割线位置
+	int posYLine1 = height_topBorder + height_topMargin + height_buttonSplit * 1 + height_button * 2
+		+ height_buttonGroupSplit / 2;
+
+	//绘制分割线
+	g.setColour(this->colors.split_toolBar);
+	g.drawLine(
+		this->getWidth() / 2.f - width_splitLine / 2.f, posYLine1,
+		this->getWidth() / 2.f + width_splitLine / 2.f, posYLine1,
+		height_splitLine
+	);
 }
 
 void ToolBar::initCommandID()
@@ -261,6 +547,27 @@ void ToolBar::initCommandID()
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Edit Mode", this->editModeCommandID
+		);
+
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 1", this->tool1CommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 2", this->tool2CommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 3", this->tool3CommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 4", this->tool4CommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Tool 5", this->tool5CommandID
 		);
 }
 

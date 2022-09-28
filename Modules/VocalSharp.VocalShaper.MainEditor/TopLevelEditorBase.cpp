@@ -40,6 +40,11 @@ void TopLevelEditorBase::setEditMode(bool editMode)
 	//TODO
 }
 
+void TopLevelEditorBase::setToolID(uint8_t toolID)
+{
+	//TODO
+}
+
 bool TopLevelEditorBase::isActive()
 {
 	//TODO 判定活动区
