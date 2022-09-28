@@ -73,12 +73,14 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		return false;
 	}
 	if (
-		!jmadf::CheckInterface<int, juce::LookAndFeel*&>(
+		!jmadf::CheckInterface<const std::function<int()>&, juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuListBoxLAF")
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuListBoxLAF") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "Close")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
@@ -156,4 +158,6 @@ void VocalSharp_VocalShaper_StartMenu::destory()
 		"WuChang.JMADF.DynamicRC", "Unload");	
 	jmadf::CallInterface<void>(
 		"VocalSharp.VocalShaper.CommandManager", "Close");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "Close");
 }

@@ -47,7 +47,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	}
 	if (
 		!jmadf::CheckInterface<juce::Component*, juce::Rectangle<int>&>(
-			"WuChang.JMADF.Device", "GetScreenSize")
+			"WuChang.JMADF.Device", "GetScreenSize") ||
+		!jmadf::CheckInterface<juce::Component*, juce::Rectangle<int>&>(
+			"WuChang.JMADF.Device", "GetScreenSizeTruth")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Device:Bad Interfaces!");
 		return false;

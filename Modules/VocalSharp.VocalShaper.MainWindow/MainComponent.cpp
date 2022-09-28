@@ -178,6 +178,34 @@ void MainComponent::filesDropped(const juce::StringArray& files, int, int)
     }
 }
 
+void MainComponent::refresh()
+{
+    //刷新大小
+    if (this->ptrMainUI) {
+        this->ptrMainUI->setSize(this->getWidth() / 2, this->getHeight() / 2);
+    }
+    if (this->ptrStartMenu) {
+        this->ptrStartMenu->setSize(this->getWidth() / 2, this->getHeight() / 2);
+        this->ptrStartMenu->toFront(true);
+    }
+    if (this->splash) {
+        this->splash->centreWithSize(this->splash->getWidth() / 2, this->splash->getHeight() / 2);
+        this->splash->toFront(true);
+    }
+
+    if (this->ptrMainUI) {
+        this->ptrMainUI->setSize(this->getWidth(), this->getHeight());
+    }
+    if (this->ptrStartMenu) {
+        this->ptrStartMenu->setSize(this->getWidth(), this->getHeight());
+        this->ptrStartMenu->toFront(true);
+    }
+    if (this->splash) {
+        this->splash->centreWithSize(this->splash->getWidth(), this->splash->getHeight());
+        this->splash->toFront(true);
+    }
+}
+
 bool MainComponent::checkStringCouldOpen(const juce::String& string)
 {
     juce::File file(string);

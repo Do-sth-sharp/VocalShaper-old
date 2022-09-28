@@ -116,7 +116,7 @@ void BottomEditor::resized()
 	);
 
 	//调整工具栏位置
-	TopLevelEditorBase::resized();
+	this->TopLevelEditorBase::resized();
 }
 
 void BottomEditor::paint(juce::Graphics& g)

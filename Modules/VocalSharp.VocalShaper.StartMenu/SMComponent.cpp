@@ -249,14 +249,10 @@ SMComponent::SMComponent()
 
     this->logoImage = juce::ImageFileFormat::loadFrom(logoPtr, logoSize);
 
-    //获取屏幕相关属性
-    juce::Rectangle<int> screenSize;
-    this->screenSizeFunc(this, screenSize);
-
     //以下构建按钮样式
-    jmadf::CallInterface<int, juce::LookAndFeel*&>(
+    jmadf::CallInterface<const std::function<int()>&, juce::LookAndFeel*&>(
         "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF",
-        screenSize.getHeight() * this->sizes.height_font, this->lafs.button
+        [this] {return this->getButtonFontSize(); }, this->lafs.button
         );
     this->lafs.button->setColour(
         juce::TextButton::ColourIds::buttonColourId, this->colors.background_button);
@@ -340,9 +336,6 @@ SMComponent::SMComponent()
     //以下初始化搜索框
     this->teSearchProj = std::make_unique<juce::TextEditor>();
     this->teSearchProj->setLookAndFeel(this->lafs.textEditor);
-    juce::Font searchFont = this->teSearchProj->getFont();
-    searchFont.setHeight(screenSize.getHeight()* this->sizes.height_font);
-    this->teSearchProj->setFont(searchFont);
     this->teSearchProj->setHasFocusOutline(false);
     this->teSearchProj->setMultiLine(false);
     this->teSearchProj->setJustification(juce::Justification::centredLeft);
@@ -381,14 +374,10 @@ SMComponent::SMComponent()
     this->lstProj->setWantsKeyboardFocus(false);
     this->lstProj->setLookAndFeel(this->lafs.listBox);
     this->lstProj->setRowSelectedOnMouseDown(false);
-    this->lstProj->setRowHeight(
-        this->sizes.height_listItem * screenSize.getHeight()
-    );
     this->addAndMakeVisible(this->lstProj.get());
 
     //以下初始化项目列表模型
     this->lstModel = std::make_unique<ProjListModel>();
-    this->lstModel->setScreenSize(screenSize);
     this->lstModel->setClickFunc(
         [this](int row, const juce::String& name, const juce::String& path) {
             this->listItemLeftClicked(row, name, path);
@@ -797,6 +786,16 @@ void SMComponent::openProjFromUrl(const juce::String& name, const juce::String& 
         name, path
         );
     this->clearFilter();
+}
+
+int SMComponent::getButtonFontSize()
+{
+    //获取屏幕相关属性
+    juce::Rectangle<int> screenSize;
+    this->screenSizeFunc(this, screenSize);
+
+    //计算字体大小
+    return screenSize.getHeight() * this->sizes.height_font;
 }
 
 bool SMComponent::newProj(const juce::String& name, const juce::String& path)

@@ -29,6 +29,8 @@ public:
     bool isInterestedInFileDrag(const juce::StringArray& files) override;
     void filesDropped(const juce::StringArray& files, int, int) override;
 
+    void refresh();
+
 private:
     juce::Component* ptrStartMenu = nullptr;
     juce::Component* ptrMainUI = nullptr;

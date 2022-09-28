@@ -20,6 +20,8 @@ public:
 	void filterChanged();
 
 	void openProjFromUrl(const juce::String& name, const juce::String& path);
+
+	int getButtonFontSize();
 	
 private:
 	struct Colors final

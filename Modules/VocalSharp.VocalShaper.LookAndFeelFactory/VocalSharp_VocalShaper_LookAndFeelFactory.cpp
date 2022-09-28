@@ -18,59 +18,66 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 	}
 	this->factory = std::make_unique<LAFFactory>();
 
-	jmadf::RegisterInterface<int, juce::LookAndFeel*&>(
+	jmadf::RegisterInterface<const std::function<int()>&, juce::LookAndFeel*&>(
 		"GetStartMenuButtonLAF",
-		[this](const juce::String&, int fontHeight, juce::LookAndFeel*& laf) {
-			laf = this->factory->getStartMenuButtonLAF(fontHeight);
+		[this](const juce::String& caller, const std::function<int()>& fontHeightFunc, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuButtonLAF(caller, fontHeightFunc);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetStartMenuTextEditorLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getStartMenuTextEditorLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuTextEditorLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetStartMenuListBoxLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getStartMenuListBoxLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStartMenuListBoxLAF(caller);
 		}
 	);
 
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetMainMenuButtonLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getMainMenuButtonLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getMainMenuButtonLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetTabCloseButtonLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getTabCloseButtonLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getTabCloseButtonLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetPlayButtonLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getPlayButtonLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getPlayButtonLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetPlayTextButtonLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getPlayTextButtonLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getPlayTextButtonLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&>(
 		"GetToolButtonLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf) {
-			laf = this->factory->getToolButtonLAF();
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getToolButtonLAF(caller);
 		}
 	);
 	jmadf::RegisterInterface<juce::LookAndFeel*&, juce::Colour>(
 		"GetStretchableBarLAF",
-		[this](const juce::String&, juce::LookAndFeel*& laf, juce::Colour mainColour) {
-			laf = this->factory->getStretchableBarLAF(mainColour);
+		[this](const juce::String& caller, juce::LookAndFeel*& laf, juce::Colour mainColour) {
+			laf = this->factory->getStretchableBarLAF(caller, mainColour);
+		}
+	);
+
+	jmadf::RegisterInterface<void>(
+		"Close",
+		[this](const juce::String& caller) {
+			this->factory->close(caller);
 		}
 	);
 

@@ -4,12 +4,12 @@
 class StartMenuButtonLAF final : public juce::LookAndFeel_V4
 {
 public:
-	StartMenuButtonLAF(int fontHeight) :LookAndFeel_V4(), fontHeight(fontHeight) {};
+	StartMenuButtonLAF(const std::function<int()>& fontHeightFunc) :LookAndFeel_V4(), fontHeightFunc(fontHeightFunc) {};
 	~StartMenuButtonLAF() override = default;
 	juce::Font getTextButtonFont(juce::TextButton&, int) override
 	{
-		return { (float)this->fontHeight };
+		return { (float)this->fontHeightFunc() };
 	};
 private:
-	int fontHeight;
+	const std::function<int()> fontHeightFunc;
 };

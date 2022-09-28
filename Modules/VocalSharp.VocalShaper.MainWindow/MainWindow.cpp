@@ -9,12 +9,11 @@ MainWindow::MainWindow(juce::String name)
 {
     this->screenSizeFunc =
         jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
-            "WuChang.JMADF.Device", "GetScreenSize"
+            "WuChang.JMADF.Device", "GetScreenSizeTruth"
             );
 
-    this->mComp = new MainComponent();
     this->setUsingNativeTitleBar(true);
-    this->setContentOwned(this->mComp, true);
+    this->setContentOwned(this->mComp = new MainComponent(), true);
 
 #if JUCE_IOS || JUCE_ANDROID
     this->setFullScreen(true);
@@ -172,7 +171,31 @@ void MainWindow::resized()
         screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
         screenSize.getWidth() * 2, screenSize.getHeight() * 2
     );
-    this->DocumentWindow::resized();
+    this->juce::DocumentWindow::resized();
+}
+
+void MainWindow::moved()
+{
+    //判断屏幕变化
+    auto displayCurrent = juce::Desktop::getInstance().getDisplays()
+        .getDisplayForRect(this->getScreenBounds());
+    if (this->displayTemp != displayCurrent) {
+        this->displayTemp = displayCurrent;
+        this->resized();
+        if (this->mComp) {
+            this->mComp->refresh();
+        }
+    }
+    this->juce::ResizableWindow::moved();
+}
+
+void MainWindow::parentSizeChanged()
+{
+    this->resized();
+    if (this->mComp) {
+        this->mComp->refresh();
+    }
+    this->juce::ResizableWindow::parentSizeChanged();
 }
 
 bool MainWindow::newProj(const juce::String& name, const juce::String& path)

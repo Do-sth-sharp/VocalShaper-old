@@ -80,7 +80,9 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		!jmadf::CheckInterface<juce::LookAndFeel*&, juce::Colour>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStretchableBarLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF")
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "Close")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
@@ -190,4 +192,6 @@ void VocalSharp_VocalShaper_MainEditor::destory()
 		"VocalSharp.VocalShaper.CommandManager", "Close");
 	jmadf::CallInterface<void>(
 		"VocalSharp.VocalShaper.ProjectHub", "Release");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "Close");
 }
