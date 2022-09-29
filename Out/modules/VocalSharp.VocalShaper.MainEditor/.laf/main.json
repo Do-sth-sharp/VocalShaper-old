@@ -18,13 +18,13 @@
         "height-toolBorderTop:number":0.0015,
 
         "height-statusBar:number":0.05,
-        "width-statusBorderRight:number":0.001,
+        "width-statusBorderRight:number":0.0001,
 
-        "width-statusMarginRight:number":0.01,
-        "width-statusButtonSplit:number":0.005,
-        "width-statusButtonGroupSplit:number":0.02,
+        "width-statusMarginRight:number":0.0075,
+        "width-statusButtonSplit:number":0.0025,
+        "width-statusButtonGroupSplit:number":0.01,
 
-        "width-statusSplitLine:number":0.002,
+        "width-statusSplitLine:number":0.001,
 
         "width-statusButtonMargin:number":0.005
     },

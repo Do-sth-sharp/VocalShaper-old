@@ -20,15 +20,17 @@
         "background-statusBar:string":"$ThemeColorB3",
         "border-statusBar:string":"$ThemeColorB1",
 
-        "text-statusBarTextButton:string":"$ThemeColorD1",
-        "background-statusBarTextButton:string":"$ThemeColorA1",
+        "text-statusBarTextButton:string":"$ThemeColorD2",
+        "background-statusBarTextButton:string":"$ThemeColorB3",
         "text-statusBarTextButton-highlight:string":"$ThemeColorD1",
-        "background-statusBarTextButton-highlight:string":"$ThemeColorB2",
+        "background-statusBarTextButton-highlight:string":"$ThemeColorA1",
 
         "icon-statusBarButton:string":"$ThemeColorD2",
-        "background-statusBarButton:string":"$ThemeColorA1",
+        "background-statusBarButton:string":"$ThemeColorB3",
         "icon-statusBarButton-highlight:string":"$ThemeColorD1",
-        "background-statusBarButton-highlight:string":"$ThemeColorB2"
+        "background-statusBarButton-highlight:string":"$ThemeColorA1",
+
+        "split-statusBar:string":"$ThemeColorD4"
     },
     "resource":
     {

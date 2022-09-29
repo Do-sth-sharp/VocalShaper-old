@@ -1,4 +1,4 @@
-{
+﻿{
   "cn_File": "文件",
   "cn_Edit": "编辑",
   "cn_View": "视图",
@@ -78,6 +78,8 @@
   "sn_NoteEditor": "音符编辑器",
   "sn_MixEditor": "混音器",
   "sn_ScriptEditor": "脚本编辑器",
+  "sn_NoteEditorPlugin": "音符编辑器插件",
+  "sn_NoteEditorAdditionPlugin": "音符编辑器附加插件",
 
   "ds_ShowMixtureEditor": "在界面下半部分显示混合编辑器",
   "ds_ShowAdditionEditor": "在混合编辑器中显示附加编辑器",
@@ -91,6 +93,8 @@
   "ds_NoteEditor": "在混合编辑器中显示音符编辑器",
   "ds_MixEditor": "在混合编辑器中显示混音器",
   "ds_ScriptEditor": "在混合编辑器中显示脚本编辑器",
+  "ds_NoteEditorPlugin": "选择音符编辑器插件",
+  "ds_NoteEditorAdditionPlugin": "选择音符编辑器附加插件",
 
   "sn_Play": "播放",
   "sn_Stop": "停止",

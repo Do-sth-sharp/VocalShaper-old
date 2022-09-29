@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 #include "TopEditor.h"
 #include "BottomEditor.h"
@@ -56,11 +56,11 @@ private:
 	{
 		juce::Colour background;
 		juce::Colour stretchableBar;
-	}colors;//½çÃæÑÕÉ«
+	}colors;//ç•Œé¢é¢œè‰²
 	struct Size final
 	{
 		double height_stretchableBar;
-	}sizes;//¿Ø¼ş´óĞ¡
+	}sizes;//æ§ä»¶å¤§å°
 	struct Scales final
 	{
 		double height_top_max;
@@ -69,11 +69,11 @@ private:
 		double height_bottom_max;
 		double height_bottom_min;
 		double height_bottom_prefer;
-	}scales;//¿Ø¼şËõ·Å
+	}scales;//æ§ä»¶ç¼©æ”¾
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* stretchableBar;
-	}lafs;//¿Ø¼şÑùÊ½
+	}lafs;//æ§ä»¶æ ·å¼
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;

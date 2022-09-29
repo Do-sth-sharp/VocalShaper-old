@@ -329,6 +329,13 @@ void CommandManager::initViewCommand()
 		.defaultKeypresses = {}
 		});
 	this->infoList.add({
+		.name = "Show Addition Editor",
+		.shortName = this->tr("sn_ShowAdditionEditor"),
+		.description = this->tr("ds_ShowAdditionEditor"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
 		.name = "View Mode",
 		.shortName = this->tr("sn_ViewMode"),
 		.description = this->tr("ds_ViewMode"),
@@ -376,6 +383,41 @@ void CommandManager::initViewCommand()
 		.description = this->tr("ds_Tool5"),
 		.categoryName = this->tr("cn_View"),
 		.defaultKeypresses = {juce::KeyPress('5', juce::ModifierKeys::Flags::altModifier, 0)}
+		});
+	this->infoList.add({
+		.name = "Note Editor",
+		.shortName = this->tr("sn_NoteEditor"),
+		.description = this->tr("ds_NoteEditor"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Mix Editor",
+		.shortName = this->tr("sn_MixEditor"),
+		.description = this->tr("ds_MixEditor"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Script Editor",
+		.shortName = this->tr("sn_ScriptEditor"),
+		.description = this->tr("ds_ScriptEditor"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Note Editor Plugin",
+		.shortName = this->tr("sn_NoteEditorPlugin"),
+		.description = this->tr("ds_NoteEditorPlugin"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Note Editor Addition Plugin",
+		.shortName = this->tr("sn_NoteEditorAdditionPlugin"),
+		.description = this->tr("ds_NoteEditorAdditionPlugin"),
+		.categoryName = this->tr("cn_View"),
+		.defaultKeypresses = {}
 		});
 }
 

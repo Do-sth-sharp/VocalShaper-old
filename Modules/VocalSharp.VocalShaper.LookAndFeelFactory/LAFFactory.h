@@ -22,6 +22,8 @@ public:
 	juce::LookAndFeel* getPlayTextButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getToolButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStretchableBarLAF(const juce::String& caller, juce::Colour mainColour);
+	juce::LookAndFeel* getStatusButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getStatusTextButtonLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
 

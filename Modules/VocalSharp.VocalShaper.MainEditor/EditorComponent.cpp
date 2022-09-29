@@ -117,7 +117,10 @@ void EditorComponent::setTrackOpen(bool trackOpen)
 
 bool EditorComponent::isTrackOpen()
 {
-	return this->bottomEditor->isVisible();
+	if (this->bottomEditor) {
+		return this->bottomEditor->isVisible();
+	}
+	return false;
 }
 
 void EditorComponent::projectChanged(const vocalshaper::ProjectProxy* ptr)

@@ -1,0 +1,13 @@
+﻿{
+  "bt_MixtureEditor": "混合编辑器",
+  "bt_AdditionEditor": "附加编辑器",
+
+  "tip_MixtureEditor": "开启/关闭混合编辑器",
+  "tip_AdditionEditor": "开启/关闭附加编辑器",
+
+  "bt_NoteEditorPlugin": "选择控件",
+  "bt_NoteEditorAdditionPlugin": "选择附加控件",
+
+  "tip_NoteEditorPlugin": "选择音符编辑器中使用的控件",
+  "tip_NoteEditorAdditionPlugin": "选择附加编辑器中使用的控件"
+}

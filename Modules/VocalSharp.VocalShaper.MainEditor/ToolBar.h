@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 
 class ToolBar final : public juce::Component
@@ -22,7 +22,7 @@ private:
 
 		juce::Colour split_toolBar;
 		juce::Colour border_toolBar;
-	}colors;//½çÃæÑÕÉ«
+	}colors;//ç•Œé¢é¢œè‰²
 	struct Sizes final
 	{
 		double height_toolMarginTop;
@@ -31,16 +31,16 @@ private:
 
 		double height_toolSplitLine;
 		double height_toolBorderTop;
-	}sizes;//¿Ø¼ş´óĞ¡
+	}sizes;//æ§ä»¶å¤§å°
 	struct Scales final
 	{
 		double width_toolButton;
 		double width_toolSplitLine;
-	}scales;//¿Ø¼şËõ·Å
+	}scales;//æ§ä»¶ç¼©æ”¾
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* toolButton;
-	}lafs;//¿Ø¼şÑùÊ½
+	}lafs;//æ§ä»¶æ ·å¼
 
 	void initCommandID();
 	void initCommandFunction();

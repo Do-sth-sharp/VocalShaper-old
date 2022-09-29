@@ -66,6 +66,20 @@ juce::LookAndFeel* LAFFactory::getStretchableBarLAF(const juce::String& caller, 
 	return ptrLAF;
 }
 
+juce::LookAndFeel* LAFFactory::getStatusButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getStatusTextButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
 void LAFFactory::close(const juce::String& caller)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);

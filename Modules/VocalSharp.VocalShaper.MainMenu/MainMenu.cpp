@@ -33,13 +33,19 @@ commandSelectAll = -1
 
 int
 commandShowMixtureEditor = -1,
+commandShowAdditionEditor = -1,
 commandViewMode = -1,
 commandEditMode = -1,
 commandTool1 = -1,
 commandTool2 = -1,
 commandTool3 = -1,
 commandTool4 = -1,
-commandTool5 = -1
+commandTool5 = -1,
+commandNoteEditor = -1,
+commandMixEditor = -1,
+commandScriptEditor = -1,
+commandNoteEditorPlugin = -1,
+commandNoteEditorAdditionPlugin = -1
 ;
 
 int
@@ -119,13 +125,19 @@ enum ViewID {
 	IDAdsorb = 0x00,
 	IDGrid,
 	IDShowMixtureEditor,
+	IDShowAdditionEditor,
 	IDViewMode,
 	IDEditMode,
 	IDTool1,
 	IDTool2,
 	IDTool3,
 	IDTool4,
-	IDTool5
+	IDTool5,
+	IDNoteEditor,
+	IDMixEditor,
+	IDScriptEditor,
+	IDNoteEditorPlugin,
+	IDNoteEditorAdditionPlugin
 };
 
 enum TransportID {
@@ -310,6 +322,10 @@ void MainMenu::initViewCommand()
 		);
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Show Addition Editor", ::commandShowAdditionEditor
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"View Mode", ::commandViewMode
 		);
 	jmadf::CallInterface<const juce::String&, int&>(
@@ -335,6 +351,26 @@ void MainMenu::initViewCommand()
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Tool 5", ::commandTool5
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Note Editor", ::commandNoteEditor
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Mix Editor", ::commandMixEditor
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Script Editor", ::commandScriptEditor
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Note Editor Plugin", ::commandNoteEditorPlugin
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Note Editor Addition Plugin", ::commandNoteEditorAdditionPlugin
 		);
 }
 
@@ -540,6 +576,14 @@ juce::PopupMenu MainMenu::createViewMenu()
 	menu.addCommandItem(::commandManager, ::commandTool5);
 	menu.addSeparator();
 	menu.addCommandItem(::commandManager, ::commandShowMixtureEditor);
+	menu.addCommandItem(::commandManager, ::commandShowAdditionEditor);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandNoteEditor);
+	menu.addCommandItem(::commandManager, ::commandMixEditor);
+	menu.addCommandItem(::commandManager, ::commandScriptEditor);
+	menu.addSeparator();
+	menu.addCommandItem(::commandManager, ::commandNoteEditorPlugin);
+	menu.addCommandItem(::commandManager, ::commandNoteEditorAdditionPlugin);
 
 	return menu;
 }

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 #include "ToolBar.h"
@@ -29,7 +29,7 @@ protected:
 	struct Size
 	{
 		double width_toolBar;
-	};//¿Ø¼ş´óĞ¡
+	};//æ§ä»¶å¤§å°
 
 	std::unique_ptr<ToolBar> toolBar;
 

@@ -671,7 +671,7 @@ void PlayBar::resized()
 	int width_textGroupSplit = this->sizes.width_playTextGroupSplit * screenSize.getWidth();
 	int height_textButton = this->scales.height_playTextButton * this->getHeight();
 
-	//通过label作为字体标准
+	//通过button作为字体标准
 	juce::Font font =
 		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->adsorbButton.get()), height_textButton);
 
@@ -778,7 +778,7 @@ void PlayBar::paint(juce::Graphics& g)
 	int width_textGroupSplit = this->sizes.width_playTextGroupSplit * screenSize.getWidth();
 	int height_textButton = this->scales.height_playTextButton * this->getHeight();
 
-	//通过label作为字体标准
+	//通过button作为字体标准
 	juce::Font font =
 		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->adsorbButton.get()), height_textButton);
 	g.setFont(font);

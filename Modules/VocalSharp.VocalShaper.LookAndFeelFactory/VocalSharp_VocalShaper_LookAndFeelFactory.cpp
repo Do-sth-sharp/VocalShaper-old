@@ -73,6 +73,18 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getStretchableBarLAF(caller, mainColour);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStatusButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStatusButtonLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStatusTextButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStatusTextButtonLAF(caller);
+		}
+	);
 
 	jmadf::RegisterInterface<void>(
 		"Close",

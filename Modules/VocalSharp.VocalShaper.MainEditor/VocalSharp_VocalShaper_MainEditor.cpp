@@ -81,6 +81,10 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStretchableBarLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusTextButtonLAF") ||
 		!jmadf::CheckInterface<void>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "Close")
 		) {

@@ -1,4 +1,4 @@
-{
+﻿{
   "cn_File": "File",
   "cn_Edit": "Edit",
   "cn_View": "View",
@@ -78,6 +78,8 @@
   "sn_NoteEditor": "Note Editor",
   "sn_MixEditor": "Mixer",
   "sn_ScriptEditor": "Script Editor",
+  "sn_NoteEditorPlugin": "Note Editor Plugin",
+  "sn_NoteEditorAdditionPlugin": "Note Editor Additional Plugin",
 
   "ds_ShowMixtureEditor": "Show mixture editor at the bottom",
   "ds_ShowAdditionEditor": "Show additional editor in the mixture editor",
@@ -91,6 +93,8 @@
   "ds_NoteEditor": "Show note editor in the mixture editor",
   "ds_MixEditor": "Show mixer in the mixture editor",
   "ds_ScriptEditor": "Show script editor in the mixture editor",
+  "ds_NoteEditorPlugin": "Select note editor plugin",
+  "ds_NoteEditorAdditionPlugin": "Select note editor additional plugin",
 
   "sn_Play": "Play",
   "sn_Stop": "Stop",
