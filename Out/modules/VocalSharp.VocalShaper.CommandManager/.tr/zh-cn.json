@@ -67,6 +67,7 @@
   "ds_SelectAll": "全选",
 
   "sn_ShowMixtureEditor": "显示混合编辑器",
+  "sn_ShowAdditionEditor": "显示附加编辑器",
   "sn_ViewMode": "浏览模式",
   "sn_EditMode": "编辑模式",
   "sn_Tool1": "快捷工具1",
@@ -74,8 +75,12 @@
   "sn_Tool3": "快捷工具3",
   "sn_Tool4": "快捷工具4",
   "sn_Tool5": "快捷工具5",
+  "sn_NoteEditor": "音符编辑器",
+  "sn_MixEditor": "混音器",
+  "sn_ScriptEditor": "脚本编辑器",
 
   "ds_ShowMixtureEditor": "在界面下半部分显示混合编辑器",
+  "ds_ShowAdditionEditor": "在混合编辑器中显示附加编辑器",
   "ds_ViewMode": "将编辑器设为浏览模式",
   "ds_EditMode": "将编辑器设为编辑模式",
   "ds_Tool1": "切换到快捷工具1",
@@ -83,6 +88,9 @@
   "ds_Tool3": "切换到快捷工具3",
   "ds_Tool4": "切换到快捷工具4",
   "ds_Tool5": "切换到快捷工具5",
+  "ds_NoteEditor": "在混合编辑器中显示音符编辑器",
+  "ds_MixEditor": "在混合编辑器中显示混音器",
+  "ds_ScriptEditor": "在混合编辑器中显示脚本编辑器",
 
   "sn_Play": "播放",
   "sn_Stop": "停止",

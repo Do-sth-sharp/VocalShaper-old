@@ -67,6 +67,7 @@
   "ds_SelectAll": "Select all",
 
   "sn_ShowMixtureEditor": "Show Mixture Editor",
+  "sn_ShowAdditionEditor": "Show Additional Editor",
   "sn_ViewMode": "View Mode",
   "sn_EditMode": "Edit Mode",
   "sn_Tool1": "Fast Tool 1",
@@ -74,8 +75,12 @@
   "sn_Tool3": "Fast Tool 3",
   "sn_Tool4": "Fast Tool 4",
   "sn_Tool5": "Fast Tool 5",
+  "sn_NoteEditor": "Note Editor",
+  "sn_MixEditor": "Mixer",
+  "sn_ScriptEditor": "Script Editor",
 
   "ds_ShowMixtureEditor": "Show mixture editor at the bottom",
+  "ds_ShowAdditionEditor": "Show additional editor in the mixture editor",
   "ds_ViewMode": "Switch to view mode",
   "ds_EditMode": "Switch to edit mode",
   "ds_Tool1": "Switch to fast tool 1",
@@ -83,6 +88,9 @@
   "ds_Tool3": "Switch to fast tool 3",
   "ds_Tool4": "Switch to fast tool 4",
   "ds_Tool5": "Switch to fast tool 5",
+  "ds_NoteEditor": "Show note editor in the mixture editor",
+  "ds_MixEditor": "Show mixer in the mixture editor",
+  "ds_ScriptEditor": "Show script editor in the mixture editor",
 
   "sn_Play": "Play",
   "sn_Stop": "Stop",
