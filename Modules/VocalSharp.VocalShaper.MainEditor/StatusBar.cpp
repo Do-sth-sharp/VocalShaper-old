@@ -441,7 +441,7 @@ void StatusBar::resized()
 		if (this->editorControlerComponent) {
 			this->editorControlerComponent->setBounds(
 				allWidth, 0,
-				1, this->getHeight()
+				0, this->getHeight()
 			);
 			this->editorControlerComponent->setVisible(false);
 		}
@@ -471,7 +471,7 @@ void StatusBar::resized()
 		if (this->editorControlerComponent) {
 			this->editorControlerComponent->setBounds(
 				allWidth, 0,
-				1, this->getHeight()
+				0, this->getHeight()
 			);
 			this->editorControlerComponent->setVisible(false);
 		}
@@ -501,7 +501,7 @@ void StatusBar::resized()
 		if (this->editorControlerComponent) {
 			this->editorControlerComponent->setBounds(
 				allWidth, 0,
-				1, this->getHeight()
+				0, this->getHeight()
 			);
 			this->editorControlerComponent->setVisible(false);
 		}
@@ -531,7 +531,7 @@ void StatusBar::resized()
 		if (this->editorControlerComponent) {
 			this->editorControlerComponent->setBounds(
 				allWidth, 0,
-				1, this->getHeight()
+				0, this->getHeight()
 			);
 			this->editorControlerComponent->setVisible(false);
 		}
@@ -561,7 +561,7 @@ void StatusBar::resized()
 		if (this->editorControlerComponent) {
 			this->editorControlerComponent->setBounds(
 				allWidth, 0,
-				1, this->getHeight()
+				0, this->getHeight()
 			);
 			this->editorControlerComponent->setVisible(false);
 		}
