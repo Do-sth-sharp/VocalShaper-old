@@ -193,6 +193,8 @@ StatusBar::StatusBar()
 	//建立轨道切换按钮
 	this->switchTrackButton = std::make_unique<juce::TextButton>(
 		juce::String(), this->tr("tip_Track"));
+	this->switchTrackButton->setConnectedEdges(juce::Button::ConnectedEdgeFlags::ConnectedOnLeft |
+		juce::Button::ConnectedEdgeFlags::ConnectedOnRight);
 	this->switchTrackButton->setWantsKeyboardFocus(false);
 	this->switchTrackButton->setFocusContainerType(juce::Component::FocusContainerType::none);
 	this->switchTrackButton->setLookAndFeel(this->lafs.statusSwitchTrackButton);

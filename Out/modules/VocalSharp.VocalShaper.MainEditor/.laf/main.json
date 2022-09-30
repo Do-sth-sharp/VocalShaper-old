@@ -30,7 +30,7 @@
 
         "width-statusMarginLeft:number":0.0075,
         "width-statusTrackComponentSplit:number":0.005,
-        "width-statusTrackComponentTextButtonMargin:number":0.005
+        "width-statusTrackComponentTextButtonMargin:number":0.001
     },
     "position":
     {
