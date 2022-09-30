@@ -9,5 +9,9 @@
   "bt_NoteEditorAdditionPlugin": "A-Plugin",
 
   "tip_NoteEditorPlugin": "Select note editor plugin",
-  "tip_NoteEditorAdditionPlugin": "Select note editor additional plugin"
+  "tip_NoteEditorAdditionPlugin": "Select note editor additional plugin",
+
+  "pre_Track": "Track",
+  "bt_NoTrack": "No Track",
+  "tip_Track": "Current track"
 }

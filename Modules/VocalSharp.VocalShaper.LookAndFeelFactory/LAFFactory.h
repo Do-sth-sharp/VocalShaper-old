@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class LAFFactory final
@@ -24,6 +24,8 @@ public:
 	juce::LookAndFeel* getStretchableBarLAF(const juce::String& caller, juce::Colour mainColour);
 	juce::LookAndFeel* getStatusButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusTextButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getStatusRoundButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getStatusFlatTextButtonLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
 

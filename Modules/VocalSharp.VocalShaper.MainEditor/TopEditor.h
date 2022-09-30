@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 #include "TopLevelEditorBase.h"
 
@@ -25,5 +25,9 @@ public:
 	void paint(juce::Graphics& g) override;
 
 private:
+	void initCommandID();
+	void initCommandFunction();
+	void initCommandFlagHook();
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopEditor);
 };

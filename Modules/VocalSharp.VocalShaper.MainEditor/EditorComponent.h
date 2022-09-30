@@ -40,6 +40,14 @@ public:
 	bool couldPasteFromSystem();
 	bool couldSelectAll();
 
+	void lastTrack();
+	void nextTrack();
+	void switchTrack();
+
+	bool couldLastTrack();
+	bool couldNextTrack();
+	bool couldSwitchTrack();
+
 public:
 	bool isEditMode();
 	void setEditMode(bool editMode);

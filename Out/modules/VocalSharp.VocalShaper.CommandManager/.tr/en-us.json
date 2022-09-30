@@ -96,6 +96,14 @@
   "ds_NoteEditorPlugin": "Select note editor plugin",
   "ds_NoteEditorAdditionPlugin": "Select note editor additional plugin",
 
+  "sn_LastTrack": "Last Track",
+  "sn_NextTrack": "Next Track",
+  "sn_SwitchTrack": "Switch Track",
+
+  "ds_LastTrack": "Switch to last track",
+  "ds_NextTrack": "Switch to next track",
+  "ds_SwitchTrack": "Switch track by name",
+
   "sn_Play": "Play",
   "sn_Stop": "Stop",
   "sn_Begin": "To Begin",

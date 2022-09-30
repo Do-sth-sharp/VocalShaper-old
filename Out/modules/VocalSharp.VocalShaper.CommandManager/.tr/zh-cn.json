@@ -96,6 +96,14 @@
   "ds_NoteEditorPlugin": "选择音符编辑器插件",
   "ds_NoteEditorAdditionPlugin": "选择音符编辑器附加插件",
 
+  "sn_LastTrack": "上一轨道",
+  "sn_NextTrack": "下一轨道",
+  "sn_SwitchTrack": "切换轨道",
+
+  "ds_LastTrack": "切换到上一轨道",
+  "ds_NextTrack": "切换到下一轨道",
+  "ds_SwitchTrack": "按名称切换轨道",
+
   "sn_Play": "播放",
   "sn_Stop": "停止",
   "sn_Begin": "到最前",

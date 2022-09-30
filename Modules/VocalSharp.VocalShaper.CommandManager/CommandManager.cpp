@@ -326,14 +326,14 @@ void CommandManager::initViewCommand()
 		.shortName = this->tr("sn_ShowMixtureEditor"),
 		.description = this->tr("ds_ShowMixtureEditor"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("f1")}
 		});
 	this->infoList.add({
 		.name = "Show Addition Editor",
 		.shortName = this->tr("sn_ShowAdditionEditor"),
 		.description = this->tr("ds_ShowAdditionEditor"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("f2")}
 		});
 	this->infoList.add({
 		.name = "View Mode",
@@ -389,21 +389,21 @@ void CommandManager::initViewCommand()
 		.shortName = this->tr("sn_NoteEditor"),
 		.description = this->tr("ds_NoteEditor"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("f3")}
 		});
 	this->infoList.add({
 		.name = "Mix Editor",
 		.shortName = this->tr("sn_MixEditor"),
 		.description = this->tr("ds_MixEditor"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("f4")}
 		});
 	this->infoList.add({
 		.name = "Script Editor",
 		.shortName = this->tr("sn_ScriptEditor"),
 		.description = this->tr("ds_ScriptEditor"),
 		.categoryName = this->tr("cn_View"),
-		.defaultKeypresses = {}
+		.defaultKeypresses = {juce::KeyPress::createFromDescription("f5")}
 		});
 	this->infoList.add({
 		.name = "Note Editor Plugin",
@@ -428,7 +428,27 @@ void CommandManager::initModifyCommand()
 
 void CommandManager::initProjectCommand()
 {
-
+	this->infoList.add({
+		.name = "Last Track",
+		.shortName = this->tr("sn_LastTrack"),
+		.description = this->tr("ds_LastTrack"),
+		.categoryName = this->tr("cn_Project"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Next Track",
+		.shortName = this->tr("sn_NextTrack"),
+		.description = this->tr("ds_NextTrack"),
+		.categoryName = this->tr("cn_Project"),
+		.defaultKeypresses = {}
+		});
+	this->infoList.add({
+		.name = "Switch Track",
+		.shortName = this->tr("sn_SwitchTrack"),
+		.description = this->tr("ds_SwitchTrack"),
+		.categoryName = this->tr("cn_Project"),
+		.defaultKeypresses = {}
+		});
 }
 
 void CommandManager::initTransportCommand()

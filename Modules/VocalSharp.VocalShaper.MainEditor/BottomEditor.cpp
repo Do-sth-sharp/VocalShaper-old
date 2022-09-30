@@ -157,6 +157,25 @@ BottomEditor::EditorType BottomEditor::getEditorType()
 	return this->editorType;
 }
 
+void BottomEditor::selectNoteEditorPlugin()
+{
+	juce::Array<std::pair<juce::String, bool>> list;
+	int result=this->statusBar->selectNoteEditorPlugin(list);
+	//TODO
+}
+
+void BottomEditor::selectNoteEditionAdditionPlugin()
+{
+	juce::Array<std::pair<juce::String, bool>> list;
+	int result = this->statusBar->selectNoteEditionAdditionPlugin(list);
+	//TODO
+}
+
+int BottomEditor::switchTrack()
+{
+	return this->statusBar->switchTrack();
+}
+
 void BottomEditor::initCommandID()
 {
 
@@ -186,6 +205,18 @@ void BottomEditor::initCommandFunction()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Script Editor", [this] {
 			this->setEditorType(BottomEditor::EditorType::ScriptEditor);
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Note Editor Plugin", [this] {
+			this->selectNoteEditorPlugin();
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Note Editor Addition Plugin", [this] {
+			this->selectNoteEditionAdditionPlugin();
 		}
 	);
 }

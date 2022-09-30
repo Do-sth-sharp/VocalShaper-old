@@ -750,6 +750,23 @@ void PlayBar::resized()
 		this->getHeight() / 2 - height_textButton / 2,
 		width_adsorbButton, height_textButton
 	);
+
+	//中间按钮防重叠
+	int centWidthR = this->getWidth() - width_rightMargin - width_button - width_buttonGroupSplit
+		- width_gridButton - width_textSplit - width_textGrid - width_textItemSplit
+		- width_adsorbButton - width_buttonGroupSplit 
+		- (this->getWidth() / 2 + width_buttonSplit / 2 + width_button);
+	int centWidthL = this->getWidth() / 2 - width_buttonSplit / 2 - width_button
+		- width_buttonGroupSplit
+		- (width_leftMargin + width_buttonSplit * 4 + width_button * 6 + width_buttonGroupSplit * 1);
+	if (centWidthR < 0 || centWidthL < 0) {
+		this->undoButton->setVisible(false);
+		this->redoButton->setVisible(false);
+	}
+	else {
+		this->undoButton->setVisible(true);
+		this->redoButton->setVisible(true);
+	}
 }
 
 void PlayBar::paint(juce::Graphics& g)

@@ -1,15 +1,15 @@
 ﻿#pragma once
 #include <JuceHeader.h>
 
-class PlayBarTextButtonLAF final : public juce::LookAndFeel_V4
+class StatusBarFlatTextButtonLAF final : public juce::LookAndFeel_V4
 {
 public:
-	PlayBarTextButtonLAF() :LookAndFeel_V4() {};
-	~PlayBarTextButtonLAF() override = default;
+    StatusBarFlatTextButtonLAF() :LookAndFeel_V4() {};
+    ~StatusBarFlatTextButtonLAF() override = default;
 
-	void drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
-		bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
-	{
+    void drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
         auto cornerSize = 6.0f;
         auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 
@@ -48,5 +48,5 @@ public:
             g.setColour(button.findColour(juce::ComboBox::outlineColourId));
             g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
         }
-	}
+    }
 };

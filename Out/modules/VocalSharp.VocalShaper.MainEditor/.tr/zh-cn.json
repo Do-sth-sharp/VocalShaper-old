@@ -9,5 +9,9 @@
   "bt_NoteEditorAdditionPlugin": "选择附加控件",
 
   "tip_NoteEditorPlugin": "选择音符编辑器中使用的控件",
-  "tip_NoteEditorAdditionPlugin": "选择附加编辑器中使用的控件"
+  "tip_NoteEditorAdditionPlugin": "选择附加编辑器中使用的控件",
+
+  "pre_Track": "轨道",
+  "bt_NoTrack": "无轨道",
+  "tip_Track": "当前轨道"
 }

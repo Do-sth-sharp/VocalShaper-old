@@ -40,6 +40,9 @@ public:
 	void setEditorType(EditorType type);
 	EditorType getEditorType();
 
+	void selectNoteEditorPlugin();
+	void selectNoteEditionAdditionPlugin();
+	int switchTrack();
 
 private:
 	struct Size final : public TopLevelEditorBase::Size

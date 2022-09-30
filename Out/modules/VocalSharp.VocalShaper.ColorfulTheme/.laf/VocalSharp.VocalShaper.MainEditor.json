@@ -30,7 +30,13 @@
         "icon-statusBarButton-highlight:string":"$ThemeColorD1",
         "background-statusBarButton-highlight:string":"$ThemeColorA1",
 
-        "split-statusBar:string":"$ThemeColorD4"
+        "split-statusBar:string":"$ThemeColorD4",
+
+        "icon-statusBarRoundButton:string":"$ThemeColorD2",
+        "background-statusBarRoundButton:string":"$ThemeColorA1",
+
+        "text-statusBarCurrentTrackName:string":"$ThemeColorD1",
+        "point-statusBarCurrentTrackDefault:string":"$ThemeColorB1"
     },
     "resource":
     {
@@ -45,6 +51,9 @@
 
         "icon-noteEditorButton:string":"/rc/third-party/RemixIcon/icons/Media/music-fill.svg",
         "icon-mixEditorButton:string":"/rc/third-party/RemixIcon/icons/Media/sound-module-fill.svg",
-        "icon-scriptEditorButton:string":"/rc/third-party/RemixIcon/icons/Development/code-s-slash-fill.svg"
+        "icon-scriptEditorButton:string":"/rc/third-party/RemixIcon/icons/Development/code-s-slash-fill.svg",
+
+        "icon-lastTrackButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-left-s-fill.svg",
+        "icon-nextTrackButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-right-s-fill.svg"
     }
 }

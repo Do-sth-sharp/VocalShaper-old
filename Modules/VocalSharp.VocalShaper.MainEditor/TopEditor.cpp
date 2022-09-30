@@ -1,9 +1,17 @@
 ﻿#include "TopEditor.h"
+#include <libJModule.h>
 
 TopEditor::TopEditor()
 	: TopLevelEditorBase()
 {
+	//以下获取命令ID
+	this->initCommandID();
 
+	//以下注册命令回调
+	this->initCommandFunction();
+
+	//以下注册Flag获取函数
+	this->initCommandFlagHook();
 }
 
 void TopEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
@@ -78,4 +86,19 @@ int TopEditor::showClipBoard(const juce::StringArray& list)
 void TopEditor::paint(juce::Graphics& g)
 {
 	//g.fillAll(juce::Colours::darkseagreen);
+}
+
+void TopEditor::initCommandID()
+{
+
+}
+
+void TopEditor::initCommandFunction()
+{
+	
+}
+
+void TopEditor::initCommandFlagHook()
+{
+
 }

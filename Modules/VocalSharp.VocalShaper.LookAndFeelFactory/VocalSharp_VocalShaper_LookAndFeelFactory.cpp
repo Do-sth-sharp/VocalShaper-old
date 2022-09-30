@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_LookAndFeelFactory.h"
+﻿#include "VocalSharp_VocalShaper_LookAndFeelFactory.h"
 
 VocalSharp_VocalShaper_LookAndFeelFactory::VocalSharp_VocalShaper_LookAndFeelFactory()
 	:Module()
@@ -83,6 +83,18 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		"GetStatusTextButtonLAF",
 		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
 			laf = this->factory->getStatusTextButtonLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStatusRoundButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStatusRoundButtonLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetStatusFlatTextButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getStatusFlatTextButtonLAF(caller);
 		}
 	);
 

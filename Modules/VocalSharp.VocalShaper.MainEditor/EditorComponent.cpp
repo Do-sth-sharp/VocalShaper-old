@@ -408,6 +408,46 @@ bool EditorComponent::couldSelectAll()
 	return this->topEditor->isActive() || this->bottomEditor->isActive();
 }
 
+void EditorComponent::lastTrack()
+{
+	//TODO
+}
+
+void EditorComponent::nextTrack()
+{
+	//TODO
+}
+
+void EditorComponent::switchTrack()
+{
+	int result = this->bottomEditor->switchTrack();
+	//TODO
+}
+
+bool EditorComponent::couldLastTrack()
+{
+	//TODO
+	return true;
+}
+
+bool EditorComponent::couldNextTrack()
+{
+	//TODO
+	return true;
+}
+
+bool EditorComponent::couldSwitchTrack()
+{
+	if (!this->bottomEditor) {
+		return false;
+	}
+	if (!this->bottomEditor->isVisible()) {
+		return false;
+	}
+	//TODO
+	return true;
+}
+
 bool EditorComponent::isEditMode()
 {
 	return this->editModeFlag;
@@ -587,6 +627,24 @@ void EditorComponent::initCommandFunction()
 	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Tool 5", [this] {this->setToolID(5); }
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Last Track", [this] {
+			this->lastTrack();
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Next Track", [this] {
+			this->nextTrack();
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
+		"Switch Track", [this] {
+			this->switchTrack();
+		}
 	);
 }
 
@@ -796,6 +854,36 @@ void EditorComponent::initCommandFlagHook()
 			}
 			if (this->getToolID() == 5) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Last Track", [this]()->int {
+			int flag = 0;
+			if (!this->couldLastTrack ()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Next Track", [this]()->int {
+			int flag = 0;
+			if (!this->couldNextTrack()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
+			}
+			return flag;
+		}
+	);
+	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
+		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
+		"Switch Track", [this]()->int {
+			int flag = 0;
+			if (!this->couldSwitchTrack()) {
+				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			return flag;
 		}

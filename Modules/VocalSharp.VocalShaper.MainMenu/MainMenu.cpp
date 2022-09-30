@@ -49,6 +49,12 @@ commandNoteEditorAdditionPlugin = -1
 ;
 
 int
+commandLastTrack = -1,
+commandNextTrack = -1,
+commandSwitchTrack = -1
+;
+
+int
 commandPlay = -1,
 commandStop = -1,
 commandBegin = -1,
@@ -138,6 +144,12 @@ enum ViewID {
 	IDScriptEditor,
 	IDNoteEditorPlugin,
 	IDNoteEditorAdditionPlugin
+};
+
+enum ProjectID {
+	IDLastTrack = 0x00,
+	IDNextTrack,
+	IDSwitchTrack
 };
 
 enum TransportID {
@@ -381,7 +393,18 @@ void MainMenu::initModifyCommand()
 
 void MainMenu::initProjectCommand()
 {
-
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Last Track", ::commandLastTrack
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Next Track", ::commandNextTrack
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Switch Track", ::commandSwitchTrack
+		);
 }
 
 void MainMenu::initTransportCommand()
@@ -600,6 +623,10 @@ juce::PopupMenu MainMenu::createProjectMenu()
 {
 	int sectionId = GroupID::IDProject;
 	juce::PopupMenu menu;
+
+	menu.addCommandItem(::commandManager, ::commandLastTrack);
+	menu.addCommandItem(::commandManager, ::commandNextTrack);
+	menu.addCommandItem(::commandManager, ::commandSwitchTrack);
 
 	return menu;
 }

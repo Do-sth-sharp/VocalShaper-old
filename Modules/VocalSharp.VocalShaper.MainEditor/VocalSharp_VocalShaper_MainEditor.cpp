@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_MainEditor.h"
+﻿#include "VocalSharp_VocalShaper_MainEditor.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
@@ -85,6 +85,10 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusButtonLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusTextButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusRoundButtonLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF") ||
 		!jmadf::CheckInterface<void>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "Close")
 		) {

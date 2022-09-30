@@ -32,197 +32,7 @@ StatusBar::StatusBar()
 	this->initCommandFlagHook();
 
 	//以下获取界面属性
-	bool result = false;
-	//color
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "background-statusBar", this->colors.background_statusBar, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "border-statusBar", this->colors.border_statusBar, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "text-statusBarTextButton", this->colors.text_statusBarTextButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "background-statusBarTextButton", this->colors.background_statusBarTextButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "text-statusBarTextButton-highlight", this->colors.text_statusBarTextButton_highlight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "background-statusBarTextButton-highlight", this->colors.background_statusBarTextButton_highlight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "icon-statusBarButton", this->colors.icon_statusBarButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "background-statusBarButton", this->colors.background_statusBarButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "icon-statusBarButton-highlight", this->colors.icon_statusBarButton_highlight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "background-statusBarButton-highlight", this->colors.background_statusBarButton_highlight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "split-statusBar", this->colors.split_statusBar, result
-		);
-	//size
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusBorderRight", this->sizes.width_statusBorderRight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusMarginRight", this->sizes.width_statusMarginRight, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusButtonSplit", this->sizes.width_statusButtonSplit, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusButtonGroupSplit", this->sizes.width_statusButtonGroupSplit, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusSplitLine", this->sizes.width_statusSplitLine, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-statusButtonMargin", this->sizes.width_statusButtonMargin, result
-		);
-	//position
-	//scale
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "scale", "height-statusButton", this->scales.height_statusButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "scale", "height-statusSplitLine", this->scales.height_statusSplitLine, result
-		);
-	//resource
-	juce::String iconNoteEditorButton, iconMixEditorButton, iconScriptEditorButton;
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
-		"main", "resource", "icon-noteEditorButton", iconNoteEditorButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
-		"main", "resource", "icon-mixEditorButton", iconMixEditorButton, result
-		);
-	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
-		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
-		"main", "resource", "icon-scriptEditorButton", iconScriptEditorButton, result
-		);
-
-	//加载音符编辑器按钮图标
-	{
-		size_t iconSize = 0;
-		void* iconPtr = nullptr;
-		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
-			.getParentDirectory().getFullPathName() + iconNoteEditorButton;
-
-		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
-			"WuChang.JMADF.DynamicRC",
-			"GetRC",
-			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
-			);
-		if (iconPtr) {
-			juce::String iconStr((char*)iconPtr, iconSize);
-			auto ptrXml = juce::XmlDocument::parse(iconStr);
-			if (ptrXml) {
-				this->iconNoteEditor = juce::Drawable::createFromSVG(*ptrXml);
-				this->iconNoteEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
-				if (this->iconNoteEditor) {
-					this->iconNoteEditor->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton
-					);
-				}
-				if (this->iconNoteEditorHighlight) {
-					this->iconNoteEditorHighlight->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton_highlight
-					);
-				}
-			}
-		}
-	}
-
-	//加载混音器按钮图标
-	{
-		size_t iconSize = 0;
-		void* iconPtr = nullptr;
-		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
-			.getParentDirectory().getFullPathName() + iconMixEditorButton;
-
-		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
-			"WuChang.JMADF.DynamicRC",
-			"GetRC",
-			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
-			);
-		if (iconPtr) {
-			juce::String iconStr((char*)iconPtr, iconSize);
-			auto ptrXml = juce::XmlDocument::parse(iconStr);
-			if (ptrXml) {
-				this->iconMixEditor = juce::Drawable::createFromSVG(*ptrXml);
-				this->iconMixEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
-				if (this->iconMixEditor) {
-					this->iconMixEditor->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton
-					);
-				}
-				if (this->iconMixEditorHighlight) {
-					this->iconMixEditorHighlight->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton_highlight
-					);
-				}
-			}
-		}
-	}
-
-	//加载脚本编辑器按钮图标
-	{
-		size_t iconSize = 0;
-		void* iconPtr = nullptr;
-		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
-			.getParentDirectory().getFullPathName() + iconScriptEditorButton;
-
-		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
-			"WuChang.JMADF.DynamicRC",
-			"GetRC",
-			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
-			);
-		if (iconPtr) {
-			juce::String iconStr((char*)iconPtr, iconSize);
-			auto ptrXml = juce::XmlDocument::parse(iconStr);
-			if (ptrXml) {
-				this->iconScriptEditor = juce::Drawable::createFromSVG(*ptrXml);
-				this->iconScriptEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
-				if (this->iconScriptEditor) {
-					this->iconScriptEditor->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton
-					);
-				}
-				if (this->iconScriptEditorHighlight) {
-					this->iconScriptEditorHighlight->replaceColour(
-						juce::Colours::black, this->colors.icon_statusBarButton_highlight
-					);
-				}
-			}
-		}
-	}
+	this->initUIConfigAndIcon();
 
 	//建立文字按钮样式
 	jmadf::CallInterface<juce::LookAndFeel*&>(
@@ -324,20 +134,142 @@ StatusBar::StatusBar()
 	this->noteEditorAdditionPluginButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->noteEditorAdditionPluginButton->setLookAndFeel(this->lafs.statusTextButton);
 	this->addAndMakeVisible(this->noteEditorAdditionPluginButton.get());
+
+	//获取翻页按钮样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusRoundButtonLAF",
+		this->lafs.statusRoundButton
+		);
+	this->lafs.statusRoundButton->setColour(
+		juce::DrawableButton::ColourIds::backgroundColourId, this->colors.background_statusBarRoundButton
+	);
+	this->lafs.statusRoundButton->setColour(
+		juce::DrawableButton::ColourIds::backgroundOnColourId, this->colors.background_statusBarRoundButton
+	);
+	this->lafs.statusRoundButton->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+
+	//建立翻页按钮
+	this->lastTrackButton = std::make_unique<juce::DrawableButton>(
+		"bt_LastTrack", juce::DrawableButton::ButtonStyle::ImageFitted);
+	this->lastTrackButton->setImages(this->iconLastTrack.get());
+	this->lastTrackButton->setLookAndFeel(this->lafs.statusRoundButton);
+	this->lastTrackButton->setWantsKeyboardFocus(false);
+	this->lastTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->lastTrackButton->setCommandToTrigger(this->commandManager, this->lastTrackCommandID, true);
+	this->addAndMakeVisible(this->lastTrackButton.get());
+
+	this->nextTrackButton = std::make_unique<juce::DrawableButton>(
+		"bt_NextTrack", juce::DrawableButton::ButtonStyle::ImageFitted);
+	this->nextTrackButton->setImages(this->iconNextTrack.get());
+	this->nextTrackButton->setLookAndFeel(this->lafs.statusRoundButton);
+	this->nextTrackButton->setWantsKeyboardFocus(false);
+	this->nextTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->nextTrackButton->setCommandToTrigger(this->commandManager, this->nextTrackCommandID, true);
+	this->addAndMakeVisible(this->nextTrackButton.get());
+
+	//获取轨道切换按钮样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF",
+		this->lafs.statusSwitchTrackButton
+		);
+	this->lafs.statusSwitchTrackButton->setColour(
+		juce::TextButton::ColourIds::buttonColourId, this->colors.background_statusBar
+	);
+	this->lafs.statusSwitchTrackButton->setColour(
+		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_statusBar
+	);
+	this->lafs.statusSwitchTrackButton->setColour(
+		juce::TextButton::ColourIds::textColourOnId, this->colors.text_statusBarCurrentTrackName
+	);
+	this->lafs.statusSwitchTrackButton->setColour(
+		juce::TextButton::ColourIds::textColourOffId, this->colors.text_statusBarCurrentTrackName
+	);
+	this->lafs.statusSwitchTrackButton->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+
+	//建立轨道切换按钮
+	this->switchTrackButton = std::make_unique<juce::TextButton>(
+		juce::String(), this->tr("tip_Track"));
+	this->switchTrackButton->setWantsKeyboardFocus(false);
+	this->switchTrackButton->setFocusContainerType(juce::Component::FocusContainerType::none);
+	this->switchTrackButton->setLookAndFeel(this->lafs.statusSwitchTrackButton);
+	this->switchTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->switchTrackButton->setCommandToTrigger(this->commandManager, this->switchTrackCommandID, false);
+	this->addAndMakeVisible(this->switchTrackButton.get());
+
+	//刷新轨道状态
+	this->refreshTrackComponent();
 }
 
-void StatusBar::selectNoteEditorPlugin()
+void StatusBar::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::PopupMenu menu;
-
-	menu.showAt(this->noteEditorPluginButton.get(), 0, 0, 10);
+	juce::ScopedWriteLock locker(this->projectLock);
+	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->refreshTrackComponent();
 }
 
-void StatusBar::selectNoteEditionAdditionPlugin()
+void StatusBar::trackChanged(int trackID)
+{
+	juce::ScopedWriteLock locker(this->projectLock);
+	this->trackID = trackID;
+	this->refreshTrackComponent();
+}
+
+void StatusBar::editorControlerChanged(juce::Component* controler)
+{
+	juce::ScopedWriteLock locker(this->controlerLock);
+	if (this->editorControlerComponent) {
+		this->removeChildComponent(this->editorControlerComponent);
+	}
+	this->editorControlerComponent = controler;
+	if (controler) {
+		this->addChildComponent(controler);
+	}
+	this->resized();
+	this->repaint();
+}
+
+int StatusBar::selectNoteEditorPlugin(const juce::Array<std::pair<juce::String, bool>>& list)
 {
 	juce::PopupMenu menu;
+	for (int i = 0; i < list.size(); i++) {
+		auto& pair = list.getReference(i);
+		menu.addItem(i + 1, pair.first, true, pair.second);
+	}
+	return menu.showAt(this->noteEditorPluginButton.get(), 0, 0, 10);
+}
 
-	menu.showAt(this->noteEditorAdditionPluginButton.get(), 0, 0, 10);
+int StatusBar::selectNoteEditionAdditionPlugin(const juce::Array<std::pair<juce::String, bool>>& list)
+{
+	juce::PopupMenu menu;
+	for (int i = 0; i < list.size(); i++) {
+		auto& pair = list.getReference(i);
+		menu.addItem(i + 1, pair.first, true, pair.second);
+	}
+	return menu.showAt(this->noteEditorAdditionPluginButton.get(), 0, 0, 10);
+}
+
+int StatusBar::switchTrack()
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::PopupMenu menu;
+
+	if (this->project) {
+		juce::String prefix = this->tr("pre_Track");
+		juce::ScopedReadLock locker2(this->project->getLock());
+		for (int i = 0; i < vocalshaper::ProjectDAO::trackSize(this->project->getPtr()); i++) {
+			auto* track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), i);
+			juce::String name = prefix + " " + juce::String(i);
+			juce::Colour color = vocalshaper::TrackDAO::getColour(track);
+
+			menu.addColouredItem(i + 1, name, this->colors.text_statusBarCurrentTrackName,
+				true, i == this->trackID, nullptr);
+		}
+	}
+	return menu.showAt(this->switchTrackButton.get(), 0, 0, 10);
 }
 
 void StatusBar::resized()
@@ -425,6 +357,215 @@ void StatusBar::resized()
 		this->getHeight() / 2 - height_button / 2,
 		width_noteEditorAdditionPluginButton, height_button
 	);
+
+	//计算左侧大小
+	int width_marginLeft = this->sizes.width_statusMarginLeft * screenSize.getWidth();
+	int width_trackSplit = this->sizes.width_statusTrackComponentSplit * screenSize.getWidth();
+	int width_trackTextMargin = this->sizes.width_statusTrackComponentTextButtonMargin * screenSize.getWidth();
+	int height_trackButton = this->scales.height_statusRoundButton * this->getHeight();
+	int width_trackButton = height_trackButton;
+	int height_trackColor = this->scales.height_statusTrackColorPoint * this->getHeight();
+	int width_trackColor = height_trackColor;
+
+	//计算轨道切换按钮宽度
+	juce::Font switchFont =
+		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->switchTrackButton.get()), height_button);
+	int width_switchTrackButton =
+		switchFont.getStringWidth(this->switchTrackButton->getButtonText()) + width_trackTextMargin * 2;
+
+	//根据剩余空间计算控件
+	int leftWidth = this->getWidth() - width_borderRight - width_marginRight
+		- width_buttonSplit * 4 - width_buttonGroupSplit * 3 - width_button * 3
+		- width_mixtureEditorButton - width_additionEditorButton
+		- width_noteEditorPluginButton - width_noteEditorAdditionPluginButton;
+	int allWidth = width_marginLeft + width_trackButton * 2 + width_trackSplit * 3 + width_trackColor + width_switchTrackButton + width_buttonGroupSplit;
+	int fullTrackWidth = allWidth - width_buttonGroupSplit;
+	int textTrackWidth = fullTrackWidth - width_trackColor - width_trackSplit;
+	int lightTrackWidth = fullTrackWidth - width_switchTrackButton - width_trackSplit;
+	int buttonTrackWidth = fullTrackWidth - width_trackColor - width_switchTrackButton - width_trackSplit * 2;
+
+	//调整左侧控件
+	juce::ScopedReadLock locker1(this->controlerLock);
+	if (leftWidth > allWidth) {
+		//显示完整轨道控件和控制器
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(true);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 2 + width_trackColor,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(true);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 3 + width_trackColor + width_switchTrackButton,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(true);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				leftWidth - allWidth, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(true);
+		}
+	}
+	else if (leftWidth >= fullTrackWidth) {
+		//只显示完整轨道控件
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(true);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 2 + width_trackColor,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(true);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 3 + width_trackColor + width_switchTrackButton,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(true);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				1, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(false);
+		}
+	}
+	else if (leftWidth >= textTrackWidth) {
+		//显示文字版轨道控件
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(true);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(true);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 2 + width_switchTrackButton,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(true);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				1, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(false);
+		}
+	}
+	else if (leftWidth >= lightTrackWidth) {
+		//显示颜色版轨道控件
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(true);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(false);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 2 + width_trackColor,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(true);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				1, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(false);
+		}
+	}
+	else if (leftWidth >= buttonTrackWidth) {
+		//只显示轨道切换按钮
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(true);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(false);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(true);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				1, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(false);
+		}
+	}
+	else {
+		//不显示左侧控件
+		this->lastTrackButton->setBounds(
+			width_marginLeft, this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->lastTrackButton->setVisible(false);
+
+		this->switchTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit + width_trackColor,
+			this->getHeight() / 2 - height_button / 2,
+			width_switchTrackButton, height_button
+		);
+		this->switchTrackButton->setVisible(false);
+
+		this->nextTrackButton->setBounds(
+			width_marginLeft + width_trackButton + width_trackSplit * 2 + width_trackColor + width_switchTrackButton,
+			this->getHeight() / 2 - height_trackButton / 2,
+			width_trackButton, height_trackButton
+		);
+		this->nextTrackButton->setVisible(false);
+
+		if (this->editorControlerComponent) {
+			this->editorControlerComponent->setBounds(
+				allWidth, 0,
+				1, this->getHeight()
+			);
+			this->editorControlerComponent->setVisible(false);
+		}
+	}
 }
 
 void StatusBar::paint(juce::Graphics& g)
@@ -499,6 +640,89 @@ void StatusBar::paint(juce::Graphics& g)
 		posXLineR3, this->getHeight() / 2.f + height_splitLine / 2.f,
 		width_splitLine
 	);
+
+	//计算左侧大小
+	int width_marginLeft = this->sizes.width_statusMarginLeft * screenSize.getWidth();
+	int width_trackSplit = this->sizes.width_statusTrackComponentSplit * screenSize.getWidth();
+	int width_trackTextMargin = this->sizes.width_statusTrackComponentTextButtonMargin * screenSize.getWidth();
+	int height_trackButton = this->scales.height_statusRoundButton * this->getHeight();
+	int width_trackButton = height_trackButton;
+	int height_trackColor = this->scales.height_statusTrackColorPoint * this->getHeight();
+	int width_trackColor = height_trackColor;
+
+	//计算轨道切换按钮宽度
+	juce::Font switchFont =
+		juce::LookAndFeel::getDefaultLookAndFeel().getTextButtonFont(*(this->switchTrackButton.get()), height_button);
+	int width_switchTrackButton =
+		switchFont.getStringWidth(this->switchTrackButton->getButtonText()) + width_trackTextMargin * 2;
+
+	//根据剩余空间计算控件
+	int leftWidth = this->getWidth() - width_borderRight - width_marginRight
+		- width_buttonSplit * 4 - width_buttonGroupSplit * 3 - width_button * 3
+		- width_mixtureEditorButton - width_additionEditorButton
+		- width_noteEditorPluginButton - width_noteEditorAdditionPluginButton;
+	int allWidth = width_marginLeft + width_trackButton * 2 + width_trackSplit * 3 + width_trackColor + width_switchTrackButton + width_buttonGroupSplit;
+	int fullTrackWidth = allWidth - width_buttonGroupSplit;
+	int textTrackWidth = fullTrackWidth - width_trackColor - width_trackSplit;
+	int lightTrackWidth = fullTrackWidth - width_switchTrackButton - width_trackSplit;
+	int buttonTrackWidth = fullTrackWidth - width_trackColor - width_switchTrackButton - width_trackSplit * 2;
+
+	//调整左侧控件
+	juce::ScopedReadLock locker1(this->controlerLock);
+	if (leftWidth > allWidth) {
+		//显示完整轨道控件和控制器
+		
+		//绘分割线
+		int posXLineL1 = allWidth - width_buttonGroupSplit / 2;
+		g.setColour(this->colors.split_statusBar);
+		g.drawLine(
+			posXLineL1, this->getHeight() / 2.f - height_splitLine / 2.f,
+			posXLineL1, this->getHeight() / 2.f + height_splitLine / 2.f,
+			width_splitLine
+		);
+
+		//绘轨道颜色
+		g.setColour(this->getCurrentTrackColour());
+		juce::Rectangle<float> colorRect(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2.f - height_trackColor / 2.f,
+			width_trackColor, height_trackColor
+		);
+		g.fillEllipse(colorRect);
+	}
+	else if (leftWidth >= fullTrackWidth) {
+		//只显示完整轨道控件
+		
+		//绘轨道颜色
+		g.setColour(this->getCurrentTrackColour());
+		juce::Rectangle<float> colorRect(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2.f - height_trackColor / 2.f,
+			width_trackColor, height_trackColor
+		);
+		g.fillEllipse(colorRect);
+	}
+	else if (leftWidth >= textTrackWidth) {
+		//显示文字版轨道控件
+	}
+	else if (leftWidth >= lightTrackWidth) {
+		//显示颜色版轨道控件
+		
+		//绘轨道颜色
+		g.setColour(this->getCurrentTrackColour());
+		juce::Rectangle<float> colorRect(
+			width_marginLeft + width_trackButton + width_trackSplit,
+			this->getHeight() / 2.f - height_trackColor / 2.f,
+			width_trackColor, height_trackColor
+		);
+		g.fillEllipse(colorRect);
+	}
+	else if (leftWidth >= buttonTrackWidth) {
+		//只显示轨道切换按钮
+	}
+	else {
+		//不显示左侧控件
+	}
 }
 
 void StatusBar::initCommandID()
@@ -531,25 +755,351 @@ void StatusBar::initCommandID()
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
 		"Note Editor Addition Plugin", this->noteEditorAdditionPluginCommandID
 		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Last Track", this->lastTrackCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Next Track", this->nextTrackCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Switch Track", this->switchTrackCommandID
+		);
 }
 
 void StatusBar::initCommandFunction()
 {
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Note Editor Plugin", [this] {
-			this->selectNoteEditorPlugin();
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Note Editor Addition Plugin", [this] {
-			this->selectNoteEditionAdditionPlugin();
-		}
-	);
+	
 }
 
 void StatusBar::initCommandFlagHook()
 {
 
+}
+
+void StatusBar::initUIConfigAndIcon()
+{
+	bool result = false;
+	//color
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBar", this->colors.background_statusBar, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "border-statusBar", this->colors.border_statusBar, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-statusBarTextButton", this->colors.text_statusBarTextButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBarTextButton", this->colors.background_statusBarTextButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-statusBarTextButton-highlight", this->colors.text_statusBarTextButton_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBarTextButton-highlight", this->colors.background_statusBarTextButton_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "icon-statusBarButton", this->colors.icon_statusBarButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBarButton", this->colors.background_statusBarButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "icon-statusBarButton-highlight", this->colors.icon_statusBarButton_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBarButton-highlight", this->colors.background_statusBarButton_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "split-statusBar", this->colors.split_statusBar, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "icon-statusBarRoundButton", this->colors.icon_statusBarRoundButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-statusBarRoundButton", this->colors.background_statusBarRoundButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-statusBarCurrentTrackName", this->colors.text_statusBarCurrentTrackName, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "point-statusBarCurrentTrackDefault", this->colors.point_statusBarCurrentTrackDefault, result
+		);
+	//size
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusBorderRight", this->sizes.width_statusBorderRight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusMarginRight", this->sizes.width_statusMarginRight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusButtonSplit", this->sizes.width_statusButtonSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusButtonGroupSplit", this->sizes.width_statusButtonGroupSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusSplitLine", this->sizes.width_statusSplitLine, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusButtonMargin", this->sizes.width_statusButtonMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusMarginLeft", this->sizes.width_statusMarginLeft, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusTrackComponentSplit", this->sizes.width_statusTrackComponentSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-statusTrackComponentTextButtonMargin", this->sizes.width_statusTrackComponentTextButtonMargin, result
+		);
+	//position
+	//scale
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "scale", "height-statusButton", this->scales.height_statusButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "scale", "height-statusSplitLine", this->scales.height_statusSplitLine, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "scale", "height-statusRoundButton", this->scales.height_statusRoundButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "scale", "height-statusTrackColorPoint", this->scales.height_statusTrackColorPoint, result
+		);
+	//resource
+	juce::String iconNoteEditorButton, iconMixEditorButton, iconScriptEditorButton;
+	juce::String iconLastTrackButton, iconNextTrackButton;
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-noteEditorButton", iconNoteEditorButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-mixEditorButton", iconMixEditorButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-scriptEditorButton", iconScriptEditorButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-lastTrackButton", iconLastTrackButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetString",
+		"main", "resource", "icon-nextTrackButton", iconNextTrackButton, result
+		);
+
+	//加载音符编辑器按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconNoteEditorButton;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconNoteEditor = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconNoteEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconNoteEditor) {
+					this->iconNoteEditor->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton
+					);
+				}
+				if (this->iconNoteEditorHighlight) {
+					this->iconNoteEditorHighlight->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载混音器按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconMixEditorButton;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconMixEditor = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconMixEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconMixEditor) {
+					this->iconMixEditor->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton
+					);
+				}
+				if (this->iconMixEditorHighlight) {
+					this->iconMixEditorHighlight->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载脚本编辑器按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconScriptEditorButton;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconScriptEditor = juce::Drawable::createFromSVG(*ptrXml);
+				this->iconScriptEditorHighlight = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconScriptEditor) {
+					this->iconScriptEditor->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton
+					);
+				}
+				if (this->iconScriptEditorHighlight) {
+					this->iconScriptEditorHighlight->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarButton_highlight
+					);
+				}
+			}
+		}
+	}
+
+	//加载上一轨按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconLastTrackButton;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconLastTrack = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconLastTrack) {
+					this->iconLastTrack->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarRoundButton
+					);
+				}
+			}
+		}
+	}
+
+	//加载下一轨按钮图标
+	{
+		size_t iconSize = 0;
+		void* iconPtr = nullptr;
+		juce::String iconPath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile)
+			.getParentDirectory().getFullPathName() + iconNextTrackButton;
+
+		jmadf::CallInterface<const juce::String&, std::pair<size_t&, void*&>>(
+			"WuChang.JMADF.DynamicRC",
+			"GetRC",
+			iconPath, std::pair<size_t&, void*&>(iconSize, iconPtr)
+			);
+		if (iconPtr) {
+			juce::String iconStr((char*)iconPtr, iconSize);
+			auto ptrXml = juce::XmlDocument::parse(iconStr);
+			if (ptrXml) {
+				this->iconNextTrack = juce::Drawable::createFromSVG(*ptrXml);
+				if (this->iconNextTrack) {
+					this->iconNextTrack->replaceColour(
+						juce::Colours::black, this->colors.icon_statusBarRoundButton
+					);
+				}
+			}
+		}
+	}
+}
+
+void StatusBar::refreshTrackComponent()
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::String buttonText = this->tr("bt_NoTrack");
+
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		if (this->trackID >= 0 && this->trackID < ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr())) {
+			buttonText = this->tr("pre_Track") + " " + juce::String(this->trackID);
+		}
+	}
+
+	this->switchTrackButton->setButtonText(buttonText);
+	this->resized();
+	this->repaint();
+}
+
+juce::Colour StatusBar::getCurrentTrackColour()
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::Colour result = this->colors.point_statusBarCurrentTrackDefault;
+
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		if (this->trackID >= 0 && this->trackID < ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr())) {
+			auto* track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), this->trackID);
+			result = vocalshaper::TrackDAO::getColour(track);
+		}
+	}
+
+	return result;
 }

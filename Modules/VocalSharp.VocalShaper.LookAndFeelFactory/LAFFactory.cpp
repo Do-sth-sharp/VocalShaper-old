@@ -1,7 +1,9 @@
-#include "LAFFactory.h"
+﻿#include "LAFFactory.h"
 #include "StartMenuButtonLAF.h"
 #include "PlayBarTextButtonLAF.h"
 #include "StretchableBarLAF.h"
+#include "StatusBarRoundButttonLAF.h"
+#include "StatusBarFlatTextButtonLAF.h"
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(const juce::String& caller, const std::function<int()>& fontHeightFunc)
 {
@@ -76,6 +78,20 @@ juce::LookAndFeel* LAFFactory::getStatusButtonLAF(const juce::String& caller)
 juce::LookAndFeel* LAFFactory::getStatusTextButtonLAF(const juce::String& caller)
 {
 	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getStatusRoundButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new StatusBarRoundButtonLAF;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getStatusFlatTextButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new StatusBarFlatTextButtonLAF;
 	this->addToList(caller, ptrLAF);
 	return ptrLAF;
 }

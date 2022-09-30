@@ -26,7 +26,11 @@
 
         "width-statusSplitLine:number":0.001,
 
-        "width-statusButtonMargin:number":0.005
+        "width-statusButtonMargin:number":0.005,
+
+        "width-statusMarginLeft:number":0.0075,
+        "width-statusTrackComponentSplit:number":0.005,
+        "width-statusTrackComponentTextButtonMargin:number":0.005
     },
     "position":
     {
@@ -44,6 +48,9 @@
         "width-toolSplitLine:number":0.5,
 
         "height-statusButton:number":0.6,
-        "height-statusSplitLine:number":0.5
+        "height-statusSplitLine:number":0.5,
+
+        "height-statusRoundButton:number":0.4,
+        "height-statusTrackColorPoint:number":0.2
     }
 }

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <JuceHeader.h>
+#include <libVocalShaper.h>
 
 class StatusBar final : public juce::Component
 {
@@ -7,8 +8,13 @@ public:
 	StatusBar();
 	~StatusBar() override = default;
 
-	void selectNoteEditorPlugin();
-	void selectNoteEditionAdditionPlugin();
+	void projectChanged(const vocalshaper::ProjectProxy* ptr);
+	void trackChanged(int trackID);
+	void editorControlerChanged(juce::Component* controler);
+
+	int selectNoteEditorPlugin(const juce::Array<std::pair<juce::String, bool>>& list);
+	int selectNoteEditionAdditionPlugin(const juce::Array<std::pair<juce::String, bool>>& list);
+	int switchTrack();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -30,6 +36,12 @@ private:
 		juce::Colour background_statusBarButton_highlight;
 
 		juce::Colour split_statusBar;
+
+		juce::Colour icon_statusBarRoundButton;
+		juce::Colour background_statusBarRoundButton;
+
+		juce::Colour text_statusBarCurrentTrackName;
+		juce::Colour point_statusBarCurrentTrackDefault;
 	}colors;//界面颜色
 	struct Size final
 	{
@@ -42,21 +54,36 @@ private:
 		double width_statusSplitLine;
 
 		double width_statusButtonMargin;
+
+		double width_statusMarginLeft;
+		double width_statusTrackComponentSplit;
+		double width_statusTrackComponentTextButtonMargin;
 	}sizes;//控件大小
 	struct Scales final
 	{
 		double height_statusButton;
 		double height_statusSplitLine;
+
+		double height_statusRoundButton;
+		double height_statusTrackColorPoint;
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* statusButton;
 		juce::LookAndFeel* statusTextButton;
+
+		juce::LookAndFeel* statusRoundButton;
+		juce::LookAndFeel* statusSwitchTrackButton;
 	}lafs;//控件样式
 
 	void initCommandID();
 	void initCommandFunction();
 	void initCommandFlagHook();
+
+	void initUIConfigAndIcon();
+
+	void refreshTrackComponent();
+	juce::Colour getCurrentTrackColour();
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	std::function<const juce::String(const juce::String&)> tr;
@@ -68,10 +95,22 @@ private:
 		iconMixEditor, iconMixEditorHighlight,
 		iconScriptEditor, iconScriptEditorHighlight;
 
+	std::unique_ptr<juce::DrawableButton> lastTrackButton, nextTrackButton;
+	std::unique_ptr<juce::TextButton> switchTrackButton;
+	std::unique_ptr<juce::Drawable> iconLastTrack, iconNextTrack;
+
 	int showMixtureEditorCommandID = -1, showAdditionEditorCommandID = -1,
 		noteEditorCommandID = -1, mixEditorCommandID = -1, scriptEditorCommandID = -1,
 		noteEditorPluginCommandID = -1, noteEditorAdditionPluginCommandID = -1;
+	int lastTrackCommandID = -1, nextTrackCommandID = -1, switchTrackCommandID = -1;
 	juce::ApplicationCommandManager* commandManager = nullptr;
+
+	vocalshaper::ProjectProxy* project = nullptr;
+	int trackID = -1;
+	juce::ReadWriteLock projectLock;
+
+	juce::Component* editorControlerComponent = nullptr;
+	juce::ReadWriteLock controlerLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatusBar)
 };
