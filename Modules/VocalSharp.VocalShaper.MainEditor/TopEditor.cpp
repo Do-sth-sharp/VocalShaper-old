@@ -19,6 +19,11 @@ void TopEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
 	//TODO
 }
 
+void TopEditor::trackChanged(int trackID)
+{
+	//TODO
+}
+
 void TopEditor::setEditMode(bool editMode)
 {
 	//TODO

@@ -10,6 +10,7 @@ public:
 	~BottomEditor() override = default;
 
 	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
+	void trackChanged(int trackID) override;
 	void setEditMode(bool editMode) override;
 	void setToolID(uint8_t toolID) override;
 

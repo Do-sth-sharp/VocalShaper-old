@@ -43,8 +43,16 @@ BottomEditor::BottomEditor()
 
 void BottomEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
+	this->statusBar->projectChanged(ptr);
 	//TODO
 }
+
+void BottomEditor::trackChanged(int trackID)
+{
+	this->statusBar->trackChanged(trackID);
+	//TODO
+}
+
 
 void BottomEditor::setEditMode(bool editMode)
 {

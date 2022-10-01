@@ -131,6 +131,14 @@ void EditorComponent::projectChanged(const vocalshaper::ProjectProxy* ptr)
 	this->bottomEditor->projectChanged(ptr);
 }
 
+void EditorComponent::trackChanged(int trackID)
+{
+	juce::ScopedWriteLock locker(this->projectLock);
+	this->trackID = trackID;
+	this->topEditor->trackChanged(trackID);
+	this->bottomEditor->trackChanged(trackID);
+}
+
 void EditorComponent::undo()
 {
 	juce::ScopedReadLock locker(this->projectLock);
@@ -410,30 +418,68 @@ bool EditorComponent::couldSelectAll()
 
 void EditorComponent::lastTrack()
 {
-	//TODO
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (this->trackID > 0 && this->trackID < trackSize) {
+			this->trackChanged(this->trackID - 1);
+		}
+	}
 }
 
 void EditorComponent::nextTrack()
 {
-	//TODO
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (this->trackID >= 0 && this->trackID < trackSize - 1) {
+			this->trackChanged(this->trackID + 1);
+		}
+	}
 }
 
 void EditorComponent::switchTrack()
 {
 	int result = this->bottomEditor->switchTrack();
-	//TODO
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (result > 0 && this->trackID <= trackSize) {
+			this->trackChanged(result - 1);
+		}
+		else {
+			this->trackChanged(-1);
+		}
+	}
 }
 
 bool EditorComponent::couldLastTrack()
 {
-	//TODO
-	return true;
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (this->trackID > 0 && this->trackID < trackSize) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool EditorComponent::couldNextTrack()
 {
-	//TODO
-	return true;
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (this->trackID >= 0 && this->trackID < trackSize - 1) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool EditorComponent::couldSwitchTrack()
@@ -444,8 +490,15 @@ bool EditorComponent::couldSwitchTrack()
 	if (!this->bottomEditor->isVisible()) {
 		return false;
 	}
-	//TODO
-	return true;
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (trackSize > 0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool EditorComponent::isEditMode()

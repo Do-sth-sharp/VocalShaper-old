@@ -14,6 +14,7 @@ public:
 	bool isTrackOpen();
 
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
+	void trackChanged(int trackID);
 
 	void undo();
 	void redo();
@@ -101,6 +102,7 @@ private:
 	uint8_t toolID = 1;
 
 	vocalshaper::ProjectProxy* project = nullptr;
+	int trackID = -1;
 	juce::ReadWriteLock projectLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorComponent)

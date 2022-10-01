@@ -32,70 +32,62 @@ TopLevelEditorBase::TopLevelEditorBase()
 
 void TopLevelEditorBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	//TODO
 }
 
 void TopLevelEditorBase::setEditMode(bool editMode)
 {
-	//TODO
 }
 
 void TopLevelEditorBase::setToolID(uint8_t toolID)
 {
-	//TODO
+}
+
+void TopLevelEditorBase::trackChanged(int trackID)
+{
 }
 
 bool TopLevelEditorBase::isActive()
 {
-	//TODO 判定活动区
 	return this->isVisible() && this->hasKeyboardFocus(true);
 }
 
 juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopLevelEditorBase::getCopy()
 {
-	//TODO
 	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
 }
 
 juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopLevelEditorBase::getCut()
 {
-	//TODO
 	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
 }
 
 bool TopLevelEditorBase::wannaDelete()
 {
-	//TODO
 	return false;
 }
 
 bool TopLevelEditorBase::wannaCopy()
 {
-	//TODO
 	return false;
 }
 
 bool TopLevelEditorBase::wannaSelectAll()
 {
-	//TODO
 	return false;
 }
 
 bool TopLevelEditorBase::wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list)
 {
-	//TODO
 	return false;
 }
 
 bool TopLevelEditorBase::wannaPaste(const juce::StringArray& list)
 {
-	//TODO
 	return false;
 }
 
 int TopLevelEditorBase::showClipBoard(const juce::StringArray& list)
 {
-	//TODO
 	return -1;
 }
 

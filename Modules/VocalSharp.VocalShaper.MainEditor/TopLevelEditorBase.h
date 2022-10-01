@@ -12,6 +12,7 @@ public:
 	virtual void projectChanged(const vocalshaper::ProjectProxy* ptr);
 	virtual void setEditMode(bool editMode);
 	virtual void setToolID(uint8_t toolID);
+	virtual void trackChanged(int trackID);
 
 	virtual bool isActive();
 	virtual juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy();
