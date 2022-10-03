@@ -2,7 +2,7 @@
 #include <libJModule.h>
 
 TopLevelEditorBase::TopLevelEditorBase()
-	: Component("Top Level Editor")
+	: EditorBase()
 {
 	//获取屏幕属性接口
 	this->screenSizeFunc =
@@ -28,67 +28,6 @@ TopLevelEditorBase::TopLevelEditorBase()
 	//建立工具栏
 	this->toolBar = std::make_unique<ToolBar>();
 	this->addAndMakeVisible(this->toolBar.get());
-}
-
-void TopLevelEditorBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
-{
-}
-
-void TopLevelEditorBase::setEditMode(bool editMode)
-{
-}
-
-void TopLevelEditorBase::setToolID(uint8_t toolID)
-{
-}
-
-void TopLevelEditorBase::trackChanged(int trackID)
-{
-}
-
-bool TopLevelEditorBase::isActive()
-{
-	return this->isVisible() && this->hasKeyboardFocus(true);
-}
-
-juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopLevelEditorBase::getCopy()
-{
-	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
-}
-
-juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopLevelEditorBase::getCut()
-{
-	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
-}
-
-bool TopLevelEditorBase::wannaDelete()
-{
-	return false;
-}
-
-bool TopLevelEditorBase::wannaCopy()
-{
-	return false;
-}
-
-bool TopLevelEditorBase::wannaSelectAll()
-{
-	return false;
-}
-
-bool TopLevelEditorBase::wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list)
-{
-	return false;
-}
-
-bool TopLevelEditorBase::wannaPaste(const juce::StringArray& list)
-{
-	return false;
-}
-
-int TopLevelEditorBase::showClipBoard(const juce::StringArray& list)
-{
-	return -1;
 }
 
 void TopLevelEditorBase::resized()
