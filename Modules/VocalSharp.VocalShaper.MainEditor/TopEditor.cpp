@@ -122,8 +122,9 @@ int TopEditor::showClipBoard(const juce::StringArray& list)
 void TopEditor::resized()
 {
 	if (this->topEditor) {
-		this->topEditor->setBounds(0, 0, this->getWidth(), this->getHeight());
+		this->topEditor->setBounds(0, 0, this->getWidth() - this->toolBar->getWidth(), this->getHeight());
 	}
+	this->TopLevelEditorBase::resized();
 }
 
 void TopEditor::initCommandID()
