@@ -23,12 +23,14 @@ public:
 	bool wannaPaste(const juce::StringArray& list) override;
 	int showClipBoard(const juce::StringArray& list) override;
 
-	void paint(juce::Graphics& g) override;
+	void resized() override;
 
 private:
 	void initCommandID();
 	void initCommandFunction();
 	void initCommandFlagHook();
+
+	vocalshaper::EditorBase* topEditor = nullptr;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopEditor);
 };

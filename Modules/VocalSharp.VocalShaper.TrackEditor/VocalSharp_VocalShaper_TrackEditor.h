@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <libJModule.h>
+#include "TrackEditor.h"
 
 class VocalSharp_VocalShaper_TrackEditor final :
 	public jmadf::Module
@@ -14,6 +15,8 @@ public:
 	const juce::String getModuleName() override { return "VocalSharp.VocalShaper.TrackEditor"; };
 	const juce::String getModuleVersion() override { return "0.0.1"; };
 	
+	std::unique_ptr<TrackEditor> editor = nullptr;
+
 private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VocalSharp_VocalShaper_TrackEditor)
 };

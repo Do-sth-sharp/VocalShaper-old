@@ -12,85 +12,118 @@ TopEditor::TopEditor()
 
 	//以下注册Flag获取函数
 	this->initCommandFlagHook();
+
+	//以下获取编辑器
+	jmadf::CallInterface<vocalshaper::EditorBase*&>(
+		"VocalSharp.VocalShaper.TrackEditor", "GetPtr", this->topEditor);
+	this->addAndMakeVisible(this->topEditor);
 }
 
 void TopEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	//TODO
+	if (this->topEditor) {
+		this->topEditor->projectChanged(ptr);
+	}
 }
 
 void TopEditor::trackChanged(int trackID)
 {
-	//TODO
+	if (this->topEditor) {
+		this->topEditor->trackChanged(trackID);
+	}
 }
 
 void TopEditor::setEditMode(bool editMode)
 {
-	//TODO
+	if (this->topEditor) {
+		this->topEditor->setEditMode(editMode);
+	}
 }
 
 void TopEditor::setToolID(uint8_t toolID)
 {
-	//TODO
+	if (this->topEditor) {
+		this->topEditor->setToolID(toolID);
+	}
 }
 
 bool TopEditor::isActive()
 {
-	//TODO 判定活动区
-	return this->hasKeyboardFocus(true);
+	if (this->topEditor) {
+		return this->topEditor->isActive();
+	}
+	return false;
 }
 
 juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopEditor::getCopy()
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->getCopy();
+	}
 	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
 }
 
 juce::OwnedArray<vocalshaper::SerializableProjectStructure> TopEditor::getCut()
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->getCut();
+	}
 	return juce::OwnedArray<vocalshaper::SerializableProjectStructure>();
 }
 
 bool TopEditor::wannaDelete()
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->wannaDelete();
+	}
 	return false;
 }
 
 bool TopEditor::wannaCopy()
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->wannaCopy();
+	}
 	return false;
 }
 
 bool TopEditor::wannaSelectAll()
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->wannaSelectAll();
+	}
 	return false;
 }
 
 bool TopEditor::wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list)
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->wannaPaste(std::move(list));
+	}
 	return false;
 }
 
 bool TopEditor::wannaPaste(const juce::StringArray& list)
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->wannaPaste(list);
+	}
 	return false;
 }
 
 int TopEditor::showClipBoard(const juce::StringArray& list)
 {
-	//TODO
+	if (this->topEditor) {
+		return this->topEditor->showClipBoard(list);
+	}
 	return -1;
 }
 
-void TopEditor::paint(juce::Graphics& g)
+void TopEditor::resized()
 {
-	//g.fillAll(juce::Colours::darkseagreen);
+	if (this->topEditor) {
+		this->topEditor->setBounds(0, 0, this->getWidth(), this->getHeight());
+	}
 }
 
 void TopEditor::initCommandID()

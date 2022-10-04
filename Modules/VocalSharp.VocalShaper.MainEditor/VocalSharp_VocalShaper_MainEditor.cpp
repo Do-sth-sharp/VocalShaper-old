@@ -25,7 +25,8 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard")
+		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard") && 
+		jmadf::LoadModule("VocalSharp.VocalShaper.TrackEditor")
 		)) {
 		return false;
 	}
@@ -165,6 +166,13 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"VocalSharp.VocalShaper.ClipBoard", "Clean")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ClipBoard:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<vocalshaper::EditorBase*&>(
+			"VocalSharp.VocalShaper.TrackEditor", "GetPtr")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.TrackEditor:Bad Interfaces!");
 		return false;
 	}
 
