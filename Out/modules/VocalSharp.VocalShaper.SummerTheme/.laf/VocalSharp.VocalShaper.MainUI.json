@@ -1,0 +1,52 @@
+{
+    "parent":
+    {
+        "class":"VocalSharp.VocalShaper.MainWindow"
+    },
+    "color":
+    {
+        "background:string":"$ThemeColorB2",
+        "icon-mainMenuButton:string":"$ThemeColorD2",
+        "background-mainMenuButton:string":"$ThemeColorB2",
+
+        "icon-tabBarButton:string":"$ThemeColorD2",
+        "background-tabBarButton:string":"$ThemeColorB2",
+
+        "text-tabList:string":"$ThemeColorD2",
+        "background-tabList:string":"$ThemeColorB2",
+        "text-tabList-highlight:string":"$ThemeColorD1",
+        "background-tabList-highlight:string":"$ThemeColorB3",
+
+        "split:string":"$ThemeColorB4",
+
+        "background-playBar:string":"$ThemeColorB3",
+        "icon-playBarButton:string":"$ThemeColorD2",
+        "background-playBarButton:string":"$ThemeColorB3",
+        "icon-playBarButton-highlight:string":"$ThemeColorD1",
+        "background-playBarButton-highlight:string":"$ThemeColorB2",
+        "text-playBar:string":"$ThemeColorD2",
+        "text-playBar-value:string":"$ThemeColorA2",
+
+        "split-playBar:string":"$ThemeColorD4"
+    },
+    "resource":
+    {
+        "icon-mainMenu:string":"/rc/third-party/RemixIcon/icons/System/menu-line.svg",
+
+        "icon-closeButton:string":"/rc/third-party/RemixIcon/icons/System/close-line.svg",
+        "icon-addButton:string":"/rc/third-party/RemixIcon/icons/System/add-line.svg",
+        "icon-moreButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-down-s-line.svg",
+
+        "icon-playButton:string":"/rc/third-party/RemixIcon/icons/Media/play-fill.svg",
+        "icon-stopButton:string":"/rc/third-party/RemixIcon/icons/Media/stop-fill.svg",
+        "icon-beginButton:string":"/rc/third-party/RemixIcon/icons/Media/skip-back-fill.svg",
+        "icon-endButton:string":"/rc/third-party/RemixIcon/icons/Media/skip-forward-fill.svg",
+        "icon-loopButton:string":"/rc/third-party/RemixIcon/icons/Media/repeat-2-fill.svg",
+        "icon-followButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-right-fill.svg",
+
+        "icon-undo:string":"/rc/third-party/RemixIcon/icons/System/arrow-go-back-fill.svg",
+        "icon-redo:string":"/rc/third-party/RemixIcon/icons/System/arrow-go-forward-fill.svg",
+
+        "icon-config:string":"/rc/third-party/RemixIcon/icons/System/settings-3-fill.svg"
+    }
+}

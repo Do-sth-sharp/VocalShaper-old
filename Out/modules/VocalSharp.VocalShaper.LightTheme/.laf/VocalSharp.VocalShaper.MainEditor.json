@@ -1,0 +1,59 @@
+{
+    "parent":
+    {
+        "class":"VocalSharp.VocalShaper.MainUI"
+    },
+    "color":
+    {
+        "stretchableBar:string":"$ThemeColorA1",
+
+        "background-toolBar:string":"$ThemeColorB3",
+
+        "icon-toolBarButton:string":"$ThemeColorD2",
+        "background-toolBarButton:string":"$ThemeColorB3",
+        "icon-toolBarButton-highlight:string":"$ThemeColorD1",
+        "background-toolBarButton-highlight:string":"$ThemeColorB2",
+
+        "split-toolBar:string":"$ThemeColorD4",
+        "border-toolBar:string":"$ThemeColorB1",
+
+        "background-statusBar:string":"$ThemeColorB3",
+        "border-statusBar:string":"$ThemeColorB1",
+
+        "text-statusBarTextButton:string":"$ThemeColorD2",
+        "background-statusBarTextButton:string":"$ThemeColorB3",
+        "text-statusBarTextButton-highlight:string":"$ThemeColorD1",
+        "background-statusBarTextButton-highlight:string":"$ThemeColorA1",
+
+        "icon-statusBarButton:string":"$ThemeColorD2",
+        "background-statusBarButton:string":"$ThemeColorB3",
+        "icon-statusBarButton-highlight:string":"$ThemeColorD1",
+        "background-statusBarButton-highlight:string":"$ThemeColorA1",
+
+        "split-statusBar:string":"$ThemeColorD4",
+
+        "icon-statusBarRoundButton:string":"$ThemeColorD2",
+        "background-statusBarRoundButton:string":"$ThemeColorA1",
+
+        "text-statusBarCurrentTrackName:string":"$ThemeColorD1",
+        "point-statusBarCurrentTrackDefault:string":"$ThemeColorB1"
+    },
+    "resource":
+    {
+        "icon-viewModeButton:string":"/rc/third-party/RemixIcon/icons/Development/cursor-fill.svg",
+        "icon-editModeButton:string":"/rc/third-party/RemixIcon/icons/Design/edit-2-fill.svg",
+
+        "icon-tool1Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-1.svg",
+        "icon-tool2Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-2.svg",
+        "icon-tool3Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-3.svg",
+        "icon-tool4Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-4.svg",
+        "icon-tool5Button:string":"/rc/third-party/RemixIcon/icons/Editor/number-5.svg",
+
+        "icon-noteEditorButton:string":"/rc/third-party/RemixIcon/icons/Media/music-fill.svg",
+        "icon-mixEditorButton:string":"/rc/third-party/RemixIcon/icons/Media/sound-module-fill.svg",
+        "icon-scriptEditorButton:string":"/rc/third-party/RemixIcon/icons/Development/code-s-slash-fill.svg",
+
+        "icon-lastTrackButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-left-s-fill.svg",
+        "icon-nextTrackButton:string":"/rc/third-party/RemixIcon/icons/System/arrow-right-s-fill.svg"
+    }
+}

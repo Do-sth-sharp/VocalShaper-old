@@ -1,0 +1,26 @@
+{
+    "parent":
+    {
+        "class":"colors"
+    },
+    "color":
+    {
+        "background:string":"$ThemeColorB1",
+
+        "background-alert:string":"$ThemeColorB3",
+        "text-alert:string":"$ThemeColorD2",
+        "outline-alert:string":"$ThemeColorB3",
+        "background-alert-button:string":"$ThemeColorA2",
+        "text-alert-button:string":"$ThemeColorD1",
+
+        "background-menu:string":"$ThemeColorB4",
+        "text-menu:string":"$ThemeColorD2",
+        "header-menu:string":"$ThemeColorD2",
+        "background-menu-highlight:string":"$ThemeColorB3",
+        "text-menu-highlight:string":"$ThemeColorD2",
+        "text-menu-warning:string":"#FF2A00",
+
+        "background-toolTip:string":"$ThemeColorB4",
+        "text-toolTip:string":"$ThemeColorD2"
+    }
+}
