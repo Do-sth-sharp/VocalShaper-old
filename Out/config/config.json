@@ -1,5 +1,6 @@
-{
+﻿{
   "Language": "zh-cn",
   "Font": "HarmonyOS_Sans_SC_Regular",
-  "ProjectExtension": ".vsp3"
+  "ProjectExtension": ".vsp3",
+  "Theme": "VocalSharp.VocalShaper.ColorfulTheme"
 }

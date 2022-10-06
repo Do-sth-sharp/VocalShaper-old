@@ -114,6 +114,11 @@ bool VocalSharp_VocalShaper_Main::init()
 			.setDefaultSansSerifTypeface(ptrFont);
 	}
 
+	//初始化主题配置
+	if (!jmadf::LoadModule("VocalSharp.VocalShaper.ThemeManager")) {
+		return false;
+	}
+
 	//初始化样式工厂
 	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
 		return false;

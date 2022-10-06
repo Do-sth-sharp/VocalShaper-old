@@ -1,9 +1,11 @@
-{
-    "id":"VocalSharp.VocalShaper.ThemeManager",
-    "version":"0.0.1",
-    "group":"VocalShaper.OfficialModules",
-    "productId":"{08338208-B752-4A90-9C73-4163152D6818}",
-    "entry":"",
-    "description":"VocalShaper编辑器主题管理器",
-    "dependencies":[]
+﻿{
+  "id": "VocalSharp.VocalShaper.ThemeManager",
+  "version": "0.0.1",
+  "group": "VocalShaper.OfficialModules",
+  "productId": "{08338208-B752-4A90-9C73-4163152D6818}",
+  "entry": "VocalSharp.VocalShaper.ThemeManager",
+  "description": "VocalShaper编辑器主题管理器",
+  "dependencies": [
+    "WuChang.JMADF.GlobalConfigs"
+  ]
 }

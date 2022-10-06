@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "VocalSharp.VocalShaper.MainEditor",
   "version": "0.0.1",
   "group": "VocalShaper.OfficialModules",
@@ -12,6 +12,9 @@
     "WuChang.JMADF.GlobalConfigs",
     "WuChang.JMADF.Translates",
     "VocalSharp.VocalShaper.LookAndFeelFactory",
-    "VocalSharp.VocalShaper.ProjectHub"
+    "VocalSharp.VocalShaper.ProjectHub",
+    "VocalSharp.VocalShaper.CommandManager",
+    "VocalSharp.VocalShaper.ClipBoard",
+    "VocalSharp.VocalShaper.TrackEditor"
   ]
 }

@@ -1,7 +1,6 @@
 {
-    "parent":
-    {
-        "module":"VocalSharp.VocalShaper.ColorfulTheme",
-        "class":"VocalSharp.VocalShaper.MainEditor"
-    }
+  "parent": {
+    "module": "VocalSharp.VocalShaper.ColorfulTheme",
+    "class": "VocalSharp.VocalShaper.MainEditor"
+  }
 }

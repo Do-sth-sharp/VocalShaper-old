@@ -1,0 +1,3 @@
+﻿#include "VocalSharp_VocalShaper_ThemeManager.h"
+
+JModuleInstance(VocalSharp_VocalShaper_ThemeManager)
