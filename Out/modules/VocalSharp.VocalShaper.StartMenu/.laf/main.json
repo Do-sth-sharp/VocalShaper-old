@@ -1,4 +1,4 @@
-{
+﻿{
     "parent":
     {
         "module":"VocalSharp.VocalShaper.ThemeManager",
@@ -9,7 +9,6 @@
         "height-font:number":0.025,
         
         "width-leftBar:number":0.175,
-        "width-leftBar-max:number":450,
 
         "height-logo-topMargin:number":0.05,
 
@@ -19,7 +18,6 @@
         "height-button-split:number":0.02,
 
         "height-titleBar:number":0.15,
-        "height-titleBar-max:number":200,
 
         "width-title-leftMargin:number":0.03,
         "width-search-rightMargin:number":0.02,

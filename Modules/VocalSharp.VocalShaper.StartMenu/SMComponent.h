@@ -48,14 +48,12 @@ private:
 	{
 		double height_font;
 		double width_leftBar;
-		double width_leftBar_max;
 		double height_logo_topMargin;
 		double width_button;
 		double height_button;
 		double height_button_logo_split;
 		double height_button_split;
 		double height_titleBar;
-		double height_titleBar_max;
 		double width_title_leftMargin;
 		double width_search_rightMargin;
 		double width_title_search_split;

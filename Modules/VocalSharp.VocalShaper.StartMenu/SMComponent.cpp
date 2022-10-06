@@ -138,10 +138,6 @@ SMComponent::SMComponent()
         );
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-        "main", "size", "width-leftBar-max", this->sizes.width_leftBar_max, result
-        );
-    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "height-logo-topMargin", this->sizes.height_logo_topMargin, result
         );
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -163,10 +159,6 @@ SMComponent::SMComponent()
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "height-titleBar", this->sizes.height_titleBar, result
-        );
-    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
-        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-        "main", "size", "height-titleBar-max", this->sizes.height_titleBar_max, result
         );
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -417,8 +409,7 @@ void SMComponent::resized()
     }
 
     //计算按钮大小
-    int leftBarWidth =
-        (int)std::min(this->sizes.width_leftBar * screenSize.getWidth(), this->sizes.width_leftBar_max);
+    int leftBarWidth = this->sizes.width_leftBar * screenSize.getWidth();
     double logoScale = (leftBarWidth * this->scales.width_logo) / (double)(this->logoImage.getWidth());
     int logoPlaceHeight = (screenSize.getHeight() * this->sizes.height_logo_topMargin) + this->logoImage.getHeight() * logoScale;
     int buttonWidth = leftBarWidth * this->sizes.width_button;
@@ -439,8 +430,7 @@ void SMComponent::resized()
     );
 
     //计算搜索框大小
-    int titleBarHeight =
-        (int)std::min(screenSize.getHeight() * this->sizes.height_titleBar, this->sizes.height_titleBar_max);
+    int titleBarHeight = screenSize.getHeight() * this->sizes.height_titleBar;
     int iconSearchWidth = 0;
     if (this->iconSearch) {
         iconSearchWidth = titleBarHeight * this->scales.height_search;
@@ -478,8 +468,7 @@ void SMComponent::paint(juce::Graphics& g)
     g.fillAll(this->colors.background);
 	
     //左侧条带宽度
-    int leftBarWidth =
-        (int)std::min(this->sizes.width_leftBar * screenSize.getWidth(), this->sizes.width_leftBar_max);
+    int leftBarWidth = this->sizes.width_leftBar * screenSize.getWidth();
 	
     //填充左侧条带背景
     g.setColour(this->colors.leftBar);
@@ -499,8 +488,7 @@ void SMComponent::paint(juce::Graphics& g)
     );
 
     //计算标题栏高度
-    int titleBarHeight =
-        (int)std::min(screenSize.getHeight() * this->sizes.height_titleBar, this->sizes.height_titleBar_max);
+    int titleBarHeight = screenSize.getHeight() * this->sizes.height_titleBar;
 
     //绘标题栏高度辅助线
     //g.setColour(juce::Colours::white);
