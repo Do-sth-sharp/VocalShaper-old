@@ -52,20 +52,18 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 		return true;
 	}
 
-	auto source = this->create(nameSrc, pathSrc);
+	auto proj = this->create(nameSrc, pathSrc);
 	bool result = false;
 	jmadf::CallInterface<vocalshaper::ProjectProxy*, bool&>(
 		"VocalSharp.VocalShaper.ProjectIO", "ReadProject",
-		source, result
+		proj, result
 		);
 	if (!result) {
-		delete source;
+		delete proj;
 		return false;
 	}
 
-	auto proj = this->create(name, path);
-	proj->swallow(source);
-	source = nullptr;
+	proj->changeUrl(name, path);
 
 	auto metaBackup = proj->getMeta()->backup();
 	proj->getMeta()->wannaSave();
