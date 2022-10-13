@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_StartMenu.h"
+﻿#include "VocalSharp_VocalShaper_StartMenu.h"
 
 VocalSharp_VocalShaper_StartMenu::VocalSharp_VocalShaper_StartMenu()
 	:Module()
@@ -134,11 +134,10 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 			ptr = ptrSM;
 		}
 	);
-	jmadf::RegisterInterface<const juce::String&, const juce::String&>(
-		"OpenProjectFromUrl",
-		[ptrSM](const juce::String&,
-			const juce::String& name, const juce::String& path) {
-				ptrSM->openProjFromUrl(name, path);
+	jmadf::RegisterInterface<const juce::String&>(
+		"OpenPathFromUrl",
+		[ptrSM](const juce::String&,  const juce::String& path) {
+				ptrSM->openPathFromUrl(path);
 		}
 	);
 	

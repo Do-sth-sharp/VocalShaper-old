@@ -19,7 +19,7 @@ public:
 	void openButtonClicked();
 	void filterChanged();
 
-	void openProjFromUrl(const juce::String& name, const juce::String& path);
+	void openPathFromUrl(const juce::String& path);
 
 	int getButtonFontSize();
 	
@@ -103,6 +103,10 @@ private:
 
 	void clearFilter();
 	void refreshList();
+
+	void saveCurrentDir(const juce::String& dir);
+	const juce::String getCurrentDir();
+	const juce::String dirTempPath = "/.data/directory.json";
 
 	int newProjCommandID = -1, openProjCommandID = -1;
 	juce::ApplicationCommandManager* commandManager = nullptr;

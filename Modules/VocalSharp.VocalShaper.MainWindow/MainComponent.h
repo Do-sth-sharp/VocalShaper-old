@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class MainComponent final
@@ -22,7 +22,7 @@ public:
     bool getSMVisible();
 
     void moveSplashIn(juce::Component* splash);
-    void openProjFromUrl(const juce::String& name, const juce::String& path);
+    void openStringFromUrl(const juce::String& str);
 
     bool isInterestedInTextDrag(const juce::String& text) override;
     void textDropped(const juce::String& text, int, int) override;

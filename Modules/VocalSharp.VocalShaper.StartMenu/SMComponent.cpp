@@ -380,6 +380,17 @@ SMComponent::SMComponent()
         );
     this->refreshList();
 
+    //初始化CurrentDir
+    {
+        auto dirPath = this->getCurrentDir();
+        if (!dirPath.isEmpty()) {
+            juce::File dir(dirPath);
+            if (dir.isDirectory() && dir.exists()) {
+                dir.setAsCurrentWorkingDirectory();
+            }
+        }
+    }
+
     //空白处获取焦点
     this->setWantsKeyboardFocus(true);
 }
@@ -599,23 +610,14 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
         //创建副本并打开
         juce::FileChooser fileChooser(
             this->tr("bt_OpenAsCopy"),
-            juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
+            juce::File::getCurrentWorkingDirectory(), "*"
         );
         if (fileChooser.showDialog(
-            juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
-            juce::FileBrowserComponent::FileChooserFlags::doNotClearFileNameOnRootChange |
-            juce::FileBrowserComponent::FileChooserFlags::saveMode,
+            juce::FileBrowserComponent::FileChooserFlags::canSelectDirectories |
+            juce::FileBrowserComponent::FileChooserFlags::openMode,
             nullptr
         )) {
-            juce::File file = fileChooser.getResult();
-            if (file.exists()) {
-                juce::AlertWindow::showMessageBox(
-                    juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
-                    this->tr("tip_FileExists"), this->tr("bt_OK")
-                );
-                return;
-            }
-            juce::File dir = file.getParentDirectory();
+            juce::File dir = fileChooser.getResult();
             if (dir.getNumberOfChildFiles(
                 juce::File::TypesOfFileToFind::findFilesAndDirectories) > 0) {
                 juce::AlertWindow::showMessageBox(
@@ -625,8 +627,9 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
                 return;
             }
             dir.setAsCurrentWorkingDirectory();
+            this->saveCurrentDir(dir.getParentDirectory().getFullPathName());
             juce::String pathDst = dir.getFullPathName();
-            juce::String nameDst = file.getFileNameWithoutExtension();
+            juce::String nameDst = name;
             if (!this->copyProj(nameDst, pathDst, name, path)) {
                 juce::AlertWindow::showMessageBox(
                     juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
@@ -687,23 +690,14 @@ void SMComponent::newButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_NewProject"),
-        juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
+        juce::File::getCurrentWorkingDirectory(), "*"
     );
     if (fileChooser.showDialog(
-        juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
-        juce::FileBrowserComponent::FileChooserFlags::doNotClearFileNameOnRootChange |
-        juce::FileBrowserComponent::FileChooserFlags::saveMode,
+        juce::FileBrowserComponent::FileChooserFlags::canSelectDirectories |
+        juce::FileBrowserComponent::FileChooserFlags::openMode,
         nullptr
     )) {
-        juce::File file = fileChooser.getResult();
-        if (file.exists()) {
-            juce::AlertWindow::showMessageBox(
-                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
-                this->tr("tip_FileExists"), this->tr("bt_OK")
-            );
-            return;
-        }
-        juce::File dir = file.getParentDirectory();
+        juce::File dir = fileChooser.getResult();
         if (dir.getNumberOfChildFiles(
             juce::File::TypesOfFileToFind::findFilesAndDirectories) > 0) {
             juce::AlertWindow::showMessageBox(
@@ -713,8 +707,9 @@ void SMComponent::newButtonClicked()
             return;
         }
         dir.setAsCurrentWorkingDirectory();
+        this->saveCurrentDir(dir.getParentDirectory().getFullPathName());
         juce::String path = dir.getFullPathName();
-        juce::String name = file.getFileNameWithoutExtension();
+        juce::String name = dir.getFileName();
         if (!this->newProj(name, path)) {
             juce::AlertWindow::showMessageBox(
                 juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
@@ -734,20 +729,18 @@ void SMComponent::openButtonClicked()
 {
     juce::FileChooser fileChooser(
         this->tr("bt_OpenProject"),
-        juce::File::getCurrentWorkingDirectory(), "*" + this->projectExtension
+        juce::File::getCurrentWorkingDirectory(), "*"
     );
     if (fileChooser.showDialog(
-        juce::FileBrowserComponent::FileChooserFlags::canSelectFiles |
+        juce::FileBrowserComponent::FileChooserFlags::canSelectDirectories |
         juce::FileBrowserComponent::FileChooserFlags::openMode,
         nullptr
     )) {
-        juce::File file = fileChooser.getResult();
-        juce::File dir = file.getParentDirectory();
+        juce::File dir = fileChooser.getResult();
         dir.setAsCurrentWorkingDirectory();
+        this->saveCurrentDir(dir.getParentDirectory().getFullPathName());
 
-        juce::String path = dir.getFullPathName();
-        juce::String name = file.getFileNameWithoutExtension();
-        this->openProjFromUrl(name, path);
+        this->openPathFromUrl(dir.getFullPathName());
     }
 }
 
@@ -760,8 +753,28 @@ void SMComponent::filterChanged()
     this->refreshList();
 }
 
-void SMComponent::openProjFromUrl(const juce::String& name, const juce::String& path)
+void SMComponent::openPathFromUrl(const juce::String& path)
 {
+    juce::File dir(path);
+
+    juce::Array<juce::File> vsp3List
+        = dir.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false, "*" + this->projectExtension);
+    if (vsp3List.size() == 0) {
+        juce::AlertWindow::showMessageBox(
+            juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
+            this->tr("tip_NoProjectFile"), this->tr("bt_OK")
+        );
+        return;
+    }
+    else if (vsp3List.size() > 1) {
+        juce::AlertWindow::showMessageBox(
+            juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
+            this->tr("tip_MultiProjectFile"), this->tr("bt_OK")
+        );
+        return;
+    }
+
+    juce::String name = vsp3List.getReference(0).getFileNameWithoutExtension();
     if (!this->openProj(name, path)) {
         juce::AlertWindow::showMessageBox(
             juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
@@ -828,4 +841,25 @@ void SMComponent::refreshList()
     this->lstProj->setModel(nullptr);
     this->lstProj->setModel(this->lstModel.get());
     this->lstProj->scrollToEnsureRowIsOnscreen(0);
+}
+
+void SMComponent::saveCurrentDir(const juce::String& dir)
+{
+    auto ptrObject = new juce::DynamicObject();
+    ptrObject->setProperty("directory", dir);
+
+    juce::File tempFile(jmadf::GetModuleInfo()->path + this->dirTempPath);
+    juce::var dataTemp(ptrObject);
+
+    tempFile.replaceWithText(
+        juce::JSON::toString(dataTemp)
+    );
+}
+
+const juce::String SMComponent::getCurrentDir()
+{
+    juce::File tempFile(jmadf::GetModuleInfo()->path + this->dirTempPath);
+    juce::var dataTemp = juce::JSON::parse(tempFile);
+
+    return dataTemp["directory"].toString();
 }

@@ -38,6 +38,11 @@ bool ProjectIO::write(vocalshaper::ProjectProxy* project) const
         return false;
     }
 
+    juce::File dir(project->getPath());
+    if (!dir.exists()) {
+        dir.createDirectory();
+    }
+
     juce::String fileUrl = project->getPath() + "/" + project->getName()
         + this->projectExtension;
     juce::File file(fileUrl);

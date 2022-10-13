@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_MainWindow.h"
+﻿#include "VocalSharp_VocalShaper_MainWindow.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
@@ -72,8 +72,8 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	if (
 		!jmadf::CheckInterface<juce::Component*&>(
 			"VocalSharp.VocalShaper.StartMenu", "GetPtr") ||
-		!jmadf::CheckInterface<const juce::String&, const juce::String&>(
-			"VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl")
+		!jmadf::CheckInterface<const juce::String&>(
+			"VocalSharp.VocalShaper.StartMenu", "OpenPathFromUrl")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.StartMenu:Bad Interfaces!");
 		return false;
@@ -168,13 +168,12 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		}
 	);
 
-	jmadf::RegisterInterface<const juce::String&, const juce::String&>(
-		"OpenProjectFromUrl",
-		[this](const juce::String&,
-			const juce::String& name, const juce::String& path)
+	jmadf::RegisterInterface<const juce::String&>(
+		"OpenStringFromUrl",
+		[this](const juce::String&, const juce::String& str)
 		{
 			if (this->mainWindow) {
-				this->mainWindow->openProjFromUrl(name, path);
+				this->mainWindow->openStringFromUrl(str);
 			}
 		}
 	);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 #include "MainComponent.h"
 #include <libVocalShaper.h>
@@ -22,7 +22,7 @@ public:
     void showStartMenu();
     void moveSplashIn(juce::Component* splash);
 
-    void openProjFromUrl(const juce::String& name, const juce::String& path);
+    void openStringFromUrl(const juce::String& str);
 
     void closeEditor();
 	

@@ -147,12 +147,9 @@ void MainComponent::moveSplashIn(juce::Component* splash)
     }
 }
 
-void MainComponent::openProjFromUrl(const juce::String& name, const juce::String& path)
+void MainComponent::openStringFromUrl(const juce::String& str)
 {
-    jmadf::CallInterface<const juce::String&, const juce::String&>(
-        "VocalSharp.VocalShaper.StartMenu", "OpenProjectFromUrl",
-        name, path
-        );
+    this->stringOpen(str);
 }
 
 bool MainComponent::isInterestedInTextDrag(const juce::String& text)
@@ -219,6 +216,9 @@ bool MainComponent::checkStringCouldOpen(const juce::String& string)
             return true;
         }
     }
+    else if (file.isDirectory() && file.exists()) {
+        return true;
+    }
     return false;
 }
 
@@ -228,9 +228,18 @@ void MainComponent::stringOpen(const juce::String& string)
     if (file.existsAsFile()) {
         juce::String extension = file.getFileExtension();
         if (extension == this->projectExtension) {
-            this->openProjFromUrl(file.getFileNameWithoutExtension(),
-                file.getParentDirectory().getFullPathName());
+            jmadf::CallInterface<const juce::String&>(
+                "VocalSharp.VocalShaper.StartMenu", "OpenPathFromUrl",
+                file.getParentDirectory().getFullPathName()
+                );
             return;
         }
+    }
+    else if (file.isDirectory() && file.exists()) {
+        jmadf::CallInterface<const juce::String&>(
+            "VocalSharp.VocalShaper.StartMenu", "OpenPathFromUrl",
+            file.getFullPathName()
+            );
+        return;
     }
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "bt_NewProject": "New Project",
   "bt_OpenProject": "Open Project",
 
@@ -10,8 +10,9 @@
 
   "lb_NoData": "<No Data>",
 
-  "tip_FileExists": "Project file is already exists",
   "tip_PathNotEmpty": "Please select an empty path as the project folder",
+  "tip_NoProjectFile": "No project files in directory",
+  "tip_MultiProjectFile": "More than one project files in directory",
   "tip_CouldNotCreate": "Could not create the project",
   "tip_CouldNotOpen": "Could not open the project",
 

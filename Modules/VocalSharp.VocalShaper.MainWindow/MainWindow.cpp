@@ -226,14 +226,14 @@ void MainWindow::moveSplashIn(juce::Component* splash)
     }
 }
 
-void MainWindow::openProjFromUrl(const juce::String& name, const juce::String& path)
+void MainWindow::openStringFromUrl(const juce::String& str)
 {
     if (this->mComp) {
         if (!this->isActiveWindow()) {
             this->setVisible(true);
             this->toFront(false);
         }
-        this->mComp->openProjFromUrl(name, path);
+        this->mComp->openStringFromUrl(str);
     }
 }
 
