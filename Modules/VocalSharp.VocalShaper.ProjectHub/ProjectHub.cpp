@@ -34,7 +34,8 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 	this->callNotice();
 
 	proj->getProcesser()->processEvent(
-		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
+		std::make_unique<vocalshaper::actions::ProjectAction>(
+			vocalshaper::actions::ProjectAction::TargetType(), proj));
 
 	return true;
 }
@@ -84,7 +85,8 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 	this->callNotice();
 
 	proj->getProcesser()->processEvent(
-		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
+		std::make_unique<vocalshaper::actions::ProjectAction>(
+			vocalshaper::actions::ProjectAction::TargetType(), proj));
 
 	return true;
 }
@@ -119,7 +121,8 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 	this->callNotice();
 
 	proj->getProcesser()->processEvent(
-		std::make_unique<vocalshaper::ProjectEvent>(vocalshaper::ProjectEventStructure::ChangeType::Edit));
+		std::make_unique<vocalshaper::actions::ProjectAction>(
+			vocalshaper::actions::ProjectAction::TargetType(), proj));
 
 	return true;
 }
