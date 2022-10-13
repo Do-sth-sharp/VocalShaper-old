@@ -62,6 +62,10 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
+    //获取屏幕相关属性
+    juce::Rectangle<int> screenSize;
+    this->screenSizeFunc(this, screenSize);
+
     if (this->ptrMainUI) {
         this->ptrMainUI->setSize(this->getWidth(), this->getHeight());
     }
@@ -70,7 +74,8 @@ void MainComponent::resized()
         this->ptrStartMenu->toFront(true);
     }
     if (this->splash) {
-        this->splash->centreWithSize(this->splash->getWidth(), this->splash->getHeight());
+        int sizeBase = (int)(std::min(screenSize.getWidth(), screenSize.getHeight()) * 0.03);
+        this->splash->centreWithSize(sizeBase * 25, sizeBase * 10);
         this->splash->toFront(true);
     }
 }
@@ -138,8 +143,7 @@ void MainComponent::moveSplashIn(juce::Component* splash)
         this->splash = splash;
         this->splash->removeFromDesktop();
         this->addAndMakeVisible(splash);
-        this->splash->centreWithSize(this->splash->getWidth(), this->splash->getHeight());
-        this->toFront(true);
+        this->resized();
     }
 }
 

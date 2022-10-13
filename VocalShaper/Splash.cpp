@@ -1,11 +1,14 @@
-#include "Splash.h"
+﻿#include "Splash.h"
 
 Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 	:Component()
 {
 	this->setAlwaysOnTop(true);
 	this->setMouseCursor(juce::MouseCursor::WaitCursor);
-	//this->setOpaque(false);
+	this->setOpaque(false);
+
+	this->closeTimer = std::make_unique<CloseTimer>(this);
+	this->hideTimer = std::make_unique<HideTimer>(this);
 
 	this->mesLabel = std::make_unique<juce::Label>();
 	this->mesLabel->setColour(juce::Label::ColourIds::backgroundColourId, juce::Colour(0x0));
@@ -55,7 +58,6 @@ void Splash::paint(juce::Graphics& g)
 		(float)(this->getWidth() * scale), (float)(this->getHeight() * pixY * 2)
 	);
 	
-	g.fillAll(juce::Colour(0x0));
 	g.setColour(juce::Colour(0xFF1B1B24));
 	g.fillRoundedRectangle(this->getLocalBounds().toFloat(), (float)(this->getWidth() * round));
 	g.drawImage(
@@ -72,7 +74,7 @@ void Splash::mouseDown(const juce::MouseEvent& e)
 		pos.getX() < this->getWidth() && pos.getY() < this->getHeight()
 		) {
 		if (this->isReady) {
-			this->setVisible(false);
+			this->closeSplash();
 		}
 	}
 }
@@ -83,9 +85,19 @@ void Splash::ready()
 	this->mesLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->verLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->isReady = true;
+	this->closeTimer->startTimer(3000);
 }
 
 void Splash::showMessage(const juce::String& message)
 {
 	this->mesLabel->setText(message, juce::NotificationType::dontSendNotification);
+}
+
+void Splash::closeSplash()
+{
+	if (this->isReady && this->isVisible() && !this->fader.isAnimating()) {
+		constexpr int totalMillSec = 2000;
+		this->fader.animateComponent(this, this->getBounds(), 0.0f, totalMillSec, false, 0, 0);
+		this->hideTimer->startTimer(totalMillSec);
+	}
 }

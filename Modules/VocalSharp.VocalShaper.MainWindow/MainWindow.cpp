@@ -169,7 +169,7 @@ void MainWindow::resized()
     this->screenSizeFunc(this, screenSize);
     this->setResizeLimits(
         screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
-        screenSize.getWidth() * 2, screenSize.getHeight() * 2
+        INT_MAX, INT_MAX
     );
     this->juce::DocumentWindow::resized();
 }
