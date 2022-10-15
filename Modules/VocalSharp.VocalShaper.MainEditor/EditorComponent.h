@@ -16,6 +16,11 @@ public:
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 	void trackChanged(int trackID);
 
+	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
+	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
+	void horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void verticalViewPortChanged(double bottomPitch, double topPitch);
+
 	void undo();
 	void redo();
 	void cut();
@@ -48,6 +53,12 @@ public:
 	bool couldLastTrack();
 	bool couldNextTrack();
 	bool couldSwitchTrack();
+
+	void setCurrentTrack(int trackID);
+	void refreshTotalLength();
+	void setCurrentPosition(vocalshaper::ProjectTime currentTime);
+	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void setVerticalViewPort(double bottomPitch, double topPitch);
 
 public:
 	bool isEditMode();
@@ -104,6 +115,9 @@ private:
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
+
+	static vocalshaper::ProjectTime countProjectTime(vocalshaper::ProjectProxy* ptr);
+	static vocalshaper::ProjectTime countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorComponent)
 };

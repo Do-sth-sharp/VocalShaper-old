@@ -12,6 +12,9 @@ public:
 	void trackChanged(int trackID) override;
 	void setEditMode(bool editMode) override;
 	void setToolID(uint8_t toolID) override;
+	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
+	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
 
 	bool isActive() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
@@ -24,6 +27,14 @@ public:
 	int showClipBoard(const juce::StringArray& list) override;
 
 	void resized() override;
+
+	void setMethods(
+		const std::function<void(int)>& setCurrentTrackFunc,
+		const std::function<void(void)>& refreshTotalTimeFunc,
+		const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+		const std::function<void(double, double)>& setVerticalViewPortFunc
+	) override;
 
 private:
 	void initCommandID();

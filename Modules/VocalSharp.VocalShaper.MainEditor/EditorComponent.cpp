@@ -72,6 +72,22 @@ EditorComponent::EditorComponent()
 	this->bottomEditor = std::make_unique<BottomEditor>();
 	this->addChildComponent(this->bottomEditor.get());
 
+	//注册编辑器方法
+	{
+		auto setCurrentTrackFunc = [this](int trackID) {this->setCurrentTrack(trackID); };
+		auto refreshTotalLengthFunc = [this] {this->refreshTotalLength(); };
+		auto setCurrentPositionFunc = [this](vocalshaper::ProjectTime currentTime) {this->setCurrentPosition(currentTime); };
+		auto setHorizontalViewPortFunc = [this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->setHorizontalViewPort(startTime, endTime); };
+		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->setVerticalViewPort(bottomPitch, topPitch); };
+
+		this->topEditor->setMethods(
+			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
+			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+		this->bottomEditor->setMethods(
+			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
+			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+	}
+
 	//创建分割器
 	this->slManager = std::make_unique<juce::StretchableLayoutManager>();
 
@@ -129,6 +145,7 @@ void EditorComponent::projectChanged(const vocalshaper::ProjectProxy* ptr)
 	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
 	this->topEditor->projectChanged(ptr);
 	this->bottomEditor->projectChanged(ptr);
+	this->totalLengthChanged(this->countProjectTime(this->project));
 }
 
 void EditorComponent::trackChanged(int trackID)
@@ -137,6 +154,43 @@ void EditorComponent::trackChanged(int trackID)
 	this->trackID = trackID;
 	this->topEditor->trackChanged(trackID);
 	this->bottomEditor->trackChanged(trackID);
+}
+
+void EditorComponent::totalLengthChanged(vocalshaper::ProjectTime totalLength)
+{
+	if (this->topEditor) {
+		this->topEditor->setTotalLength(totalLength);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setTotalLength(totalLength);
+	}
+}
+
+void EditorComponent::currentPositionChanged(vocalshaper::ProjectTime currentTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setCurrentPosition(currentTime);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setCurrentPosition(currentTime);
+	}
+	//TODO 如果播放跟随，则调整显示范围
+}
+
+void EditorComponent::horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	//轨道面板的横竖显示范围具有独立性
+	if (this->bottomEditor) {
+		this->bottomEditor->setHorizontalViewPort(startTime, endTime);
+	}
+}
+
+void EditorComponent::verticalViewPortChanged(double bottomPitch, double topPitch)
+{
+	//轨道面板的横竖显示范围具有独立性
+	if (this->bottomEditor) {
+		this->bottomEditor->setVerticalViewPort(bottomPitch, topPitch);
+	}
 }
 
 void EditorComponent::undo()
@@ -501,6 +555,53 @@ bool EditorComponent::couldSwitchTrack()
 	return false;
 }
 
+void EditorComponent::setCurrentTrack(int trackID)
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	if (this->project) {
+		juce::ScopedReadLock locker2(this->project->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		if (trackID >= 0 && trackID < trackSize) {
+			this->trackChanged(trackID);
+		}
+	}
+}
+
+void EditorComponent::refreshTotalLength()
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	this->totalLengthChanged(this->countProjectTime(this->project));
+}
+
+void EditorComponent::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+{
+	this->currentPositionChanged(currentTime);
+	//TODO 同步至播放控制器
+}
+
+void EditorComponent::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker2(this->project->getLock());
+	auto project = this->project->getPtr();
+	if (!project) {
+		return;
+	}
+	if (vocalshaper::timeLSS(startTime, endTime, vocalshaper::ProjectDAO::getCurveQuantification(project))) {
+		this->horizontalViewPortChanged(startTime, endTime);
+	}
+}
+
+void EditorComponent::setVerticalViewPort(double bottomPitch, double topPitch)
+{
+	if (bottomPitch >= 0 && bottomPitch <= 127 && topPitch >= 0 && topPitch <= 127) {
+		if (bottomPitch < topPitch - 1) {
+			//至少要有一个音符的高度
+			this->verticalViewPortChanged(bottomPitch, topPitch);
+		}
+	}
+}
+
 bool EditorComponent::isEditMode()
 {
 	return this->editModeFlag;
@@ -587,6 +688,46 @@ void EditorComponent::resized()
 void EditorComponent::paint(juce::Graphics& g)
 {
 
+}
+
+vocalshaper::ProjectTime EditorComponent::countProjectTime(vocalshaper::ProjectProxy* ptr)
+{
+	if (!ptr) {
+		return vocalshaper::make_time(0, 0);
+	}
+
+	juce::ScopedReadLock locker(ptr->getLock());
+	auto project = ptr->getPtr();
+	if (!project) {
+		return vocalshaper::make_time(0, 0);
+	}
+
+	return vocalshaper::CountTime::count(
+		project, vocalshaper::ProjectDAO::getCurveQuantification(project));
+}
+
+vocalshaper::ProjectTime EditorComponent::countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID)
+{
+	if (!ptr) {
+		return vocalshaper::make_time(0, 0);
+	}
+
+	juce::ScopedReadLock locker(ptr->getLock());
+	auto project = ptr->getPtr();
+	if (!project) {
+		return vocalshaper::make_time(0, 0);
+	}
+
+	if (trackID < 0 || trackID >= vocalshaper::ProjectDAO::trackSize(project)) {
+		return vocalshaper::make_time(0, 0);
+	}
+	auto track = vocalshaper::ProjectDAO::getTrack(project, trackID);
+	if (!track) {
+		return vocalshaper::make_time(0, 0);
+	}
+
+	return vocalshaper::CountTime::count(
+		track, vocalshaper::ProjectDAO::getCurveQuantification(project));
 }
 
 void EditorComponent::initCommandID()

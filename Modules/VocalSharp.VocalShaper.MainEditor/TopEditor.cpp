@@ -47,6 +47,27 @@ void TopEditor::setToolID(uint8_t toolID)
 	}
 }
 
+void TopEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setHorizontalViewPort(startTime, endTime);
+	}
+}
+
+void TopEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
+{
+	if (this->topEditor) {
+		this->topEditor->setTotalLength(totalLength);
+	}
+}
+
+void TopEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setCurrentPosition(currentTime);
+	}
+}
+
 bool TopEditor::isActive()
 {
 	if (this->topEditor) {
@@ -125,6 +146,24 @@ void TopEditor::resized()
 		this->topEditor->setBounds(0, 0, this->getWidth() - this->toolBar->getWidth(), this->getHeight());
 	}
 	this->TopLevelEditorBase::resized();
+}
+
+void TopEditor::setMethods(
+	const std::function<void(int)>& setCurrentTrackFunc,
+	const std::function<void(void)>& refreshTotalTimeFunc,
+	const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+	const std::function<void(double, double)>& setVerticalViewPortFunc
+)
+{
+	if (this->topEditor) {
+		this->topEditor->setMethods(
+			setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
+			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+	}
+	this->EditorBase::setMethods(
+		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
+		setHorizontalViewPortFunc, setVerticalViewPortFunc);
 }
 
 void TopEditor::initCommandID()

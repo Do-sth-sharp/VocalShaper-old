@@ -64,6 +64,26 @@ void BottomEditor::setToolID(uint8_t toolID)
 	//TODO
 }
 
+void BottomEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	//TODO
+}
+
+void BottomEditor::setVerticalViewPort(double bottomPitch, double topPitch)
+{
+	//TODO
+}
+
+void BottomEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
+{
+	//TODO
+}
+
+void BottomEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+{
+	//TODO
+}
+
 bool BottomEditor::isActive()
 {
 	//TODO 判定活动区

@@ -13,6 +13,10 @@ public:
 	void trackChanged(int trackID) override;
 	void setEditMode(bool editMode) override;
 	void setToolID(uint8_t toolID) override;
+	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setVerticalViewPort(double bottomPitch, double topPitch) override;
+	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
+	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
 
 	bool isActive();
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
