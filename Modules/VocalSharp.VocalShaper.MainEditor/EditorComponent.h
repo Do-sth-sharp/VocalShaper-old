@@ -10,16 +10,11 @@ public:
 	EditorComponent();
 	~EditorComponent() override;
 
+public:
 	void setTrackOpen(bool trackOpen);
 	bool isTrackOpen();
 
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
-	void trackChanged(int trackID);
-
-	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
-	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
-	void horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
-	void verticalViewPortChanged(double bottomPitch, double topPitch);
 
 	void undo();
 	void redo();
@@ -59,6 +54,13 @@ public:
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime);
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void setVerticalViewPort(double bottomPitch, double topPitch);
+
+private:
+	void trackChanged(int trackID);
+	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
+	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
+	void horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void verticalViewPortChanged(double bottomPitch, double topPitch);
 
 public:
 	bool isEditMode();
