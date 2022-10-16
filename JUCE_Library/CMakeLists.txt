@@ -1,3 +1,33 @@
+ï»¿#è®¾ç½®åŸºæœ¬å±žæ€§
+cmake_minimum_required (VERSION 3.15)
+
+project (JUCE VERSION 7.1.0 LANGUAGES CXX C)
+
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+    set (CMAKE_BUILD_TYPE "Release"  CACHE STRING "Choose the type of build." FORCE)
+endif (NOT DEFINED CMAKE_BUILD_TYPE)
+
+set(CMAKE_CXX_STANDARD 20)#ä½¿ç”¨C++20
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 17)#ä½¿ç”¨C17
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVCä¸‹ä½¿ç”¨/MDå’Œ/MDd
+
+#åˆå§‹åŒ–åº“ç›®å½•
+if (NOT DEFINED OUT_DIR)
+	set (OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Out)
+endif ()
+if (NOT DEFINED JUCEHEADER_DIR)
+	set (JUCEHEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/JuceLibraryCode)
+endif ()
+if (NOT DEFINED JUCELIBRARY_DIR)
+	set (JUCELIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/JUCE/modules)
+endif ()
+
+#è®¾ç½®é€šç”¨å±žæ€§
 set (DYNAMIC_LIBRARY JUCE)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -606,25 +636,25 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
 
 target_compile_options (${DYNAMIC_LIBRARY} PRIVATE
-    /permissive-#·ûºÏÄ£Ê½:ÊÇ
-	/GS#°²È«¼ì²é:ÆôÓÃ°²È«¼ì²é
-	/Zc:wchar_t#½«WChar_tÊÓÎªÄÚÖÃÀàÐÍ:ÊÇ
-	/Gm-#ÆôÓÃ×îÐ¡ÖØÐÂÉú³É:·ñ
-	/sdl#SDL¼ì²é:ÊÇ
-	/fp:precise#¸¡µãÄ£ÐÍ:¾«¶È
-	/Zc:forScope#Ç¿ÖÆForÑ­»··¶Î§ÖÐµÄºÏ¹æÐÔ:ÊÇ
-	/Gd#µ÷ÓÃÔ¼¶¨:__cdecl
-	/nologo#È¡ÏûÏÔÊ¾Æô¶¯°æÈ¨±êÖ¾:ÊÇ
-	/bigobj#½Ï´óÉú³É¶ÔÏó:ÊÇ
+    /permissive-#ç¬¦åˆæ¨¡å¼:æ˜¯
+	/GS#å®‰å…¨æ£€æŸ¥:å¯ç”¨å®‰å…¨æ£€æŸ¥
+	/Zc:wchar_t#å°†WChar_tè§†ä¸ºå†…ç½®ç±»åž‹:æ˜¯
+	/Gm-#å¯ç”¨æœ€å°é‡æ–°ç”Ÿæˆ:å¦
+	/sdl#SDLæ£€æŸ¥:æ˜¯
+	/fp:precise#æµ®ç‚¹æ¨¡åž‹:ç²¾åº¦
+	/Zc:forScope#å¼ºåˆ¶Forå¾ªçŽ¯èŒƒå›´ä¸­çš„åˆè§„æ€§:æ˜¯
+	/Gd#è°ƒç”¨çº¦å®š:__cdecl
+	/nologo#å–æ¶ˆæ˜¾ç¤ºå¯åŠ¨ç‰ˆæƒæ ‡å¿—:æ˜¯
+	/bigobj#è¾ƒå¤§ç”Ÿæˆå¯¹è±¡:æ˜¯
 )
 add_link_options (
-	/MANIFEST#Éú³ÉÇåµ¥:ÊÇ
-	/NXCOMPAT#Êý¾ÝÖ´ÐÐ±£»¤(DEP):ÊÇ
-	/DYNAMICBASE#Ëæ»ú»ùÖ·:ÊÇ
-	/LARGEADDRESSAWARE#ÆôÓÃ´óµØÖ·:ÊÇ
-	/SUBSYSTEM:WINDOWS#×ÓÏµÍ³:´°¿Ú
-	/MANIFESTUAC:NO#ÆôÓÃÓÃ»§ÕË»§¿ØÖÆ:·ñ
-	/NOLOGO#È¡ÏûÏÔÊ¾Æô¶¯°æÈ¨±êÖ¾:ÊÇ
+	/MANIFEST#ç”Ÿæˆæ¸…å•:æ˜¯
+	/NXCOMPAT#æ•°æ®æ‰§è¡Œä¿æŠ¤(DEP):æ˜¯
+	/DYNAMICBASE#éšæœºåŸºå€:æ˜¯
+	/LARGEADDRESSAWARE#å¯ç”¨å¤§åœ°å€:æ˜¯
+	/SUBSYSTEM:WINDOWS#å­ç³»ç»Ÿ:çª—å£
+	/MANIFESTUAC:NO#å¯ç”¨ç”¨æˆ·è´¦æˆ·æŽ§åˆ¶:å¦
+	/NOLOGO#å–æ¶ˆæ˜¾ç¤ºå¯åŠ¨ç‰ˆæƒæ ‡å¿—:æ˜¯
 )
 #target_link_libraries (${DYNAMIC_LIBRARY} PRIVATE
 #    -m64
@@ -655,31 +685,31 @@ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 if (CMAKE_BUILD_TYPE STREQUAL Release)
 
 target_compile_options (${DYNAMIC_LIBRARY} PRIVATE
-    /permissive-#·ûºÏÄ£Ê½:ÊÇ
-	/GS#°²È«¼ì²é:ÆôÓÃ°²È«¼ì²é
-	/GL#È«³ÌÐòÓÅ»¯:ÊÇ
-	/Gy#ÆôÓÃº¯Êý¼¶Á´½Ó:ÊÇ
-	/Zc:wchar_t#½«WChar_tÊÓÎªÄÚÖÃÀàÐÍ:ÊÇ
-	/Gm-#ÆôÓÃ×îÐ¡ÖØÐÂÉú³É:·ñ
-	/sdl#SDL¼ì²é:ÊÇ
-	/fp:precise#¸¡µãÄ£ÐÍ:¾«¶È
-	/Zc:forScope#Ç¿ÖÆForÑ­»··¶Î§ÖÐµÄºÏ¹æÐÔ:ÊÇ
-	/Gd#µ÷ÓÃÔ¼¶¨:__cdecl
-	/Oi#ÆôÓÃÄÚ²¿º¯Êý:ÊÇ
-	/nologo#È¡ÏûÏÔÊ¾Æô¶¯°æÈ¨±êÖ¾:ÊÇ
-	/bigobj#½Ï´óÉú³É¶ÔÏó:ÊÇ
+    /permissive-#ç¬¦åˆæ¨¡å¼:æ˜¯
+	/GS#å®‰å…¨æ£€æŸ¥:å¯ç”¨å®‰å…¨æ£€æŸ¥
+	/GL#å…¨ç¨‹åºä¼˜åŒ–:æ˜¯
+	/Gy#å¯ç”¨å‡½æ•°çº§é“¾æŽ¥:æ˜¯
+	/Zc:wchar_t#å°†WChar_tè§†ä¸ºå†…ç½®ç±»åž‹:æ˜¯
+	/Gm-#å¯ç”¨æœ€å°é‡æ–°ç”Ÿæˆ:å¦
+	/sdl#SDLæ£€æŸ¥:æ˜¯
+	/fp:precise#æµ®ç‚¹æ¨¡åž‹:ç²¾åº¦
+	/Zc:forScope#å¼ºåˆ¶Forå¾ªçŽ¯èŒƒå›´ä¸­çš„åˆè§„æ€§:æ˜¯
+	/Gd#è°ƒç”¨çº¦å®š:__cdecl
+	/Oi#å¯ç”¨å†…éƒ¨å‡½æ•°:æ˜¯
+	/nologo#å–æ¶ˆæ˜¾ç¤ºå¯åŠ¨ç‰ˆæƒæ ‡å¿—:æ˜¯
+	/bigobj#è¾ƒå¤§ç”Ÿæˆå¯¹è±¡:æ˜¯
 )
 add_link_options (
-	/MANIFEST#Éú³ÉÇåµ¥:ÊÇ
-	/LTCG:incremental#Á´½ÓÊ±¼ä´úÂëÉú³É:Ê¹ÓÃ¿ìËÙÁ´½ÓÊ±¼ä´úÂëÉú³É
-	/NXCOMPAT#Êý¾ÝÖ´ÐÐ±£»¤(DEP):ÊÇ
-	/DYNAMICBASE#Ëæ»ú»ùÖ·:ÊÇ
-	/LARGEADDRESSAWARE#ÆôÓÃ´óµØÖ·:ÊÇ
-	/OPT:REF#ÒýÓÃ:ÊÇ
-	/SUBSYSTEM:WINDOWS#×ÓÏµÍ³:´°¿Ú
-	/MANIFESTUAC:NO#ÆôÓÃÓÃ»§ÕË»§¿ØÖÆ:·ñ
-	/OPT:ICF#ÆôÓÃCOMDATÕÛµþ:ÊÇ
-	/NOLOGO#È¡ÏûÏÔÊ¾Æô¶¯°æÈ¨±êÖ¾:ÊÇ
+	/MANIFEST#ç”Ÿæˆæ¸…å•:æ˜¯
+	/LTCG:incremental#é“¾æŽ¥æ—¶é—´ä»£ç ç”Ÿæˆ:ä½¿ç”¨å¿«é€Ÿé“¾æŽ¥æ—¶é—´ä»£ç ç”Ÿæˆ
+	/NXCOMPAT#æ•°æ®æ‰§è¡Œä¿æŠ¤(DEP):æ˜¯
+	/DYNAMICBASE#éšæœºåŸºå€:æ˜¯
+	/LARGEADDRESSAWARE#å¯ç”¨å¤§åœ°å€:æ˜¯
+	/OPT:REF#å¼•ç”¨:æ˜¯
+	/SUBSYSTEM:WINDOWS#å­ç³»ç»Ÿ:çª—å£
+	/MANIFESTUAC:NO#å¯ç”¨ç”¨æˆ·è´¦æˆ·æŽ§åˆ¶:å¦
+	/OPT:ICF#å¯ç”¨COMDATæŠ˜å :æ˜¯
+	/NOLOGO#å–æ¶ˆæ˜¾ç¤ºå¯åŠ¨ç‰ˆæƒæ ‡å¿—:æ˜¯
 )
 #target_link_libraries (${DYNAMIC_LIBRARY} PRIVATE
 #    -m64

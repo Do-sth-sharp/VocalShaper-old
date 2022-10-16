@@ -1,10 +1,10 @@
-cmake_minimum_required (VERSION 3.15)
+﻿cmake_minimum_required (VERSION 3.15)
 
 project (VocalShaper VERSION 0.0.1 LANGUAGES CXX C)
 
-if (NOT CMAKE_BUILD_TYPE)
+if (NOT DEFINED CMAKE_BUILD_TYPE)
     set (CMAKE_BUILD_TYPE "Release"  CACHE STRING "Choose the type of build." FORCE)
-endif (NOT CMAKE_BUILD_TYPE)
+endif (NOT DEFINED CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_STANDARD 20)#使用C++20
 set(CMAKE_CXX_EXTENSIONS OFF)

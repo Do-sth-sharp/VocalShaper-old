@@ -1,10 +1,15 @@
-#文件搜索目录
-include_directories (${CMAKE_SOURCE_DIR})
-include_directories (${JUCEHEADER_DIR})
-include_directories (${JUCELIBRARY_DIR})
-include_directories (${LIBJMODULE_DIR})
+﻿#获取当前目录名
+string (REGEX REPLACE ".*/\(.*\)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
 
-#设置语言标准
+#设置基本属性
+cmake_minimum_required (VERSION 3.15)
+
+project (${CURRENT_FOLDER} VERSION 0.0.1 LANGUAGES CXX C)
+
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+    set (CMAKE_BUILD_TYPE "Release"  CACHE STRING "Choose the type of build." FORCE)
+endif (NOT DEFINED CMAKE_BUILD_TYPE)
+
 set(CMAKE_CXX_STANDARD 20)#使用C++20
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,11 +17,35 @@ set(CMAKE_C_STANDARD 17)#使用C17
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVC下使用/MD和/MDd
+
+#初始化库目录
+if (NOT DEFINED OUT_DIR)
+	set (OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Out)
+endif ()
+if (NOT DEFINED JUCEHEADER_DIR)
+	set (JUCEHEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/JuceLibraryCode)
+endif ()
+if (NOT DEFINED JUCELIBRARY_DIR)
+	set (JUCELIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/JUCE/modules)
+endif ()
+if (NOT DEFINED JMADF_DIR)
+	set (JMADF_DIR ${CMAKE_SOURCE_DIR}/JMADF)
+endif ()
+if (NOT DEFINED LIBJMODULE_DIR)
+	set (LIBJMODULE_DIR ${JMADF_DIR}/libJModule)
+endif ()
+
+#文件搜索目录
+include_directories (${CMAKE_SOURCE_DIR})
+include_directories (${JUCEHEADER_DIR})
+include_directories (${JUCELIBRARY_DIR})
+include_directories (${LIBJMODULE_DIR})
+
 #使用libJModule库
 add_subdirectory (${LIBJMODULE_DIR} libJModule)
 
 #设置目标名称
-string (REGEX REPLACE ".*/\(.*\)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
 set (TARGET_NAME ${CURRENT_FOLDER})
 
 #设置编译宏
