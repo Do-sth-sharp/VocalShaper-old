@@ -19,7 +19,12 @@ bool VocalSharp_VocalShaper_Main::init()
 		)) {
 		return false;
 	}
+
 	jmadf::LoadModule("WuChang.JMADF.OpenGLComponentRender");
+	if (!jmadf::GetException().isEmpty()) {
+		jmadf::ClearException();
+	}
+
 	if (
 		!jmadf::CheckInterface<void>(
 			"WuChang.JMADF.Configs", "Close")

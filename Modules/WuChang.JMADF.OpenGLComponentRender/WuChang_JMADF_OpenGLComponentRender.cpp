@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_OpenGLComponentRender.h"
+﻿#include "WuChang_JMADF_OpenGLComponentRender.h"
 
 bool WuChang_JMADF_OpenGLComponentRender::init()
 {
@@ -25,28 +25,29 @@ bool WuChang_JMADF_OpenGLComponentRender::init()
 			this->OpenGLOn = (*config)["OpenGLOn"];
 		}
 	}
-	if (!this->OpenGLOn) {
-		return false;
-	}
 
 	this->glContext = std::make_unique<juce::OpenGLContext>();
 	jmadf::RegisterInterface<juce::Component*>(
 		"Attach",
 		[this](const juce::String&, juce::Component* comp) {
-			if (!this->glContext->isAttached()) {
-				this->glContext->attachTo(*comp);
+			if (this->OpenGLOn) {
+				if (!this->glContext->isAttached()) {
+					this->glContext->attachTo(*comp);
+				}
 			}
 		}
 	);
 	jmadf::RegisterInterface<void>(
 		"Detach",
 		[this](const juce::String&) {
-			if (this->glContext->isAttached()) {
-				this->glContext->detach();
+			if (this->OpenGLOn) {
+				if (this->glContext->isAttached()) {
+					this->glContext->detach();
+				}
 			}
 		}
 	);
-	return true;
+	return this->OpenGLOn;
 }
 
 void WuChang_JMADF_OpenGLComponentRender::destory()
