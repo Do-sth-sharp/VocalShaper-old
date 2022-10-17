@@ -10,7 +10,6 @@ public:
 
     void closeButtonPressed() override;
 
-    void resized() override;
     void moved() override;
     void parentSizeChanged() override;
 

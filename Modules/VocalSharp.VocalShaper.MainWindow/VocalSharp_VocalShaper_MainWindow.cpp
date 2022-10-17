@@ -193,7 +193,6 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		jmadf::RaiseException("Can't alloc memory space for main window!");
 		return false;
 	}
-	this->mainWindow->toFront(true);
 	if (openglLoaded) {
 		if (
 			jmadf::CheckInterface<juce::Component*>(

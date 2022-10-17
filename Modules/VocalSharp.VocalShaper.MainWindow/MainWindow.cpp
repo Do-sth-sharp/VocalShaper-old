@@ -13,15 +13,10 @@ MainWindow::MainWindow(juce::String name)
             );
 
     this->setUsingNativeTitleBar(true);
-    this->setContentOwned(this->mComp = new MainComponent(), true);
-
-#if JUCE_IOS || JUCE_ANDROID
-    this->setFullScreen(true);
-#else
+    this->setContentOwned(this->mComp = new MainComponent(), false);
     this->setResizable(true, true);
     this->centreWithSize(this->getWidth(), this->getHeight());
     this->setFullScreen(true);
-#endif
 
     //注册标题修改
     jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
@@ -163,17 +158,6 @@ void MainWindow::closeButtonPressed()
     }
 }
 
-void MainWindow::resized()
-{
-    juce::Rectangle<int> screenSize;
-    this->screenSizeFunc(this, screenSize);
-    this->setResizeLimits(
-        screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
-        INT_MAX, INT_MAX
-    );
-    this->juce::DocumentWindow::resized();
-}
-
 void MainWindow::moved()
 {
     //判断屏幕变化
@@ -181,6 +165,14 @@ void MainWindow::moved()
         .getDisplayForRect(this->getScreenBounds());
     if (this->displayTemp != displayCurrent) {
         this->displayTemp = displayCurrent;
+
+        juce::Rectangle<int> screenSize;
+        this->screenSizeFunc(this, screenSize);
+
+        this->setResizeLimits(
+        screenSize.getWidth() * 0.5, screenSize.getHeight() * 0.5,
+        INT_MAX, INT_MAX
+        );
         this->resized();
         if (this->mComp) {
             this->mComp->refresh();

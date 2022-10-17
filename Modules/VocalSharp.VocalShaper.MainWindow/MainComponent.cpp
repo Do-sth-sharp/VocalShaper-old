@@ -25,8 +25,6 @@ MainComponent::MainComponent()
         }
     }
 
-    setSize (600, 400);
-
     this->addChildComponent(this->toolTip.get());
 
     jmadf::CallInterface<juce::Component*&>(
@@ -41,13 +39,13 @@ MainComponent::MainComponent()
 	
     if (this->ptrMainUI) {
         this->addChildComponent(this->ptrMainUI);
-        this->ptrMainUI->setSize(this->getWidth(), this->getHeight());
+        //this->ptrMainUI->setSize(this->getWidth(), this->getHeight());
         //this->ptrMainUI->setVisible(true);
     }
 
     if (this->ptrStartMenu) {
 		this->addChildComponent(this->ptrStartMenu);
-        this->ptrStartMenu->setSize(this->getWidth(), this->getHeight());
+        //this->ptrStartMenu->setSize(this->getWidth(), this->getHeight());
         this->ptrStartMenu->setVisible(true);
     }
 }
