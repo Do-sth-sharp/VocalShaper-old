@@ -1,0 +1,14 @@
+﻿{
+  "parent": {
+    "module": "VocalSharp.VocalShaper.ThemeManager",
+    "class": "VocalSharp.VocalShaper.TrackEditor"
+  },
+  "size": {
+    "width-trackHead:number": 0.075,
+    "height-timeRuler:number": 0.025
+  },
+  "position": {
+  },
+  "scale": {
+  }
+}
