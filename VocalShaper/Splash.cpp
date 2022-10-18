@@ -10,22 +10,7 @@ Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 	this->closeTimer = std::make_unique<CloseTimer>(this);
 	this->hideTimer = std::make_unique<HideTimer>(this);
 
-	this->mesLabel = std::make_unique<juce::Label>();
-	this->mesLabel->setColour(juce::Label::ColourIds::backgroundColourId, juce::Colour(0x0));
-	this->mesLabel->setColour(juce::Label::ColourIds::textColourId, juce::Colour(0x9EFFFFFF));
-	this->mesLabel->setJustificationType(juce::Justification::bottomLeft);
-	this->mesLabel->setAlwaysOnTop(true);
-	this->addAndMakeVisible(this->mesLabel.get());
-
-	this->verLabel = std::make_unique<juce::Label>("", "Ver " + version + " Build " + cDateTime);
-	this->verLabel->setColour(juce::Label::ColourIds::backgroundColourId, juce::Colour(0x0));
-	this->verLabel->setColour(juce::Label::ColourIds::textColourId, juce::Colour(0x9EFFFFFF));
-	this->verLabel->setJustificationType(juce::Justification::bottomRight);
-	this->verLabel->setAlwaysOnTop(true);
-	this->addAndMakeVisible(this->verLabel.get());
-
-	this->mesLabel->setMouseCursor(juce::MouseCursor::WaitCursor);
-	this->verLabel->setMouseCursor(juce::MouseCursor::WaitCursor);
+	this->verStr = "Ver " + version + " Build " + cDateTime;
 	
 	this->logo = std::make_unique<juce::Image>(
 		juce::ImageFileFormat::loadFrom(
@@ -34,20 +19,9 @@ Splash::Splash(const juce::String& version, const juce::String& cDateTime)
 		));
 }
 
-void Splash::resized()
-{
-	const double labHei = 0.2;
-	const double labSpl = 0.7;
-	
-	this->mesLabel->setSize((int)(this->getWidth() * labSpl), (int)(this->getHeight() * labHei));
-	this->verLabel->setSize((int)(this->getWidth() * (1 - labSpl)), (int)(this->getHeight() * labHei));
-	
-	this->mesLabel->setTopLeftPosition(0, (int)(this->getHeight() * (1 - labHei)));
-	this->verLabel->setTopRightPosition(this->getWidth(), (int)(this->getHeight() * (1 - labHei)));
-}
-
 void Splash::paint(juce::Graphics& g)
 {
+	//绘图片
 	const double pixX = 0.5;
 	const double pixY = 0.47;
 	const double scale = 0.75;
@@ -64,6 +38,23 @@ void Splash::paint(juce::Graphics& g)
 		*(this->logo), rect,
 		juce::RectanglePlacement(juce::RectanglePlacement::Flags::centred)
 	);
+
+	//绘文字
+	const double labHei = 0.2;
+	const double labSpl = 0.7;
+	const double margin = 0.01;
+	juce::Rectangle<int> mesRect(
+		this->getWidth() * margin, this->getHeight() * (1 - labHei),
+		this->getWidth() * labSpl - this->getWidth() * margin, this->getHeight() * labHei
+	);
+	juce::Rectangle<int> verRect(
+		this->getWidth() - this->getWidth() * (1 - labSpl), this->getHeight() * (1 - labHei),
+		this->getWidth() * (1 - labSpl) - this->getWidth() * margin, this->getHeight() * labHei
+	);
+
+	g.setColour(juce::Colour(0x9EFFFFFF));
+	g.drawFittedText(this->mesStr, mesRect, juce::Justification::bottomLeft, 1);
+	g.drawFittedText(this->verStr, verRect, juce::Justification::bottomRight, 1);
 }
 
 void Splash::mouseDown(const juce::MouseEvent& e)
@@ -82,15 +73,14 @@ void Splash::mouseDown(const juce::MouseEvent& e)
 void Splash::ready()
 {
 	this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->mesLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->verLabel->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->isReady = true;
 	this->closeTimer->startTimer(3000);
 }
 
 void Splash::showMessage(const juce::String& message)
 {
-	this->mesLabel->setText(message, juce::NotificationType::dontSendNotification);
+	this->mesStr = message;
+	this->repaint();
 }
 
 void Splash::closeSplash()

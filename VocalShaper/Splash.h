@@ -7,7 +7,6 @@ public:
 	Splash(const juce::String& version, const juce::String& cDateTime);
 	~Splash() override = default;
 	
-	void resized() override;
 	void paint(juce::Graphics& g) override;
 	void mouseDown(const juce::MouseEvent& e) override;
 	
@@ -18,7 +17,7 @@ public:
 	
 private:
 	bool isReady = false;
-	std::unique_ptr<juce::Label> mesLabel, verLabel;
+	juce::String mesStr, verStr;
 	std::unique_ptr<juce::Image> logo;
 
 	class CloseTimer final : public juce::Timer
@@ -28,6 +27,10 @@ private:
 		CloseTimer(Splash* splash) :Timer(), splash(splash) {};
 		void timerCallback() override
 		{
+			if (this->isTimerRunning()) {
+				this->stopTimer();
+			}
+
 			if (this->splash) {
 				this->splash->closeSplash();
 			}
@@ -40,6 +43,10 @@ private:
 		HideTimer(Splash* splash) :Timer(), splash(splash) {};
 		void timerCallback() override
 		{
+			if (this->isTimerRunning()) {
+				this->stopTimer();
+			}
+
 			if (this->splash && this->splash->isVisible()) {
 				this->splash->setVisible(false);
 			}
