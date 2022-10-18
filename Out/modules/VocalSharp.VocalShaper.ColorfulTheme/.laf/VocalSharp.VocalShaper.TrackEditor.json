@@ -3,6 +3,7 @@
     "class": "VocalSharp.VocalShaper.MainEditor"
   },
   "color": {
+    "background-rulerHead:string":"$ThemeColorB3"
   },
   "resource": {
   }

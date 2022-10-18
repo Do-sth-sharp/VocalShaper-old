@@ -58,6 +58,9 @@
 [Oo]ut/**/*.exp
 [Oo]ut/**/*.ilk
 [Oo]ut/**/*.pdb
+[Oo]ut/**/*.manifest
+[Oo]ut/**/*.ipdb
+[Oo]ut/**/*.iobj
 [Oo]ut/**/*.a
 [Oo]ut/**/*.so
 [Oo]ut/**/*.dylib

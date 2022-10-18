@@ -23,6 +23,7 @@ private:
 	struct Colors final
 	{
 		juce::Colour background;
+		juce::Colour background_rulerHead;
 	}colors;//界面颜色
 	struct Size final
 	{
