@@ -253,7 +253,8 @@ vocalshaper::ProjectProxy* ProjectHub::create(const juce::String& name, const ju
 {
 	auto ptr = new vocalshaper::ProjectProxy(name, path);
 
-	//TODO 设置事件回调接口
+	jmadf::CallInterface<vocalshaper::ProjectProxy*>(
+		"VocalSharp.VocalShaper.CallbackReactor", "Process", ptr);
 
 	return ptr;
 }

@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_ProjectHub.h"
+﻿#include "VocalSharp_VocalShaper_ProjectHub.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
@@ -16,7 +16,8 @@ VocalSharp_VocalShaper_ProjectHub::~VocalSharp_VocalShaper_ProjectHub()
 bool VocalSharp_VocalShaper_ProjectHub::init()
 {
 	if (!(
-		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectIO")
+		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectIO") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")
 		)) {
 		return false;
 	}
@@ -27,6 +28,13 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			"VocalSharp.VocalShaper.ProjectIO", "WriteProject")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectIO:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<vocalshaper::ProjectProxy*>(
+			"VocalSharp.VocalShaper.CallbackReactor", "Process")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
 		return false;
 	}
 

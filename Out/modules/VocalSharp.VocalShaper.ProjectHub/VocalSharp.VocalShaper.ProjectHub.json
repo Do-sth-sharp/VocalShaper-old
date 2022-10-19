@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "VocalSharp.VocalShaper.ProjectHub",
   "version": "0.0.1",
   "group": "VocalShaper.OfficialModules",
@@ -6,6 +6,7 @@
   "entry": "VocalSharp.VocalShaper.ProjectHub",
   "description": "VocalShaper编辑器工程托管器",
   "dependencies": [
-    "VocalSharp.VocalShaper.ProjectIO"
+    "VocalSharp.VocalShaper.ProjectIO",
+    "VocalSharp.VocalShaper.CallbackReactor"
   ]
 }
