@@ -120,8 +120,8 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			this->projects->addNotice(caller, func);
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Release",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller) {
 			this->projects->release(caller);
 		}

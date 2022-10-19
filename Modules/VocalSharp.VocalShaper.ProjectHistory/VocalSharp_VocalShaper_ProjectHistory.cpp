@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_ProjectHistory.h"
+﻿#include "VocalSharp_VocalShaper_ProjectHistory.h"
 
 VocalSharp_VocalShaper_ProjectHistory::VocalSharp_VocalShaper_ProjectHistory()
 	:Module()
@@ -18,9 +18,7 @@ bool VocalSharp_VocalShaper_ProjectHistory::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.Configs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Configs", "Close")
+			"WuChang.JMADF.Configs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
 		return false;
@@ -76,5 +74,4 @@ bool VocalSharp_VocalShaper_ProjectHistory::init()
 void VocalSharp_VocalShaper_ProjectHistory::destory()
 {
 	this->hm = nullptr;
-	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
 }

@@ -9,6 +9,7 @@ juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(const juce::String& caller,
 {
 	auto ptrLAF = new StartMenuButtonLAF(fontHeightFunc);
 	this->addToList(caller, ptrLAF);
+	this->addToFTemp(caller, ptrLAF);
 	return ptrLAF;
 }
 
@@ -99,12 +100,19 @@ juce::LookAndFeel* LAFFactory::getStatusFlatTextButtonLAF(const juce::String& ca
 void LAFFactory::close(const juce::String& caller)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
-	for (auto it = this->lafs.begin(); it != this->lafs.end();) {
-		if ((*it).first == caller) {
-			it = this->lafs.erase(it);
-			continue;
+	this->lafs.remove_if([caller](const std::pair<juce::String, std::unique_ptr<juce::LookAndFeel>>& pair)
+		{return pair.first == caller; });
+	this->funcLTemp.remove_if([caller](const std::pair<juce::String, StartMenuButtonLAF*>& pair)
+		{return pair.first == caller; });
+}
+
+void LAFFactory::releaseFunc(const juce::String& caller)
+{
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
+	for (auto& p : this->funcLTemp) {
+		if (p.first == caller) {
+			p.second->fontHeightFunc = [] {return 0; };
 		}
-		it++;
 	}
 }
 
@@ -112,4 +120,10 @@ void LAFFactory::addToList(const juce::String& caller, juce::LookAndFeel* laf)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	this->lafs.push_back(std::make_pair(caller, std::move(std::unique_ptr<juce::LookAndFeel>(laf))));
+}
+
+void LAFFactory::addToFTemp(const juce::String& caller, StartMenuButtonLAF* laf)
+{
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
+	this->funcLTemp.push_back(std::make_pair(caller, laf));
 }

@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_DynamicRC.h"
+﻿#include "WuChang_JMADF_DynamicRC.h"
 
 WuChang_JMADF_DynamicRC::WuChang_JMADF_DynamicRC()
 	:Module()
@@ -37,8 +37,8 @@ bool WuChang_JMADF_DynamicRC::init()
 			ptrRCP->release(caller, path);
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Unload",
+
+	jmadf::SetUnloadHook(
 		[ptrRCP](const juce::String& caller) {
 			ptrRCP->destory(caller);
 		}

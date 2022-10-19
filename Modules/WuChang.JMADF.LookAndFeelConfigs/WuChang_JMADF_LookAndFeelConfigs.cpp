@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_LookAndFeelConfigs.h"
+﻿#include "WuChang_JMADF_LookAndFeelConfigs.h"
 
 bool WuChang_JMADF_LookAndFeelConfigs::init()
 {
@@ -54,8 +54,8 @@ bool WuChang_JMADF_LookAndFeelConfigs::init()
 			this->configs->release(moduleName);
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Close",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller)
 		{
 			this->configs->close(caller);

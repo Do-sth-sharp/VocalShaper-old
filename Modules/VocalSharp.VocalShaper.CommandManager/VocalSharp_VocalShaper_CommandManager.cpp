@@ -20,9 +20,7 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 	}
 	if (
 		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
-			"WuChang.JMADF.Translates", "GetFunc") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Translates", "Close")
+			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
@@ -56,8 +54,8 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 			ref = this->commands->getManager();
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Close",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller) {
 			this->commands->release(caller);
 		}
@@ -69,7 +67,4 @@ bool VocalSharp_VocalShaper_CommandManager::init()
 void VocalSharp_VocalShaper_CommandManager::destory()
 {
 	this->commands = nullptr;
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.Translates", "Close"
-		);
 }

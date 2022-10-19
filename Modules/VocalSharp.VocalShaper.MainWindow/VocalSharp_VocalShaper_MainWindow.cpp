@@ -29,18 +29,14 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+			"WuChang.JMADF.LookAndFeelConfigs", "GetColor")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
-			"WuChang.JMADF.DynamicRC", "GetRC") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.DynamicRC", "Unload")
+			"WuChang.JMADF.DynamicRC", "GetRC")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
 		return false;
@@ -84,27 +80,21 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		!jmadf::CheckInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
 		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.CommandManager", "Close")
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
-			"VocalSharp.VocalShaper.ProjectHub", "AddNotice") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.ProjectHub", "Release")
+			"VocalSharp.VocalShaper.ProjectHub", "AddNotice")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.GlobalConfigs", "Close")
+			"WuChang.JMADF.GlobalConfigs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;
@@ -216,12 +206,4 @@ void VocalSharp_VocalShaper_MainWindow::destory()
 			"WuChang.JMADF.OpenGLComponentRender", "Detach");
 	}
 	this->mainWindow = nullptr;
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.LookAndFeelConfigs", "Close");
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC", "Unload");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.CommandManager", "Close");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.ProjectHub", "Release");
 }

@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_ProjectIO.h"
+﻿#include "VocalSharp_VocalShaper_ProjectIO.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
@@ -20,9 +20,7 @@ bool VocalSharp_VocalShaper_ProjectIO::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.GlobalConfigs", "Close")
+			"WuChang.JMADF.GlobalConfigs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;

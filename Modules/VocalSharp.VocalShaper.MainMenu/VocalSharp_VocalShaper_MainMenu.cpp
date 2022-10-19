@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_MainMenu.h"
+﻿#include "VocalSharp_VocalShaper_MainMenu.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 #include "MainMenu.h"
@@ -31,18 +31,14 @@ bool VocalSharp_VocalShaper_MainMenu::init()
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
-			"WuChang.JMADF.LookAndFeelConfigs", "GetString") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+			"WuChang.JMADF.LookAndFeelConfigs", "GetString")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
-			"WuChang.JMADF.Translates", "GetFunc") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Translates", "Close")
+			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
@@ -80,9 +76,7 @@ bool VocalSharp_VocalShaper_MainMenu::init()
 		!jmadf::CheckInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
 		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.CommandManager", "Close")
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
@@ -106,10 +100,4 @@ bool VocalSharp_VocalShaper_MainMenu::init()
 
 void VocalSharp_VocalShaper_MainMenu::destory()
 {
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.GlobalConfigs", "Close");
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.Translates", "Close");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.CommandManager", "Close");
 }

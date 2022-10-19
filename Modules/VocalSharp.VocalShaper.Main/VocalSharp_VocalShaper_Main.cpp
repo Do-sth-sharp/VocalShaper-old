@@ -26,17 +26,8 @@ bool VocalSharp_VocalShaper_Main::init()
 	}
 
 	if (
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Configs", "Close")
-		) {
-		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
-		return false;
-	}
-	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.GlobalConfigs", "GetReference")||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.GlobalConfigs", "Close")
+			"WuChang.JMADF.GlobalConfigs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;
@@ -68,9 +59,7 @@ bool VocalSharp_VocalShaper_Main::init()
 		!jmadf::CheckInterface<const juce::String&>(
 			"WuChang.JMADF.Translates", "SetCurrentLang") ||
 		!jmadf::CheckInterface<const juce::StringArray&>(
-			"WuChang.JMADF.Translates", "SetDefaultLang") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Translates", "Close")
+			"WuChang.JMADF.Translates", "SetDefaultLang")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
@@ -92,9 +81,7 @@ bool VocalSharp_VocalShaper_Main::init()
 		!jmadf::CheckInterface<const juce::String&>(
 			"WuChang.JMADF.Fonts", "SetDefaultFont") ||
 		!jmadf::CheckInterface<juce::Typeface::Ptr&, bool&>(
-			"WuChang.JMADF.Fonts", "GetDefault") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Fonts", "Close")
+			"WuChang.JMADF.Fonts", "GetDefault")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Fonts:Bad Interfaces!");
 		return false;
@@ -135,9 +122,7 @@ bool VocalSharp_VocalShaper_Main::init()
 		!jmadf::CheckInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
 		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.CommandManager", "Close")
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
@@ -193,9 +178,4 @@ bool VocalSharp_VocalShaper_Main::init()
 
 void VocalSharp_VocalShaper_Main::destory()
 {
-	jmadf::CallInterface<void>("WuChang.JMADF.Fonts", "Close");
-	jmadf::CallInterface<void>("WuChang.JMADF.Translates", "Close");
-	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
-	jmadf::CallInterface<void>("WuChang.JMADF.GlobalConfigs", "Close");
-	jmadf::CallInterface<void>("VocalSharp.VocalShaper.CommandManager", "Close");
 }

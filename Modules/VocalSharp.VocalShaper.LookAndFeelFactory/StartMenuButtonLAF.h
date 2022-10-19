@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class StartMenuButtonLAF final : public juce::LookAndFeel_V4
@@ -10,6 +10,8 @@ public:
 	{
 		return { (float)this->fontHeightFunc() };
 	};
+
 private:
-	const std::function<int()> fontHeightFunc;
+	friend void LAFFactory::releaseFunc(const juce::String&);
+	std::function<int()> fontHeightFunc;
 };

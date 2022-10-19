@@ -42,17 +42,16 @@ bool VocalSharp_VocalShaper_CallbackReactor::init()
 		}
 	);
 
-	jmadf::RegisterInterface<void>(
-		"Release",
-		[this](const juce::String& caller) {
-			this->callbacks->release(caller);
-		}
-	);
-
 	jmadf::RegisterInterface<vocalshaper::ProjectProxy*>(
 		"Process",
 		[this](const juce::String&, vocalshaper::ProjectProxy* proj) {
 			this->callbacks->process(proj);
+		}
+	);
+
+	jmadf::SetUnloadHook(
+		[this](const juce::String& caller) {
+			this->callbacks->release(caller);
 		}
 	);
 

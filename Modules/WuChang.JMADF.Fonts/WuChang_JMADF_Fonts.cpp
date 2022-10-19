@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_Fonts.h"
+﻿#include "WuChang_JMADF_Fonts.h"
 
 bool WuChang_JMADF_Fonts::init()
 {
@@ -9,9 +9,7 @@ bool WuChang_JMADF_Fonts::init()
 		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
 			"WuChang.JMADF.DynamicRC", "GetRC") ||
 		!jmadf::CheckInterface<const juce::String&>(
-			"WuChang.JMADF.DynamicRC", "ReleaseRC") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.DynamicRC", "Unload")
+			"WuChang.JMADF.DynamicRC", "ReleaseRC")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
 		return false;
@@ -51,8 +49,8 @@ bool WuChang_JMADF_Fonts::init()
 			this->fonts->releaseAll();
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Close",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller)
 		{
 			this->fonts->close(caller);
@@ -64,8 +62,4 @@ bool WuChang_JMADF_Fonts::init()
 void WuChang_JMADF_Fonts::destory()
 {
 	this->fonts = nullptr;
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC",
-		"Unload"
-		);
 }

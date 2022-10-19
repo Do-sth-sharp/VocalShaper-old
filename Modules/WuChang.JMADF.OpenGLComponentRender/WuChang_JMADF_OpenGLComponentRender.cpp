@@ -7,9 +7,7 @@ bool WuChang_JMADF_OpenGLComponentRender::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.Configs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Configs", "Close")
+			"WuChang.JMADF.Configs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
 		return false;
@@ -56,5 +54,4 @@ void WuChang_JMADF_OpenGLComponentRender::destory()
 		this->glContext->detach();
 	}
 	this->glContext = nullptr;
-	jmadf::CallInterface<void>("WuChang.JMADF.Configs", "Close");
 }

@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_Configs.h"
+﻿#include "WuChang_JMADF_Configs.h"
 
 bool WuChang_JMADF_Configs::init()
 {
@@ -26,8 +26,8 @@ bool WuChang_JMADF_Configs::init()
 			this->configs->release(moduleName);
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Close",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller)
 		{
 			this->configs->release(caller);

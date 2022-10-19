@@ -9,9 +9,7 @@ bool VocalSharp_VocalShaper_ThemeManager::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.GlobalConfigs", "Close")
+			"WuChang.JMADF.GlobalConfigs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;
@@ -80,6 +78,4 @@ bool VocalSharp_VocalShaper_ThemeManager::init()
 
 void VocalSharp_VocalShaper_ThemeManager::destory()
 {
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.GlobalConfigs", "Close");
 }

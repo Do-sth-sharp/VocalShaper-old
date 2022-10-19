@@ -98,8 +98,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		}
 	);
 
-	jmadf::RegisterInterface<void>(
-		"Close",
+	jmadf::SetUnloadHook(
+		[this](const juce::String& caller) {
+			this->factory->releaseFunc(caller);
+		}
+	);
+	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {
 			this->factory->close(caller);
 		}
@@ -111,5 +115,4 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 void VocalSharp_VocalShaper_LookAndFeelFactory::destory()
 {
 	this->factory = nullptr;
-	jmadf::CallInterface<void>("WuChang.JMADF.LookAndFeelConfigs", "Close");
 }

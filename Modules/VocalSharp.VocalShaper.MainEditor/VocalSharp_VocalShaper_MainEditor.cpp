@@ -35,18 +35,14 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 			"WuChang.JMADF.LookAndFeelConfigs", "GetColor") ||
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, juce::String&, bool&>(
-			"WuChang.JMADF.LookAndFeelConfigs", "GetString") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.LookAndFeelConfigs", "Close")
+			"WuChang.JMADF.LookAndFeelConfigs", "GetString")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.LookAndFeelConfigs:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, std::pair<size_t&, void*&>>(
-			"WuChang.JMADF.DynamicRC", "GetRC") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.DynamicRC", "Unload")
+			"WuChang.JMADF.DynamicRC", "GetRC")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.DynamicRC:Bad Interfaces!");
 		return false;
@@ -60,18 +56,14 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 	}
 	if (
 		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
-			"WuChang.JMADF.GlobalConfigs", "GetReference") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.GlobalConfigs", "Close")
+			"WuChang.JMADF.GlobalConfigs", "GetReference")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.GlobalConfigs:Bad Interfaces!");
 		return false;
 	}
 	if (
 		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
-			"WuChang.JMADF.Translates", "GetFunc") ||
-		!jmadf::CheckInterface<void>(
-			"WuChang.JMADF.Translates", "Close")
+			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
@@ -88,9 +80,7 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusRoundButtonLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "Close")
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
@@ -119,9 +109,7 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		!jmadf::CheckInterface<int>(
 			"VocalSharp.VocalShaper.ProjectHub", "CloseProj") ||
 		!jmadf::CheckInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
-			"VocalSharp.VocalShaper.ProjectHub", "AddNotice") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.ProjectHub", "Release")
+			"VocalSharp.VocalShaper.ProjectHub", "AddNotice")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
@@ -134,9 +122,7 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		!jmadf::CheckInterface<const juce::String&, int&>(
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandID") ||
 		!jmadf::CheckInterface<juce::ApplicationCommandManager*&>(
-			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager") ||
-		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.CommandManager", "Close")
+			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
 		return false;
@@ -199,18 +185,4 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 void VocalSharp_VocalShaper_MainEditor::destory()
 {
 	this->editorComp = nullptr;
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.GlobalConfigs", "Close");
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.Translates", "Close");
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.LookAndFeelConfigs", "Close");
-	jmadf::CallInterface<void>(
-		"WuChang.JMADF.DynamicRC", "Unload");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.CommandManager", "Close");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.ProjectHub", "Release");
-	jmadf::CallInterface<void>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "Close");
 }

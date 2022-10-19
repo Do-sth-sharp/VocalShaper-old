@@ -1,4 +1,4 @@
-#include "WuChang_JMADF_Translates.h"
+﻿#include "WuChang_JMADF_Translates.h"
 
 bool WuChang_JMADF_Translates::init()
 {
@@ -47,8 +47,8 @@ bool WuChang_JMADF_Translates::init()
 			this->translates->release(moduleName);
 		}
 	);
-	jmadf::RegisterInterface<void>(
-		"Close",
+
+	jmadf::SetUnloadHook(
 		[this](const juce::String& caller)
 		{
 			this->translates->release(caller);
