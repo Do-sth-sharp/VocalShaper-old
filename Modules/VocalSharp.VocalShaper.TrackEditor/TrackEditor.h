@@ -12,6 +12,18 @@ public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
+	void setMethods(
+		const std::function<void(int)>& setCurrentTrackFunc,
+		const std::function<void(void)>& refreshTotalTimeFunc,
+		const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+		const std::function<void(double, double)>& setVerticalViewPortFunc
+	) override;
+	void setTrackViewMethods(
+		std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)> setHViewPortFunc,
+		std::function<void(double, double)> setVViewPortFunc
+	) override;
+
 public:
 	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
 	void setEditMode(bool editMode) override;
@@ -19,8 +31,16 @@ public:
 	void trackChanged(int trackID) override;
 	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setVerticalViewPort(double bottomPitch, double topPitch) override;
+	void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setVViewPort(double bottomPer, double topPer) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
+
+public:
+	void changeHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void changeVViewPort(double bottomPer, double topPer);
 
 private:
 	struct Colors final

@@ -24,10 +24,12 @@ bool ProjectHub::newProj(const juce::String& name, const juce::String& path)
 		);
 	if (!result) {
 		//proj->getMeta()->recover(metaBackup);
+		//proj->noticeClose();
 		delete proj;
 		return false;
 	}
 	vocalshaper::ProjectDAO::save(proj->getPtr());
+	proj->noticeSave();
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -74,11 +76,13 @@ bool ProjectHub::copyProj(const juce::String& name, const juce::String& path,
 		proj, result
 		);
 	if (!result) {
-		//proj->getMeta().recover(metaBackup);
+		//proj->getMeta()->recover(metaBackup);
+		//proj->noticeClose();
 		delete proj;
 		return false;
 	}
 	vocalshaper::ProjectDAO::save(proj->getPtr());
+	proj->noticeSave();
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
@@ -150,7 +154,9 @@ void ProjectHub::close(int index)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
-		this->projList.remove(index);
+		auto proj = this->projList.removeAndReturn(index);
+		proj->noticeClose();
+		delete proj;
 		if (this->currentIndex == index) {
 			//关闭的是当前文档
 			if (this->currentIndex > 0) {
@@ -217,6 +223,7 @@ bool ProjectHub::save(int index)
 			);
 		if (result) {
 			vocalshaper::ProjectDAO::save(ptr->getPtr());
+			ptr->noticeSave();
 			return true;
 		}
 		ptr->getMeta()->recover(metaBackup);

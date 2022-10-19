@@ -73,6 +73,13 @@ void TopEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocals
 	}
 }
 
+void TopEditor::setVerticalViewPort(double bottomPitch, double topPitch)
+{
+	if (this->topEditor) {
+		this->topEditor->setVerticalViewPort(bottomPitch, topPitch);
+	}
+}
+
 void TopEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
 {
 	if (this->topEditor) {

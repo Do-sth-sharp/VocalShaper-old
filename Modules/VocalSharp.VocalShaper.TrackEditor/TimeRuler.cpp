@@ -103,3 +103,13 @@ void TimeRuler::setGrid(vocalshaper::GridState state)
 {
 	//TODO
 }
+
+void TimeRuler::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	//TODO
+}
+
+void TimeRuler::setVViewPort(double bottomPer, double topPer)
+{
+	//TODO
+}

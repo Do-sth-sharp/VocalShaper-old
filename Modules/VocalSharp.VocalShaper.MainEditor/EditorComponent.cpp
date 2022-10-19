@@ -180,6 +180,9 @@ void EditorComponent::currentPositionChanged(vocalshaper::ProjectTime currentTim
 void EditorComponent::horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
 	//轨道面板的横竖显示范围具有独立性
+	if (this->topEditor) {
+		this->topEditor->setHorizontalViewPort(startTime, endTime);
+	}
 	if (this->bottomEditor) {
 		this->bottomEditor->setHorizontalViewPort(startTime, endTime);
 	}
@@ -188,6 +191,9 @@ void EditorComponent::horizontalViewPortChanged(vocalshaper::ProjectTime startTi
 void EditorComponent::verticalViewPortChanged(double bottomPitch, double topPitch)
 {
 	//轨道面板的横竖显示范围具有独立性
+	if (this->topEditor) {
+		this->topEditor->setVerticalViewPort(bottomPitch, topPitch);
+	}
 	if (this->bottomEditor) {
 		this->bottomEditor->setVerticalViewPort(bottomPitch, topPitch);
 	}

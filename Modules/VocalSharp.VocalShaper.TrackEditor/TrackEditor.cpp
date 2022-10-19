@@ -132,46 +132,131 @@ void TrackEditor::paint(juce::Graphics& g)
 	g.fillRect(rectRulerTailRightBorder);
 }
 
+void TrackEditor::setMethods(
+	const std::function<void(int)>& setCurrentTrackFunc,
+	const std::function<void(void)>& refreshTotalTimeFunc,
+	const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+	const std::function<void(double, double)>& setVerticalViewPortFunc
+)
+{
+	this->timeRuler->setMethods(
+		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
+		setHorizontalViewPortFunc, setVerticalViewPortFunc);
+	//TODO
+	this->setTrackViewMethods(
+		[this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->changeHViewPort(startTime, endTime); },
+		[this](double bottomPer, double topPer) {this->changeVViewPort(bottomPer, topPer); }
+	);
+	this->EditorBase::setMethods(
+		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
+		setHorizontalViewPortFunc, setVerticalViewPortFunc);
+}
+
+void TrackEditor::setTrackViewMethods(
+	std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)> setHViewPortFunc,
+	std::function<void(double, double)> setVViewPortFunc
+)
+{
+	this->timeRuler->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
+	//TODO
+	this->EditorBase::setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
+}
+
 void TrackEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->timeRuler->projectChanged(ptr);
 	//TODO 刷新
 }
 
 void TrackEditor::setEditMode(bool editMode)
 {
 	this->editModeFlag = editMode;
+	this->timeRuler->setEditMode(editMode);
 }
 
 void TrackEditor::setToolID(uint8_t toolID)
 {
 	this->toolID = toolID;
+	this->timeRuler->setToolID(toolID);
 }
 
 void TrackEditor::trackChanged(int trackID)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->trackID = trackID;
+	this->timeRuler->trackChanged(trackID);
 	//TODO 刷新
 }
 
 void TrackEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
 {
+	this->timeRuler->setTotalLength(totalLength);
 	//TODO
 }
 
 void TrackEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
+	this->timeRuler->setCurrentPosition(currentTime);
+	//TODO
+}
+
+void TrackEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	this->timeRuler->setHorizontalViewPort(startTime, endTime);
+	//TODO
+}
+
+void TrackEditor::setVerticalViewPort(double bottomPitch, double topPitch)
+{
+	this->timeRuler->setVerticalViewPort(bottomPitch, topPitch);
+	//TODO
+}
+
+void TrackEditor::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	this->timeRuler->setHViewPort(startTime, endTime);
+	//TODO
+}
+
+void TrackEditor::setVViewPort(double bottomPer, double topPer)
+{
+	this->timeRuler->setVViewPort(bottomPer, topPer);
 	//TODO
 }
 
 void TrackEditor::setAdsorb(vocalshaper::AdsorbState state)
 {
+	this->timeRuler->setAdsorb(state);
 	//TODO
 }
 
 void TrackEditor::setGrid(vocalshaper::GridState state)
 {
+	this->timeRuler->setGrid(state);
 	//TODO
+}
+
+void TrackEditor::changeHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker2(this->project->getLock());
+	auto project = this->project->getPtr();
+	if (!project) {
+		return;
+	}
+	if (vocalshaper::timeLSS(startTime, endTime, vocalshaper::ProjectDAO::getCurveQuantification(project))) {
+		this->setHViewPort(startTime, endTime);
+	}
+}
+
+void TrackEditor::changeVViewPort(double bottomPer, double topPer)
+{
+	if (bottomPer > 0. && bottomPer <= 1. && topPer >= 0. && topPer < 1.) {
+		if (bottomPer > topPer) {
+			this->setVViewPort(bottomPer, topPer);
+		}
+	}
 }

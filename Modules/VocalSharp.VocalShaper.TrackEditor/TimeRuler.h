@@ -20,6 +20,8 @@ public:
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
+	void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setVViewPort(double bottomPer, double topPer) override;
 
 private:
 	struct Colors final
