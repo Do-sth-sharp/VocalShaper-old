@@ -17,8 +17,10 @@ public:
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
 	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setAdsorb(vocalshaper::AdsorbState state) override;
+	void setGrid(vocalshaper::GridState state) override;
 
-	bool isActive();
+	bool isActive() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut() override;
 	bool wannaDelete() override;

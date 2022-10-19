@@ -175,8 +175,21 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 	auto ptrEditor = this->editorComp.get();
 	jmadf::RegisterInterface<juce::Component*&>(
 		"GetPtr",
-		[ptrEditor](const juce::String& caller, juce::Component*& ptr) {
+		[ptrEditor](const juce::String&, juce::Component*& ptr) {
 			ptr = ptrEditor;
+		}
+	);
+
+	jmadf::RegisterInterface<vocalshaper::AdsorbState>(
+		"SetAdsorb",
+		[ptrEditor](const juce::String&, vocalshaper::AdsorbState state) {
+			ptrEditor->setAdsorb(state);
+		}
+	);
+	jmadf::RegisterInterface<vocalshaper::GridState>(
+		"SetGrid",
+		[ptrEditor](const juce::String&, vocalshaper::GridState state) {
+			ptrEditor->setGrid(state);
 		}
 	);
 

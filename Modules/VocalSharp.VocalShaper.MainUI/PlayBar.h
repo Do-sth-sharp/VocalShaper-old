@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 
@@ -26,37 +26,10 @@ public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
-	enum class AdsorbState
-	{
-		Adsorb1Beat = 1,
-		Adsorb1_2Beat = 2,
-		Adsorb1_4Beat = 4,
-		Adsorb1_6Beat = 6,
-		Adsorb1_8Beat = 8,
-		Adsorb1_12Beat = 12,
-		Adsorb1_16Beat = 16,
-		Adsorb1_24Beat = 24,
-		Adsorb1_32Beat = 32,
-		AdsorbOff = 0
-	};
-
-	enum class GridState
-	{
-		Grid1Beat = 1,
-		Grid1_2Beat = 2,
-		Grid1_4Beat = 4,
-		Grid1_6Beat = 6,
-		Grid1_8Beat = 8,
-		Grid1_12Beat = 12,
-		Grid1_16Beat = 16,
-		Grid1_24Beat = 24,
-		Grid1_32Beat = 32
-	};
-
-	AdsorbState getAdsorb();
-	void setAdsorb(AdsorbState state);
-	GridState getGrid();
-	void setGrid(GridState state);
+	vocalshaper::AdsorbState getAdsorb();
+	void setAdsorb(vocalshaper::AdsorbState state);
+	vocalshaper::GridState getGrid();
+	void setGrid(vocalshaper::GridState state);
 
 	void showAdsorbMenu();
 	void showGridMenu();
@@ -73,7 +46,7 @@ private:
 		juce::Colour text_playBar_value;
 
 		juce::Colour split_playBar;
-	}colors;//ΩÁ√Ê—’…´
+	}colors;//ÁïåÈù¢È¢úËâ≤
 	struct Sizes final
 	{
 		double width_playMarginLeft;
@@ -86,18 +59,18 @@ private:
 		double width_playTextSplit;
 
 		double width_playSplitLine;
-	}sizes;//øÿº˛¥Û–°
+	}sizes;//Êéß‰ª∂Â§ßÂ∞è
 	struct Scales final
 	{
 		double height_playButton;
 		double height_playTextButton;
 		double height_playSplitLine;
-	}scales;//øÿº˛Àı∑≈
+	}scales;//Êéß‰ª∂Áº©Êîæ
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* playButton;
 		juce::LookAndFeel* playTextButton;
-	}lafs;//øÿº˛—˘ Ω
+	}lafs;//Êéß‰ª∂Ê†∑Âºè
 
 	void initCommandID();
 	void initCommandFunction();
@@ -114,8 +87,8 @@ private:
 
 	juce::String textAdsorb, textGrid;
 
-	AdsorbState adsorbState = AdsorbState::Adsorb1Beat;
-	GridState gridState = GridState::Grid1Beat;
+	vocalshaper::AdsorbState adsorbState = vocalshaper::AdsorbState::Adsorb1Beat;
+	vocalshaper::GridState gridState = vocalshaper::GridState::Grid1Beat;
 
 	std::unique_ptr<juce::Drawable> iconPlay, iconPlayHighlight, iconStop,
 		iconBegin, iconEnd,

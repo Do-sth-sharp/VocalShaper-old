@@ -11,11 +11,14 @@ public:
 	~EditorComponent() override;
 
 public:
+	//被命令调用
 	void setTrackOpen(bool trackOpen);
 	bool isTrackOpen();
 
+	//被回调调用
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
+	//被命令调用
 	void undo();
 	void redo();
 	void cut();
@@ -29,6 +32,7 @@ public:
 	void pasteFromSystem();
 	void selectAll();
 
+	//被命令调用
 	bool couldUndo();
 	bool couldRedo();
 	bool couldCut();
@@ -41,21 +45,29 @@ public:
 	bool couldPasteFromSystem();
 	bool couldSelectAll();
 
+	//被命令调用
 	void lastTrack();
 	void nextTrack();
 	void switchTrack();
 
+	//被命令调用
 	bool couldLastTrack();
 	bool couldNextTrack();
 	bool couldSwitchTrack();
 
+	//外部/内部调用
 	void setCurrentTrack(int trackID);
 	void refreshTotalLength();
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime);
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void setVerticalViewPort(double bottomPitch, double topPitch);
 
+	//外部调用
+	void setAdsorb(vocalshaper::AdsorbState state);
+	void setGrid(vocalshaper::GridState state);
+
 private:
+	//内部调用
 	void trackChanged(int trackID);
 	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
 	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
@@ -63,9 +75,9 @@ private:
 	void verticalViewPortChanged(double bottomPitch, double topPitch);
 
 public:
+	//被命令调用
 	bool isEditMode();
 	void setEditMode(bool editMode);
-
 	uint8_t getToolID();
 	void setToolID(uint8_t toolID);
 

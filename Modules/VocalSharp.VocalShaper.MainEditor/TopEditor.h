@@ -15,6 +15,8 @@ public:
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setAdsorb(vocalshaper::AdsorbState state) override;
+	void setGrid(vocalshaper::GridState state) override;
 
 	bool isActive() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
@@ -37,6 +39,12 @@ public:
 	) override;
 
 private:
+	struct Size final : public TopLevelEditorBase::Size
+	{
+	}sizes;//控件大小
+
+	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
+
 	void initCommandID();
 	void initCommandFunction();
 	void initCommandFlagHook();

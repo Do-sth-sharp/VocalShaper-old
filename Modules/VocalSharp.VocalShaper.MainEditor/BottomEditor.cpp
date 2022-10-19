@@ -84,6 +84,16 @@ void BottomEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 	//TODO
 }
 
+void BottomEditor::setAdsorb(vocalshaper::AdsorbState state)
+{
+	//TODO
+}
+
+void BottomEditor::setGrid(vocalshaper::GridState state)
+{
+	//TODO
+}
+
 bool BottomEditor::isActive()
 {
 	//TODO 判定活动区

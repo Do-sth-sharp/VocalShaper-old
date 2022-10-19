@@ -852,23 +852,23 @@ void PlayBar::paint(juce::Graphics& g)
 		juce::Justification::centred, 1);
 }
 
-PlayBar::AdsorbState PlayBar::getAdsorb()
+vocalshaper::AdsorbState PlayBar::getAdsorb()
 {
 	return this->adsorbState;
 }
 
-void PlayBar::setAdsorb(PlayBar::AdsorbState state)
+void PlayBar::setAdsorb(vocalshaper::AdsorbState state)
 {
 	this->adsorbState = state;
 	this->refreshAdsorbButton();
 }
 
-PlayBar::GridState PlayBar::getGrid()
+vocalshaper::GridState PlayBar::getGrid()
 {
 	return this->gridState;
 }
 
-void PlayBar::setGrid(PlayBar::GridState state)
+void PlayBar::setGrid(vocalshaper::GridState state)
 {
 	this->gridState = state;
 	this->refreshGridButton();
@@ -1033,84 +1033,6 @@ void PlayBar::initCommandFunction()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
 		"Back On Stop", [this] {this->backOnStop(); }
 	);
-	//Adsorb
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/2 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_2Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/4 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_4Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/6 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_6Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/8 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_8Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/12 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_12Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/16 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_16Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/24 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_24Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb 1/32 Beat", [this] {this->setAdsorb(AdsorbState::Adsorb1_32Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Adsorb Off", [this] {this->setAdsorb(AdsorbState::AdsorbOff); }
-	);
-	//Grid
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1 Beat", [this] {this->setGrid(GridState::Grid1Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/2 Beat", [this] {this->setGrid(GridState::Grid1_2Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/4 Beat", [this] {this->setGrid(GridState::Grid1_4Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/6 Beat", [this] {this->setGrid(GridState::Grid1_6Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/8 Beat", [this] {this->setGrid(GridState::Grid1_8Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/12 Beat", [this] {this->setGrid(GridState::Grid1_12Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/16 Beat", [this] {this->setGrid(GridState::Grid1_16Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/24 Beat", [this] {this->setGrid(GridState::Grid1_24Beat); }
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<void(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFunction",
-		"Grid 1/32 Beat", [this] {this->setGrid(GridState::Grid1_32Beat); }
-	);
 }
 
 void PlayBar::initCommandFlagHook()
@@ -1165,198 +1087,6 @@ void PlayBar::initCommandFlagHook()
 			return flag;
 		}
 	);
-	//Adsorb
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/2 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_2Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/4 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_4Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/6 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_6Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/8 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_8Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/12 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_12Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/16 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_16Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/24 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_24Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb 1/32 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::Adsorb1_32Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Adsorb Off", [this]()->int {
-			int flag = 0;
-			if (this->getAdsorb() == AdsorbState::AdsorbOff) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	//Grid
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/2 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_2Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/4 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_4Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/6 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_6Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/8 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_8Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/12 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_12Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/16 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_16Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/24 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_24Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
-	jmadf::CallInterface<const juce::String&, const std::function<int(void)>&>(
-		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
-		"Grid 1/32 Beat", [this]()->int {
-			int flag = 0;
-			if (this->getGrid() == GridState::Grid1_32Beat) {
-				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
-			}
-			return flag;
-		}
-	);
 }
 
 void PlayBar::refreshAdsorbButton()
@@ -1364,34 +1094,34 @@ void PlayBar::refreshAdsorbButton()
 	juce::String buttonText;
 	switch (this->adsorbState)
 	{
-	case AdsorbState::Adsorb1Beat:
+	case vocalshaper::AdsorbState::Adsorb1Beat:
 		buttonText = this->tr("sn_Adsorb1Beat");
 		break;
-	case AdsorbState::Adsorb1_2Beat:
+	case vocalshaper::AdsorbState::Adsorb1_2Beat:
 		buttonText = this->tr("sn_Adsorb1/2Beat");
 		break;
-	case AdsorbState::Adsorb1_4Beat:
+	case vocalshaper::AdsorbState::Adsorb1_4Beat:
 		buttonText = this->tr("sn_Adsorb1/4Beat");
 		break;
-	case AdsorbState::Adsorb1_6Beat:
+	case vocalshaper::AdsorbState::Adsorb1_6Beat:
 		buttonText = this->tr("sn_Adsorb1/6Beat");
 		break;
-	case AdsorbState::Adsorb1_8Beat:
+	case vocalshaper::AdsorbState::Adsorb1_8Beat:
 		buttonText = this->tr("sn_Adsorb1/8Beat");
 		break;
-	case AdsorbState::Adsorb1_12Beat:
+	case vocalshaper::AdsorbState::Adsorb1_12Beat:
 		buttonText = this->tr("sn_Adsorb1/12Beat");
 		break;
-	case AdsorbState::Adsorb1_16Beat:
+	case vocalshaper::AdsorbState::Adsorb1_16Beat:
 		buttonText = this->tr("sn_Adsorb1/16Beat");
 		break;
-	case AdsorbState::Adsorb1_24Beat:
+	case vocalshaper::AdsorbState::Adsorb1_24Beat:
 		buttonText = this->tr("sn_Adsorb1/24Beat");
 		break;
-	case AdsorbState::Adsorb1_32Beat:
+	case vocalshaper::AdsorbState::Adsorb1_32Beat:
 		buttonText = this->tr("sn_Adsorb1/32Beat");
 		break;
-	case AdsorbState::AdsorbOff:
+	case vocalshaper::AdsorbState::AdsorbOff:
 		buttonText = this->tr("sn_AdsorbOff");
 		break;
 	}
@@ -1406,31 +1136,31 @@ void PlayBar::refreshGridButton()
 	juce::String buttonText;
 	switch (this->gridState)
 	{
-	case GridState::Grid1Beat:
+	case vocalshaper::GridState::Grid1Beat:
 		buttonText = this->tr("sn_Grid1Beat");
 		break;
-	case GridState::Grid1_2Beat:
+	case vocalshaper::GridState::Grid1_2Beat:
 		buttonText = this->tr("sn_Grid1/2Beat");
 		break;
-	case GridState::Grid1_4Beat:
+	case vocalshaper::GridState::Grid1_4Beat:
 		buttonText = this->tr("sn_Grid1/4Beat");
 		break;
-	case GridState::Grid1_6Beat:
+	case vocalshaper::GridState::Grid1_6Beat:
 		buttonText = this->tr("sn_Grid1/6Beat");
 		break;
-	case GridState::Grid1_8Beat:
+	case vocalshaper::GridState::Grid1_8Beat:
 		buttonText = this->tr("sn_Grid1/8Beat");
 		break;
-	case GridState::Grid1_12Beat:
+	case vocalshaper::GridState::Grid1_12Beat:
 		buttonText = this->tr("sn_Grid1/12Beat");
 		break;
-	case GridState::Grid1_16Beat:
+	case vocalshaper::GridState::Grid1_16Beat:
 		buttonText = this->tr("sn_Grid1/16Beat");
 		break;
-	case GridState::Grid1_24Beat:
+	case vocalshaper::GridState::Grid1_24Beat:
 		buttonText = this->tr("sn_Grid1/24Beat");
 		break;
-	case GridState::Grid1_32Beat:
+	case vocalshaper::GridState::Grid1_32Beat:
 		buttonText = this->tr("sn_Grid1/32Beat");
 		break;
 	}

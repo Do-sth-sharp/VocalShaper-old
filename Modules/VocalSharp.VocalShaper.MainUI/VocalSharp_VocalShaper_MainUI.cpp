@@ -1,4 +1,4 @@
-#include "VocalSharp_VocalShaper_MainUI.h"
+﻿#include "VocalSharp_VocalShaper_MainUI.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
 
@@ -148,7 +148,11 @@ bool VocalSharp_VocalShaper_MainUI::init()
 	}
 	if (
 		!jmadf::CheckInterface<juce::Component*&>(
-			"VocalSharp.VocalShaper.MainEditor", "GetPtr")
+			"VocalSharp.VocalShaper.MainEditor", "GetPtr") ||
+		!jmadf::CheckInterface<vocalshaper::AdsorbState>(
+			"VocalSharp.VocalShaper.MainEditor", "SetAdsorb") ||
+		!jmadf::CheckInterface<vocalshaper::GridState>(
+			"VocalSharp.VocalShaper.MainEditor", "SetGrid")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.MainEditor:Bad Interfaces!");
 		return false;

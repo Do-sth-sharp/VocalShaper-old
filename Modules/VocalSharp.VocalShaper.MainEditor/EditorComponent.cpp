@@ -602,6 +602,18 @@ void EditorComponent::setVerticalViewPort(double bottomPitch, double topPitch)
 	}
 }
 
+void EditorComponent::setAdsorb(vocalshaper::AdsorbState state)
+{
+	this->topEditor->setAdsorb(state);
+	this->bottomEditor->setAdsorb(state);
+}
+
+void EditorComponent::setGrid(vocalshaper::GridState state)
+{
+	this->topEditor->setGrid(state);
+	this->bottomEditor->setGrid(state);
+}
+
 bool EditorComponent::isEditMode()
 {
 	return this->editModeFlag;
