@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include <JuceHeader.h>
 
-class StartMenuButtonLAF;
-
 class LAFFactory final
 {
 public:
@@ -11,7 +9,6 @@ public:
 
 private:
 	std::list<std::pair<juce::String, std::unique_ptr<juce::LookAndFeel>>> lafs;
-	std::list<std::pair<juce::String, StartMenuButtonLAF*>> funcLTemp;
 	juce::CriticalSection lock;
 
 public:
@@ -31,11 +28,9 @@ public:
 	juce::LookAndFeel* getStatusFlatTextButtonLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
-	void releaseFunc(const juce::String& caller);
 
 private:
 	void addToList(const juce::String& caller, juce::LookAndFeel* laf);
-	void addToFTemp(const juce::String& caller, StartMenuButtonLAF* laf);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFFactory)
 };

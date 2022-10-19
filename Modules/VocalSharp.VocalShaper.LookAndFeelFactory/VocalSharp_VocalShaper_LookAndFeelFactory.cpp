@@ -98,11 +98,6 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 		}
 	);
 
-	jmadf::SetUnloadHook(
-		[this](const juce::String& caller) {
-			this->factory->releaseFunc(caller);
-		}
-	);
 	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {
 			this->factory->close(caller);

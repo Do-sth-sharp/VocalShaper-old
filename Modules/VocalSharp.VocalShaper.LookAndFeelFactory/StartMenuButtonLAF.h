@@ -12,6 +12,5 @@ public:
 	};
 
 private:
-	friend void LAFFactory::releaseFunc(const juce::String&);
-	std::function<int()> fontHeightFunc;
+	const std::function<int()> fontHeightFunc;
 };
