@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 
 class GlobalConfigs final
@@ -9,9 +9,9 @@ public:
 
 	bool getReference(const juce::String& caller, const juce::String& fileName, juce::var*& ptr);
 
-	void releaseAll();//ÎŞÂÛÈçºÎÈ«²¿ÊÍ·Å
+	void releaseAll();//æ— è®ºå¦‚ä½•å…¨éƒ¨é‡Šæ”¾
 	
-	void close(const juce::String& caller);//Ä³Ò»Ä£¿é¹Ø±Õ²¢ÇåÀí
+	void close(const juce::String& caller);//æŸä¸€æ¨¡å—å…³é—­å¹¶æ¸…ç†
 
 private:
 	class ConfigFile final
@@ -31,5 +31,9 @@ private:
 private:
 	std::map<juce::String, ConfigFile> list;
 	juce::SpinLock lock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GlobalConfigs)
 };

@@ -233,12 +233,21 @@ bool ProjectHub::save(int index)
 
 void ProjectHub::addNotice(const juce::String& caller, const ChangeNoticeFunction& func)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->funcLock);
 	this->funcList.insert(std::make_pair(caller, func));
 }
 
 void ProjectHub::release(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::ScopedWriteLock locker(this->funcLock);
 	for (auto it = this->funcList.begin(); it != this->funcList.end();) {
 		if ((*it).first == caller) {

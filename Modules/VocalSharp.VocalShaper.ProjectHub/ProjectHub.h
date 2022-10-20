@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 
@@ -34,6 +34,9 @@ private:
 
 	std::map<juce::String, ChangeNoticeFunction> funcList;
 	juce::ReadWriteLock funcLock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
 
 	inline vocalshaper::ProjectProxy* create(const juce::String& name, const juce::String& path) const;
 	inline int findOpened(const juce::String& name, const juce::String& path) const;

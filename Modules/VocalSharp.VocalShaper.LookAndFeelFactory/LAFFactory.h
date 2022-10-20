@@ -32,5 +32,8 @@ public:
 private:
 	void addToList(const juce::String& caller, juce::LookAndFeel* laf);
 
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFFactory)
 };

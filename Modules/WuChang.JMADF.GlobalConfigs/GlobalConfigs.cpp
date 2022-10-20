@@ -9,12 +9,21 @@ bool GlobalConfigs::getReference(const juce::String& caller, const juce::String&
 
 void GlobalConfigs::releaseAll()
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.clear();
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	this->list.clear();
 }
 
 void GlobalConfigs::close(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		it->second.modules.erase(caller);
@@ -54,6 +63,9 @@ bool GlobalConfigs::load(const juce::String& caller, const juce::String& fileNam
 		data = nullptr;
 		return false;
 	}//文件格式不正确
+
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
 	
 	config.flag = true;
 	data = &(config.data);

@@ -38,6 +38,9 @@ void CommandManager::addCommandFunc(const juce::String& name, const CommandFunct
 		return;
 	}
 
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->funcLock);
 	this->funcList.insert(std::make_pair(commandID, std::make_pair(caller, func)));
 }
@@ -48,6 +51,9 @@ void CommandManager::addFlagFunc(const juce::String& name, const FlagFunction& f
 	if (commandID == -1) {
 		return;
 	}
+	
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
 
 	juce::ScopedWriteLock locker(this->flagLock);
 	this->flagList.insert(std::make_pair(commandID, std::make_pair(caller, func)));
@@ -72,6 +78,12 @@ juce::ApplicationCommandManager* CommandManager::getManager()
 
 void CommandManager::release(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::ScopedWriteLock locker1(this->funcLock), locker2(this->flagLock);
 	for (auto it = this->funcList.begin(); it != this->funcList.end();) {
 		if ((*it).second.first == caller) {

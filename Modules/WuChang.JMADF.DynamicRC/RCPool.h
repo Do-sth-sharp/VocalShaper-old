@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class RCPool final
@@ -29,5 +29,9 @@ private:
 	
 	std::map<juce::String, std::shared_ptr<RCBlock>> list;
 	juce::SpinLock rcLock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RCPool)
 };

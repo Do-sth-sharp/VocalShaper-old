@@ -101,12 +101,18 @@ bool LAFConfigs::getColour(const juce::String& caller, const juce::String& class
 
 void LAFConfigs::releaseAll()
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.clear();
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	this->list.clear();
 }
 
 void LAFConfigs::release(const juce::String& moduleName)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.erase(moduleName);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		if (it->first.first == moduleName) {
@@ -119,6 +125,12 @@ void LAFConfigs::release(const juce::String& moduleName)
 
 void LAFConfigs::close(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		it->second.modules.erase(caller);
@@ -318,6 +330,9 @@ bool LAFConfigs::load(const juce::String& caller, const juce::String& moduleName
 		return false;
 	}//文件格式不正确
 	
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	laf.flag = true;
 	data = &(laf.data);
 	return true;

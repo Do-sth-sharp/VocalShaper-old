@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 
 class Translates final
@@ -9,8 +9,8 @@ public:
 	
 	bool getReference(const juce::String& caller, const juce::String& fileName, juce::var*& ptr);
 
-	void releaseAll();//È«²¿ÊÍ·Å
-	void release(const juce::String& moduleName);//ÊÍ·ÅÄ³Ò»Ä£¿éÃûÏÂµÄÈ«²¿±í
+	void releaseAll();//å…¨éƒ¨é‡Šæ”¾
+	void release(const juce::String& moduleName);//é‡Šæ”¾æŸä¸€æ¨¡å—åä¸‹çš„å…¨éƒ¨è¡¨
 
 	const juce::String tr(const juce::String& caller, const juce::String& str);
 	const juce::String trFast(const juce::String& caller, const juce::var* list, const juce::String& str);
@@ -29,6 +29,9 @@ private:
 	juce::SpinLock lock;
 	juce::String currentLang;
 	juce::StringArray defaultList;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Translates)
 };

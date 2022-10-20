@@ -1,4 +1,4 @@
-#include "RCPool.h"
+﻿#include "RCPool.h"
 
 std::pair<size_t, void*> RCPool::get(const juce::String& moduleName, const juce::String& path)
 {
@@ -26,6 +26,9 @@ std::pair<size_t, void*> RCPool::get(const juce::String& moduleName, const juce:
 		stream.read(ref->ptr.get(), ref->size);
 	}
 	
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(moduleName);
+
 	return std::make_pair(ref->size, ref->ptr.get());
 }
 
@@ -47,6 +50,9 @@ std::pair<size_t, void*> RCPool::copy(const juce::String& moduleName, const juce
 
 void RCPool::release(const juce::String& moduleName, const juce::String& path)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.erase(moduleName);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->rcLock);
 	auto& ref = this->list[path];
 	if (!ref) {
@@ -60,6 +66,12 @@ void RCPool::release(const juce::String& moduleName, const juce::String& path)
 
 void RCPool::destory(const juce::String& moduleName)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(moduleName) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(moduleName);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->rcLock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		auto& ref = (*it).second;

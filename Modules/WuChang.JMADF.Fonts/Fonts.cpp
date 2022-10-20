@@ -18,12 +18,21 @@ bool Fonts::getDefault(const juce::String& caller, juce::Typeface::Ptr& ptr)
 
 void Fonts::releaseAll()
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.clear();
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	this->list.clear();
 }
 
 void Fonts::close(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		auto mit = (*it).second.modules.find(caller);
@@ -43,6 +52,9 @@ bool Fonts::load(const juce::String& caller, const juce::String& fontName, Types
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	auto it = this->list.find(fontName);
 	if (it != this->list.end()) {
+		juce::ScopedWriteLock sLock(this->setLock);
+		this->mSet.insert(caller);
+
 		type = &((*it).second);
 		type->modules.insert(caller);
 		return true;
@@ -61,6 +73,9 @@ bool Fonts::load(const juce::String& caller, const juce::String& fontName, Types
 	if (fontPtr == nullptr) {
 		return false;
 	}
+
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
 
 	auto& typeRef = this->list[fontName];
 	typeRef = {

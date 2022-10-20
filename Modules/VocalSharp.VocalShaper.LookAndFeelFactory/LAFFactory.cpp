@@ -98,6 +98,12 @@ juce::LookAndFeel* LAFFactory::getStatusFlatTextButtonLAF(const juce::String& ca
 
 void LAFFactory::close(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	for (auto it = this->lafs.begin(); it != this->lafs.end();) {
 		if ((*it).first == caller) {
@@ -110,6 +116,9 @@ void LAFFactory::close(const juce::String& caller)
 
 void LAFFactory::addToList(const juce::String& caller, juce::LookAndFeel* laf)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	this->lafs.push_back(std::make_pair(caller, std::move(std::unique_ptr<juce::LookAndFeel>(laf))));
 }

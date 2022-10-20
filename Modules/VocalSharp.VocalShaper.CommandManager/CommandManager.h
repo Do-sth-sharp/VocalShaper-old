@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class CommandManager final 
@@ -62,6 +62,9 @@ private:
 	std::unique_ptr<Manager> acm = nullptr;
 	std::function<const juce::String(const juce::String&)> tr;
 	juce::ReadWriteLock funcLock, flagLock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandManager)
 };

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 
 class Configs final
@@ -9,8 +9,8 @@ public:
 	
 	bool getReference(const juce::String& caller, const juce::String& fileName, juce::var*& ptr);
 	
-	void releaseAll();//È«²¿ÊÍ·Å
-	void release(const juce::String& moduleName);//ÊÍ·ÅÄ³Ò»Ä£¿éÃûÏÂµÄÈ«²¿±í
+	void releaseAll();//å…¨éƒ¨é‡Šæ”¾
+	void release(const juce::String& moduleName);//é‡Šæ”¾æŸä¸€æ¨¡å—åä¸‹çš„å…¨éƒ¨è¡¨
 
 private:
 	bool load(const juce::String& caller, const juce::String& fileName, juce::var*& ptr);
@@ -18,5 +18,9 @@ private:
 private:
 	std::map<std::pair<juce::String, juce::String>, juce::var> list;
 	juce::SpinLock lock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Configs)
 };

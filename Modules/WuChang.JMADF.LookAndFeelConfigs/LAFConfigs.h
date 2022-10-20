@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 
 class LAFConfigs final
@@ -12,10 +12,10 @@ public:
 	bool getBool(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, bool& value);
 	bool getColour(const juce::String& caller, const juce::String& className, const juce::String& group, const juce::String& attribute, juce::Colour& value);
 	
-	void releaseAll();//ÎŞÂÛÈçºÎÈ«²¿ÊÍ·Å
-	void release(const juce::String& moduleName);//ÎŞÂÛÈçºÎÊÍ·ÅÄ³Ò»Ä£¿éÃûÏÂµÄÈ«²¿±í
+	void releaseAll();//æ— è®ºå¦‚ä½•å…¨éƒ¨é‡Šæ”¾
+	void release(const juce::String& moduleName);//æ— è®ºå¦‚ä½•é‡Šæ”¾æŸä¸€æ¨¡å—åä¸‹çš„å…¨éƒ¨è¡¨
 	
-	void close(const juce::String& caller);//Ä³Ò»Ä£¿é¹Ø±Õ²¢ÇåÀí
+	void close(const juce::String& caller);//æŸä¸€æ¨¡å—å…³é—­å¹¶æ¸…ç†
 
 private:
 	class LAFFile final
@@ -47,5 +47,9 @@ private:
 private:
 	std::map<std::pair<juce::String, juce::String>, LAFFile> list;
 	juce::SpinLock lock;
+
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LAFConfigs)
 };

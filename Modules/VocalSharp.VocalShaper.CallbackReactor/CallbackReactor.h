@@ -33,5 +33,8 @@ private:
 
 	juce::ReadWriteLock saveLock, closeLock, eventHandlerLock, rulesLock;
 
+	std::set<juce::String> mSet;
+	juce::ReadWriteLock setLock;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CallbackReactor)
 };

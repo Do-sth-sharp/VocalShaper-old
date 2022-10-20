@@ -16,12 +16,21 @@ bool Translates::getReference(const juce::String& caller, const juce::String& fi
 
 void Translates::releaseAll()
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.clear();
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	this->list.clear();
 }
 
 void Translates::release(const juce::String& moduleName)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(moduleName) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(moduleName);
+
 	juce::GenericScopedLock<juce::SpinLock> locker(this->lock);
 	for (auto it = this->list.begin(); it != this->list.end();) {
 		if (it->first.first == moduleName) {
@@ -61,6 +70,9 @@ bool Translates::load(const juce::String& caller, const juce::String& fileName, 
 		return false;
 	}//文件格式不正确
 	
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	auto& temp = this->list[std::make_pair(caller, fileName)];
 	temp = data;
 	ptr = &(temp);

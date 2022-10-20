@@ -2,30 +2,48 @@
 
 void CallbackReactor::addSaveCallback(const juce::String& caller, const vocalshaper::ProjectProxy::SaveCallbackFunc& func)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->saveLock);
 	this->saveCallbacks.add(std::make_pair(caller, func));
 }
 
 void CallbackReactor::addCloseCallback(const juce::String& caller, const vocalshaper::ProjectProxy::CloseCallbackFunc& func)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->closeLock);
 	this->closeCallbacks.add(std::make_pair(caller, func));
 }
 
 void CallbackReactor::addEventHandler(const juce::String& caller, const vocalshaper::EventProcesser::EventHandleFunc& func)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->eventHandlerLock);
 	this->eventHandlers.add(std::make_pair(caller, func));
 }
 
 void CallbackReactor::addActionRules(const juce::String& caller, const vocalshaper::actions::ActionBase::RuleFunc& func)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	this->mSet.insert(caller);
+
 	juce::ScopedWriteLock locker(this->rulesLock);
 	this->actionRules.add(std::make_pair(caller, func));
 }
 
 void CallbackReactor::release(const juce::String& caller)
 {
+	juce::ScopedWriteLock sLock(this->setLock);
+	if (this->mSet.find(caller) == this->mSet.end()) {
+		return;
+	}
+	this->mSet.erase(caller);
+
 	{
 		juce::ScopedWriteLock locker(this->saveLock);
 		this->saveCallbacks.removeIf([&caller](const std::pair<juce::String, vocalshaper::ProjectProxy::SaveCallbackFunc>& value)
