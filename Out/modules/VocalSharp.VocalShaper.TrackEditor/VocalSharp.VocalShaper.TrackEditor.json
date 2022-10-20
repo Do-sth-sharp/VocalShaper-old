@@ -12,6 +12,7 @@
     "WuChang.JMADF.GlobalConfigs",
     "WuChang.JMADF.Translates",
     "VocalSharp.VocalShaper.LookAndFeelFactory",
-    "VocalSharp.VocalShaper.CommandManager"
+    "VocalSharp.VocalShaper.CommandManager",
+    "VocalSharp.VocalShaper.CallbackReactor"
   ]
 }

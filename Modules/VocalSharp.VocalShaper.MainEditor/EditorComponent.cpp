@@ -112,6 +112,9 @@ EditorComponent::EditorComponent()
 		}
 	);
 
+	//添加监听器
+	this->initProjectListener();
+
 	//显示模式
 	this->setTrackOpen(false);
 }
@@ -567,7 +570,7 @@ void EditorComponent::setCurrentTrack(int trackID)
 	if (this->project) {
 		juce::ScopedReadLock locker2(this->project->getLock());
 		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (trackID >= 0 && trackID < trackSize) {
+		if (trackID >= -1 && trackID < trackSize) {
 			this->trackChanged(trackID);
 		}
 	}
@@ -640,6 +643,56 @@ uint8_t EditorComponent::getToolID()
 void EditorComponent::setToolID(uint8_t toolID)
 {
 	this->toolID = toolID;
+}
+
+void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
+		if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddTrack) {
+			auto data = reinterpret_cast<const vocalshaper::actions::project::AddTrackAction::DataType*>(action.getData());
+			if (type == vocalshaper::actions::ActionBase::UndoType::Perform) {
+				this->setCurrentTrack(data->index);
+			}
+			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
+				if (data->index == this->trackID) {
+					juce::ScopedReadLock projLock(action.getProxy()->getLock());
+					int size = vocalshaper::ProjectDAO::trackSize(action.getProxy()->getPtr());
+					int nextID = data->index - 1;
+					if (size > 0 && nextID < 0) {
+						nextID = 0;
+					}
+					this->setCurrentTrack(nextID);
+				}
+				else {
+					this->setCurrentTrack(this->trackID);
+				}
+			}
+		}
+		else if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveTrack) {
+			auto data = reinterpret_cast<const vocalshaper::actions::project::RemoveTrackAction::DataType*>(action.getData());
+			if (type == vocalshaper::actions::ActionBase::UndoType::Perform) {
+				if (data->index == this->trackID) {
+					juce::ScopedReadLock projLock(action.getProxy()->getLock());
+					int size = vocalshaper::ProjectDAO::trackSize(action.getProxy()->getPtr());
+					int nextID = data->index - 1;
+					if (size > 0 && nextID < 0) {
+						nextID = 0;
+					}
+					this->setCurrentTrack(nextID);
+				}
+				else {
+					this->setCurrentTrack(this->trackID);
+				}
+			}
+			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
+				this->setCurrentTrack(data->index);
+			}
+		}
+	}
 }
 
 void EditorComponent::resized()
@@ -1100,4 +1153,13 @@ void EditorComponent::initCommandFlagHook()
 			return flag;
 		}
 	);
+}
+
+void EditorComponent::initProjectListener()
+{
+	//侦听轨道数量变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenTrackSizeChange(action, type); });
 }

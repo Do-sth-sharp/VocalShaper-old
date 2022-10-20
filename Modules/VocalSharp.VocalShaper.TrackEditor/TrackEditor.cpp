@@ -217,12 +217,16 @@ void TrackEditor::setVerticalViewPort(double bottomPitch, double topPitch)
 
 void TrackEditor::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
+	this->startTimeTemp = startTime;
+	this->endTimeTemp = endTime;
 	this->timeRuler->setHViewPort(startTime, endTime);
 	//TODO
 }
 
 void TrackEditor::setVViewPort(double bottomPer, double topPer)
 {
+	this->bottomVPercentTemp = bottomPer;
+	this->topVPercentTemp = topPer;
 	this->timeRuler->setVViewPort(bottomPer, topPer);
 	//TODO
 }
@@ -241,6 +245,9 @@ void TrackEditor::setGrid(vocalshaper::GridState state)
 
 void TrackEditor::changeHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
+	if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
+		return;
+	}
 	juce::ScopedReadLock locker1(this->projectLock);
 	juce::ScopedReadLock locker2(this->project->getLock());
 	auto project = this->project->getPtr();
@@ -254,6 +261,9 @@ void TrackEditor::changeHViewPort(vocalshaper::ProjectTime startTime, vocalshape
 
 void TrackEditor::changeVViewPort(double bottomPer, double topPer)
 {
+	if (this->bottomVPercentTemp == bottomPer && this->topVPercentTemp == topPer) {
+		return;
+	}
 	if (bottomPer > 0. && bottomPer <= 1. && topPer >= 0. && topPer < 1.) {
 		if (bottomPer > topPer) {
 			this->setVViewPort(bottomPer, topPer);

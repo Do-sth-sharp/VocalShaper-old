@@ -22,7 +22,8 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")
+		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")
 		)) {
 		return false;
 	}
@@ -76,6 +77,19 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"VocalSharp.VocalShaper.CommandManager", "GetCommandManager")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CommandManager:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const vocalshaper::ProjectProxy::SaveCallbackFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddSaveCallback") ||
+		!jmadf::CheckInterface<const vocalshaper::ProjectProxy::CloseCallbackFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddCloseCallback") ||
+		!jmadf::CheckInterface<const vocalshaper::EventProcesser::EventHandleFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddEventHandler") ||
+		!jmadf::CheckInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
 		return false;
 	}
 

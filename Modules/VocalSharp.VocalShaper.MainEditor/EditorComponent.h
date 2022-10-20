@@ -82,6 +82,10 @@ public:
 	void setToolID(uint8_t toolID);
 
 public:
+	//监听器
+	void listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
+public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
@@ -115,6 +119,8 @@ private:
 	void initCommandID();
 	void initCommandFunction();
 	void initCommandFlagHook();
+
+	void initProjectListener();
 
 	std::unique_ptr<TopEditor> topEditor;
 	std::unique_ptr<BottomEditor> bottomEditor;

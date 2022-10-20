@@ -15,6 +15,7 @@
     "VocalSharp.VocalShaper.ProjectHub",
     "VocalSharp.VocalShaper.CommandManager",
     "VocalSharp.VocalShaper.ClipBoard",
-    "VocalSharp.VocalShaper.TrackEditor"
+    "VocalSharp.VocalShaper.TrackEditor",
+    "VocalSharp.VocalShaper.CallbackReactor"
   ]
 }

@@ -76,5 +76,8 @@ private:
 	bool editModeFlag = false;
 	uint8_t toolID = 1;
 
+	vocalshaper::ProjectTime startTimeTemp, endTimeTemp;
+	double bottomVPercentTemp = 1., topVPercentTemp = 0.;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackEditor)
 };

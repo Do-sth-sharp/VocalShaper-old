@@ -119,6 +119,7 @@ bool ProjectHub::openProj(const juce::String& name, const juce::String& path)
 		return false;
 	}
 	vocalshaper::ProjectDAO::save(proj->getPtr());
+	proj->noticeSave();
 
 	this->projList.insert(0, proj);
 	this->currentIndex = 0;
