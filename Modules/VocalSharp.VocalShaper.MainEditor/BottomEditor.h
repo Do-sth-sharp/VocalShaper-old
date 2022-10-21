@@ -17,6 +17,8 @@ public:
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
 	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setFollowState(bool follow) override;
+	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
 

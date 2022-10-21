@@ -11,14 +11,14 @@ public:
 	~EditorComponent() override;
 
 public:
-	//被命令调用
+	//被命令调用，设置编辑器显示状态
 	void setTrackOpen(bool trackOpen);
 	bool isTrackOpen();
 
-	//被回调调用
+	//被回调调用，设置当前工程
 	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
-	//被命令调用
+	//被命令调用，执行工程操作
 	void undo();
 	void redo();
 	void cut();
@@ -32,7 +32,7 @@ public:
 	void pasteFromSystem();
 	void selectAll();
 
-	//被命令调用
+	//被命令调用，检查是否可以进行工程操作
 	bool couldUndo();
 	bool couldRedo();
 	bool couldCut();
@@ -45,46 +45,54 @@ public:
 	bool couldPasteFromSystem();
 	bool couldSelectAll();
 
-	//被命令调用
+	//被命令调用，切换当前轨道
 	void lastTrack();
 	void nextTrack();
 	void switchTrack();
 
-	//被命令调用
+	//被命令调用，检查是否可以切换轨道
 	bool couldLastTrack();
 	bool couldNextTrack();
 	bool couldSwitchTrack();
 
-	//外部/内部调用
+	//外部/内部调用，申请更改状态
 	void setCurrentTrack(int trackID);
 	void refreshTotalLength();
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime);
+	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void setVerticalViewPort(double bottomPitch, double topPitch);
 
-	//外部调用
+	//外部调用，执行状态更改
 	void setAdsorb(vocalshaper::AdsorbState state);
 	void setGrid(vocalshaper::GridState state);
 
 private:
-	//内部调用
+	//内部调用，执行状态更改
 	void trackChanged(int trackID);
 	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
 	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
+	void followStateChanged(bool followState);
+	void loopRangeChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 	void verticalViewPortChanged(double bottomPitch, double topPitch);
 
 public:
-	//被命令调用
+	//被命令调用，设置编辑器状态
 	bool isEditMode();
 	void setEditMode(bool editMode);
 	uint8_t getToolID();
 	void setToolID(uint8_t toolID);
 
 public:
-	//监听器
+	//监听器，用于注册回调监听事件
 	void listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenCurveQuantificationChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
+	//监听器，用于注册回调监听播放状态
+	void listenCurrentPositionChange(vocalshaper::ProjectTime currentTime);
+	void listenFollowStateChange(bool followState);
+	void listenLoopRangeChange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
 public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;

@@ -21,6 +21,9 @@ protected:
 	//轨道数量发生改变时重新计算竖直卷滚条位置
 	virtual void refreshSizeOnTrackSizeChanged(
 		int lastSize, int size, double& sp, double& ep);
+	//工程长度发生改变时重新计算水平卷滚条位置
+	virtual void refreshSizeOnProjectLengthChanged(
+		uint32_t lastLength, uint32_t length, double& sp, double& ep);
 
 public:
 	void resized() override;
@@ -45,6 +48,8 @@ public:
 	virtual void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	//更改当前播放位置时被调用
 	virtual void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	//更改播放跟随状态时被调用
+	virtual void setFollowState(bool follow) override;
 
 public:
 	//监听项目关闭
@@ -71,9 +76,12 @@ private:
 
 	struct SizeTemp
 	{
-		int trackSizeTemp = 0;			//暂存轨道数量
-		uint32_t projectLengthTemp = 0;	//暂存工程长度
-		double sp = 0., ep = 1.;		//起止位置
+		int trackSizeTemp = 0;					//暂存轨道数量
+		uint32_t projectLengthTemp = 0;			//暂存工程长度
+		uint32_t projectCurveQuantTemp = 480;	//暂存曲线量化
+		uint64_t currentPositionTemp = 0;		//暂存当前播放位置
+		bool followTemp = true;					//暂存跟随状态
+		double sp = 0., ep = 1.;				//起止位置
 	};
 	std::map<const vocalshaper::ProjectProxy*, SizeTemp> tempList;
 	SizeTemp* ptrTemp = nullptr;
@@ -82,6 +90,8 @@ private:
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
+
+	bool isFollow = true;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScrollerBase)
 };

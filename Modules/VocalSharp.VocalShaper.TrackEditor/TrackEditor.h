@@ -16,6 +16,7 @@ public:
 		const std::function<void(int)>& setCurrentTrackFunc,
 		const std::function<void(void)>& refreshTotalTimeFunc,
 		const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setLoopRangeFunc,
 		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
 		const std::function<void(double, double)>& setVerticalViewPortFunc
 	) override;
@@ -31,6 +32,8 @@ public:
 	void trackChanged(int trackID) override;
 	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setFollowState(bool follow) override;
+	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
 	void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;

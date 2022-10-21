@@ -31,6 +31,11 @@ void ScrollerBase::refreshSizeOnTrackSizeChanged(
 {
 }
 
+void ScrollerBase::refreshSizeOnProjectLengthChanged(
+	uint32_t lastLength, uint32_t length, double& sp, double& ep)
+{
+}
+
 //
 void ScrollerBase::resized()
 {
@@ -84,12 +89,27 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 			this->ptrTemp = &(this->tempList[ptr]);
 		}
 
-		//缓存轨道数和工程长度
+		//缓存工程相关信息
 		{
 			juce::ScopedReadLock projLock(this->project->getLock());
+
+			this->ptrTemp->followTemp = this->isFollow;
+
 			this->ptrTemp->trackSizeTemp =
 				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-			//TODO 工程长度
+
+			this->ptrTemp->projectCurveQuantTemp =
+				vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
+
+			vocalshaper::ProjectTime totalLength =
+				vocalshaper::CountTime::count(
+					this->project->getPtr(), this->ptrTemp->projectCurveQuantTemp);
+			uint32_t bar =
+				this->project->getBeat()->getBarAtTime(
+					vocalshaper::floor(totalLength, this->ptrTemp->projectCurveQuantTemp).first);
+			bar = std::max(bar, 20Ui32) + 1;
+			this->ptrTemp->projectLengthTemp =
+				this->project->getBeat()->getTimeAtBar(bar);
 		}
 
 		//限制大小
@@ -109,6 +129,8 @@ void ScrollerBase::trackChanged(int trackID)
 	juce::ScopedWriteLock locker1(this->tempLock), locker2(this->projectLock);
 	this->trackID = trackID;
 	if (!this->project || !this->ptrTemp) {
+		//刷新
+		this->repaint();
 		return;
 	}
 
@@ -132,11 +154,15 @@ void ScrollerBase::trackChanged(int trackID)
 
 		//发送改变
 		this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+		return;
 	}
-	else {
-		//强制刷新
-		this->repaint();
-	}
+	
+	//更新缓存
+	this->ptrTemp->trackSizeTemp = trackSize;
+
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
@@ -144,8 +170,14 @@ void ScrollerBase::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper:
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->projectLock);
 	if (this->project && this->ptrTemp) {
-		if (this->getVertical()) {
-			//TODO 计算值
+		if (!this->getVertical()) {
+			//计算起止位置
+			this->ptrTemp->sp =
+				vocalshaper::timeToDouble(startTime, this->ptrTemp->projectCurveQuantTemp)
+				/ this->ptrTemp->projectLengthTemp;
+			this->ptrTemp->ep =
+				vocalshaper::timeToDouble(endTime, this->ptrTemp->projectCurveQuantTemp)
+				/ this->ptrTemp->projectLengthTemp;
 		}
 	}
 
@@ -155,17 +187,126 @@ void ScrollerBase::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper:
 
 void ScrollerBase::setVViewPort(double bottomPer, double topPer)
 {
+	juce::ScopedWriteLock locker1(this->tempLock);
+	juce::ScopedReadLock locker2(this->projectLock);
+	if (this->project && this->ptrTemp) {
+		if (this->getVertical()) {
+			//计算起止位置
+			this->ptrTemp->sp = topPer;
+			this->ptrTemp->ep = bottomPer;
+		}
+	}
 
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 {
-	//TODO 更新滑块大小或强制刷新
+	juce::ScopedWriteLock locker1(this->tempLock);
+	juce::ScopedReadLock locker2(this->projectLock);
+	if (this->project && this->ptrTemp) {
+		//取缓存
+		auto trackSizeTemp = this->ptrTemp->trackSizeTemp;
+		auto projectCurveQuantTemp = this->ptrTemp->projectCurveQuantTemp;
+		auto projectLengthTemp = this->ptrTemp->projectLengthTemp;
+
+		//计算工程相关信息
+		{
+			juce::ScopedReadLock projLock(this->project->getLock());
+
+			trackSizeTemp =
+				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+
+			projectCurveQuantTemp =
+				vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
+
+			vocalshaper::ProjectTime totalLength =
+				vocalshaper::CountTime::count(
+					this->project->getPtr(), projectCurveQuantTemp);
+			uint32_t bar =
+				this->project->getBeat()->getBarAtTime(
+					vocalshaper::floor(totalLength, projectCurveQuantTemp).first);
+			bar = std::max(bar, 20Ui32) + 1;
+			projectLengthTemp =
+				this->project->getBeat()->getTimeAtBar(bar);
+		}
+
+		//如果是水平，则更新滑块大小
+		if (!this->getVertical()) {
+			//计算新缩放
+			this->refreshSizeOnProjectLengthChanged(
+				this->ptrTemp->projectLengthTemp, projectLengthTemp,
+				this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//更新缓存
+			this->ptrTemp->trackSizeTemp = trackSizeTemp;
+			this->ptrTemp->projectCurveQuantTemp = projectCurveQuantTemp;
+			this->ptrTemp->projectLengthTemp = projectLengthTemp;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			return;
+		}
+
+		//更新缓存
+		this->ptrTemp->trackSizeTemp = trackSizeTemp;
+		this->ptrTemp->projectCurveQuantTemp = projectCurveQuantTemp;
+		this->ptrTemp->projectLengthTemp = projectLengthTemp;
+	}
+
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
-	//TODO 强制刷新或翻页
+	juce::ScopedWriteLock locker1(this->tempLock);
+	juce::ScopedReadLock locker2(this->projectLock);
+	if (this->project && this->ptrTemp) {
+		//更新缓存
+		this->ptrTemp->currentPositionTemp =
+			vocalshaper::timeToU64(currentTime, this->ptrTemp->projectCurveQuantTemp);
+
+		if (!this->getVertical()) {
+			//翻页
+			if (this->ptrTemp->followTemp) {
+				//计算当前百分比
+				double per = this->ptrTemp->currentPositionTemp / (double)this->ptrTemp->projectLengthTemp;
+
+				//需要翻页
+				if (per < this->ptrTemp->sp || per >= this->ptrTemp->ep) {
+					//计算翻页位置
+					double diff = this->ptrTemp->ep - this->ptrTemp->sp;
+					this->ptrTemp->sp = per;
+					this->ptrTemp->ep = per + diff;
+
+					//限制大小
+					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+					//发送改变
+					this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+				}
+			}
+
+			//刷新
+			this->repaint();
+		}
+	}
+}
+
+void ScrollerBase::setFollowState(bool follow)
+{
+	this->isFollow = follow;
+	juce::ScopedWriteLock locker1(this->tempLock);
+	juce::ScopedReadLock locker2(this->projectLock);
+	if (this->project && this->ptrTemp) {
+		this->ptrTemp->followTemp = follow;
+	}
 }
 
 void ScrollerBase::listenProjectClose(const vocalshaper::ProjectProxy* ptr)

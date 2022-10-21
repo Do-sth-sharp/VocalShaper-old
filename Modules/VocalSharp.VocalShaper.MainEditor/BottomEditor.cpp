@@ -84,6 +84,16 @@ void BottomEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 	//TODO
 }
 
+void BottomEditor::setFollowState(bool follow)
+{
+	//TODO
+}
+
+void BottomEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	//TODO
+}
+
 void BottomEditor::setAdsorb(vocalshaper::AdsorbState state)
 {
 	//TODO

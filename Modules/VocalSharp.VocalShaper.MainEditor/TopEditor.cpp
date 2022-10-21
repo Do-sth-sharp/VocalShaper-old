@@ -94,6 +94,20 @@ void TopEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 	}
 }
 
+void TopEditor::setFollowState(bool follow)
+{
+	if (this->topEditor) {
+		this->topEditor->setFollowState(follow);
+	}
+}
+
+void TopEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setLoopRange(startTime, endTime);
+	}
+}
+
 void TopEditor::setAdsorb(vocalshaper::AdsorbState state)
 {
 	if (this->topEditor) {
@@ -200,6 +214,7 @@ void TopEditor::setMethods(
 	const std::function<void(int)>& setCurrentTrackFunc,
 	const std::function<void(void)>& refreshTotalTimeFunc,
 	const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setLoopRangeFunc,
 	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
 	const std::function<void(double, double)>& setVerticalViewPortFunc
 )
@@ -207,11 +222,11 @@ void TopEditor::setMethods(
 	if (this->topEditor) {
 		this->topEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 	}
 	this->EditorBase::setMethods(
 		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-		setHorizontalViewPortFunc, setVerticalViewPortFunc);
+		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 }
 
 void TopEditor::initCommandID()

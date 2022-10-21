@@ -77,15 +77,16 @@ EditorComponent::EditorComponent()
 		auto setCurrentTrackFunc = [this](int trackID) {this->setCurrentTrack(trackID); };
 		auto refreshTotalLengthFunc = [this] {this->refreshTotalLength(); };
 		auto setCurrentPositionFunc = [this](vocalshaper::ProjectTime currentTime) {this->setCurrentPosition(currentTime); };
+		auto setLoopRangeFunc = [this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->setLoopRange(startTime, endTime); };
 		auto setHorizontalViewPortFunc = [this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->setHorizontalViewPort(startTime, endTime); };
 		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->setVerticalViewPort(bottomPitch, topPitch); };
 
 		this->topEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
-			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 		this->bottomEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
-			setHorizontalViewPortFunc, setVerticalViewPortFunc);
+			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 	}
 
 	//创建分割器
@@ -177,12 +178,30 @@ void EditorComponent::currentPositionChanged(vocalshaper::ProjectTime currentTim
 	if (this->bottomEditor) {
 		this->bottomEditor->setCurrentPosition(currentTime);
 	}
-	//TODO 如果播放跟随，则调整显示范围
+}
+
+void EditorComponent::followStateChanged(bool followState)
+{
+	if (this->topEditor) {
+		this->topEditor->setFollowState(followState);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setFollowState(followState);
+	}
+}
+
+void EditorComponent::loopRangeChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setLoopRange(startTime, endTime);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setLoopRange(startTime, endTime);
+	}
 }
 
 void EditorComponent::horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
-	//轨道面板的横竖显示范围具有独立性
 	if (this->topEditor) {
 		this->topEditor->setHorizontalViewPort(startTime, endTime);
 	}
@@ -584,7 +603,11 @@ void EditorComponent::refreshTotalLength()
 
 void EditorComponent::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
-	this->currentPositionChanged(currentTime);
+	//TODO 同步至播放控制器
+}
+
+void EditorComponent::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
 	//TODO 同步至播放控制器
 }
 
@@ -693,6 +716,30 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 			}
 		}
 	}
+}
+
+void EditorComponent::listenCurveQuantificationChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
+		if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::CurveQuantification) {
+			this->refreshTotalLength();
+		}
+	}
+}
+
+void EditorComponent::listenCurrentPositionChange(vocalshaper::ProjectTime currentTime)
+{
+	this->currentPositionChanged(currentTime);
+}
+
+void EditorComponent::listenFollowStateChange(bool followState)
+{
+	this->followStateChanged(followState);
+}
+
+void EditorComponent::listenLoopRangeChange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	this->loopRangeChanged(startTime, endTime);
 }
 
 void EditorComponent::resized()
@@ -1162,4 +1209,12 @@ void EditorComponent::initProjectListener()
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 		{this->listenTrackSizeChange(action, type); });
+
+	//侦听曲线量化变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenCurveQuantificationChange(action, type); });
+
+	//TODO 侦听播放状态变化
 }

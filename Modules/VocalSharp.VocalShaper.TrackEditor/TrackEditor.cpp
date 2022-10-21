@@ -136,13 +136,14 @@ void TrackEditor::setMethods(
 	const std::function<void(int)>& setCurrentTrackFunc,
 	const std::function<void(void)>& refreshTotalTimeFunc,
 	const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
+	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setLoopRangeFunc,
 	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
 	const std::function<void(double, double)>& setVerticalViewPortFunc
 )
 {
 	this->timeRuler->setMethods(
 		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-		setHorizontalViewPortFunc, setVerticalViewPortFunc);
+		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 	//TODO
 	this->setTrackViewMethods(
 		[this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->changeHViewPort(startTime, endTime); },
@@ -150,7 +151,7 @@ void TrackEditor::setMethods(
 	);
 	this->EditorBase::setMethods(
 		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-		setHorizontalViewPortFunc, setVerticalViewPortFunc);
+		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 }
 
 void TrackEditor::setTrackViewMethods(
@@ -200,6 +201,18 @@ void TrackEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
 void TrackEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
 	this->timeRuler->setCurrentPosition(currentTime);
+	//TODO
+}
+
+void TrackEditor::setFollowState(bool follow)
+{
+	this->timeRuler->setFollowState(follow);
+	//TODO
+}
+
+void TrackEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+{
+	this->timeRuler->setLoopRange(startTime, endTime);
 	//TODO
 }
 
