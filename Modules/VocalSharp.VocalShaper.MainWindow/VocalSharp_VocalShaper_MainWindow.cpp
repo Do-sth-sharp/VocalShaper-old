@@ -60,7 +60,11 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
 			"VocalSharp.VocalShaper.MainUI", "CopyProject") ||
 		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
-			"VocalSharp.VocalShaper.MainUI", "OpenProject")
+			"VocalSharp.VocalShaper.MainUI", "OpenProject") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainUI", "IsOpenedProj") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.MainUI", "IsSavedProj")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.MainUI:Bad Interfaces!");
 		return false;
@@ -138,6 +142,22 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			result = this->mainWindow->openProj(name, path);
 		}
 	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsOpenedProj",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->mainWindow->isOpenedProj(name, path);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsSavedProj",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->mainWindow->isSavedProj(name, path);
+		}
+	);
 
 	jmadf::RegisterInterface<void>(
 		"ShowStartMenu",
@@ -178,6 +198,29 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		}
 	);
 	
+	//设置内存限制
+	{
+		juce::var* config = nullptr;
+		bool ok = false;
+		jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.GlobalConfigs", "GetReference",
+			"config", config, ok
+			);
+		uint64_t sizeLimit = 0;
+		if (ok && (config != nullptr)) {
+			if ((*config)["FreeMemoryLimit"].isInt64()) {
+				sizeLimit = (int64_t)((*config)["FreeMemoryLimit"]);
+			}
+
+			vocalshaper::utils::system::MemLimit::setLimitFreeSize(sizeLimit);
+		}
+
+		if (!vocalshaper::utils::system::MemLimit::sizeIsNotReachedLimit()) {
+			jmadf::RaiseException("No enough memory to start the application!");
+			return false;
+		}
+	}
+
 	this->mainWindow = std::make_unique<MainWindow>("VocalShaper");
 	if (!this->mainWindow) {
 		jmadf::RaiseException("Can't alloc memory space for main window!");

@@ -120,6 +120,22 @@ bool VocalSharp_VocalShaper_ProjectHub::init()
 			this->projects->addNotice(caller, func);
 		}
 	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsOpened",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->projects->isOpened(name, path);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsSaved",
+		[this](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = this->projects->isSaved(name, path);
+		}
+	);
 
 	jmadf::SetUnloadHook(
 		[this](const juce::String& caller) {

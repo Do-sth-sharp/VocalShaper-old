@@ -100,6 +100,7 @@ private:
 	bool copyProj(const juce::String& name, const juce::String& path,
 		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
+	bool isOpenedProj(const juce::String& name, const juce::String& path);
 
 	void clearFilter();
 	void refreshList();

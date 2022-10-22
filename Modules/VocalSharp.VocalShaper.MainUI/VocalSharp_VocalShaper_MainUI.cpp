@@ -105,7 +105,11 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		!jmadf::CheckInterface<int>(
 			"VocalSharp.VocalShaper.ProjectHub", "CloseProj") ||
 		!jmadf::CheckInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
-			"VocalSharp.VocalShaper.ProjectHub", "AddNotice")
+			"VocalSharp.VocalShaper.ProjectHub", "AddNotice") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "IsOpened") ||
+		!jmadf::CheckInterface<const juce::String&, const juce::String&, bool&>(
+			"VocalSharp.VocalShaper.ProjectHub", "IsSaved")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ProjectHub:Bad Interfaces!");
 		return false;
@@ -182,6 +186,22 @@ bool VocalSharp_VocalShaper_MainUI::init()
 			const juce::String& name, const juce::String& path, bool& result)
 		{
 			result = ptrUI->openProj(name, path);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsOpenedProj",
+		[ptrUI](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = ptrUI->isOpenedProj(name, path);
+		}
+	);
+	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
+		"IsSavedProj",
+		[ptrUI](const juce::String& caller,
+			const juce::String& name, const juce::String& path, bool& result)
+		{
+			result = ptrUI->isSavedProj(name, path);
 		}
 	);
 

@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <JuceHeader.h>
 #include "TabList.h"
 
@@ -15,6 +15,8 @@ public:
 	bool copyProj(const juce::String& name, const juce::String& path,
 		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
+	bool isOpenedProj(const juce::String& name, const juce::String& path);
+	bool isSavedProj(const juce::String& name, const juce::String& path);
 	bool wannaClose();
 
 	void setCaller(const juce::String& caller);
@@ -27,11 +29,11 @@ private:
 		juce::Colour background;
 		juce::Colour icon_mainMenuButton;
 		juce::Colour background_mainMenuButton;
-	}colors;//ΩÁ√Ê—’…´
+	}colors;//ÁïåÈù¢È¢úËâ≤
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* mainMenuButton;
-	}lafs;//øÿº˛—˘ Ω
+	}lafs;//Êéß‰ª∂Ê†∑Âºè
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
 		= [](juce::Component*, juce::Rectangle<int>&) {};

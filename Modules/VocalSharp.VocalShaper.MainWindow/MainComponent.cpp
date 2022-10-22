@@ -118,6 +118,26 @@ bool MainComponent::openProj(const juce::String& name, const juce::String& path)
     return result;
 }
 
+bool MainComponent::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+        "VocalSharp.VocalShaper.MainUI", "IsOpenedProj",
+        name, path, result
+        );
+    return result;
+}
+
+bool MainComponent::isSavedProj(const juce::String& name, const juce::String& path)
+{
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+        "VocalSharp.VocalShaper.MainUI", "IsSavedProj",
+        name, path, result
+        );
+    return result;
+}
+
 void MainComponent::setSMVisible(bool isVisible)
 {
     this->ptrStartMenu->setVisible(isVisible);

@@ -15,6 +15,7 @@
   "tip_MultiProjectFile": "目录中存在多个工程文件",
   "tip_CouldNotCreate": "未能建立工程文件",
   "tip_CouldNotOpen": "未能打开工程文件",
+  "tip_MemorySizeLimit": "已触发内存限制，没有足够的内存空间来执行操作",
 
   "bt_OK": "确定",
 

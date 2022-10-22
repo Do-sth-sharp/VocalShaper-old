@@ -206,6 +206,16 @@ bool MainWindow::openProj(const juce::String& name, const juce::String& path)
     return this->mComp->openProj(name, path);
 }
 
+bool MainWindow::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+    return this->mComp->isOpenedProj(name, path);
+}
+
+bool MainWindow::isSavedProj(const juce::String& name, const juce::String& path)
+{
+    return this->mComp->isSavedProj(name, path);
+}
+
 void MainWindow::showStartMenu()
 {
     this->mComp->setSMVisible(true);

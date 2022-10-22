@@ -144,6 +144,16 @@ bool TabComponent::openProj(const juce::String& name, const juce::String& path)
     return this->tabList->openProj(name, path);
 }
 
+bool TabComponent::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabList->isOpenedProj(name, path);
+}
+
+bool TabComponent::isSavedProj(const juce::String& name, const juce::String& path)
+{
+    return this->tabList->isSavedProj(name, path);
+}
+
 bool TabComponent::wannaClose()
 {
     return this->tabList->wannaClose();

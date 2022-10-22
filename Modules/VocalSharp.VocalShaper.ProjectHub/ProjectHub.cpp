@@ -184,6 +184,7 @@ bool ProjectHub::checkForClose(int index)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
+		juce::ScopedReadLock projLock(this->projList.getUnchecked(index)->getLock());
 		return this->projList.getUnchecked(index)->getSaved();
 	}
 	return true;
@@ -214,6 +215,7 @@ bool ProjectHub::save(int index)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
 	if (index >= 0 && index < this->projList.size()) {
+		juce::ScopedWriteLock projLock(this->projList.getUnchecked(index)->getLock());
 		auto ptr = this->projList.getUnchecked(index);
 		auto metaBackup = ptr->getMeta()->backup();
 		ptr->getMeta()->wannaSave();
@@ -230,6 +232,33 @@ bool ProjectHub::save(int index)
 		ptr->getMeta()->recover(metaBackup);
 	}
 	return false;
+}
+
+bool ProjectHub::isOpened(const juce::String& name, const juce::String& path)
+{
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
+
+	for (auto& i : this->projList) {
+		if (i->getName() == name && i->getPath() == path) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ProjectHub::isSaved(const juce::String& name, const juce::String& path)
+{
+	juce::GenericScopedLock<juce::CriticalSection> locker(this->lock);
+
+	for (auto& i : this->projList) {
+		if (i->getName() == name && i->getPath() == path) {
+			juce::ScopedReadLock projLock(i->getLock());
+			return i->getSaved();
+		}
+	}
+
+	return true;
 }
 
 void ProjectHub::addNotice(const juce::String& caller, const ChangeNoticeFunction& func)

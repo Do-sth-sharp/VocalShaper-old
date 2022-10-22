@@ -124,6 +124,16 @@ bool UIComponent::openProj(const juce::String& name, const juce::String& path)
     return this->tabBar->openProj(name, path);
 }
 
+bool UIComponent::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+	return this->tabBar->isOpenedProj(name, path);
+}
+
+bool UIComponent::isSavedProj(const juce::String& name, const juce::String& path)
+{
+	return this->tabBar->isSavedProj(name, path);
+}
+
 bool UIComponent::wannaClose()
 {
     return this->tabBar->wannaClose();

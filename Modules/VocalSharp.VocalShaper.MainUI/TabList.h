@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 
@@ -12,6 +12,8 @@ public:
 	bool copyProj(const juce::String& name, const juce::String& path,
 		const juce::String& nameSrc, const juce::String& pathSrc);
 	bool openProj(const juce::String& name, const juce::String& path);
+	bool isOpenedProj(const juce::String& name, const juce::String& path);
+	bool isSavedProj(const juce::String& name, const juce::String& path);
 	bool wannaClose();
 	void saveCurrent();
 	void saveAll();
@@ -49,7 +51,7 @@ private:
 		juce::Colour background_tabList_highlight;
 
 		juce::Colour split;
-	}colors;//½çÃæÑÕÉ«
+	}colors;//ç•Œé¢é¢œè‰²
 	struct Sizes final
 	{
 		double width_tab_max;
@@ -57,18 +59,18 @@ private:
 		double width_tabBorder;
 		double width_tabMarginRight;
 		double width_splitLine;
-	}sizes;//¿Ø¼ş´óĞ¡
+	}sizes;//æ§ä»¶å¤§å°
 	struct Scales final
 	{
 		double height_closeButton;
 		double height_splitLine;
-	}scales;//¿Ø¼şËõ·Å
+	}scales;//æ§ä»¶ç¼©æ”¾
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* tabCloseButton;
 		juce::LookAndFeel* tabHighlightCloseButton;
 		juce::LookAndFeel* tabBarButton;
-	}lafs;//¿Ø¼şÑùÊ½
+	}lafs;//æ§ä»¶æ ·å¼
 
 	std::function<void(int, vocalshaper::ProjectProxy*&)> getPtrFunc;
 	std::function<void(int&)> getCurrentFunc, getSizeFunc;

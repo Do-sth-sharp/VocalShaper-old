@@ -15,6 +15,7 @@
   "tip_MultiProjectFile": "More than one project files in directory",
   "tip_CouldNotCreate": "Could not create the project",
   "tip_CouldNotOpen": "Could not open the project",
+  "tip_MemorySizeLimit": "Memory limit triggered, no enough memory to perform operation",
 
   "bt_OK": "OK",
 

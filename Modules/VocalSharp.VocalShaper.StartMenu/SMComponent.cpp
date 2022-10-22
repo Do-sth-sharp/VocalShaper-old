@@ -1,5 +1,6 @@
 ﻿#include "SMComponent.h"
 #include <libJModule.h>
+#include <libVocalShaper.h>
 
 SMComponent::SMComponent()
 	: Component("Start Menu Component")
@@ -562,6 +563,17 @@ void SMComponent::setCaller(const juce::String& caller)
 
 void SMComponent::listItemLeftClicked(int row, const juce::String& name, const juce::String& path)
 {
+    if (!this->isOpenedProj(name, path)) {
+        if (!vocalshaper::utils::system::MemLimit::sizeIsNotReachedLimit()) {
+            //内存超限
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+                this->tr("tip_MemorySizeLimit"), this->tr("bt_OK")
+            );
+            return;
+        }
+    }
+
     if (this->openProj(name, path)) {
         jmadf::CallInterface<int>(
             "VocalSharp.VocalShaper.ProjectHistory", "Open",
@@ -608,6 +620,15 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
     case 2:
     {
         //创建副本并打开
+        if (!vocalshaper::utils::system::MemLimit::sizeIsNotReachedLimit()) {
+            //内存超限
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenAsCopy"),
+                this->tr("tip_MemorySizeLimit"), this->tr("bt_OK")
+            );
+            return;
+        }
+
         juce::FileChooser fileChooser(
             this->tr("bt_OpenAsCopy"),
             juce::File::getCurrentWorkingDirectory(), "*"
@@ -688,6 +709,15 @@ void SMComponent::listItemRightClicked(int row, const juce::String& name, const 
 
 void SMComponent::newButtonClicked()
 {
+    if (!vocalshaper::utils::system::MemLimit::sizeIsNotReachedLimit()) {
+        //内存超限
+        juce::AlertWindow::showMessageBox(
+            juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+            this->tr("tip_MemorySizeLimit"), this->tr("bt_OK")
+        );
+        return;
+    }
+
     juce::FileChooser fileChooser(
         this->tr("bt_NewProject"),
         juce::File::getCurrentWorkingDirectory(), "*"
@@ -775,6 +805,18 @@ void SMComponent::openPathFromUrl(const juce::String& path)
     }
 
     juce::String name = vsp3List.getReference(0).getFileNameWithoutExtension();
+
+    if (!this->isOpenedProj(name, path)) {
+        if (!vocalshaper::utils::system::MemLimit::sizeIsNotReachedLimit()) {
+            //内存超限
+            juce::AlertWindow::showMessageBox(
+                juce::MessageBoxIconType::WarningIcon, this->tr("bt_NewProject"),
+                this->tr("tip_MemorySizeLimit"), this->tr("bt_OK")
+            );
+            return;
+        }
+    }
+
     if (!this->openProj(name, path)) {
         juce::AlertWindow::showMessageBox(
             juce::MessageBoxIconType::WarningIcon, this->tr("bt_OpenProject"),
@@ -825,6 +867,16 @@ bool SMComponent::openProj(const juce::String& name, const juce::String& path)
     bool result = false;
     jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
         this->caller, "OpenProject",
+        name, path, result
+        );
+    return result;
+}
+
+bool SMComponent::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+    bool result = false;
+    jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+        this->caller, "IsOpenedProj",
         name, path, result
         );
     return result;

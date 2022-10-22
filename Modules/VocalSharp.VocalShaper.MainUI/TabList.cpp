@@ -436,6 +436,26 @@ bool TabList::openProj(const juce::String& name, const juce::String& path)
 	return result;
 }
 
+bool TabList::isOpenedProj(const juce::String& name, const juce::String& path)
+{
+	bool result = false;
+	jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+		"VocalSharp.VocalShaper.ProjectHub", "IsOpened",
+		name, path, result
+		);
+	return result;
+}
+
+bool TabList::isSavedProj(const juce::String& name, const juce::String& path)
+{
+	bool result = false;
+	jmadf::CallInterface<const juce::String&, const juce::String&, bool&>(
+		"VocalSharp.VocalShaper.ProjectHub", "IsSaved",
+		name, path, result
+		);
+	return result;
+}
+
 bool TabList::wannaClose()
 {
 	int size = 0;

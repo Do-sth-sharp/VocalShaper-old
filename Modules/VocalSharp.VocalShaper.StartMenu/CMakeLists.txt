@@ -30,7 +30,10 @@ if (NOT DEFINED JUCELIBRARY_DIR)
 	set (JUCELIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/JUCE/modules)
 endif ()
 if (NOT DEFINED LIBJMODULE_DIR)
-	set (LIBJMODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libJModule)
+	set (LIBJMODULE_DIR ${CMAKE_SOURCE_DIR}/libJModule)
+endif ()
+if (NOT DEFINED VSLIBRARY_DIR)
+	set (VSLIBRARY_DIR ${CMAKE_SOURCE_DIR}/libVocalShaper)
 endif ()
 
 #文件搜索目录
@@ -38,6 +41,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 include_directories (${JUCEHEADER_DIR})
 include_directories (${JUCELIBRARY_DIR})
 include_directories (${LIBJMODULE_DIR})
+include_directories (${VSLIBRARY_DIR})
 
 #使用libJModule库
 add_subdirectory (${LIBJMODULE_DIR} libJModule)
@@ -55,6 +59,7 @@ add_compile_definitions (JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 add_compile_definitions (JUCE_DLL=1)
 add_compile_definitions (JUCE_DISABLE_DLL_ALLOCATORS=1)
+add_compile_definitions (_SILENCE_CXX20_CISO646_REMOVED_WARNING=1)
 endif ()
 add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
@@ -135,6 +140,7 @@ add_library (
 target_link_libraries (
 	${TARGET_NAME}
 	JUCE
+	libVocalShaper
 )
 
 #设置目标位置
@@ -151,4 +157,5 @@ set_target_properties (
 add_dependencies (
 	${TARGET_NAME}
 	JUCE
+	libVocalShaper
 )

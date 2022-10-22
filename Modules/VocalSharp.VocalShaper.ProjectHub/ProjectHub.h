@@ -21,6 +21,8 @@ public:
 	int getCurrent();
 	int getSize();
 	bool save(int index);
+	bool isOpened(const juce::String& name, const juce::String& path);
+	bool isSaved(const juce::String& name, const juce::String& path);
 
 	using ChangeNoticeFunction = std::function<void(const vocalshaper::ProjectProxy*)>;
 	void addNotice(const juce::String& caller, const ChangeNoticeFunction& func);
