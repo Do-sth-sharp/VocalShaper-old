@@ -26,6 +26,10 @@ public:
     void openStringFromUrl(const juce::String& str);
 
     void closeEditor();
+
+    void setProject(const vocalshaper::ProjectProxy* project);
+    void listenActions(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+    void listenSaved(const vocalshaper::ProjectProxy* proj);
 	
 private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
@@ -36,7 +40,10 @@ private:
     juce::ApplicationCommandManager* commandManager = nullptr;
     const juce::Displays::Display* displayTemp = nullptr;
 
-    void refreshTitle(const vocalshaper::ProjectProxy* project);
+    const vocalshaper::ProjectProxy* project = nullptr;
+    juce::ReadWriteLock projLock;
+
+    void refreshTitle();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

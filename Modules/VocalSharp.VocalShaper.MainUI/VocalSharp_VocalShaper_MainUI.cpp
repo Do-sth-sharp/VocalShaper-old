@@ -25,7 +25,8 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.MainEditor")
+		jmadf::LoadModule("VocalSharp.VocalShaper.MainEditor") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")
 		)) {
 		return false;
 	}
@@ -145,6 +146,19 @@ bool VocalSharp_VocalShaper_MainUI::init()
 			"VocalSharp.VocalShaper.MainEditor", "SetGrid")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.MainEditor:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const vocalshaper::ProjectProxy::SaveCallbackFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddSaveCallback") ||
+		!jmadf::CheckInterface<const vocalshaper::ProjectProxy::CloseCallbackFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddCloseCallback") ||
+		!jmadf::CheckInterface<const vocalshaper::EventProcesser::EventHandleFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddEventHandler") ||
+		!jmadf::CheckInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+			"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
 		return false;
 	}
 

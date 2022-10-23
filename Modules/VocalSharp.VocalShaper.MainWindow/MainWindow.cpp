@@ -22,7 +22,7 @@ MainWindow::MainWindow(juce::String name)
     jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
         "VocalSharp.VocalShaper.ProjectHub", "AddNotice",
         [this](const vocalshaper::ProjectProxy* project) {
-            this->refreshTitle(project);
+            this->setProject(project);
         }
     );
 
@@ -149,6 +149,18 @@ MainWindow::MainWindow(juce::String name)
     mainLAF.setColour(juce::TooltipWindow::ColourIds::backgroundColourId, cBackgroundToolTip);
     mainLAF.setColour(juce::TooltipWindow::ColourIds::textColourId, cTextToolTip);
     mainLAF.setColour(juce::TooltipWindow::ColourIds::outlineColourId, cBackgroundToolTip);
+
+    //侦听事件变化
+    jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+        "VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+        [this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+        {this->listenActions(action, type); });
+
+    //侦听保存
+    jmadf::CallInterface<const vocalshaper::ProjectProxy::SaveCallbackFunc&>(
+        "VocalSharp.VocalShaper.CallbackReactor", "AddSaveCallback",
+        [this](const vocalshaper::ProjectProxy* project)
+        {this->listenSaved(project); });
 }
 
 void MainWindow::closeButtonPressed()
@@ -257,11 +269,40 @@ void MainWindow::closeEditor()
     }
 }
 
-void MainWindow::refreshTitle(const vocalshaper::ProjectProxy* project)
+void MainWindow::setProject(const vocalshaper::ProjectProxy* project)
+{
+    juce::ScopedWriteLock locker(this->projLock);
+    this->project = project;
+    this->refreshTitle();
+}
+
+void MainWindow::listenActions(const vocalshaper::actions::ActionBase& /*action*/, vocalshaper::actions::ActionBase::UndoType /*type*/)
+{
+    auto messageManager = juce::MessageManager::getInstance();
+    if (messageManager) {
+        messageManager->callAsync([this] {this->refreshTitle(); });
+    }
+}
+
+void MainWindow::listenSaved(const vocalshaper::ProjectProxy* /*proj*/)
+{
+    auto messageManager = juce::MessageManager::getInstance();
+    if (messageManager) {
+        messageManager->callAsync([this] {this->refreshTitle(); });
+    }
+}
+
+void MainWindow::refreshTitle()
 {
     juce::String title("VocalShaper");
-    if (project) {
-        title += juce::String(" - ") + project->getName();
+    if (this->project) {
+        bool isSaved = true;
+        {
+            juce::ScopedReadLock projLocker(this->project->getLock());
+            isSaved = this->project->getSaved();
+        }
+
+        title += juce::String(" - ") + (isSaved ? "" : "*") + this->project->getName();
     }
     this->getPeer()->setTitle(title);
 }

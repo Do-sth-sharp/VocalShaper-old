@@ -400,6 +400,18 @@ TabList::TabList()
 		this->moreButtonClicked();
 	};
 	this->addChildComponent(this->btMore.get());
+
+	//侦听事件变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenActions(action, type); });
+
+	//侦听保存
+	jmadf::CallInterface<const vocalshaper::ProjectProxy::SaveCallbackFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddSaveCallback",
+		[this](const vocalshaper::ProjectProxy* project)
+		{this->listenSaved(project); });
 }
 
 bool TabList::newProj(const juce::String& name, const juce::String& path)
@@ -636,6 +648,13 @@ void TabList::paint(juce::Graphics& g)
 			}
 		}
 
+		//检查是否保存
+		bool isSaved = true;
+		{
+			juce::ScopedReadLock projLocker(ptrItem->getLock());
+			isSaved = ptrItem->getSaved();
+		}
+
 		//绘文本
 		if (i == this->currentIndex) {
 			g.setColour(this->colors.text_tabList_highlight);
@@ -644,7 +663,7 @@ void TabList::paint(juce::Graphics& g)
 			g.setColour(this->colors.text_tabList);
 		}
 		g.drawFittedText(
-			ptrItem->getName(), textRect,
+			(isSaved ? "" : "*") + ptrItem->getName(), textRect,
 			juce::Justification::centred,
 			1, 1.0f
 		);
@@ -841,6 +860,18 @@ void TabList::setCaller(const juce::String& caller)
 	this->caller = caller;
 }
 
+void TabList::listenActions(const vocalshaper::actions::ActionBase& /*action*/, vocalshaper::actions::ActionBase::UndoType /*type*/)
+{
+	juce::MessageManagerLock locker;
+	this->refreshCompCache();
+}
+
+void TabList::listenSaved(const vocalshaper::ProjectProxy* /*proj*/)
+{
+	juce::MessageManagerLock locker;
+	this->refreshCompCache();
+}
+
 bool TabList::checkThenClose(int index)
 {
 	//检查是否已保存
@@ -970,8 +1001,15 @@ void TabList::refreshCompCache(bool loopFlag)
 		this->getPtrFunc(i, ptrItem);
 
 		if (!foldFlag) {
+			//检查是否保存
+			bool isSaved = true;
+			{
+				juce::ScopedReadLock projLocker(ptrItem->getLock());
+				isSaved = ptrItem->getSaved();
+			}
+
 			//计算tab宽度
-			int strWidth = font.getStringWidth(ptrItem->getName());
+			int strWidth = font.getStringWidth((isSaved ? "" : "*") + ptrItem->getName());
 			int itemWidth = strWidth + tabBorderWidth * 3 + closeButtonHeight;
 
 			//限制tab宽度

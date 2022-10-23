@@ -37,6 +37,9 @@ public:
 
 	void setCaller(const juce::String& caller);
 
+	void listenActions(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenSaved(const vocalshaper::ProjectProxy* proj);
+
 private:
 	struct Colors final
 	{
