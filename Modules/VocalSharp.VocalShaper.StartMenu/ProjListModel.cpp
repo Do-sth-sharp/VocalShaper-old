@@ -156,7 +156,7 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
     g.setFont(nameFont);
     juce::Rectangle<int> nameRect(
         marginWidth, marginHeight,
-        splitPosX - marginWidth, splitPosY - marginHeight
+        splitPosX - marginWidth * 2, splitPosY - marginHeight
     );
     g.drawFittedText(nameStr, nameRect,
         juce::Justification::centredLeft, 1, 1.0f);
