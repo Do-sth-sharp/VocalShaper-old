@@ -4,48 +4,48 @@
         "module":"VocalSharp.VocalShaper.ThemeManager",
         "class":"VocalSharp.VocalShaper.StartMenu"
     },
-    "size":
-    {
-        "height-font:number":0.025,
-        
-        "width-leftBar:number":0.175,
+  "size": {
+    "height-font:number": 0.025,
 
-        "height-logo-topMargin:number":0.05,
+    "width-leftBar:number": 0.175,
 
-        "width-button:number":0.5,
-        "height-button:number":0.07,
-        "height-button-logo-split:number":0.04,
-        "height-button-split:number":0.02,
+    "height-logo-topMargin:number": 0.05,
 
-        "height-titleBar:number":0.15,
+    "width-button:number": 0.5,
+    "height-button:number": 0.07,
+    "height-button-logo-split:number": 0.04,
+    "height-button-split:number": 0.02,
 
-        "width-title-leftMargin:number":0.03,
-        "width-search-rightMargin:number":0.02,
-        "width-title-search-split:number":0.01,
+    "height-titleBar:number": 0.15,
 
-        "height-list-topMargin:number":0,
-        "height-list-bottomMargin:number":0.05,
-        "width-list-leftMargin:number":0.03,
-        "width-list-rightMargin:number":0.02,
-        "height-listItem:number":0.1,
+    "width-title-leftMargin:number": 0.03,
+    "width-search-rightMargin:number": 0.02,
+    "width-title-search-split:number": 0.01,
 
-        "height-fontListItem-name:number":0.025,
-        "height-fontListItem-time:number":0.020,
-        "height-fontListItem-path:number":0.025,
+    "height-list-topMargin:number": 0,
+    "height-list-bottomMargin:number": 0.05,
+    "width-list-leftMargin:number": 0.03,
+    "width-list-rightMargin:number": 0.02,
+    "height-listItem:number": 0.1,
 
-        "width-listItem-margin:number":0.02,
-        "height-listItem-margin:number":0.02,
-        "height-listItem-border:number":0.01
-    },
+    "height-fontListItem-name:number": 0.025,
+    "height-fontListItem-time:number": 0.020,
+    "height-fontListItem-path:number": 0.025,
+
+    "width-listItem-margin:number": 0.02,
+    "height-listItem-margin:number": 0.02,
+    "height-listItem-border:number": 0.01
+  },
     "position":
     {
         "posX-search:number":0.5
     },
-    "scale":
-    {
-        "width-logo:number":0.7,
-        "height-title:number":0.4,
-        "height-search:number":0.3,
-        "height-icon-search:number":0.6
-    }
+  "scale": {
+    "width-logo:number": 0.7,
+    "height-title:number": 0.4,
+    "height-search:number": 0.3,
+    "height-icon-search:number": 0.6,
+
+    "height-listItemStarted-light:number": 0.4
+  }
 }

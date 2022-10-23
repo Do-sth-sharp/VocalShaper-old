@@ -23,6 +23,12 @@ public:
 
 	int getButtonFontSize();
 	
+	bool newProj(const juce::String& name, const juce::String& path);
+	bool copyProj(const juce::String& name, const juce::String& path,
+		const juce::String& nameSrc, const juce::String& pathSrc);
+	bool openProj(const juce::String& name, const juce::String& path);
+	bool isOpenedProj(const juce::String& name, const juce::String& path);
+
 private:
 	struct Colors final
 	{
@@ -95,12 +101,6 @@ private:
 
 	std::function<const juce::String(const juce::String&)> tr;
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
-
-	bool newProj(const juce::String& name, const juce::String& path);
-	bool copyProj(const juce::String& name, const juce::String& path,
-		const juce::String& nameSrc, const juce::String& pathSrc);
-	bool openProj(const juce::String& name, const juce::String& path);
-	bool isOpenedProj(const juce::String& name, const juce::String& path);
 
 	void clearFilter();
 	void refreshList();

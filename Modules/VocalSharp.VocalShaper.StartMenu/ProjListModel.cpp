@@ -32,6 +32,10 @@ ProjListModel::ProjListModel()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "text-listItem-path", this->colors.text_listItem_path, result
         );
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+        "main", "color", "light-listItemStarted", this->colors.light_listItemStarted, result
+        );
 
     //size
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -58,6 +62,11 @@ ProjListModel::ProjListModel()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "height-listItem-border", this->sizes.height_listItem_border, result
         );
+    //scale
+    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+        "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+        "main", "scale", "height-listItemStarted-light", this->scales.height_listItemStarted_light, result
+        );
 
     this->getSizeFunc =
         jmadf::GetInterface<int&>(
@@ -82,11 +91,16 @@ void ProjListModel::setScreenSize(juce::Rectangle<int> screenSize)
     this->screenSize = screenSize;
 }
 
-void ProjListModel::setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onLeftClick,
-    std::function<void(int, const juce::String&, const juce::String&)> onRightClick)
+void ProjListModel::setClickFunc(const std::function<void(int, const juce::String&, const juce::String&)>& onLeftClick,
+    const std::function<void(int, const juce::String&, const juce::String&)>& onRightClick)
 {
     this->onLeftClick = onLeftClick;
     this->onRightClick = onRightClick;
+}
+
+void ProjListModel::setCheckOpenendFunc(const std::function<bool(const juce::String&, const juce::String&)>& checkOpenedFunc)
+{
+    this->checkOpenedFunc = checkOpenedFunc;
 }
 
 int ProjListModel::getNumRows()
@@ -129,6 +143,9 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
         - timeFont.getStringWidth(timeStr);
     int splitPosY = marginHeight + (height - marginHeight * 2)
         * (this->sizes.height_fontListItem_name / (this->sizes.height_fontListItem_name + this->sizes.height_fontListItem_path));
+    int lightHeight = (height - marginHeight - splitPosY) * this->scales.height_listItemStarted_light;
+    int lightPosX = width - marginWidth - lightHeight;
+    int lightPosY = (height - marginHeight) - (height - marginHeight - splitPosY) / 2 - lightHeight / 2;
 
     //绘制名称
     g.setColour(this->colors.text_listItem_name);
@@ -153,7 +170,7 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
     g.setFont(pathFont);
     juce::Rectangle<int> pathRect(
         marginWidth, splitPosY,
-        width - marginWidth * 2, height - marginHeight - splitPosY
+        width - marginWidth * 3 - lightHeight, height - marginHeight - splitPosY
     );
     g.drawFittedText(pathStr, pathRect,
         juce::Justification::centredLeft, 1, 1.0f);
@@ -167,6 +184,12 @@ void ProjListModel::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
     );
     g.drawFittedText(timeStr, timeRect,
         juce::Justification::centredRight, 1, 1.0f);
+
+    //如果已打开，绘色块
+    if (this->checkOpenedFunc(nameStr, pathStr)) {
+        g.setColour(this->colors.light_listItemStarted);
+        g.fillEllipse(lightPosX, lightPosY, lightHeight, lightHeight);
+    }
 }
 
 juce::MouseCursor ProjListModel::getMouseCursorForRow(int /*row*/)

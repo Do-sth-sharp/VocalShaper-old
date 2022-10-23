@@ -122,7 +122,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = this->mainWindow->newProj(name, path);
+			if (this->mainWindow) {
+				result = this->mainWindow->newProj(name, path);
+			}
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, const juce::String&, const juce::String&, bool&>(
@@ -131,7 +133,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			const juce::String& name, const juce::String& path,
 			const juce::String& nameSrc, const juce::String& pathSrc, bool& result)
 		{
-			result = this->mainWindow->copyProj(name, path, nameSrc, pathSrc);
+			if (this->mainWindow) {
+				result = this->mainWindow->copyProj(name, path, nameSrc, pathSrc);
+			}
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
@@ -139,7 +143,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = this->mainWindow->openProj(name, path);
+			if (this->mainWindow) {
+				result = this->mainWindow->openProj(name, path);
+			}
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
@@ -147,7 +153,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = this->mainWindow->isOpenedProj(name, path);
+			if (this->mainWindow) {
+				result = this->mainWindow->isOpenedProj(name, path);
+			}
 		}
 	);
 	jmadf::RegisterInterface<const juce::String&, const juce::String&, bool&>(
@@ -155,7 +163,9 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 		[this](const juce::String& caller,
 			const juce::String& name, const juce::String& path, bool& result)
 		{
-			result = this->mainWindow->isSavedProj(name, path);
+			if (this->mainWindow) {
+				result = this->mainWindow->isSavedProj(name, path);
+			}
 		}
 	);
 

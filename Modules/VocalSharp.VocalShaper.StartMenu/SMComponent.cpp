@@ -379,6 +379,11 @@ SMComponent::SMComponent()
             this->listItemRightClicked(row, name, path);
         }
         );
+    this->lstModel->setCheckOpenendFunc(
+        [this](const juce::String& name, const juce::String& path)->bool {
+            return this->isOpenedProj(name, path);
+        }
+    );
     this->refreshList();
 
     //初始化CurrentDir

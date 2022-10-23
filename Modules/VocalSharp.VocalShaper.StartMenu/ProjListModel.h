@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <JuceHeader.h>
 
 class ProjListModel final : public juce::ListBoxModel
@@ -8,8 +8,9 @@ public:
 	~ProjListModel() override = default;
 
 	void setScreenSize(juce::Rectangle<int> screenSize);
-	void setClickFunc(std::function<void(int, const juce::String&, const juce::String&)> onLeftClick,
-		std::function<void(int, const juce::String&, const juce::String&)> onRightClick);
+	void setClickFunc(const std::function<void(int, const juce::String&, const juce::String&)>& onLeftClick,
+		const std::function<void(int, const juce::String&, const juce::String&)>& onRightClick);
+	void setCheckOpenendFunc(const std::function<bool(const juce::String&, const juce::String&)>& checkOpenedFunc);
 
 	int getNumRows() override;
 	void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
@@ -24,7 +25,8 @@ private:
 		juce::Colour text_listItem_name;
 		juce::Colour text_listItem_time;
 		juce::Colour text_listItem_path;
-	}colors;//ΩÁ√Ê—’…´
+		juce::Colour light_listItemStarted;
+	}colors;//ÁïåÈù¢È¢úËâ≤
 	struct Sizes final
 	{
 		double height_fontListItem_name;
@@ -33,11 +35,16 @@ private:
 		double width_listItem_margin;
 		double height_listItem_margin;
 		double height_listItem_border;
-	}sizes;//øÿº˛¥Û–°
+	}sizes;//Êéß‰ª∂Â§ßÂ∞è
+	struct Scales final
+	{
+		double height_listItemStarted_light;
+	}scales;//Êéß‰ª∂Áº©Êîæ
 
 	juce::Rectangle<int> screenSize;
 
 	std::function<void(int, const juce::String&, const juce::String&)> onLeftClick, onRightClick;
+	std::function<bool(const juce::String&, const juce::String&)> checkOpenedFunc;
 
 	std::function<const juce::String(const juce::String&)> tr;
 
