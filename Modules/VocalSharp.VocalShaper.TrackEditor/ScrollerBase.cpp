@@ -1,9 +1,41 @@
 ﻿#include "ScrollerBase.h"
+#include <libJModule.h>
 
 ScrollerBase::ScrollerBase(bool isVertical)
 	: EditorBase(), isVertical(isVertical)
 {
+	//获取屏幕属性接口
+	this->screenSizeFunc =
+		jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
+			"WuChang.JMADF.Device", "GetScreenSize"
+			);
 
+	//以下获取界面属性
+	bool result = false;
+	//color
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-scroller", this->colors.background_scroller, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "block-scroller", this->colors.block_scroller, result
+		);
+
+	//size
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-scrollerBlockJudgeArea", this->sizes.width_scrollerBlockJudgeArea, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-scrollerBlockJudgeArea", this->sizes.height_scrollerBlockJudgeArea, result
+		);
+
+	//position
+	//scale
+
+	//resource
 }
 
 bool ScrollerBase::getVertical()
@@ -13,9 +45,16 @@ bool ScrollerBase::getVertical()
 
 void ScrollerBase::limitSize(double& sp, double& ep)
 {
-	if (sp < 0.) { sp = 0.; }
-	if (ep > 1.) { ep = 1.; }
 	if (ep < sp) { std::swap(ep, sp); }
+	double delta = ep - sp;
+	if (delta >= 1.) {
+		sp = 0.;
+		ep = 1.;
+	}
+	else {
+		if (sp < 0.) { sp = 0.; ep = delta; }
+		if (ep > 1.) { ep = 1.; sp = 1 - delta; }
+	}
 }
 
 void ScrollerBase::paintPreView(juce::Graphics& g)
@@ -50,27 +89,638 @@ void ScrollerBase::paint(juce::Graphics& g)
 //
 void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details)
 {
+	juce::ScopedWriteLock locker(this->tempLock);
 
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//考虑横竖计算鼠标位置和判定区域
+	double pos = 0;
+	double judge = 0;
+	if (this->getVertical()) {
+		pos = event.position.getY() / (double)this->getHeight();
+		judge = (this->sizes.height_scrollerBlockJudgeArea * screenSize.getHeight()) / this->getHeight();
+	}
+	else {
+		pos = event.position.getX() / (double)this->getWidth();
+		judge = (this->sizes.width_scrollerBlockJudgeArea * screenSize.getWidth()) / this->getWidth();
+	}
+	
+	//计算delta
+	double delta = details.deltaY / 50.;
+	//TODO delta调优
+
+	//计算编辑
+	if (this->ptrTemp) {
+		switch (this->scrollerState)
+		{
+		case ScrollerState::SPChange:
+		{
+			//更改值
+			this->ptrTemp->ep = this->ptrTemp->ep + delta;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+			break;
+		}
+		case ScrollerState::EPChange:
+		{
+			//更改值
+			this->ptrTemp->sp = this->ptrTemp->sp + delta;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		case ScrollerState::BlockChange:
+		{
+			//更改值
+			this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
+			this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		case ScrollerState::Normal:
+		{
+			//更改值
+			if (event.mods.isCtrlDown()) {
+				this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+			}
+			else {
+				this->ptrTemp->sp = this->ptrTemp->sp + delta;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta;
+			}
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		}
+	}
+	
+
+	//根据更改状态计算区域状态
+	this->scrollerBlockHighlight = false;
+	this->scrollerBlockBorderHighlight = false;
+	if (this->scrollerState == ScrollerState::Normal) {
+		//如果非更改状态根据鼠标位置判断滑块高亮
+		if (this->ptrTemp) {
+			//计算判定区域
+			bool haveBlockArea = (this->ptrTemp->ep - this->ptrTemp->sp) > judge;	//滑块判定区未被占用
+			double SPJAreaS = this->ptrTemp->sp - judge / 2;//前判定区起始
+			double SPJAreaE = haveBlockArea
+				? (this->ptrTemp->sp + judge / 2)
+				: (this->ptrTemp->sp + (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//前判定区结束
+			double EPJAreaS = haveBlockArea
+				? (this->ptrTemp->ep - judge / 2)
+				: (this->ptrTemp->ep - (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//后判定区起始
+			double EPJAreaE = this->ptrTemp->ep + judge / 2;//后判定区结束
+
+			//根据判定区域设状态
+			if ((pos >= SPJAreaS && pos <= SPJAreaE) || (pos >= EPJAreaS && pos <= EPJAreaE)) {
+				this->scrollerBlockBorderHighlight = true;
+			}
+			else if (pos > SPJAreaE && pos < EPJAreaS) {
+				this->scrollerBlockHighlight = true;
+			}
+		}
+	}
+	else {
+		//如果更改状态直接判断滑块高亮
+		switch (this->scrollerState)
+		{
+		case ScrollerState::SPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::EPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::BlockChange:
+		{
+			this->scrollerBlockHighlight = true;
+			break;
+		}
+		}
+	}
+
+	//设置鼠标状态
+	if (this->scrollerBlockBorderHighlight) {
+		if (this->getVertical()) {
+			this->setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+		}
+	}
+	else if (this->scrollerBlockHighlight) {
+		if (this->scrollerState == ScrollerState::Normal) {
+			this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+		}
+	}
+	if (!(this->scrollerBlockBorderHighlight || this->scrollerBlockHighlight)) {
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+	}
+
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 {
+	juce::ScopedWriteLock locker(this->tempLock);
 
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//考虑横竖计算鼠标位置和判定区域
+	double pos = 0;
+	double judge = 0;
+	if (this->getVertical()) {
+		pos = event.position.getY() / (double)this->getHeight();
+		judge = (this->sizes.height_scrollerBlockJudgeArea * screenSize.getHeight()) / this->getHeight();
+	}
+	else {
+		pos = event.position.getX() / (double)this->getWidth();
+		judge = (this->sizes.width_scrollerBlockJudgeArea * screenSize.getWidth()) / this->getWidth();
+	}
+
+	//左键变化
+	if (event.mods.isLeftButtonDown()) {
+		if (this->ptrTemp) {
+			//计算判定区域
+			bool haveBlockArea = (this->ptrTemp->ep - this->ptrTemp->sp) > judge;	//滑块判定区未被占用
+			double SPJAreaS = this->ptrTemp->sp - judge / 2;//前判定区起始
+			double SPJAreaE = haveBlockArea
+				? (this->ptrTemp->sp + judge / 2)
+				: (this->ptrTemp->sp + (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//前判定区结束
+			double EPJAreaS = haveBlockArea
+				? (this->ptrTemp->ep - judge / 2)
+				: (this->ptrTemp->ep - (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//后判定区起始
+			double EPJAreaE = this->ptrTemp->ep + judge / 2;//后判定区结束
+
+			if (pos >= SPJAreaS && pos <= SPJAreaE) {
+				//设状态
+				this->scrollerState = ScrollerState::SPChange;
+
+				//更改值
+				this->ptrTemp->sp = pos;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+			}
+			else if (pos >= EPJAreaS && pos <= EPJAreaE) {
+				//设状态
+				this->scrollerState = ScrollerState::EPChange;
+
+				//更改值
+				this->ptrTemp->ep = pos;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+			}
+			else if (pos > SPJAreaE && pos < EPJAreaS) {
+				//设状态
+				this->scrollerState = ScrollerState::BlockChange;
+				this->spTemp = this->ptrTemp->sp;
+				this->epTemp = this->ptrTemp->ep;
+				this->blockPerTemp = (pos - this->spTemp) / (this->epTemp - this->spTemp);
+
+				//更改值
+				double length = this->epTemp - this->spTemp;
+				double delta = length * this->blockPerTemp;
+				this->ptrTemp->sp = pos - delta;
+				this->ptrTemp->ep = this->ptrTemp->sp + length;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+			}
+			else if (pos >= 0. && pos < SPJAreaS) {
+				//设状态
+				this->scrollerState = ScrollerState::BlockChange;
+				this->spTemp = this->ptrTemp->sp;
+				this->epTemp = this->ptrTemp->ep;
+				this->blockPerTemp = 0.5;
+
+				//更改值
+				double length = this->epTemp - this->spTemp;
+				double delta = length * this->blockPerTemp;
+				this->ptrTemp->sp = pos - delta;
+				this->ptrTemp->ep = this->ptrTemp->sp + length;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			}
+			else if (pos > EPJAreaE && pos <= 1.) {
+				//设状态
+				this->scrollerState = ScrollerState::BlockChange;
+				this->spTemp = this->ptrTemp->sp;
+				this->epTemp = this->ptrTemp->ep;
+				this->blockPerTemp = 0.5;
+
+				//更改值
+				double length = this->epTemp - this->spTemp;
+				double delta = length * this->blockPerTemp;
+				this->ptrTemp->sp = pos - delta;
+				this->ptrTemp->ep = this->ptrTemp->sp + length;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+			}
+		}
+	}
+
+	//根据更改状态计算区域状态
+	this->scrollerBlockHighlight = false;
+	this->scrollerBlockBorderHighlight = false;
+	if (this->scrollerState == ScrollerState::Normal) {
+		//如果非更改状态根据鼠标位置判断滑块高亮
+		if (this->ptrTemp) {
+			//计算判定区域
+			bool haveBlockArea = (this->ptrTemp->ep - this->ptrTemp->sp) > judge;	//滑块判定区未被占用
+			double SPJAreaS = this->ptrTemp->sp - judge / 2;//前判定区起始
+			double SPJAreaE = haveBlockArea
+				? (this->ptrTemp->sp + judge / 2)
+				: (this->ptrTemp->sp + (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//前判定区结束
+			double EPJAreaS = haveBlockArea
+				? (this->ptrTemp->ep - judge / 2)
+				: (this->ptrTemp->ep - (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//后判定区起始
+			double EPJAreaE = this->ptrTemp->ep + judge / 2;//后判定区结束
+
+			//根据判定区域设状态
+			if ((pos >= SPJAreaS && pos <= SPJAreaE) || (pos >= EPJAreaS && pos <= EPJAreaE)) {
+				this->scrollerBlockBorderHighlight = true;
+			}
+			else if (pos > SPJAreaE && pos < EPJAreaS) {
+				this->scrollerBlockHighlight = true;
+			}
+		}
+	}
+	else {
+		//如果更改状态直接判断滑块高亮
+		switch (this->scrollerState)
+		{
+		case ScrollerState::SPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::EPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::BlockChange:
+		{
+			this->scrollerBlockHighlight = true;
+			break;
+		}
+		}
+	}
+
+	//设置鼠标状态
+	if (this->scrollerBlockBorderHighlight) {
+		if (this->getVertical()) {
+			this->setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+		}
+	}
+	else if (this->scrollerBlockHighlight) {
+		if (this->scrollerState == ScrollerState::Normal) {
+			this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+		}
+	}
+	if (!(this->scrollerBlockBorderHighlight || this->scrollerBlockHighlight)) {
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+	}
+	
+	//刷新
+	this->repaint();
 }
 
-void ScrollerBase::mouseDrag(const juce::MouseEvent& event)
+void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 {
+	juce::ScopedWriteLock locker(this->tempLock);
 
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//考虑横竖计算鼠标位置和判定区域
+	double pos = 0;
+	double judge = 0;
+	if (this->getVertical()) {
+		pos = event.position.getY() / (double)this->getHeight();
+		judge = (this->sizes.height_scrollerBlockJudgeArea * screenSize.getHeight()) / this->getHeight();
+	}
+	else {
+		pos = event.position.getX() / (double)this->getWidth();
+		judge = (this->sizes.width_scrollerBlockJudgeArea * screenSize.getWidth()) / this->getWidth();
+	}
+
+	//正在编辑
+	if (this->ptrTemp) {
+		switch (this->scrollerState)
+		{
+		case ScrollerState::SPChange:
+		{
+			//更改值
+			this->ptrTemp->sp = pos;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		case ScrollerState::EPChange:
+		{
+			//更改值
+			this->ptrTemp->ep = pos;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		case ScrollerState::BlockChange:
+		{
+			//更改值
+			double length = this->epTemp - this->spTemp;
+			double delta = length * this->blockPerTemp;
+			this->ptrTemp->sp = pos - delta;
+			this->ptrTemp->ep = this->ptrTemp->sp + length;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			break;
+		}
+		}
+	}
+
+	//根据更改状态计算区域状态
+	this->scrollerBlockHighlight = false;
+	this->scrollerBlockBorderHighlight = false;
+	if (this->scrollerState == ScrollerState::Normal) {
+		//如果非更改状态根据鼠标位置判断滑块高亮
+		if (this->ptrTemp) {
+			//计算判定区域
+			bool haveBlockArea = (this->ptrTemp->ep - this->ptrTemp->sp) > judge;	//滑块判定区未被占用
+			double SPJAreaS = this->ptrTemp->sp - judge / 2;//前判定区起始
+			double SPJAreaE = haveBlockArea
+				? (this->ptrTemp->sp + judge / 2)
+				: (this->ptrTemp->sp + (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//前判定区结束
+			double EPJAreaS = haveBlockArea
+				? (this->ptrTemp->ep - judge / 2)
+				: (this->ptrTemp->ep - (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//后判定区起始
+			double EPJAreaE = this->ptrTemp->ep + judge / 2;//后判定区结束
+
+			//根据判定区域设状态
+			if ((pos >= SPJAreaS && pos <= SPJAreaE) || (pos >= EPJAreaS && pos <= EPJAreaE)) {
+				this->scrollerBlockBorderHighlight = true;
+			}
+			else if (pos > SPJAreaE && pos < EPJAreaS) {
+				this->scrollerBlockHighlight = true;
+			}
+		}
+	}
+	else {
+		//如果更改状态直接判断滑块高亮
+		switch (this->scrollerState)
+		{
+		case ScrollerState::SPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::EPChange:
+		{
+			this->scrollerBlockBorderHighlight = true;
+			break;
+		}
+		case ScrollerState::BlockChange:
+		{
+			this->scrollerBlockHighlight = true;
+			break;
+		}
+		}
+	}
+	
+	//设置鼠标状态
+	if (this->scrollerBlockBorderHighlight) {
+		if (this->getVertical()) {
+			this->setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+		}
+	}
+	else if (this->scrollerBlockHighlight) {
+		if (this->scrollerState == ScrollerState::Normal) {
+			this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+		}
+	}
+	if (!(this->scrollerBlockBorderHighlight || this->scrollerBlockHighlight)) {
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+	}
+
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 {
+	juce::ScopedWriteLock locker(this->tempLock);
 
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//考虑横竖计算鼠标位置和判定区域
+	double pos = 0;
+	double judge = 0;
+	if (this->getVertical()) {
+		pos = event.position.getY() / (double)this->getHeight();
+		judge = (this->sizes.height_scrollerBlockJudgeArea * screenSize.getHeight()) / this->getHeight();
+	}
+	else {
+		pos = event.position.getX() / (double)this->getWidth();
+		judge = (this->sizes.width_scrollerBlockJudgeArea * screenSize.getWidth()) / this->getWidth();
+	}
+
+	//左键变化
+	if (event.mods.isLeftButtonDown()) {
+		if (this->ptrTemp) {
+			switch (this->scrollerState)
+			{
+			case ScrollerState::SPChange:
+			{
+				//更改值
+				this->ptrTemp->sp = pos;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				break;
+			}
+			case ScrollerState::EPChange:
+			{
+				//更改值
+				this->ptrTemp->ep = pos;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				break;
+			}
+			case ScrollerState::BlockChange:
+			{
+				//更改值
+				double length = this->epTemp - this->spTemp;
+				double delta = length * this->blockPerTemp;
+				this->ptrTemp->sp = pos - delta;
+				this->ptrTemp->ep = this->ptrTemp->sp + length;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				//发送改变
+				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+				break;
+			}
+			}
+		}
+
+		//还原状态
+		this->scrollerState = ScrollerState::Normal;
+		this->spTemp = 0.;
+		this->epTemp = 1.;
+		this->blockPerTemp = 0.5;
+	}
+
+	//根据鼠标位置判断滑块高亮
+	this->scrollerBlockHighlight = false;
+	this->scrollerBlockBorderHighlight = false;
+	if (this->ptrTemp) {
+		//计算判定区域
+		bool haveBlockArea = (this->ptrTemp->ep - this->ptrTemp->sp) > judge;	//滑块判定区未被占用
+		double SPJAreaS = this->ptrTemp->sp - judge / 2;//前判定区起始
+		double SPJAreaE = haveBlockArea
+			? (this->ptrTemp->sp + judge / 2)
+			: (this->ptrTemp->sp + (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//前判定区结束
+		double EPJAreaS = haveBlockArea
+			? (this->ptrTemp->ep - judge / 2)
+			: (this->ptrTemp->ep - (this->ptrTemp->ep - this->ptrTemp->sp) / 2);//后判定区起始
+		double EPJAreaE = this->ptrTemp->ep + judge / 2;//后判定区结束
+
+		//根据判定区域设状态
+		if ((pos >= SPJAreaS && pos <= SPJAreaE) || (pos >= EPJAreaS && pos <= EPJAreaE)) {
+			this->scrollerBlockBorderHighlight = true;
+		}
+		else if (pos > SPJAreaE && pos < EPJAreaS) {
+			this->scrollerBlockHighlight = true;
+		}
+	}
+	
+	//设置鼠标状态
+	if (this->scrollerBlockBorderHighlight) {
+		if (this->getVertical()) {
+			this->setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
+		}
+		else {
+			this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+		}
+	}
+	else if (this->scrollerBlockHighlight) {
+		this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	}
+	if (!(this->scrollerBlockBorderHighlight || this->scrollerBlockHighlight)) {
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+	}
+	
+	//刷新
+	this->repaint();
 }
 
 void ScrollerBase::mouseExit(const juce::MouseEvent& event)
 {
-
+	//重置全部状态并刷新
+	if (this->scrollerBlockHighlight || this->scrollerState != ScrollerState::Normal) {
+		this->scrollerBlockHighlight = false;
+		this->scrollerBlockBorderHighlight = false;
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+		this->scrollerState = ScrollerState::Normal;
+		this->spTemp = 0.;
+		this->epTemp = 1.;
+		this->blockPerTemp = 0.5;
+		this->repaint();
+	}
 }
 
 //

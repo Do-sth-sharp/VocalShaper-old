@@ -7,7 +7,10 @@
 
     "background-rulerHead:string": "$ThemeColorB3",
 
-    "background-timeRuler:string": "$ThemeColorB1"
+    "background-timeRuler:string": "$ThemeColorB1",
+
+    "background-scroller:string": "",
+    "block-scroller:string": ""
   },
   "resource": {
   }

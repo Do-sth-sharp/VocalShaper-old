@@ -9,7 +9,10 @@
     "width-verticalScroller:number": 0.0125,
 
     "height-borderTop:number": 0.0015,
-    "width-borderRight:number": 0.001
+    "width-borderRight:number": 0.001,
+
+    "width-scrollerBlockJudgeArea:number": 0.005,
+    "height-scrollerBlockJudgeArea:number": 0.005
   },
   "position": {
   },

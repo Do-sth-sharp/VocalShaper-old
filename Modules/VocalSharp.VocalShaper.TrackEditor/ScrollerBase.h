@@ -31,7 +31,7 @@ public:
 
 	void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details) override;
 	void mouseDown(const juce::MouseEvent& event) override;
-	void mouseDrag(const juce::MouseEvent& event) override;
+	void mouseMove(const juce::MouseEvent& event) override;
 	void mouseUp(const juce::MouseEvent& event) override;
 	void mouseExit(const juce::MouseEvent& event) override;
 
@@ -63,6 +63,8 @@ private:
 	}colors;//界面颜色
 	struct Size final
 	{
+		double width_scrollerBlockJudgeArea;
+		double height_scrollerBlockJudgeArea;
 		/*double width_beat_min;
 		double width_beat_max;
 		double height_track_min;
@@ -71,6 +73,8 @@ private:
 	struct Scales final
 	{
 	}scales;//控件缩放
+
+	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	const bool isVertical = false;
 
@@ -92,6 +96,17 @@ private:
 	juce::ReadWriteLock projectLock;
 
 	bool isFollow = true;
+
+	enum class ScrollerState {
+		Normal,					//正常状态
+		SPChange,				//前端位置更改
+		EPChange,				//后端位置更改
+		BlockChange				//滑块位置更改
+	}scrollerState = ScrollerState::Normal;			//当前状态
+	bool scrollerBlockHighlight = false;			//滑块高亮
+	bool scrollerBlockBorderHighlight = false;		//滑块边界高亮
+	double spTemp = 0., epTemp = 1.;				//按下时状态缓存
+	double blockPerTemp = 0.5;						//按在滑块的位置百分比
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScrollerBase)
 };
