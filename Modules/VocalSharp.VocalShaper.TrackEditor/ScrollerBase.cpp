@@ -31,19 +31,34 @@ ScrollerBase::ScrollerBase(bool isVertical)
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-scrollerBlockJudgeArea", this->sizes.height_scrollerBlockJudgeArea, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-scrollerMargin", this->sizes.width_scrollerMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-scrollerMargin", this->sizes.height_scrollerMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-scrollerBlockRadix", this->sizes.width_scrollerBlockRadix, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-scrollerBlockRadix", this->sizes.height_scrollerBlockRadix, result
+		);
 
 	//position
 	//scale
-
 	//resource
 }
 
-bool ScrollerBase::getVertical()
+bool ScrollerBase::getVertical() const
 {
 	return this->isVertical;
 }
 
-void ScrollerBase::limitSize(double& sp, double& ep)
+void ScrollerBase::limitSize(double& sp, double& ep, double nailPer)
 {
 	if (ep < sp) { std::swap(ep, sp); }
 	double delta = ep - sp;
@@ -57,7 +72,7 @@ void ScrollerBase::limitSize(double& sp, double& ep)
 	}
 }
 
-void ScrollerBase::paintPreView(juce::Graphics& g)
+void ScrollerBase::paintPreView(juce::Graphics& g, int width, int height, bool isVertical)
 {
 }
 
@@ -78,12 +93,111 @@ void ScrollerBase::refreshSizeOnProjectLengthChanged(
 //
 void ScrollerBase::resized()
 {
+	//获得缓存
+	int lastSize = this->sizeTemp;
 
+	//判断是否需要更新并更新缓存
+	bool shouldChange = false;
+	if (this->getVertical()) {
+		if (this->getHeight() != lastSize) {
+			this->sizeTemp = this->getHeight();
+			shouldChange = true;
+		}
+	}
+	else {
+		if (this->getWidth() != lastSize) {
+			this->sizeTemp = this->getWidth();
+			shouldChange = true;
+		}
+	}
+
+	//不需要更新缓存，短路
+	if (!shouldChange) {
+		return;
+	}
+
+	//如果缓存有效，试图控制分辨率
+	{
+		juce::ScopedReadLock locker(this->tempLock);
+		if (this->ptrTemp) {
+			//根据缩放以控制分辨率为目的重算滑块区域
+			double scale = this->sizeTemp / (double)lastSize;
+			double delta = this->ptrTemp->ep - this->ptrTemp->sp;
+			delta *= scale;
+			this->ptrTemp->ep = this->ptrTemp->sp + delta;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+		}
+	}
 }
 
 void ScrollerBase::paint(juce::Graphics& g)
 {
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
 
+	//绘制背景
+	g.setColour(this->colors.background_scroller);
+	g.fillAll();
+
+	//绘制预览
+	this->paintPreView(g, this->getWidth(), this->getHeight(), this->getVertical());
+
+	//根据状态选择颜色
+	juce::Colour colorBlock = this->colors.block_scroller;
+	if (this->scrollerState != ScrollerState::Normal) {
+		colorBlock = colorBlock.brighter(0.25f);
+	}
+	else if (this->scrollerBlockHighlight || this->scrollerBlockBorderHighlight) {
+		colorBlock = colorBlock.brighter(0.25f);
+	}
+
+	//计算控件大小
+	int radix = 0, margin = 0, startPos = 0, endPos = 0;
+	{
+		juce::ScopedReadLock locker(this->tempLock);
+		if (this->getVertical()) {
+			radix = this->sizes.width_scrollerBlockRadix * screenSize.getWidth();
+			margin = this->sizes.width_scrollerMargin * screenSize.getWidth();
+			startPos = 0;
+			endPos = this->getHeight();
+			if (this->ptrTemp) {
+				startPos = this->getHeight() * this->ptrTemp->sp;
+				endPos = this->getHeight() * this->ptrTemp->ep;
+			}
+		}
+		else {
+			radix = this->sizes.height_scrollerBlockRadix * screenSize.getHeight();
+			margin = this->sizes.height_scrollerMargin * screenSize.getHeight();
+			startPos = 0;
+			endPos = this->getWidth();
+			if (this->ptrTemp) {
+				startPos = this->getWidth() * this->ptrTemp->sp;
+				endPos = this->getWidth() * this->ptrTemp->ep;
+			}
+		}
+	}
+	
+	//绘制滑块
+	g.setColour(colorBlock);
+	if (this->getVertical()) {
+		g.fillRoundedRectangle(
+			margin, startPos,
+			this->getWidth() - margin * 2, endPos - startPos,
+			radix);
+	}
+	else {
+		g.fillRoundedRectangle(
+			startPos, margin,
+			endPos - startPos, this->getHeight() - margin * 2,
+			radix
+		);
+	}
 }
 
 //
@@ -121,7 +235,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 			this->ptrTemp->ep = this->ptrTemp->ep + delta;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -133,7 +247,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 			this->ptrTemp->sp = this->ptrTemp->sp + delta;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -147,7 +261,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 			this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -167,7 +281,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 			}
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -293,7 +407,7 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->ptrTemp->sp = pos;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -306,7 +420,7 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->ptrTemp->ep = pos;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -325,7 +439,7 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->ptrTemp->ep = this->ptrTemp->sp + length;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -344,7 +458,7 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->ptrTemp->ep = this->ptrTemp->sp + length;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -364,7 +478,7 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->ptrTemp->ep = this->ptrTemp->sp + length;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -475,7 +589,7 @@ void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 			this->ptrTemp->sp = pos;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -488,7 +602,7 @@ void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 			this->ptrTemp->ep = pos;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -504,7 +618,7 @@ void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 			this->ptrTemp->ep = this->ptrTemp->sp + length;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -618,7 +732,7 @@ void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 				this->ptrTemp->sp = pos;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -631,7 +745,7 @@ void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 				this->ptrTemp->ep = pos;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -647,7 +761,7 @@ void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 				this->ptrTemp->ep = this->ptrTemp->sp + length;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -763,7 +877,7 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 		}
 
 		//限制大小
-		this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+		this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 		//发送改变
 		this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -800,7 +914,7 @@ void ScrollerBase::trackChanged(int trackID)
 		this->ptrTemp->trackSizeTemp = trackSize;
 
 		//限制大小
-		this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+		this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 		//发送改变
 		this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -895,7 +1009,7 @@ void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 			this->ptrTemp->projectLengthTemp = projectLengthTemp;
 
 			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -936,7 +1050,7 @@ void ScrollerBase::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 					this->ptrTemp->ep = per + diff;
 
 					//限制大小
-					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep);
+					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
 
 					//发送改变
 					this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);

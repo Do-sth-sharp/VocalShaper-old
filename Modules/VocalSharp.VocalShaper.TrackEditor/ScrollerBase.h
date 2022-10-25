@@ -9,13 +9,13 @@ public:
 	virtual ~ScrollerBase() override = default;
 
 public:
-	bool getVertical();
+	bool getVertical() const;
 
 protected:
 	//根据大小限制计算滑块大小
-	virtual void limitSize(double& sp, double& ep);
+	virtual void limitSize(double& sp, double& ep, double nailPer);
 	//绘制背景预览
-	virtual void paintPreView(juce::Graphics& g);
+	virtual void paintPreView(juce::Graphics& g, int width, int height, bool isVertical);
 	//发送通知
 	virtual void noticeChange(double sp, double ep);
 	//轨道数量发生改变时重新计算竖直卷滚条位置
@@ -55,6 +55,11 @@ public:
 	//监听项目关闭
 	void listenProjectClose(const vocalshaper::ProjectProxy* ptr);
 
+protected:
+	vocalshaper::ProjectProxy* project = nullptr;
+	int trackID = -1;
+	juce::ReadWriteLock projectLock;
+
 private:
 	struct Colors final
 	{
@@ -65,10 +70,10 @@ private:
 	{
 		double width_scrollerBlockJudgeArea;
 		double height_scrollerBlockJudgeArea;
-		/*double width_beat_min;
-		double width_beat_max;
-		double height_track_min;
-		double height_track_max;*/
+		double width_scrollerMargin;
+		double height_scrollerMargin;
+		double width_scrollerBlockRadix;
+		double height_scrollerBlockRadix;
 	}sizes;//控件大小
 	struct Scales final
 	{
@@ -91,10 +96,6 @@ private:
 	SizeTemp* ptrTemp = nullptr;
 	juce::ReadWriteLock tempLock;
 
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
-
 	bool isFollow = true;
 
 	enum class ScrollerState {
@@ -107,6 +108,8 @@ private:
 	bool scrollerBlockBorderHighlight = false;		//滑块边界高亮
 	double spTemp = 0., epTemp = 1.;				//按下时状态缓存
 	double blockPerTemp = 0.5;						//按在滑块的位置百分比
+
+	int sizeTemp = 0;			//卷滚条长度缓存
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScrollerBase)
 };
