@@ -9,8 +9,8 @@
 
     "background-timeRuler:string": "$ThemeColorB1",
 
-    "background-scroller:string": "",
-    "block-scroller:string": ""
+    "background-scroller:string": "$ThemeColorB1",
+    "block-scroller:string": "$ThemeColorD3"
   },
   "resource": {
   }

@@ -674,11 +674,16 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 	if (this->project != action.getProxy()) {
 		return;
 	}
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
 	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
 		if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddTrack) {
 			auto data = reinterpret_cast<const vocalshaper::actions::project::AddTrackAction::DataType*>(action.getData());
 			if (type == vocalshaper::actions::ActionBase::UndoType::Perform) {
-				this->setCurrentTrack(data->index);
+				int index = data->index;
+				messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 			}
 			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
 				if (data->index == this->trackID) {
@@ -688,10 +693,12 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 					if (size > 0 && nextID < 0) {
 						nextID = 0;
 					}
-					this->setCurrentTrack(nextID);
+					int index = nextID;
+					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 				}
 				else {
-					this->setCurrentTrack(this->trackID);
+					int index = this->trackID;
+					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 				}
 			}
 		}
@@ -705,14 +712,17 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 					if (size > 0 && nextID < 0) {
 						nextID = 0;
 					}
-					this->setCurrentTrack(nextID);
+					int index = nextID;
+					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 				}
 				else {
-					this->setCurrentTrack(this->trackID);
+					int index = this->trackID;
+					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 				}
 			}
 			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
-				this->setCurrentTrack(data->index);
+				int index = data->index;
+				messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
 			}
 		}
 	}
@@ -720,26 +730,46 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 
 void EditorComponent::listenCurveQuantificationChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
+	juce::ScopedReadLock locker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
 	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
 		if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::CurveQuantification) {
-			this->refreshTotalLength();
+			messageManager->callAsync([this] {this->refreshTotalLength(); });
 		}
 	}
 }
 
 void EditorComponent::listenCurrentPositionChange(vocalshaper::ProjectTime currentTime)
 {
-	this->currentPositionChanged(currentTime);
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+	messageManager->callAsync([this, currentTime] {this->currentPositionChanged(currentTime); });
 }
 
 void EditorComponent::listenFollowStateChange(bool followState)
 {
-	this->followStateChanged(followState);
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+	messageManager->callAsync([this, followState] {this->followStateChanged(followState); });
 }
 
 void EditorComponent::listenLoopRangeChange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
-	this->loopRangeChanged(startTime, endTime);
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+	messageManager->callAsync([this, startTime, endTime] {this->loopRangeChanged(startTime, endTime); });
 }
 
 void EditorComponent::resized()

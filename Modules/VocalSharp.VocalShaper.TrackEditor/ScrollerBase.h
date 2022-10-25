@@ -10,6 +10,7 @@ public:
 
 public:
 	bool getVertical() const;
+	void showCurve(const vocalshaper::Track* track, bool show);
 
 protected:
 	//根据大小限制计算滑块大小
@@ -18,9 +19,11 @@ protected:
 	virtual void paintPreView(juce::Graphics& g, int width, int height, bool isVertical);
 	//发送通知
 	virtual void noticeChange(double sp, double ep);
-	//轨道数量发生改变时重新计算竖直卷滚条位置
+	//轨道数量和展开状态发生改变时重新计算竖直卷滚条位置
 	virtual void refreshSizeOnTrackSizeChanged(
-		int lastSize, int size, double& sp, double& ep);
+		int lastSize, int size,
+		std::map<const vocalshaper::Track*, int> trackState, std::map<const vocalshaper::Track*, int> lastTrackState,
+		double& sp, double& ep);
 	//工程长度发生改变时重新计算水平卷滚条位置
 	virtual void refreshSizeOnProjectLengthChanged(
 		uint32_t lastLength, uint32_t length, double& sp, double& ep);
@@ -55,10 +58,27 @@ public:
 	//监听项目关闭
 	void listenProjectClose(const vocalshaper::ProjectProxy* ptr);
 
+	//监听曲线数量变化
+	void listenCurveChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
 protected:
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
+
+	struct SizeTemp
+	{
+		int trackSizeTemp = 0;									//暂存轨道数量
+		uint32_t projectLengthTemp = 0;							//暂存工程长度
+		uint32_t projectCurveQuantTemp = 480;					//暂存曲线量化
+		uint64_t currentPositionTemp = 0;						//暂存当前播放位置
+		bool followTemp = true;									//暂存跟随状态
+		double sp = 0., ep = 1.;								//起止位置
+		std::map<const vocalshaper::Track*, int> trackState;	//记录轨道展开状态
+	};
+	std::map<const vocalshaper::ProjectProxy*, SizeTemp> tempList;
+	SizeTemp* ptrTemp = nullptr;
+	juce::ReadWriteLock tempLock;
 
 private:
 	struct Colors final
@@ -82,19 +102,6 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	const bool isVertical = false;
-
-	struct SizeTemp
-	{
-		int trackSizeTemp = 0;					//暂存轨道数量
-		uint32_t projectLengthTemp = 0;			//暂存工程长度
-		uint32_t projectCurveQuantTemp = 480;	//暂存曲线量化
-		uint64_t currentPositionTemp = 0;		//暂存当前播放位置
-		bool followTemp = true;					//暂存跟随状态
-		double sp = 0., ep = 1.;				//起止位置
-	};
-	std::map<const vocalshaper::ProjectProxy*, SizeTemp> tempList;
-	SizeTemp* ptrTemp = nullptr;
-	juce::ReadWriteLock tempLock;
 
 	bool isFollow = true;
 

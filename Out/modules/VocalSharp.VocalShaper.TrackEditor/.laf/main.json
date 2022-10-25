@@ -12,10 +12,18 @@
     "width-borderRight:number": 0.001,
 
     "width-scrollerBlockJudgeArea:number": 0.005,
-    "height-scrollerBlockJudgeArea:number": 0.005
+    "height-scrollerBlockJudgeArea:number": 0.005,
+    "width-scrollerMargin:number": 0.005,
+    "height-scrollerMargin:number": 0.005,
+    "width-scrollerBlockRadix:number": 0.005,
+    "height-scrollerBlockRadix:number": 0.005,
+
+    "height-track-min:number": 0.1,
+    "height-track-max:number": 0.4
   },
   "position": {
   },
   "scale": {
+    "height-curveByTrack:number": 0.5
   }
 }

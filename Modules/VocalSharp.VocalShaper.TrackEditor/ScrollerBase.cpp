@@ -51,11 +51,68 @@ ScrollerBase::ScrollerBase(bool isVertical)
 	//position
 	//scale
 	//resource
+
+	//监听项目关闭
+	jmadf::CallInterface<const vocalshaper::ProjectProxy::CloseCallbackFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddCloseCallback",
+		[this](const vocalshaper::ProjectProxy* ptr) {this->listenProjectClose(ptr); });
+
+	//监听曲线数量变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenCurveChange(action, type); });
 }
 
 bool ScrollerBase::getVertical() const
 {
 	return this->isVertical;
+}
+
+void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
+{
+	juce::ScopedReadLock projLocker(this->projectLock);
+	juce::ScopedWriteLock locker(this->tempLock);
+	if (this->project && this->ptrTemp) {
+		//复制缓存
+		std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
+		{
+			//更新缓存的曲线数量
+			auto itState = trackState.find(track);
+			if ((itState != trackState.end())) {
+				itState->second = show ? vocalshaper::TrackDAO::curveSize(track) : 0;
+			}
+			else {
+				trackState.insert(std::make_pair(track,
+					show ? vocalshaper::TrackDAO::curveSize(track) : 0));
+			}
+		}
+
+		if ((trackState != this->ptrTemp->trackState) && this->getVertical()) {
+			//计算新缩放
+			this->refreshSizeOnTrackSizeChanged(
+				this->ptrTemp->trackSizeTemp, this->ptrTemp->trackSizeTemp,
+				this->ptrTemp->trackState, trackState,
+				this->ptrTemp->sp, this->ptrTemp->ep);
+
+			//更新缓存
+			this->ptrTemp->trackState = trackState;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+
+			return;
+		}
+
+		//更新缓存
+		this->ptrTemp->trackState = trackState;
+
+		//刷新
+		this->repaint();
+	}
 }
 
 void ScrollerBase::limitSize(double& sp, double& ep, double nailPer)
@@ -81,7 +138,9 @@ void ScrollerBase::noticeChange(double sp, double ep)
 }
 
 void ScrollerBase::refreshSizeOnTrackSizeChanged(
-	int lastSize, int size, double& sp, double& ep)
+	int lastSize, int size,
+	std::map<const vocalshaper::Track*, int> trackState, std::map<const vocalshaper::Track*, int> lastTrackState,
+	double& sp, double& ep)
 {
 }
 
@@ -900,18 +959,43 @@ void ScrollerBase::trackChanged(int trackID)
 
 	//获取轨道数
 	int trackSize = this->ptrTemp->trackSizeTemp;
+	std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
 	{
 		juce::ScopedReadLock projLocker(this->project->getLock());
+
+		//获取轨道总数
 		trackSize = vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+
+		//移除无效缓存，更新有效缓存的曲线数量
+		std::set<const vocalshaper::Track*> trackSet;
+		for (int i = 0; i < trackSize; i++) {
+			trackSet.insert(vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), i));
+		}
+		trackSet.insert(vocalshaper::ProjectDAO::getMasterTrack(this->project->getPtr()));
+		for (auto it = trackState.begin(); it != trackState.end();) {
+			if (trackSet.count(it->first) > 0) {
+				if (it->second > 0) {
+					it->second = vocalshaper::TrackDAO::curveSize(it->first);
+				}
+			}
+			else {
+				it = trackState.erase(it);
+				continue;
+			}
+			it++;
+		}
 	}
 
-	if ((trackSize != this->ptrTemp->trackSizeTemp) && this->getVertical()) {
+	if (((trackSize != this->ptrTemp->trackSizeTemp) || trackState != this->ptrTemp->trackState) &&
+		this->getVertical()) {
 		//计算新缩放
 		this->refreshSizeOnTrackSizeChanged(this->ptrTemp->trackSizeTemp, trackSize,
+			this->ptrTemp->trackState, trackState,
 			this->ptrTemp->sp, this->ptrTemp->ep);
 
 		//更新缓存
 		this->ptrTemp->trackSizeTemp = trackSize;
+		this->ptrTemp->trackState = trackState;
 
 		//限制大小
 		this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
@@ -924,6 +1008,7 @@ void ScrollerBase::trackChanged(int trackID)
 	
 	//更新缓存
 	this->ptrTemp->trackSizeTemp = trackSize;
+	this->ptrTemp->trackState = trackState;
 
 	//刷新
 	this->repaint();
@@ -1085,4 +1170,73 @@ void ScrollerBase::listenProjectClose(const vocalshaper::ProjectProxy* ptr)
 		this->tempList.erase(it);
 	}
 	this->repaint();
+}
+
+void ScrollerBase::listenCurveChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+		if (
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
+			juce::ScopedWriteLock locker(this->tempLock);
+			if (this->project && this->ptrTemp) {
+				//获取消息队列
+				auto messageManager = juce::MessageManager::getInstance();
+				if (!messageManager) {
+					return;
+				}
+
+				//复制缓存
+				std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
+				{
+					//获取目标轨道
+					const vocalshaper::Track* track = nullptr;
+					auto target =
+						reinterpret_cast<const vocalshaper::actions::TrackAction::TargetType*>(action.getTarget());
+					if (target->track > -1) {
+						track = vocalshaper::ProjectDAO::getMasterTrack(this->project->getPtr());
+					}
+					else {
+						track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), target->track);
+					}
+
+					//更新缓存的曲线数量
+					auto itState = trackState.find(track);
+					if ((itState != trackState.end()) && (itState->second > 0)) {
+						itState->second = vocalshaper::TrackDAO::curveSize(track);
+					}
+				}
+
+				if ((trackState != this->ptrTemp->trackState) && this->getVertical()) {
+					//计算新缩放
+					this->refreshSizeOnTrackSizeChanged(
+						this->ptrTemp->trackSizeTemp, this->ptrTemp->trackSizeTemp,
+						this->ptrTemp->trackState, trackState,
+						this->ptrTemp->sp, this->ptrTemp->ep);
+
+					//更新缓存
+					this->ptrTemp->trackState = trackState;
+
+					//限制大小
+					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
+
+					//发送改变
+					double sp = this->ptrTemp->sp, ep = this->ptrTemp->ep;
+					messageManager->callAsync([sp, ep, this] {this->noticeChange(sp, ep); });
+					
+					return;
+				}
+
+				//更新缓存
+				this->ptrTemp->trackState = trackState;
+
+				//刷新
+				messageManager->callAsync([this] {this->repaint(); });
+			}
+		}
+	}
 }
