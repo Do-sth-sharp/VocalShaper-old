@@ -54,9 +54,6 @@ void VScroller::limitSize(double& sp, double& ep, double nailPer)
 	//获取屏幕属性
 	juce::Rectangle<int> screenSize;
 	this->screenSizeFunc(this, screenSize);
-
-	//进行基础限制
-	this->ScrollerBase::limitSize(sp, ep, nailPer);
 	
 	{
 		juce::ScopedReadLock tempLocker(this->tempLock);
@@ -89,6 +86,8 @@ void VScroller::limitSize(double& sp, double& ep, double nailPer)
 			//根据delta限制滑块大小
 			double delta = ep - sp;
 			double nail = sp + delta * nailPer;
+			if (sp < 0.) { sp = 0.; if (nailPer > 0. && nailPer < 1.) { ep = delta; } }
+			if (ep > 1.) { ep = 1.; if (nailPer > 0. && nailPer < 1.) { sp = 1 - delta; } }
 			if (delta > deltaMax) { sp = nail - deltaMax * nailPer; ep = sp + deltaMax; }
 			if (delta < deltaMin) { sp = nail - deltaMin * nailPer; ep = sp + deltaMin; }
 		}
