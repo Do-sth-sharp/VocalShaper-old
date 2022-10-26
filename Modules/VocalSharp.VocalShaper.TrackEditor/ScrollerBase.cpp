@@ -117,15 +117,14 @@ void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 
 void ScrollerBase::limitSize(double& sp, double& ep, double nailPer)
 {
-	if (ep < sp) { std::swap(ep, sp); }
 	double delta = ep - sp;
 	if (delta >= 1.) {
 		sp = 0.;
 		ep = 1.;
 	}
 	else {
-		if (sp < 0.) { sp = 0.; ep = delta; }
-		if (ep > 1.) { ep = 1.; sp = 1 - delta; }
+		if (sp < 0.) { sp = 0.; if (nailPer > 0. && nailPer < 1.) { ep = delta; } }
+		if (ep > 1.) { ep = 1.; if (nailPer > 0. && nailPer < 1.) { sp = 1 - delta; } }
 	}
 }
 
@@ -210,10 +209,10 @@ void ScrollerBase::paint(juce::Graphics& g)
 	//根据状态选择颜色
 	juce::Colour colorBlock = this->colors.block_scroller;
 	if (this->scrollerState != ScrollerState::Normal) {
-		colorBlock = colorBlock.brighter(0.25f);
+		colorBlock = colorBlock.withMultipliedAlpha(1.5f);
 	}
 	else if (this->scrollerBlockHighlight || this->scrollerBlockBorderHighlight) {
-		colorBlock = colorBlock.brighter(0.25f);
+		colorBlock = colorBlock.withMultipliedAlpha(1.5f);
 	}
 
 	//计算控件大小
@@ -281,7 +280,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 	}
 	
 	//计算delta
-	double delta = details.deltaY / 50.;
+	double delta = details.deltaY / 20.;
 	//TODO delta调优
 
 	//计算编辑
@@ -322,6 +321,10 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 			//限制大小
 			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
 
+			//更新缓存
+			this->spTemp = this->ptrTemp->sp;
+			this->epTemp = this->ptrTemp->ep;
+
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 
@@ -349,7 +352,6 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 		}
 		}
 	}
-	
 
 	//根据更改状态计算区域状态
 	this->scrollerBlockHighlight = false;
@@ -461,28 +463,10 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 			if (pos >= SPJAreaS && pos <= SPJAreaE) {
 				//设状态
 				this->scrollerState = ScrollerState::SPChange;
-
-				//更改值
-				this->ptrTemp->sp = pos;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 			}
 			else if (pos >= EPJAreaS && pos <= EPJAreaE) {
 				//设状态
 				this->scrollerState = ScrollerState::EPChange;
-
-				//更改值
-				this->ptrTemp->ep = pos;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 			}
 			else if (pos > SPJAreaE && pos < EPJAreaS) {
 				//设状态
@@ -490,18 +474,6 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->spTemp = this->ptrTemp->sp;
 				this->epTemp = this->ptrTemp->ep;
 				this->blockPerTemp = (pos - this->spTemp) / (this->epTemp - this->spTemp);
-
-				//更改值
-				double length = this->epTemp - this->spTemp;
-				double delta = length * this->blockPerTemp;
-				this->ptrTemp->sp = pos - delta;
-				this->ptrTemp->ep = this->ptrTemp->sp + length;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 			}
 			else if (pos >= 0. && pos < SPJAreaS) {
 				//设状态
@@ -511,17 +483,19 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->blockPerTemp = 0.5;
 
 				//更改值
-				double length = this->epTemp - this->spTemp;
-				double delta = length * this->blockPerTemp;
-				this->ptrTemp->sp = pos - delta;
-				this->ptrTemp->ep = this->ptrTemp->sp + length;
+				double delta = this->ptrTemp->ep - this->ptrTemp->sp;
+				this->ptrTemp->sp = pos - delta / 2;
+				this->ptrTemp->ep = pos + delta / 2;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+
+				//更新缓存
+				this->spTemp = this->ptrTemp->sp;
+				this->epTemp = this->ptrTemp->ep;
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
-
 			}
 			else if (pos > EPJAreaE && pos <= 1.) {
 				//设状态
@@ -531,13 +505,16 @@ void ScrollerBase::mouseDown(const juce::MouseEvent& event)
 				this->blockPerTemp = 0.5;
 
 				//更改值
-				double length = this->epTemp - this->spTemp;
-				double delta = length * this->blockPerTemp;
-				this->ptrTemp->sp = pos - delta;
-				this->ptrTemp->ep = this->ptrTemp->sp + length;
+				double delta = this->ptrTemp->ep - this->ptrTemp->sp;
+				this->ptrTemp->sp = pos - delta / 2;
+				this->ptrTemp->ep = pos + delta / 2;
 
 				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+
+				//更新缓存
+				this->spTemp = this->ptrTemp->sp;
+				this->epTemp = this->ptrTemp->ep;
 
 				//发送改变
 				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
@@ -679,6 +656,10 @@ void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 			//限制大小
 			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
 
+			//更新缓存
+			this->spTemp = this->ptrTemp->sp;
+			this->epTemp = this->ptrTemp->ep;
+
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 
@@ -760,6 +741,11 @@ void ScrollerBase::mouseMove(const juce::MouseEvent& event)
 	this->repaint();
 }
 
+void ScrollerBase::mouseDrag(const juce::MouseEvent& event)
+{
+	this->mouseMove(event);
+}
+
 void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 {
 	juce::ScopedWriteLock locker(this->tempLock);
@@ -782,54 +768,6 @@ void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 
 	//左键变化
 	if (event.mods.isLeftButtonDown()) {
-		if (this->ptrTemp) {
-			switch (this->scrollerState)
-			{
-			case ScrollerState::SPChange:
-			{
-				//更改值
-				this->ptrTemp->sp = pos;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
-
-				break;
-			}
-			case ScrollerState::EPChange:
-			{
-				//更改值
-				this->ptrTemp->ep = pos;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
-
-				break;
-			}
-			case ScrollerState::BlockChange:
-			{
-				//更改值
-				double length = this->epTemp - this->spTemp;
-				double delta = length * this->blockPerTemp;
-				this->ptrTemp->sp = pos - delta;
-				this->ptrTemp->ep = this->ptrTemp->sp + length;
-
-				//限制大小
-				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, this->blockPerTemp);
-
-				//发送改变
-				this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
-
-				break;
-			}
-			}
-		}
-
 		//还原状态
 		this->scrollerState = ScrollerState::Normal;
 		this->spTemp = 0.;

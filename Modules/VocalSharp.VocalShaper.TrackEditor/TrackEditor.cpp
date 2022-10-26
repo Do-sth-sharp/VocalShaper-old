@@ -45,6 +45,10 @@ TrackEditor::TrackEditor()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-horizontalScroller", this->sizes.height_horizontalScroller, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-borderTop", this->sizes.height_borderTop, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -60,6 +64,10 @@ TrackEditor::TrackEditor()
 	//建立时间标尺
 	this->timeRuler = std::make_unique<TimeRuler>();
 	this->addAndMakeVisible(this->timeRuler.get());
+
+	//建立竖直卷滚条
+	this->vScroller = std::make_unique<VScroller>();
+	this->addAndMakeVisible(this->vScroller.get());
 }
 
 void TrackEditor::resized()
@@ -72,11 +80,18 @@ void TrackEditor::resized()
 	int width_trackHead = this->sizes.width_trackHead * screenSize.getWidth();
 	int height_timeRuler = this->sizes.height_timeRuler * screenSize.getHeight();
 	int width_verticalScroller = this->sizes.width_verticalScroller * screenSize.getWidth();
+	int height_horizontalScroller = this->sizes.height_horizontalScroller * screenSize.getHeight();
 
 	//调整时间标尺大小
 	this->timeRuler->setBounds(
 		width_trackHead, 0,
 		this->getWidth() - width_trackHead - width_verticalScroller, height_timeRuler);
+
+	//调整垂直卷滚条大小
+	this->vScroller->setBounds(
+		this->getWidth() - width_verticalScroller, height_timeRuler,
+		width_verticalScroller, this->getHeight() - height_timeRuler - height_horizontalScroller
+	);
 }
 
 void TrackEditor::paint(juce::Graphics& g)
@@ -93,6 +108,7 @@ void TrackEditor::paint(juce::Graphics& g)
 	int height_timeRuler = this->sizes.height_timeRuler * screenSize.getHeight();
 	int height_borderTop = this->sizes.height_borderTop * screenSize.getHeight();
 	int width_verticalScroller = this->sizes.width_verticalScroller * screenSize.getWidth();
+	int height_horizontalScroller = this->sizes.height_horizontalScroller * screenSize.getHeight();
 	int width_borderRight = this->sizes.width_borderRight * screenSize.getWidth();
 
 	//绘制标尺头部
@@ -112,7 +128,7 @@ void TrackEditor::paint(juce::Graphics& g)
 	juce::Rectangle<int> rectRulerTail(
 		this->getWidth() - width_verticalScroller, 0,
 		width_verticalScroller, height_timeRuler);
-	g.setColour(this->colors.background_timeRuler);
+	g.setColour(this->colors.background_rulerHead);
 	g.fillRect(rectRulerTail);
 
 	//绘制标尺尾上边框
@@ -130,6 +146,21 @@ void TrackEditor::paint(juce::Graphics& g)
 	);
 	g.setColour(this->colors.border);
 	g.fillRect(rectRulerTailRightBorder);
+
+	//绘制右下卷滚条交点
+	juce::Rectangle<int> rectScrollerTail(
+		this->getWidth() - width_verticalScroller, this->getHeight() - height_horizontalScroller,
+		width_verticalScroller, height_horizontalScroller);
+	g.setColour(this->colors.background_rulerHead);
+	g.fillRect(rectScrollerTail);
+
+	//绘制卷滚条交点右边框
+	juce::Rectangle<int> rectScrollerTailRightBorder(
+		this->getWidth() - width_borderRight, this->getHeight() - height_horizontalScroller,
+		width_borderRight, height_horizontalScroller
+	);
+	g.setColour(this->colors.border);
+	g.fillRect(rectScrollerTailRightBorder);
 }
 
 void TrackEditor::setMethods(
@@ -142,6 +173,9 @@ void TrackEditor::setMethods(
 )
 {
 	this->timeRuler->setMethods(
+		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
+		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
+	this->vScroller->setMethods(
 		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
 		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 	//TODO
@@ -160,6 +194,7 @@ void TrackEditor::setTrackViewMethods(
 )
 {
 	this->timeRuler->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
+	this->vScroller->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
 	//TODO
 	this->EditorBase::setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
 }
@@ -169,6 +204,7 @@ void TrackEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
 	this->timeRuler->projectChanged(ptr);
+	this->vScroller->projectChanged(ptr);
 	//TODO 刷新
 }
 
@@ -176,12 +212,14 @@ void TrackEditor::setEditMode(bool editMode)
 {
 	this->editModeFlag = editMode;
 	this->timeRuler->setEditMode(editMode);
+	this->vScroller->setEditMode(editMode);
 }
 
 void TrackEditor::setToolID(uint8_t toolID)
 {
 	this->toolID = toolID;
 	this->timeRuler->setToolID(toolID);
+	this->vScroller->setToolID(toolID);
 }
 
 void TrackEditor::trackChanged(int trackID)
@@ -189,42 +227,49 @@ void TrackEditor::trackChanged(int trackID)
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->trackID = trackID;
 	this->timeRuler->trackChanged(trackID);
+	this->vScroller->trackChanged(trackID);
 	//TODO 刷新
 }
 
 void TrackEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
 {
 	this->timeRuler->setTotalLength(totalLength);
+	this->vScroller->setTotalLength(totalLength);
 	//TODO
 }
 
 void TrackEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
 	this->timeRuler->setCurrentPosition(currentTime);
+	this->vScroller->setCurrentPosition(currentTime);
 	//TODO
 }
 
 void TrackEditor::setFollowState(bool follow)
 {
 	this->timeRuler->setFollowState(follow);
+	this->vScroller->setFollowState(follow);
 	//TODO
 }
 
 void TrackEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
 	this->timeRuler->setLoopRange(startTime, endTime);
+	this->vScroller->setLoopRange(startTime, endTime);
 	//TODO
 }
 
 void TrackEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
 	this->timeRuler->setHorizontalViewPort(startTime, endTime);
+	this->vScroller->setHorizontalViewPort(startTime, endTime);
 	//TODO
 }
 
 void TrackEditor::setVerticalViewPort(double bottomPitch, double topPitch)
 {
 	this->timeRuler->setVerticalViewPort(bottomPitch, topPitch);
+	this->vScroller->setVerticalViewPort(bottomPitch, topPitch);
 	//TODO
 }
 
@@ -233,6 +278,7 @@ void TrackEditor::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::
 	this->startTimeTemp = startTime;
 	this->endTimeTemp = endTime;
 	this->timeRuler->setHViewPort(startTime, endTime);
+	this->vScroller->setHViewPort(startTime, endTime);
 	//TODO
 }
 
@@ -241,18 +287,21 @@ void TrackEditor::setVViewPort(double bottomPer, double topPer)
 	this->bottomVPercentTemp = bottomPer;
 	this->topVPercentTemp = topPer;
 	this->timeRuler->setVViewPort(bottomPer, topPer);
+	this->vScroller->setVViewPort(bottomPer, topPer);
 	//TODO
 }
 
 void TrackEditor::setAdsorb(vocalshaper::AdsorbState state)
 {
 	this->timeRuler->setAdsorb(state);
+	this->vScroller->setAdsorb(state);
 	//TODO
 }
 
 void TrackEditor::setGrid(vocalshaper::GridState state)
 {
 	this->timeRuler->setGrid(state);
+	this->vScroller->setGrid(state);
 	//TODO
 }
 

@@ -26,6 +26,11 @@ private:
 	{
 		double height_track_min;
 		double height_track_max;
+
+		double width_verticalScroller_trackBlock;
+		double width_verticalScroller_curveBlock;
+		double width_verticalScroller_trackBlockMarginLeft;
+		double width_verticalScroller_curveBlockMarginLeft;
 	}sizes;//控件大小
 	struct Scale final
 	{

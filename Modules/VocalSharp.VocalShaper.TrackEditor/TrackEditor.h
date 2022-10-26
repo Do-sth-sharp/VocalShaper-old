@@ -2,6 +2,7 @@
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 #include "TimeRuler.h"
+#include "VScroller.h"
 
 class TrackEditor final : public vocalshaper::EditorBase
 {
@@ -59,6 +60,7 @@ private:
 		double width_trackHead;
 		double height_timeRuler;
 		double width_verticalScroller;
+		double height_horizontalScroller;
 
 		double height_borderTop;
 		double width_borderRight;
@@ -71,6 +73,7 @@ private:
 	juce::Rectangle<int> screenSize;
 
 	std::unique_ptr<TimeRuler> timeRuler = nullptr;
+	std::unique_ptr<VScroller> vScroller = nullptr;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
