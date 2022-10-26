@@ -94,7 +94,7 @@ void VScroller::limitSize(double& sp, double& ep, double nailPer)
 	}
 }
 
-void VScroller::paintPreView(juce::Graphics& g, int width, int height, bool /*isVertical*/)
+void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 {
 	//获取屏幕属性
 	juce::Rectangle<int> screenSize;
@@ -232,5 +232,55 @@ void VScroller::refreshSizeOnTrackSizeChanged(
 	if (overFlowMode) {
 		sp = (SP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)this->getHeight());
 		ep = (EP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)this->getHeight());
+	}
+}
+
+void VScroller::refreshSizeOnResized(int lastSize, int size, double& sp, double& ep)
+{
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	juce::ScopedReadLock tempLocker(this->tempLock);
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->ptrTemp && this->project) {
+		//计算轨道区最大最小大小
+		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
+		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
+		int curveMaxHeight = trackMaxHeight * this->scales.height_curveByTrack;
+		int curveMinHeight = trackMinHeight * this->scales.height_curveByTrack;
+
+		int trackSize = this->ptrTemp->trackSizeTemp + 1;
+		int curveSize = 0;
+		for (auto& i : this->ptrTemp->trackState) {
+			curveSize += i.second;
+		}
+
+		int maxSize = trackSize * trackMaxHeight + curveSize * curveMaxHeight;
+		int minSize = trackSize * trackMinHeight + curveSize * curveMinHeight;
+
+		//计算原先状态和新状态是否有多余空间
+		bool overFlowMode = (minSize < size);
+		bool lastOverFlowMode = (minSize < lastSize);
+
+		//计算原位置
+		double SP = sp * (trackSize + curveSize * this->scales.height_curveByTrack);
+		double EP = ep * (trackSize + curveSize * this->scales.height_curveByTrack);
+		if (lastOverFlowMode) {
+			SP = (sp / (minSize / (double)lastSize)) * (trackSize + curveSize * this->scales.height_curveByTrack);
+			EP = (ep / (minSize / (double)lastSize)) * (trackSize + curveSize * this->scales.height_curveByTrack);
+		}
+
+		//控制缩放
+		double ratio = (EP - SP) / lastSize;
+		EP = SP + ratio * size;
+
+		//计算新位置
+		sp = SP / (trackSize + curveSize * this->scales.height_curveByTrack);
+		ep = EP / (trackSize + curveSize * this->scales.height_curveByTrack);
+		if (overFlowMode) {
+			sp = (SP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)size);
+			ep = (EP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)size);
+		}
 	}
 }

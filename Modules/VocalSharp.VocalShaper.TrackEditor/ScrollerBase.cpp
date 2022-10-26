@@ -128,7 +128,7 @@ void ScrollerBase::limitSize(double& sp, double& ep, double nailPer)
 	}
 }
 
-void ScrollerBase::paintPreView(juce::Graphics& g, int width, int height, bool isVertical)
+void ScrollerBase::paintPreView(juce::Graphics& g, int width, int height)
 {
 }
 
@@ -145,6 +145,10 @@ void ScrollerBase::refreshSizeOnTrackSizeChanged(
 
 void ScrollerBase::refreshSizeOnProjectLengthChanged(
 	uint32_t lastLength, uint32_t length, double& sp, double& ep)
+{
+}
+
+void ScrollerBase::refreshSizeOnResized(int lastSize, int size, double& sp, double& ep)
 {
 }
 
@@ -179,10 +183,7 @@ void ScrollerBase::resized()
 		juce::ScopedReadLock locker(this->tempLock);
 		if (this->ptrTemp) {
 			//根据缩放以控制分辨率为目的重算滑块区域
-			double scale = this->sizeTemp / (double)lastSize;
-			double delta = this->ptrTemp->ep - this->ptrTemp->sp;
-			delta *= scale;
-			this->ptrTemp->ep = this->ptrTemp->sp + delta;
+			this->refreshSizeOnResized(lastSize, this->sizeTemp, this->ptrTemp->sp, this->ptrTemp->ep);
 
 			//限制大小
 			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
@@ -204,7 +205,7 @@ void ScrollerBase::paint(juce::Graphics& g)
 	g.fillAll();
 
 	//绘制预览
-	this->paintPreView(g, this->getWidth(), this->getHeight(), this->getVertical());
+	this->paintPreView(g, this->getWidth(), this->getHeight());
 
 	//根据状态选择颜色
 	juce::Colour colorBlock = this->colors.block_scroller;

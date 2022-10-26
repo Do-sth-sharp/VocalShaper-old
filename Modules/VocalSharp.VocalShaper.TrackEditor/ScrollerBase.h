@@ -16,7 +16,7 @@ protected:
 	//根据大小限制计算滑块大小
 	virtual void limitSize(double& sp, double& ep, double nailPer);
 	//绘制背景预览
-	virtual void paintPreView(juce::Graphics& g, int width, int height, bool isVertical);
+	virtual void paintPreView(juce::Graphics& g, int width, int height);
 	//发送通知
 	virtual void noticeChange(double sp, double ep);
 	//轨道数量和展开状态发生改变时重新计算竖直卷滚条位置
@@ -27,6 +27,8 @@ protected:
 	//工程长度发生改变时重新计算水平卷滚条位置
 	virtual void refreshSizeOnProjectLengthChanged(
 		uint32_t lastLength, uint32_t length, double& sp, double& ep);
+	//控件大小发生改变时重算卷滚条位置
+	virtual void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep);
 
 public:
 	void resized() override;
