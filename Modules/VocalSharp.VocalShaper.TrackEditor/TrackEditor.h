@@ -3,6 +3,7 @@
 #include <libVocalShaper.h>
 #include "TimeRuler.h"
 #include "VScroller.h"
+#include "HScroller.h"
 
 class TrackEditor final : public vocalshaper::EditorBase
 {
@@ -38,13 +39,13 @@ public:
 	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
 	void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
-	void setVViewPort(double bottomPer, double topPer) override;
+	void setVViewPort(double bottomTrack, double topTrack) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
 
 public:
 	void changeHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
-	void changeVViewPort(double bottomPer, double topPer);
+	void changeVViewPort(double bottomTrack, double topTrack);
 
 private:
 	struct Colors final
@@ -74,6 +75,7 @@ private:
 
 	std::unique_ptr<TimeRuler> timeRuler = nullptr;
 	std::unique_ptr<VScroller> vScroller = nullptr;
+	std::unique_ptr<HScroller> hScroller = nullptr;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
@@ -83,7 +85,7 @@ private:
 	uint8_t toolID = 1;
 
 	vocalshaper::ProjectTime startTimeTemp, endTimeTemp;
-	double bottomVPercentTemp = 1., topVPercentTemp = 0.;
+	double bottomVTrackTemp = 1., topVTrackTemp = 0.;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackEditor)
 };

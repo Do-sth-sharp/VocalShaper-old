@@ -4,6 +4,7 @@
   },
   "color": {
     "border:string": "$ThemeColorB1",
+    "cursor:string": "$ThemeColorD1",
 
     "background-rulerHead:string": "$ThemeColorB3",
 

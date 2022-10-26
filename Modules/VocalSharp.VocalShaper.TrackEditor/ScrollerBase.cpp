@@ -152,6 +152,10 @@ void ScrollerBase::refreshSizeOnResized(int lastSize, int size, double& sp, doub
 {
 }
 
+void ScrollerBase::updateVViewPort(double bottomTrack, double topTrack, double& sp, double& ep)
+{
+}
+
 //
 void ScrollerBase::resized()
 {
@@ -973,15 +977,15 @@ void ScrollerBase::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper:
 	this->repaint();
 }
 
-void ScrollerBase::setVViewPort(double bottomPer, double topPer)
+void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->projectLock);
 	if (this->project && this->ptrTemp) {
 		if (this->getVertical()) {
 			//计算起止位置
-			this->ptrTemp->sp = topPer;
-			this->ptrTemp->ep = bottomPer;
+			this->updateVViewPort(bottomTrack, topTrack,
+				this->ptrTemp->sp, this->ptrTemp->ep);
 		}
 	}
 

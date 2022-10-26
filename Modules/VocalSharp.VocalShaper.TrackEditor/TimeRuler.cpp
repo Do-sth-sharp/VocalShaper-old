@@ -109,7 +109,7 @@ void TimeRuler::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::Pr
 	//TODO
 }
 
-void TimeRuler::setVViewPort(double bottomPer, double topPer)
+void TimeRuler::setVViewPort(double bottomTrack, double topTrack)
 {
 	//TODO
 }

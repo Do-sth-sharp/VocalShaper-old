@@ -180,7 +180,39 @@ void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 
 void VScroller::noticeChange(double sp, double ep)
 {
-	this->setVViewPortMethod(ep, sp);
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	juce::ScopedReadLock tempLocker(this->tempLock);
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->ptrTemp && this->project) {
+		//计算轨道区最大最小大小
+		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
+		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
+		int curveMaxHeight = trackMaxHeight * this->scales.height_curveByTrack;
+		int curveMinHeight = trackMinHeight * this->scales.height_curveByTrack;
+
+		int trackSize = this->ptrTemp->trackSizeTemp + 1;
+		int curveSize = 0;
+		for (auto& i : this->ptrTemp->trackState) {
+			curveSize += i.second;
+		}
+
+		int maxSize = trackSize * trackMaxHeight + curveSize * curveMaxHeight;
+		int minSize = trackSize * trackMinHeight + curveSize * curveMinHeight;
+
+		//根据是否有多余空间计算位置
+		double topTrack = sp * (trackSize + curveSize * this->scales.height_curveByTrack);
+		double bottomTrack = ep * (trackSize + curveSize * this->scales.height_curveByTrack);
+		if (minSize < this->getHeight()) {
+			topTrack *= (this->getHeight() / (double)minSize);
+			bottomTrack *= (this->getHeight() / (double)minSize);
+		}
+
+		//发送更改
+		this->setVViewPortMethod(bottomTrack, topTrack);
+	}
 }
 
 void VScroller::refreshSizeOnTrackSizeChanged(
@@ -281,6 +313,40 @@ void VScroller::refreshSizeOnResized(int lastSize, int size, double& sp, double&
 		if (overFlowMode) {
 			sp = (SP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)size);
 			ep = (EP / (trackSize + curveSize * this->scales.height_curveByTrack)) * (minSize / (double)size);
+		}
+	}
+}
+
+void VScroller::updateVViewPort(double bottomTrack, double topTrack, double& sp, double& ep)
+{
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	juce::ScopedReadLock tempLocker(this->tempLock);
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->ptrTemp && this->project) {
+		//计算轨道区最大最小大小
+		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
+		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
+		int curveMaxHeight = trackMaxHeight * this->scales.height_curveByTrack;
+		int curveMinHeight = trackMinHeight * this->scales.height_curveByTrack;
+
+		int trackSize = this->ptrTemp->trackSizeTemp + 1;
+		int curveSize = 0;
+		for (auto& i : this->ptrTemp->trackState) {
+			curveSize += i.second;
+		}
+
+		int maxSize = trackSize * trackMaxHeight + curveSize * curveMaxHeight;
+		int minSize = trackSize * trackMinHeight + curveSize * curveMinHeight;
+
+		//根据是否有多余空间计算位置
+		sp = topTrack / (trackSize + curveSize * this->scales.height_curveByTrack);
+		ep = bottomTrack / (trackSize + curveSize * this->scales.height_curveByTrack);
+		if (minSize < this->getHeight()) {
+			sp *= (minSize / (double)this->getHeight());
+			ep *= (minSize / (double)this->getHeight());
 		}
 	}
 }

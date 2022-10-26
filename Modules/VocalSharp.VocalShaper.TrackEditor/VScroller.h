@@ -22,6 +22,8 @@ protected:
 		double& sp, double& ep) override;
 	//控件大小发生改变时重算卷滚条位置
 	void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep) override;
+	//从轨道位置计算卷滚条百分比
+	void updateVViewPort(double bottomTrack, double topTrack, double& sp, double& ep) override;
 
 private:
 	struct Size final

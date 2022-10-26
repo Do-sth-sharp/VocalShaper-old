@@ -29,6 +29,8 @@ protected:
 		uint32_t lastLength, uint32_t length, double& sp, double& ep);
 	//控件大小发生改变时重算卷滚条位置
 	virtual void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep);
+	//从轨道位置计算卷滚条百分比
+	virtual void updateVViewPort(double bottomTrack, double topTrack, double& sp, double& ep);
 
 public:
 	void resized() override;
@@ -49,7 +51,7 @@ public:
 	//切换水平浏览范围时被调用（针对轨道面板）
 	virtual void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
 	//切换垂直浏览范围时被调用（针对轨道面板）
-	virtual void setVViewPort(double bottomPer, double topPer) override;
+	virtual void setVViewPort(double bottomTrack, double topTrack) override;
 	//更改总长度时被调用
 	virtual void setTotalLength(vocalshaper::ProjectTime totalLength) override;
 	//更改当前播放位置时被调用
