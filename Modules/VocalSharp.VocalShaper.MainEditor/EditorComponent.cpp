@@ -604,11 +604,17 @@ void EditorComponent::refreshTotalLength()
 void EditorComponent::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 {
 	//TODO 同步至播放控制器
+	//begin test
+	this->currentPositionChanged(currentTime);
+	//end test
 }
 
 void EditorComponent::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
 {
 	//TODO 同步至播放控制器
+	//begin test
+	this->loopRangeChanged(startTime, endTime);
+	//end test
 }
 
 void EditorComponent::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)

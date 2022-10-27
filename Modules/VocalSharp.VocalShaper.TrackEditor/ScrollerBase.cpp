@@ -295,7 +295,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 		case ScrollerState::SPChange:
 		{
 			//更改值
-			this->ptrTemp->ep = this->ptrTemp->ep + delta;
+			this->ptrTemp->ep = this->ptrTemp->ep - delta;
 
 			//限制大小
 			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
@@ -307,7 +307,7 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 		case ScrollerState::EPChange:
 		{
 			//更改值
-			this->ptrTemp->sp = this->ptrTemp->sp + delta;
+			this->ptrTemp->sp = this->ptrTemp->sp - delta;
 
 			//限制大小
 			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 1.);
@@ -319,12 +319,23 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 		}
 		case ScrollerState::BlockChange:
 		{
-			//更改值
-			this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
-			this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+			double per = this->blockPerTemp;
+			if (per >= 0. && per <= 1.) {
+				//更改值
+				this->ptrTemp->sp = this->ptrTemp->sp - delta * per;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta * (1 - per);
 
-			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, per);
+			}
+			else {
+				//更改值
+				this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+			}
 
 			//更新缓存
 			this->spTemp = this->ptrTemp->sp;
@@ -337,18 +348,33 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 		}
 		case ScrollerState::Normal:
 		{
-			//更改值
 			if (event.mods.isCtrlDown()) {
-				this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
-				this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+				double per = (pos - this->ptrTemp->sp) / (this->ptrTemp->ep - this->ptrTemp->sp);
+				if (per >= 0. && per <= 1.) {
+					//更改值
+					this->ptrTemp->sp = this->ptrTemp->sp - delta * per;
+					this->ptrTemp->ep = this->ptrTemp->ep + delta * (1 - per);
+
+					//限制大小
+					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, per);
+				}
+				else {
+					//更改值
+					this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
+					this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+
+					//限制大小
+					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+				}
 			}
 			else {
-				this->ptrTemp->sp = this->ptrTemp->sp + delta;
-				this->ptrTemp->ep = this->ptrTemp->ep + delta;
-			}
+				//更改值
+				this->ptrTemp->sp = this->ptrTemp->sp - delta;
+				this->ptrTemp->ep = this->ptrTemp->ep - delta;
 
-			//限制大小
-			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+			}
 
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);

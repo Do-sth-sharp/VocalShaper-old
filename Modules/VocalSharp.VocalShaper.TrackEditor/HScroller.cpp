@@ -100,7 +100,7 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 				= width * (this->ptrTemp->currentPositionTemp / (double)this->ptrTemp->projectLengthTemp);
 
 			//计算指针宽度
-			int width_cursor = this->sizes.width_cursor * screenSize.getWidth();
+			float width_cursor = this->sizes.width_cursor * screenSize.getWidth();
 
 			//绘制指针
 			juce::Rectangle<float> cursorRect(
@@ -130,7 +130,7 @@ void HScroller::noticeChange(double sp, double ep)
 				= vocalshaper::doubleToTime(ep * lengthSize, this->ptrTemp->projectCurveQuantTemp);
 
 			//发送更改
-			this->setHViewPort(startTime, endTime);
+			this->setHViewPortMethod(startTime, endTime);
 		}
 	}
 }
