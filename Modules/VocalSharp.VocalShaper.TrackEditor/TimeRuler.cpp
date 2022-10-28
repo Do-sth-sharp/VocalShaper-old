@@ -23,6 +23,22 @@ TimeRuler::TimeRuler()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "timeRuler-loopArea", this->colors.timeRuler_loopArea, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "timeRuler-loopJudgeArea", this->colors.timeRuler_loopJudgeArea, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "timeRuler-label-on", this->colors.timeRuler_label_on, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "timeRuler-label-off", this->colors.timeRuler_label_off, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
 		"main", "color", "border", this->colors.border, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -66,6 +82,10 @@ TimeRuler::TimeRuler()
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-timeRuler-barTextRightMargin", this->sizes.width_timeRuler_barTextRightMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-timeRuler-loopJudgeArea", this->sizes.width_timeRuler_loopJudgeArea, result
 		);
 
 	//position
@@ -243,9 +263,51 @@ void TimeRuler::paint(juce::Graphics& g)
 				}
 			}
 
-			//判断并绘制选区
+			//TODO 绘制标签
 			{
 
+			}
+
+			//TODO 绘制编辑中的标签
+			{
+
+			}
+
+			//判断并绘制选区
+			{
+				//判断选区有效
+				if (this->loopEndTime > this->loopStartTime) {
+					//计算选区位置
+					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
+					float startLoopPos = ((this->loopStartTime - startTime) / totalLength) * this->getWidth();
+					float endLoopPos= ((this->loopEndTime - startTime) / totalLength) * this->getWidth();
+					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
+					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
+
+					//如果选区与预览区重合
+					if (endLoopJudgePos > 0 && startLoopJudgePos < this->getWidth()) {
+						//绘选区
+						juce::Rectangle<float> rectLoopArea(
+							startLoopPos, 0,
+							endLoopPos - startLoopPos, this->getHeight()
+						);
+						g.setColour(this->colors.timeRuler_loopArea);
+						g.fillRect(rectLoopArea);
+
+						//绘判定区
+						juce::Rectangle<float> rectLeftJudgeArea(
+							startLoopJudgePos, 0,
+							width_loopJudgeArea, this->getHeight()
+						);
+						juce::Rectangle<float> rectRightJudgeArea(
+							endLoopPos, 0,
+							width_loopJudgeArea, this->getHeight()
+						);
+						g.setColour(this->colors.timeRuler_loopJudgeArea);
+						g.fillRect(rectLeftJudgeArea);
+						g.fillRect(rectRightJudgeArea);
+					}
+				}
 			}
 		}
 	}

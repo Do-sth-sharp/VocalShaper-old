@@ -31,6 +31,9 @@
     "width-verticalScroller-trackBlockMarginLeft:number": 0.0025,
     "width-verticalScroller-curveBlockMarginLeft:number": 0.005,
 
+    "height-horizontalScroller-loopBlock:number": 0.002,
+    "height-horizontalScroller-loopBlockMarginTop:number": 0.002,
+
     "height-timeRuler-barLine:number": 0.012,
     "height-timeRuler-beatLine:number": 0.007,
     "width-timeRuler-barLine:number": 0.00075,
@@ -38,7 +41,9 @@
     "width-timeRuler-minLineSpace:number": 0.01,
 
     "width-timeRuler-barTextLeftMargin:number": 0.0025,
-    "width-timeRuler-barTextRightMargin:number": 0.0025
+    "width-timeRuler-barTextRightMargin:number": 0.0025,
+
+    "width-timeRuler-loopJudgeArea:number": 0.01
   },
   "position": {
   },

@@ -30,6 +30,12 @@ private:
 		juce::Colour background_timeRuler;
 		juce::Colour text_timeRuler;
 
+		juce::Colour timeRuler_loopArea;
+		juce::Colour timeRuler_loopJudgeArea;
+
+		juce::Colour timeRuler_label_on;
+		juce::Colour timeRuler_label_off;
+
 		juce::Colour border;
 		juce::Colour cursor;
 	}colors;//界面颜色
@@ -48,6 +54,8 @@ private:
 
 		double width_timeRuler_barTextLeftMargin;
 		double width_timeRuler_barTextRightMargin;
+
+		double width_timeRuler_loopJudgeArea;
 	}sizes;//控件大小
 	struct Scales final
 	{

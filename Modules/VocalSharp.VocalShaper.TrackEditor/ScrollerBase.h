@@ -58,6 +58,8 @@ public:
 	virtual void setCurrentPosition(double currentTime) override;
 	//更改播放跟随状态时被调用
 	virtual void setFollowState(bool follow) override;
+	//更改播放循环范围时被调用
+	virtual void setLoopRange(double startTime, double endTime) override;
 
 public:
 	//监听项目关闭
@@ -75,9 +77,10 @@ protected:
 	{
 		int trackSizeTemp = 0;									//暂存轨道数量
 		double projectLengthTemp = 0;							//暂存工程长度
-		double currentPositionTemp = 0;						//暂存当前播放位置
+		double currentPositionTemp = 0;							//暂存当前播放位置
 		bool followTemp = true;									//暂存跟随状态
 		double sp = 0., ep = 1.;								//起止位置
+		double loopST = 0., loopET = 0.;						//播放选区起止
 		std::map<const vocalshaper::Track*, int> trackState;	//记录轨道展开状态
 	};
 	std::map<const vocalshaper::ProjectProxy*, SizeTemp> tempList;

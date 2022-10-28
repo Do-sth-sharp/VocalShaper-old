@@ -894,7 +894,7 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 				vocalshaper::CountTime::count(this->project->getPtr());
 			double bar =
 				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
-			bar = std::max(std::floor(bar), 20.);
+			bar = std::max(std::floor(bar) + 4, 20.);
 			this->ptrTemp->projectLengthTemp =
 				this->project->getBeat()->getTimeAtBar(bar);
 		}
@@ -1029,7 +1029,7 @@ void ScrollerBase::setTotalLength(double totalLength)
 			double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
 			double bar =
 				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
-			bar = std::max(std::floor(bar), 20.);
+			bar = std::max(std::floor(bar) + 4, 20.);
 			projectLengthTemp =
 				this->project->getBeat()->getTimeAtBar(bar);
 		}
@@ -1106,6 +1106,17 @@ void ScrollerBase::setFollowState(bool follow)
 	if (this->project && this->ptrTemp) {
 		this->ptrTemp->followTemp = follow;
 	}
+}
+
+void ScrollerBase::setLoopRange(double startTime, double endTime)
+{
+	juce::ScopedWriteLock locker1(this->tempLock);
+	juce::ScopedReadLock locker2(this->projectLock);
+	if (this->project && this->ptrTemp) {
+		this->ptrTemp->loopST = startTime;
+		this->ptrTemp->loopET = endTime;
+	}
+	this->repaint();
 }
 
 void ScrollerBase::listenProjectClose(const vocalshaper::ProjectProxy* ptr)

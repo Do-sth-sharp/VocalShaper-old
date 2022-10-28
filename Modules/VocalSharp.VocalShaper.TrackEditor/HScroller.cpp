@@ -17,6 +17,10 @@ HScroller::HScroller()
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
 		"main", "color", "cursor", this->colors.cursor, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "horizontalScrollerLoopBlock", this->colors.horizontalScrollerLoopBlock, result
+		);
 
 	//size
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -26,6 +30,14 @@ HScroller::HScroller()
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-beat-max", this->sizes.width_beat_max, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-horizontalScroller-loopBlock", this->sizes.height_horizontalScroller_loopBlock, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-horizontalScroller-loopBlockTopMargin", this->sizes.height_horizontalScroller_loopBlockTopMargin, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -109,6 +121,29 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 				);
 			g.setColour(this->colors.cursor);
 			g.fillRect(cursorRect);
+
+			//判断选区是否有效
+			if (this->ptrTemp->loopET > this->ptrTemp->loopST) {
+				//计算色块区域大小
+				int loopRectPosY = this->sizes.height_horizontalScroller_loopBlockTopMargin * screenSize.getHeight();
+				int height_loopRect = this->sizes.height_horizontalScroller_loopBlock * screenSize.getHeight();
+
+				float loopST = (this->ptrTemp->loopST / this->ptrTemp->projectLengthTemp) * width;
+				float loopET = (this->ptrTemp->loopET / this->ptrTemp->projectLengthTemp) * width;
+
+				//绘制色块区域
+				juce::Rectangle<float> rectLoopBlock(
+					loopST, loopRectPosY,
+					loopET - loopST, height_loopRect
+				);
+				g.setColour(this->colors.horizontalScrollerLoopBlock);
+				g.fillRect(rectLoopBlock);
+			}
+
+			//TODO 绘制标签色块
+			{
+
+			}
 		}
 	}
 }
