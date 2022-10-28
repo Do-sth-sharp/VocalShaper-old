@@ -64,7 +64,7 @@ void BottomEditor::setToolID(uint8_t toolID)
 	//TODO
 }
 
-void BottomEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void BottomEditor::setHorizontalViewPort(double startTime, double endTime)
 {
 	//TODO
 }
@@ -74,12 +74,12 @@ void BottomEditor::setVerticalViewPort(double bottomPitch, double topPitch)
 	//TODO
 }
 
-void BottomEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
+void BottomEditor::setTotalLength(double totalLength)
 {
 	//TODO
 }
 
-void BottomEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+void BottomEditor::setCurrentPosition(double currentTime)
 {
 	//TODO
 }
@@ -89,7 +89,7 @@ void BottomEditor::setFollowState(bool follow)
 	//TODO
 }
 
-void BottomEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void BottomEditor::setLoopRange(double startTime, double endTime)
 {
 	//TODO
 }

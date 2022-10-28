@@ -50,7 +50,7 @@ void HScroller::limitSize(double& sp, double& ep, double nailPer)
 			int beatMaxWidth = this->sizes.width_beat_max * screenSize.getWidth();
 			int beatMinWidth = this->sizes.width_beat_min * screenSize.getWidth();
 
-			int lengthSize = this->ptrTemp->projectLengthTemp;
+			double lengthSize = this->ptrTemp->projectLengthTemp;
 
 			int maxSize = lengthSize * beatMaxWidth;
 			int minSize = lengthSize * beatMinWidth;
@@ -123,11 +123,9 @@ void HScroller::noticeChange(double sp, double ep)
 		juce::ScopedReadLock tempLocker(this->tempLock);
 		if (this->ptrTemp) {
 			//计算时间
-			int lengthSize = this->ptrTemp->projectLengthTemp;
-			auto startTime 
-				= vocalshaper::doubleToTime(sp * lengthSize, this->ptrTemp->projectCurveQuantTemp);
-			auto endTime 
-				= vocalshaper::doubleToTime(ep * lengthSize, this->ptrTemp->projectCurveQuantTemp);
+			double lengthSize = this->ptrTemp->projectLengthTemp;
+			double startTime = sp * lengthSize;
+			double endTime = ep * lengthSize;
 
 			//发送更改
 			this->setHViewPortMethod(startTime, endTime);
@@ -136,7 +134,7 @@ void HScroller::noticeChange(double sp, double ep)
 }
 
 void HScroller::refreshSizeOnProjectLengthChanged(
-	uint32_t lastLength, uint32_t length, double& sp, double& ep)
+	double lastLength, double length, double& sp, double& ep)
 {
 	//获取屏幕属性
 	juce::Rectangle<int> screenSize;

@@ -17,7 +17,7 @@ protected:
 	void noticeChange(double sp, double ep) override;
 	//工程长度发生改变时重新计算水平卷滚条位置
 	void refreshSizeOnProjectLengthChanged(
-		uint32_t lastLength, uint32_t length, double& sp, double& ep) override;
+		double lastLength, double length, double& sp, double& ep) override;
 	//控件大小发生改变时重算卷滚条位置
 	void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep) override;
 

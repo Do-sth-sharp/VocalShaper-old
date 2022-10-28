@@ -26,7 +26,7 @@ protected:
 		double& sp, double& ep);
 	//工程长度发生改变时重新计算水平卷滚条位置
 	virtual void refreshSizeOnProjectLengthChanged(
-		uint32_t lastLength, uint32_t length, double& sp, double& ep);
+		double lastLength, double length, double& sp, double& ep);
 	//控件大小发生改变时重算卷滚条位置
 	virtual void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep);
 	//从轨道位置计算卷滚条百分比
@@ -49,13 +49,13 @@ public:
 	//当切换当前轨道时被调用
 	virtual void trackChanged(int trackID) override;
 	//切换水平浏览范围时被调用（针对轨道面板）
-	virtual void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	virtual void setHViewPort(double startTime, double endTime) override;
 	//切换垂直浏览范围时被调用（针对轨道面板）
 	virtual void setVViewPort(double bottomTrack, double topTrack) override;
 	//更改总长度时被调用
-	virtual void setTotalLength(vocalshaper::ProjectTime totalLength) override;
+	virtual void setTotalLength(double totalLength) override;
 	//更改当前播放位置时被调用
-	virtual void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	virtual void setCurrentPosition(double currentTime) override;
 	//更改播放跟随状态时被调用
 	virtual void setFollowState(bool follow) override;
 
@@ -74,9 +74,8 @@ protected:
 	struct SizeTemp
 	{
 		int trackSizeTemp = 0;									//暂存轨道数量
-		uint32_t projectLengthTemp = 0;							//暂存工程长度
-		uint32_t projectCurveQuantTemp = 480;					//暂存曲线量化
-		uint64_t currentPositionTemp = 0;						//暂存当前播放位置
+		double projectLengthTemp = 0;							//暂存工程长度
+		double currentPositionTemp = 0;						//暂存当前播放位置
 		bool followTemp = true;									//暂存跟随状态
 		double sp = 0., ep = 1.;								//起止位置
 		std::map<const vocalshaper::Track*, int> trackState;	//记录轨道展开状态

@@ -12,12 +12,12 @@ public:
 	void trackChanged(int trackID) override;
 	void setEditMode(bool editMode) override;
 	void setToolID(uint8_t toolID) override;
-	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setHorizontalViewPort(double startTime, double endTime) override;
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
-	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
-	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
+	void setTotalLength(double totalLength) override;
+	void setCurrentPosition(double currentTime) override;
 	void setFollowState(bool follow) override;
-	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setLoopRange(double startTime, double endTime) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
 
@@ -36,9 +36,9 @@ public:
 	void setMethods(
 		const std::function<void(int)>& setCurrentTrackFunc,
 		const std::function<void(void)>& refreshTotalTimeFunc,
-		const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
-		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setLoopRangeFunc,
-		const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+		const std::function<void(double)>& setCurrentPositionFunc,
+		const std::function<void(double, double)>& setLoopRangeFunc,
+		const std::function<void(double, double)>& setHorizontalViewPortFunc,
 		const std::function<void(double, double)>& setVerticalViewPortFunc
 	) override;
 

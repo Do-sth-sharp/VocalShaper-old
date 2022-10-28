@@ -144,7 +144,7 @@ void ScrollerBase::refreshSizeOnTrackSizeChanged(
 }
 
 void ScrollerBase::refreshSizeOnProjectLengthChanged(
-	uint32_t lastLength, uint32_t length, double& sp, double& ep)
+	double lastLength, double length, double& sp, double& ep)
 {
 }
 
@@ -890,16 +890,11 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 			this->ptrTemp->trackSizeTemp =
 				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
 
-			this->ptrTemp->projectCurveQuantTemp =
-				vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
-
-			vocalshaper::ProjectTime totalLength =
-				vocalshaper::CountTime::count(
-					this->project->getPtr(), this->ptrTemp->projectCurveQuantTemp);
-			uint32_t bar =
-				this->project->getBeat()->getBarAtTime(
-					vocalshaper::floor(totalLength, this->ptrTemp->projectCurveQuantTemp).first);
-			bar = std::max(bar, 20Ui32) + 1;
+			double totalLength =
+				vocalshaper::CountTime::count(this->project->getPtr());
+			double bar =
+				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+			bar = std::max(std::floor(bar), 20.);
 			this->ptrTemp->projectLengthTemp =
 				this->project->getBeat()->getTimeAtBar(bar);
 		}
@@ -983,19 +978,15 @@ void ScrollerBase::trackChanged(int trackID)
 	this->repaint();
 }
 
-void ScrollerBase::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void ScrollerBase::setHViewPort(double startTime, double endTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->projectLock);
 	if (this->project && this->ptrTemp) {
 		if (!this->getVertical()) {
 			//计算起止位置
-			this->ptrTemp->sp =
-				vocalshaper::timeToDouble(startTime, this->ptrTemp->projectCurveQuantTemp)
-				/ this->ptrTemp->projectLengthTemp;
-			this->ptrTemp->ep =
-				vocalshaper::timeToDouble(endTime, this->ptrTemp->projectCurveQuantTemp)
-				/ this->ptrTemp->projectLengthTemp;
+			this->ptrTemp->sp = startTime / this->ptrTemp->projectLengthTemp;
+			this->ptrTemp->ep = endTime / this->ptrTemp->projectLengthTemp;
 		}
 	}
 
@@ -1019,14 +1010,13 @@ void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
 	this->repaint();
 }
 
-void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
+void ScrollerBase::setTotalLength(double totalLength)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->projectLock);
 	if (this->project && this->ptrTemp) {
 		//取缓存
 		auto trackSizeTemp = this->ptrTemp->trackSizeTemp;
-		auto projectCurveQuantTemp = this->ptrTemp->projectCurveQuantTemp;
 		auto projectLengthTemp = this->ptrTemp->projectLengthTemp;
 
 		//计算工程相关信息
@@ -1036,16 +1026,10 @@ void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 			trackSizeTemp =
 				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
 
-			projectCurveQuantTemp =
-				vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
-
-			vocalshaper::ProjectTime totalLength =
-				vocalshaper::CountTime::count(
-					this->project->getPtr(), projectCurveQuantTemp);
-			uint32_t bar =
-				this->project->getBeat()->getBarAtTime(
-					vocalshaper::floor(totalLength, projectCurveQuantTemp).first);
-			bar = std::max(bar, 20Ui32) + 1;
+			double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
+			double bar =
+				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+			bar = std::max(std::floor(bar), 20.);
 			projectLengthTemp =
 				this->project->getBeat()->getTimeAtBar(bar);
 		}
@@ -1059,7 +1043,6 @@ void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 
 			//更新缓存
 			this->ptrTemp->trackSizeTemp = trackSizeTemp;
-			this->ptrTemp->projectCurveQuantTemp = projectCurveQuantTemp;
 			this->ptrTemp->projectLengthTemp = projectLengthTemp;
 
 			//限制大小
@@ -1073,7 +1056,6 @@ void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 
 		//更新缓存
 		this->ptrTemp->trackSizeTemp = trackSizeTemp;
-		this->ptrTemp->projectCurveQuantTemp = projectCurveQuantTemp;
 		this->ptrTemp->projectLengthTemp = projectLengthTemp;
 	}
 
@@ -1081,14 +1063,13 @@ void ScrollerBase::setTotalLength(vocalshaper::ProjectTime totalLength)
 	this->repaint();
 }
 
-void ScrollerBase::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+void ScrollerBase::setCurrentPosition(double currentTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->projectLock);
 	if (this->project && this->ptrTemp) {
 		//更新缓存
-		this->ptrTemp->currentPositionTemp =
-			vocalshaper::timeToU64(currentTime, this->ptrTemp->projectCurveQuantTemp);
+		this->ptrTemp->currentPositionTemp = currentTime;
 
 		if (!this->getVertical()) {
 			//翻页

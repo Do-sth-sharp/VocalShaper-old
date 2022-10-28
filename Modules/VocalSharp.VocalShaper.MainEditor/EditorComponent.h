@@ -58,9 +58,9 @@ public:
 	//外部/内部调用，申请更改状态
 	void setCurrentTrack(int trackID);
 	void refreshTotalLength();
-	void setCurrentPosition(vocalshaper::ProjectTime currentTime);
-	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
-	void setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void setCurrentPosition(double currentTime);
+	void setLoopRange(double startTime, double endTime);
+	void setHorizontalViewPort(double startTime, double endTime);
 	void setVerticalViewPort(double bottomPitch, double topPitch);
 
 	//外部调用，执行状态更改
@@ -70,11 +70,11 @@ public:
 private:
 	//内部调用，执行状态更改
 	void trackChanged(int trackID);
-	void totalLengthChanged(vocalshaper::ProjectTime totalLength);
-	void currentPositionChanged(vocalshaper::ProjectTime currentTime);
+	void totalLengthChanged(double totalLength);
+	void currentPositionChanged(double currentTime);
 	void followStateChanged(bool followState);
-	void loopRangeChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
-	void horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void loopRangeChanged(double startTime, double endTime);
+	void horizontalViewPortChanged(double startTime, double endTime);
 	void verticalViewPortChanged(double bottomPitch, double topPitch);
 
 public:
@@ -87,12 +87,12 @@ public:
 public:
 	//监听器，用于注册回调监听事件
 	void listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
-	void listenCurveQuantificationChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenProjectLengthChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
 	//监听器，用于注册回调监听播放状态
-	void listenCurrentPositionChange(vocalshaper::ProjectTime currentTime);
+	void listenCurrentPositionChange(double currentTime);
 	void listenFollowStateChange(bool followState);
-	void listenLoopRangeChange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime);
+	void listenLoopRangeChange(double startTime, double endTime);
 public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -142,10 +142,11 @@ private:
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
+	double totalLengthTemp = 0.;
 	juce::ReadWriteLock projectLock;
 
-	static vocalshaper::ProjectTime countProjectTime(vocalshaper::ProjectProxy* ptr);
-	static vocalshaper::ProjectTime countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID);
+	static double countProjectTime(vocalshaper::ProjectProxy* ptr);
+	static double countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorComponent)
 };

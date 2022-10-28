@@ -16,12 +16,12 @@ public:
 	void setEditMode(bool editMode) override;
 	void setToolID(uint8_t toolID) override;
 	void trackChanged(int trackID) override;
-	void setTotalLength(vocalshaper::ProjectTime totalLength) override;
-	void setCurrentPosition(vocalshaper::ProjectTime currentTime) override;
-	void setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setTotalLength(double totalLength) override;
+	void setCurrentPosition(double currentTime) override;
+	void setLoopRange(double startTime, double endTime) override;
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
-	void setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) override;
+	void setHViewPort(double startTime, double endTime) override;
 	void setVViewPort(double bottomTrack, double topTrack) override;
 
 private:
@@ -58,9 +58,9 @@ private:
 	juce::Rectangle<int> screenSize;
 
 	vocalshaper::ProjectProxy* project = nullptr;
-	vocalshaper::ProjectTime startTime, endTime;
-	vocalshaper::ProjectTime loopStartTime, loopEndTime;
-	vocalshaper::ProjectTime currentTime;
+	double startTime, endTime;
+	double loopStartTime, loopEndTime;
+	double currentTime;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
 

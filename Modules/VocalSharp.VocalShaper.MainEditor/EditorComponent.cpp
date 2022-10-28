@@ -76,9 +76,9 @@ EditorComponent::EditorComponent()
 	{
 		auto setCurrentTrackFunc = [this](int trackID) {this->setCurrentTrack(trackID); };
 		auto refreshTotalLengthFunc = [this] {this->refreshTotalLength(); };
-		auto setCurrentPositionFunc = [this](vocalshaper::ProjectTime currentTime) {this->setCurrentPosition(currentTime); };
-		auto setLoopRangeFunc = [this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->setLoopRange(startTime, endTime); };
-		auto setHorizontalViewPortFunc = [this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->setHorizontalViewPort(startTime, endTime); };
+		auto setCurrentPositionFunc = [this](double currentTime) {this->setCurrentPosition(currentTime); };
+		auto setLoopRangeFunc = [this](double startTime, double endTime) {this->setLoopRange(startTime, endTime); };
+		auto setHorizontalViewPortFunc = [this](double startTime, double endTime) {this->setHorizontalViewPort(startTime, endTime); };
 		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->setVerticalViewPort(bottomPitch, topPitch); };
 
 		this->topEditor->setMethods(
@@ -160,7 +160,7 @@ void EditorComponent::trackChanged(int trackID)
 	this->bottomEditor->trackChanged(trackID);
 }
 
-void EditorComponent::totalLengthChanged(vocalshaper::ProjectTime totalLength)
+void EditorComponent::totalLengthChanged(double totalLength)
 {
 	if (this->topEditor) {
 		this->topEditor->setTotalLength(totalLength);
@@ -170,7 +170,7 @@ void EditorComponent::totalLengthChanged(vocalshaper::ProjectTime totalLength)
 	}
 }
 
-void EditorComponent::currentPositionChanged(vocalshaper::ProjectTime currentTime)
+void EditorComponent::currentPositionChanged(double currentTime)
 {
 	if (this->topEditor) {
 		this->topEditor->setCurrentPosition(currentTime);
@@ -190,7 +190,7 @@ void EditorComponent::followStateChanged(bool followState)
 	}
 }
 
-void EditorComponent::loopRangeChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void EditorComponent::loopRangeChanged(double startTime, double endTime)
 {
 	if (this->topEditor) {
 		this->topEditor->setLoopRange(startTime, endTime);
@@ -200,7 +200,7 @@ void EditorComponent::loopRangeChanged(vocalshaper::ProjectTime startTime, vocal
 	}
 }
 
-void EditorComponent::horizontalViewPortChanged(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void EditorComponent::horizontalViewPortChanged(double startTime, double endTime)
 {
 	if (this->topEditor) {
 		this->topEditor->setHorizontalViewPort(startTime, endTime);
@@ -601,7 +601,7 @@ void EditorComponent::refreshTotalLength()
 	this->totalLengthChanged(this->countProjectTime(this->project));
 }
 
-void EditorComponent::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+void EditorComponent::setCurrentPosition(double currentTime)
 {
 	//TODO 同步至播放控制器
 	//begin test
@@ -609,7 +609,7 @@ void EditorComponent::setCurrentPosition(vocalshaper::ProjectTime currentTime)
 	//end test
 }
 
-void EditorComponent::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void EditorComponent::setLoopRange(double startTime, double endTime)
 {
 	//TODO 同步至播放控制器
 	//begin test
@@ -617,7 +617,7 @@ void EditorComponent::setLoopRange(vocalshaper::ProjectTime startTime, vocalshap
 	//end test
 }
 
-void EditorComponent::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void EditorComponent::setHorizontalViewPort(double startTime, double endTime)
 {
 	juce::ScopedReadLock locker1(this->projectLock);
 	juce::ScopedReadLock locker2(this->project->getLock());
@@ -625,7 +625,7 @@ void EditorComponent::setHorizontalViewPort(vocalshaper::ProjectTime startTime, 
 	if (!project) {
 		return;
 	}
-	if (vocalshaper::timeLSS(startTime, endTime, vocalshaper::ProjectDAO::getCurveQuantification(project))) {
+	if (startTime < endTime) {
 		this->horizontalViewPortChanged(startTime, endTime);
 	}
 }
@@ -734,7 +734,7 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 	}
 }
 
-void EditorComponent::listenCurveQuantificationChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+void EditorComponent::listenProjectLengthChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
 	juce::ScopedReadLock locker(this->projectLock);
 	if (this->project != action.getProxy()) {
@@ -744,14 +744,14 @@ void EditorComponent::listenCurveQuantificationChange(const vocalshaper::actions
 	if (!messageManager) {
 		return;
 	}
-	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
-		if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::CurveQuantification) {
-			messageManager->callAsync([this] {this->refreshTotalLength(); });
-		}
+	double totalLength = EditorComponent::countProjectTime(this->project);
+	if (totalLength != this->totalLengthTemp) {
+		this->totalLengthTemp = totalLength;
+		messageManager->callAsync([this] {this->refreshTotalLength(); });
 	}
 }
 
-void EditorComponent::listenCurrentPositionChange(vocalshaper::ProjectTime currentTime)
+void EditorComponent::listenCurrentPositionChange(double currentTime)
 {
 	auto messageManager = juce::MessageManager::getInstance();
 	if (!messageManager) {
@@ -769,7 +769,7 @@ void EditorComponent::listenFollowStateChange(bool followState)
 	messageManager->callAsync([this, followState] {this->followStateChanged(followState); });
 }
 
-void EditorComponent::listenLoopRangeChange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void EditorComponent::listenLoopRangeChange(double startTime, double endTime)
 {
 	auto messageManager = juce::MessageManager::getInstance();
 	if (!messageManager) {
@@ -844,44 +844,42 @@ void EditorComponent::paint(juce::Graphics& g)
 
 }
 
-vocalshaper::ProjectTime EditorComponent::countProjectTime(vocalshaper::ProjectProxy* ptr)
+double EditorComponent::countProjectTime(vocalshaper::ProjectProxy* ptr)
 {
 	if (!ptr) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 
 	juce::ScopedReadLock locker(ptr->getLock());
 	auto project = ptr->getPtr();
 	if (!project) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 
-	return vocalshaper::CountTime::count(
-		project, vocalshaper::ProjectDAO::getCurveQuantification(project));
+	return vocalshaper::CountTime::count(project);
 }
 
-vocalshaper::ProjectTime EditorComponent::countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID)
+double EditorComponent::countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID)
 {
 	if (!ptr) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 
 	juce::ScopedReadLock locker(ptr->getLock());
 	auto project = ptr->getPtr();
 	if (!project) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 
 	if (trackID < 0 || trackID >= vocalshaper::ProjectDAO::trackSize(project)) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 	auto track = vocalshaper::ProjectDAO::getTrack(project, trackID);
 	if (!track) {
-		return vocalshaper::make_time(0, 0);
+		return 0.;
 	}
 
-	return vocalshaper::CountTime::count(
-		track, vocalshaper::ProjectDAO::getCurveQuantification(project));
+	return vocalshaper::CountTime::count(track);
 }
 
 void EditorComponent::initCommandID()
@@ -1246,11 +1244,11 @@ void EditorComponent::initProjectListener()
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 		{this->listenTrackSizeChange(action, type); });
 
-	//侦听曲线量化变化
+	//侦听工程长度变化
 	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
-		{this->listenCurveQuantificationChange(action, type); });
+		{this->listenProjectLengthChange(action, type); });
 
 	//TODO 侦听播放状态变化
 }

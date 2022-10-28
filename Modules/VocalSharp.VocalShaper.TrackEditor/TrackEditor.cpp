@@ -205,9 +205,9 @@ void TrackEditor::paint(juce::Graphics& g)
 void TrackEditor::setMethods(
 	const std::function<void(int)>& setCurrentTrackFunc,
 	const std::function<void(void)>& refreshTotalTimeFunc,
-	const std::function<void(vocalshaper::ProjectTime)>& setCurrentPositionFunc,
-	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setLoopRangeFunc,
-	const std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)>& setHorizontalViewPortFunc,
+	const std::function<void(double)>& setCurrentPositionFunc,
+	const std::function<void(double, double)>& setLoopRangeFunc,
+	const std::function<void(double, double)>& setHorizontalViewPortFunc,
 	const std::function<void(double, double)>& setVerticalViewPortFunc
 )
 {
@@ -222,7 +222,7 @@ void TrackEditor::setMethods(
 		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 	//TODO
 	this->setTrackViewMethods(
-		[this](vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime) {this->changeHViewPort(startTime, endTime); },
+		[this](double startTime, double endTime) {this->changeHViewPort(startTime, endTime); },
 		[this](double bottomPer, double topPer) {this->changeVViewPort(bottomPer, topPer); }
 	);
 	this->EditorBase::setMethods(
@@ -231,7 +231,7 @@ void TrackEditor::setMethods(
 }
 
 void TrackEditor::setTrackViewMethods(
-	std::function<void(vocalshaper::ProjectTime, vocalshaper::ProjectTime)> setHViewPortFunc,
+	std::function<void(double, double)> setHViewPortFunc,
 	std::function<void(double, double)> setVViewPortFunc
 )
 {
@@ -278,7 +278,7 @@ void TrackEditor::trackChanged(int trackID)
 	//TODO 刷新
 }
 
-void TrackEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
+void TrackEditor::setTotalLength(double totalLength)
 {
 	this->timeRuler->setTotalLength(totalLength);
 	this->vScroller->setTotalLength(totalLength);
@@ -286,7 +286,7 @@ void TrackEditor::setTotalLength(vocalshaper::ProjectTime totalLength)
 	//TODO
 }
 
-void TrackEditor::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+void TrackEditor::setCurrentPosition(double currentTime)
 {
 	this->timeRuler->setCurrentPosition(currentTime);
 	this->vScroller->setCurrentPosition(currentTime);
@@ -302,7 +302,7 @@ void TrackEditor::setFollowState(bool follow)
 	//TODO
 }
 
-void TrackEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TrackEditor::setLoopRange(double startTime, double endTime)
 {
 	this->timeRuler->setLoopRange(startTime, endTime);
 	this->vScroller->setLoopRange(startTime, endTime);
@@ -310,7 +310,7 @@ void TrackEditor::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::
 	//TODO
 }
 
-void TrackEditor::setHorizontalViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TrackEditor::setHorizontalViewPort(double startTime, double endTime)
 {
 	this->timeRuler->setHorizontalViewPort(startTime, endTime);
 	this->vScroller->setHorizontalViewPort(startTime, endTime);
@@ -326,7 +326,7 @@ void TrackEditor::setVerticalViewPort(double bottomPitch, double topPitch)
 	//TODO
 }
 
-void TrackEditor::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TrackEditor::setHViewPort(double startTime, double endTime)
 {
 	this->startTimeTemp = startTime;
 	this->endTimeTemp = endTime;
@@ -362,7 +362,7 @@ void TrackEditor::setGrid(vocalshaper::GridState state)
 	//TODO
 }
 
-void TrackEditor::changeHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TrackEditor::changeHViewPort(double startTime, double endTime)
 {
 	if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
 		return;
@@ -373,7 +373,7 @@ void TrackEditor::changeHViewPort(vocalshaper::ProjectTime startTime, vocalshape
 	if (!project) {
 		return;
 	}
-	if (vocalshaper::timeLSS(startTime, endTime, vocalshaper::ProjectDAO::getCurveQuantification(project))) {
+	if (startTime < endTime) {
 		this->setHViewPort(startTime, endTime);
 	}
 }

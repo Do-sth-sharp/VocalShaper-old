@@ -132,8 +132,8 @@ void TimeRuler::paint(juce::Graphics& g)
 				= vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
 
 			//计算分辨率
-			double startTime = vocalshaper::timeToDouble(this->startTime, curveQuant);
-			double endTime = vocalshaper::timeToDouble(this->endTime, curveQuant);
+			double startTime = this->startTime;
+			double endTime = this->endTime;
 			double totalLength = endTime - startTime;
 			double ppb = this->getWidth() / totalLength;
 
@@ -141,8 +141,8 @@ void TimeRuler::paint(juce::Graphics& g)
 			bool beatLineOn = ppb > width_lineMinSpace;
 
 			//计算实际绘制的第一个和最后一个节拍
-			uint32_t trueStartTime = std::ceil(startTime);
-			uint32_t trueEndTime = std::floor(endTime);
+			double trueStartTime = std::ceil(startTime);
+			double trueEndTime = std::floor(endTime);
 
 			//根据缓存绘制刻度线和文字
 			float lastBarTextEndPos = 0.f;				//上一个拍号序号结束位置
@@ -152,8 +152,8 @@ void TimeRuler::paint(juce::Graphics& g)
 				float pos = (t - startTime) * ppb;
 
 				//判断是否为小节线
-				auto bar = this->project->getBeat()->getBarAtTime(t);
-				auto beatAtBar = this->project->getBeat()->getTimeAtBar(bar);
+				double bar = std::floor(this->project->getBeat()->getBarAtTime(t));
+				double beatAtBar = this->project->getBeat()->getTimeAtBar(bar);
 				bool isBarLine = (beatAtBar == t);
 
 				//绘制线
@@ -174,7 +174,7 @@ void TimeRuler::paint(juce::Graphics& g)
 						}
 
 						//计算序号文字及文字大小
-						juce::String barText(bar + 1);
+						juce::String barText((int64_t)(bar + 1));
 						float width_barText = barTextFont.getStringWidthFloat(barText);
 
 						//计算序号绘制位置
@@ -206,8 +206,8 @@ void TimeRuler::paint(juce::Graphics& g)
 			//判断并绘制前端小节序号
 			{
 				//生成文字并计算大小
-				auto startBar = this->project->getBeat()->getBarAtTime(std::floor(startTime));
-				juce::String frontBarText = "<" + juce::String(startBar + 1);
+				auto startBar = std::floor(this->project->getBeat()->getBarAtTime(std::floor(startTime)));
+				juce::String frontBarText = "<" + juce::String((int64_t)(startBar + 1));
 				float width_barText = barTextFont.getStringWidthFloat(frontBarText);
 
 				//如果有足够的空间绘制
@@ -227,7 +227,7 @@ void TimeRuler::paint(juce::Graphics& g)
 
 			//判断并绘制播放指针
 			{
-				double currentTime = vocalshaper::timeToDouble(this->currentTime, curveQuant);
+				double currentTime = this->currentTime;
 				if (currentTime >= startTime && currentTime <= endTime) {
 					//计算指针位置
 					float width_cursor = this->sizes.width_cursor * screenSize.getWidth();
@@ -241,6 +241,11 @@ void TimeRuler::paint(juce::Graphics& g)
 					g.setColour(this->colors.cursor);
 					g.fillRect(rectCursor);
 				}
+			}
+
+			//判断并绘制选区
+			{
+
 			}
 		}
 	}
@@ -271,18 +276,18 @@ void TimeRuler::trackChanged(int trackID)
 	this->repaint();
 }
 
-void TimeRuler::setTotalLength(vocalshaper::ProjectTime totalLength)
+void TimeRuler::setTotalLength(double totalLength)
 {
 }
 
-void TimeRuler::setCurrentPosition(vocalshaper::ProjectTime currentTime)
+void TimeRuler::setCurrentPosition(double currentTime)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->currentTime = currentTime;
 	this->repaint();
 }
 
-void TimeRuler::setLoopRange(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TimeRuler::setLoopRange(double startTime, double endTime)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->loopStartTime = startTime;
@@ -302,7 +307,7 @@ void TimeRuler::setGrid(vocalshaper::GridState state)
 	this->repaint();
 }
 
-void TimeRuler::setHViewPort(vocalshaper::ProjectTime startTime, vocalshaper::ProjectTime endTime)
+void TimeRuler::setHViewPort(double startTime, double endTime)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->startTime = startTime;
