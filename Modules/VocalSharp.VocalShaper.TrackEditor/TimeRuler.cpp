@@ -87,6 +87,14 @@ TimeRuler::TimeRuler()
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-timeRuler-loopJudgeArea", this->sizes.width_timeRuler_loopJudgeArea, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-timeRuler-labelBottomMargin", this->sizes.height_timeRuler_labelBottomMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-timeRuler-label", this->sizes.height_timeRuler_label, result
+		);
 
 	//position
 	//scale
@@ -263,14 +271,45 @@ void TimeRuler::paint(juce::Graphics& g)
 				}
 			}
 
-			//TODO 绘制标签
+			//绘制标签
 			{
+				//计算大小
+				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+				float width_label = height_label;
+				float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
 
-			}
+				//遍历并绘制标签
+				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				for (int i = 0; i < labelSize; i++) {
+					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					if (label) {
+						float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
-			//TODO 绘制编辑中的标签
-			{
+						if ((labelPos + width_label / 2) >= 0 && (labelPos - width_label / 2) <= this->getWidth()) {
+							if (this->editModeFlag) {
+								g.setColour(this->colors.timeRuler_label_on);
+							}
+							else {
+								g.setColour(this->colors.timeRuler_label_off);
+							}
 
+							g.fillEllipse(
+								this->getHeight() - height_labelBottomMargin - height_label, labelPos - width_label / 2,
+								width_label, height_label);
+						}
+					}
+				}
+
+				//绘制编辑中的标签
+				{
+					float labelPos = (this->labelEditingTime - startTime) * ppb;
+					if ((labelPos + width_label / 2) >= 0 && (labelPos - width_label / 2) <= this->getWidth()) {
+						g.setColour(this->colors.timeRuler_label_off);
+						g.fillEllipse(
+							this->getHeight() - height_labelBottomMargin - height_label, labelPos - width_label / 2,
+							width_label, height_label);
+					}
+				}
 			}
 
 			//判断并绘制选区

@@ -25,7 +25,8 @@ private:
 	struct Colors final
 	{
 		juce::Colour cursor;
-		juce::Colour horizontalScrollerLoopBlock;
+		juce::Colour horizontalScroller_loopBlock;
+		juce::Colour horizontalScroller_labelBlock;
 	}colors;//界面颜色
 	struct Size final
 	{
@@ -34,6 +35,10 @@ private:
 
 		double height_horizontalScroller_loopBlock;
 		double height_horizontalScroller_loopBlockTopMargin;
+
+		double height_horizontalScroller_labelBlock;
+		double height_horizontalScroller_labelBlockTopMargin;
+		double width_horizontalScroller_labelBlock;
 
 		double width_cursor;
 	}sizes;//控件大小

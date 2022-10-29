@@ -33,6 +33,9 @@
 
     "height-horizontalScroller-loopBlock:number": 0.002,
     "height-horizontalScroller-loopBlockMarginTop:number": 0.002,
+    "height-horizontalScroller-labelBlock:number": 0.002,
+    "height-horizontalScroller-labelBlockMarginTop:number": 0.004,
+    "width-horizontalScroller-labelBlock:number": 0.0015,
 
     "height-timeRuler-barLine:number": 0.012,
     "height-timeRuler-beatLine:number": 0.007,
@@ -43,7 +46,10 @@
     "width-timeRuler-barTextLeftMargin:number": 0.0025,
     "width-timeRuler-barTextRightMargin:number": 0.0025,
 
-    "width-timeRuler-loopJudgeArea:number": 0.01
+    "width-timeRuler-loopJudgeArea:number": 0.01,
+
+    "height-timeRuler-labelBottomMargin:number": 0.0025,
+    "height-timeRuler-label:number": 0.0075
   },
   "position": {
   },

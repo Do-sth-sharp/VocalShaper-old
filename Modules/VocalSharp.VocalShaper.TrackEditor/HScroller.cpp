@@ -19,7 +19,11 @@ HScroller::HScroller()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-		"main", "color", "horizontalScrollerLoopBlock", this->colors.horizontalScrollerLoopBlock, result
+		"main", "color", "horizontalScroller-loopBlock", this->colors.horizontalScroller_loopBlock, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "horizontalScroller-labelBlock", this->colors.horizontalScroller_labelBlock, result
 		);
 
 	//size
@@ -38,6 +42,18 @@ HScroller::HScroller()
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-horizontalScroller-loopBlockTopMargin", this->sizes.height_horizontalScroller_loopBlockTopMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-horizontalScroller-loopBlock", this->sizes.height_horizontalScroller_labelBlock, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-horizontalScroller-loopBlockTopMargin", this->sizes.height_horizontalScroller_labelBlockTopMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-horizontalScroller-loopBlock", this->sizes.width_horizontalScroller_labelBlock, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -106,10 +122,11 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 
 	{
 		juce::ScopedReadLock tempLocker(this->tempLock);
-		if (this->ptrTemp) {
+		juce::ScopedReadLock proxyLocker(this->project->getLock());
+		if (this->ptrTemp && this->project) {
 			//计算指针位置
 			float curPos
-				= width * (this->ptrTemp->currentPositionTemp / (double)this->ptrTemp->projectLengthTemp);
+				= width * (this->ptrTemp->currentPositionTemp / this->ptrTemp->projectLengthTemp);
 
 			//计算指针宽度
 			float width_cursor = this->sizes.width_cursor * screenSize.getWidth();
@@ -136,13 +153,32 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 					loopST, loopRectPosY,
 					loopET - loopST, height_loopRect
 				);
-				g.setColour(this->colors.horizontalScrollerLoopBlock);
+				g.setColour(this->colors.horizontalScroller_loopBlock);
 				g.fillRect(rectLoopBlock);
 			}
 
-			//TODO 绘制标签色块
+			//绘制标签色块
 			{
+				//计算色块大小
+				int labelRectPosY = this->sizes.height_horizontalScroller_labelBlockTopMargin * screenSize.getHeight();
+				int height_labelRect = this->sizes.height_horizontalScroller_labelBlock * screenSize.getHeight();
+				float width_labelRect = this->sizes.width_horizontalScroller_labelBlock * screenSize.getWidth();
 
+				//绘制色块
+				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				for (int i = 0; i < labelSize; i++) {
+					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					if (label) {
+						float labelPos
+							= width * (vocalshaper::LabelDAO::getPosition(label) / this->ptrTemp->projectLengthTemp);
+						juce::Rectangle<float> rectLabel(
+							labelPos - width_labelRect / 2, labelRectPosY,
+							width_labelRect, height_labelRect
+						);
+						g.setColour(this->colors.horizontalScroller_labelBlock);
+						g.fillRect(rectLabel);
+					}
+				}
 			}
 		}
 	}

@@ -56,6 +56,9 @@ private:
 		double width_timeRuler_barTextRightMargin;
 
 		double width_timeRuler_loopJudgeArea;
+
+		double height_timeRuler_labelBottomMargin;
+		double height_timeRuler_label;
 	}sizes;//控件大小
 	struct Scales final
 	{
@@ -69,6 +72,7 @@ private:
 	double startTime, endTime;
 	double loopStartTime, loopEndTime;
 	double currentTime;
+	double labelEditingTime = -1;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
 

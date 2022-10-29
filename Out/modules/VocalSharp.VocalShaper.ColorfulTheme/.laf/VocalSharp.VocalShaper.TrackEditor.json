@@ -14,7 +14,8 @@
     "background-scroller:string": "$ThemeColorB1",
     "block-scroller:string": "$ThemeColorD4",
 
-    "horizontalScrollerLoopBlock:string": "$ThemeColorD2",
+    "horizontalScroller_loopBlock:string": "$ThemeColorD2",
+    "horizontalScroller_labelBlock:string": "$ThemeColorA2",
 
     "timeRuler-loopArea:string": "$ThemeColorD4",
     "timeRuler-loopJudgeArea:string": "$ThemeColorD3",
