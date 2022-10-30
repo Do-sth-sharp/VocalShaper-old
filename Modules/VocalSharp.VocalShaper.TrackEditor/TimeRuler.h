@@ -24,6 +24,15 @@ public:
 	void setHViewPort(double startTime, double endTime) override;
 	void setVViewPort(double bottomTrack, double topTrack) override;
 
+public:
+	void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details) override;
+	void mouseDown(const juce::MouseEvent& event) override;
+	void mouseMove(const juce::MouseEvent& event) override;
+	void mouseDrag(const juce::MouseEvent& event) override;
+	void mouseUp(const juce::MouseEvent& event) override;
+	void mouseExit(const juce::MouseEvent& event) override;
+	void mouseDoubleClick(const juce::MouseEvent& event) override;
+
 private:
 	struct Colors final
 	{
@@ -73,11 +82,20 @@ private:
 	double loopStartTime, loopEndTime;
 	double currentTime;
 	double labelEditingTime = -1;
+	int labelEditingIndex = -1;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
 
 	bool editModeFlag = false;
 	uint8_t toolID = 1;
+
+	enum class RulerState {
+		Normal,		//未更改
+		LoopSP,		//更改循环起点
+		LoopEP,		//更改循环终点
+		Label,		//更改标签位置
+		Cursor		//更改播放指针位置
+	}rulerState = RulerState::Normal;
 
 	vocalshaper::AdsorbState adsorb = vocalshaper::AdsorbState::Adsorb1Beat;
 	vocalshaper::GridState grid = vocalshaper::GridState::Grid1Beat;

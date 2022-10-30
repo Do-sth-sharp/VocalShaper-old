@@ -419,3 +419,38 @@ void TimeRuler::setHViewPort(double startTime, double endTime)
 void TimeRuler::setVViewPort(double bottomTrack, double topTrack)
 {
 }
+
+void TimeRuler::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details)
+{
+	//TODO
+}
+
+void TimeRuler::mouseDown(const juce::MouseEvent& event)
+{
+	//TODO
+}
+
+void TimeRuler::mouseMove(const juce::MouseEvent& event)
+{
+	//TODO
+}
+
+void TimeRuler::mouseDrag(const juce::MouseEvent& event)
+{
+	//TODO
+}
+
+void TimeRuler::mouseUp(const juce::MouseEvent& event)
+{
+	//TODO
+}
+
+void TimeRuler::mouseExit(const juce::MouseEvent& event)
+{
+	//TODO
+}
+
+void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
+{
+	//TODO
+}
