@@ -165,6 +165,11 @@ void MainComponent::moveSplashIn(juce::Component* splash)
     }
 }
 
+bool MainComponent::splashIsShown()
+{
+    return (this->splash && this->splash->isVisible());
+}
+
 void MainComponent::openStringFromUrl(const juce::String& str)
 {
     this->stringOpen(str);

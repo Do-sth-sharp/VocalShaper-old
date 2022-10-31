@@ -24,6 +24,7 @@ public:
     bool getSMVisible();
 
     void moveSplashIn(juce::Component* splash);
+    bool splashIsShown();
     void openStringFromUrl(const juce::String& str);
 
     bool isInterestedInTextDrag(const juce::String& text) override;

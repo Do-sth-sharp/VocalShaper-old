@@ -262,6 +262,7 @@ void MainWindow::closeEditor()
         closeOk
         );
     if (closeOk) {
+        this->mComp->setVisible(false);
         juce::JUCEApplication::getInstance()->systemRequestedQuit();
     }
     else {
