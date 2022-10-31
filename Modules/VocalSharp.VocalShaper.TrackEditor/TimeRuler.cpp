@@ -104,6 +104,8 @@ TimeRuler::TimeRuler()
 		);
 
 	//resource
+
+	//TODO 监听标签更改
 }
 
 void TimeRuler::resized()
@@ -294,7 +296,7 @@ void TimeRuler::paint(juce::Graphics& g)
 							}
 
 							g.fillEllipse(
-								this->getHeight() - height_labelBottomMargin - height_label, labelPos - width_label / 2,
+								labelPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
 								width_label, height_label);
 						}
 					}
@@ -306,7 +308,7 @@ void TimeRuler::paint(juce::Graphics& g)
 					if ((labelPos + width_label / 2) >= 0 && (labelPos - width_label / 2) <= this->getWidth()) {
 						g.setColour(this->colors.timeRuler_label_off);
 						g.fillEllipse(
-							this->getHeight() - height_labelBottomMargin - height_label, labelPos - width_label / 2,
+							labelPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
 							width_label, height_label);
 					}
 				}
@@ -315,11 +317,13 @@ void TimeRuler::paint(juce::Graphics& g)
 			//判断并绘制选区
 			{
 				//判断选区有效
-				if (this->loopEndTime > this->loopStartTime) {
+				if (this->loopEndTime > this->loopStartTime ||
+					this->rulerState == RulerState::LoopSP ||
+					this->rulerState == RulerState::LoopEP) {
 					//计算选区位置
 					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
-					float startLoopPos = ((this->loopStartTime - startTime) / totalLength) * this->getWidth();
-					float endLoopPos= ((this->loopEndTime - startTime) / totalLength) * this->getWidth();
+					float startLoopPos = (this->loopStartTime - startTime) * ppb;
+					float endLoopPos = (this->loopEndTime - startTime) * ppb;
 					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
 					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
 
@@ -363,6 +367,7 @@ void TimeRuler::projectChanged(const vocalshaper::ProjectProxy* ptr)
 void TimeRuler::setEditMode(bool editMode)
 {
 	this->editModeFlag = editMode;
+	this->repaint();
 }
 
 void TimeRuler::setToolID(uint8_t toolID)
@@ -379,6 +384,16 @@ void TimeRuler::trackChanged(int trackID)
 
 void TimeRuler::setTotalLength(double totalLength)
 {
+	juce::ScopedWriteLock locker(this->projectLock);
+	if (this->project) {
+		double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
+		double bar =
+			this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+		bar = std::max(std::floor(bar) + 4, 20.);
+		this->totalTime =
+			this->project->getBeat()->getTimeAtBar(bar);
+		this->repaint();
+	}
 }
 
 void TimeRuler::setCurrentPosition(double currentTime)
@@ -427,30 +442,554 @@ void TimeRuler::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseW
 
 void TimeRuler::mouseDown(const juce::MouseEvent& event)
 {
-	//TODO
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//获取鼠标指针属性
+	float posX = event.position.getX();
+	float posY = event.position.getY();
+
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project) {
+		//计算分辨率
+		double startTime = this->startTime;
+		double endTime = this->endTime;
+		double totalLength = endTime - startTime;
+		double ppb = this->getWidth() / totalLength;
+
+		//在常规模式下
+		if (this->rulerState == RulerState::Normal) {
+			//左键按下
+			if (event.mods.isLeftButtonDown()) {
+				//标签更改
+				if (this->editModeFlag) {
+					//计算标签大小
+					float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+					float width_label = height_label;
+					float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+
+					//判断鼠标位置
+					if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
+						posY <= (this->getHeight() - height_labelBottomMargin)) {
+						//选择标签
+						int labelIndex = -1;
+						double labelTime = -1;
+						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						for (int i = labelSize; i >= 0; i--) {
+							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+							if (label) {
+								float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
+
+								if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
+									labelIndex = i;
+									labelTime = vocalshaper::LabelDAO::getPosition(label);
+								}
+							}
+						}
+
+						//如果标签已选择
+						if (labelIndex >= 0 && labelIndex < labelSize) {
+							//更改状态缓存
+							this->labelEditingIndex = labelIndex;
+							this->labelEditingTime = labelTime;
+							this->timePressed = startTime + posX / ppb;;
+							this->rulerState = RulerState::Label;
+
+							//更改鼠标并刷新
+							this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+							this->repaint();
+							return;
+						}
+					}
+					
+				}
+
+				//选区更改
+				if (this->loopEndTime > this->loopStartTime) {
+					//计算选区位置
+					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
+					float startLoopPos = (this->loopStartTime - startTime) * ppb;
+					float endLoopPos = (this->loopEndTime - startTime) * ppb;
+					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
+					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
+
+					//判断选区
+					if (posX >= startLoopJudgePos && posX <= startLoopPos) {
+						//更改状态缓存
+						this->rulerState = RulerState::LoopSP;
+
+						//更改鼠标并刷新
+						this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+						this->repaint();
+						return;
+					}
+					else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
+						//更改状态缓存
+						this->rulerState = RulerState::LoopEP;
+
+						//更改鼠标并刷新
+						this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+						this->repaint();
+						return;
+					}
+				}
+
+				//播放指针更改
+				{
+					//更改状态缓存
+					this->timePressed = startTime + posX / ppb;
+					if (this->timePressed < 0) { this->timePressed = 0; }
+					if (this->timePressed > this->totalTime) { this->timePressed = totalTime; }
+					this->rulerState = RulerState::Cursor;
+
+					//发送更改
+					this->setCurrentPositionMethod(this->timePressed);
+
+					//如果在选区外，则取消选区
+					if (this->loopEndTime > this->loopStartTime) {
+						if (this->timePressed<this->loopStartTime || this->timePressed>this->loopEndTime) {
+							this->setLoopRangeMethod(-1, -1);
+						}
+					}
+
+					//更改鼠标并刷新
+					this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+					this->repaint();
+					return;
+				}
+			}
+		}
+	}
 }
 
 void TimeRuler::mouseMove(const juce::MouseEvent& event)
 {
-	//TODO
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//获取鼠标指针属性
+	float posX = event.position.getX();
+	float posY = event.position.getY();
+
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project) {
+		//计算分辨率
+		double startTime = this->startTime;
+		double endTime = this->endTime;
+		double totalLength = endTime - startTime;
+		double ppb = this->getWidth() / totalLength;
+
+		switch (this->rulerState)
+		{
+		case RulerState::Normal:
+		{
+			//标签覆盖
+			if (this->editModeFlag) {
+				//计算标签大小
+				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+				float width_label = height_label;
+				float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+
+				//判断鼠标位置
+				if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
+					posY <= (this->getHeight() - height_labelBottomMargin)) {
+					//选择标签
+					int labelIndex = -1;
+					int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+					for (int i = labelSize; i >= 0; i--) {
+						auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+						if (label) {
+							float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
+
+							if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
+								labelIndex = i;
+							}
+						}
+					}
+
+					//如果标签已选择
+					if (labelIndex >= 0 && labelIndex < labelSize) {
+						//更改鼠标并刷新
+						this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+						this->repaint();
+						return;
+					}
+				}
+
+			}
+
+			//选区覆盖
+			if (this->loopEndTime > this->loopStartTime) {
+				//计算选区位置
+				float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
+				float startLoopPos = (this->loopStartTime - startTime) * ppb;
+				float endLoopPos = (this->loopEndTime - startTime) * ppb;
+				float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
+				float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
+
+				//判断选区
+				if (posX >= startLoopJudgePos && posX <= startLoopPos) {
+					//更改鼠标并刷新
+					this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+					this->repaint();
+					return;
+				}
+				else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
+					//更改鼠标并刷新
+					this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+					this->repaint();
+					return;
+				}
+			}
+
+			//更改鼠标并刷新
+			this->setMouseCursor(juce::MouseCursor::NormalCursor);
+			this->repaint();
+			break;
+		}
+		case RulerState::LoopSP:
+		{
+			//计算时间
+			double time = startTime + posX / ppb;
+			if (time < 0) { time = 0; }
+			if (time > this->totalTime) { time = totalTime; }
+			if (time > this->loopEndTime) { time = this->loopEndTime; }
+
+			//发送更改
+			this->setLoopRangeMethod(time, this->loopEndTime);
+
+			//指针跟随
+			if (this->currentTime < time || this->currentTime > this->loopEndTime) {
+				this->setCurrentPositionMethod(time);
+			}
+
+			//刷新
+			this->repaint();
+			break;
+		}
+		case RulerState::LoopEP:
+		{
+			//计算时间
+			double time = startTime + posX / ppb;
+			if (time < 0) { time = 0; }
+			if (time > this->totalTime) { time = totalTime; }
+			if (time < this->loopStartTime) { time = this->loopStartTime; }
+
+			//发送更改
+			this->setLoopRangeMethod(this->loopStartTime, time);
+
+			//指针跟随
+			if (this->currentTime > time || this->currentTime < this->loopStartTime) {
+				this->setCurrentPositionMethod(time);
+			}
+
+			//刷新
+			this->repaint();
+			break;
+		}
+		case RulerState::Label:
+		{
+			//计算时间
+			double time = startTime + posX / ppb;
+
+			//限制时间
+			{
+				double timeMin = 0, timeMax = this->totalTime;
+				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				if (this->labelEditingIndex > 0) {
+					auto lastLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex - 1);
+					if (lastLabel) {
+						timeMin = vocalshaper::LabelDAO::getPosition(lastLabel);
+					}
+				}
+				if (this->labelEditingIndex < labelSize - 1) {
+					auto nextLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex + 1);
+					if (nextLabel) {
+						timeMax = vocalshaper::LabelDAO::getPosition(nextLabel);
+					}
+				}
+				if (time < timeMin) { time = timeMin; }
+				if (time > timeMax) { time = timeMax; }
+			}
+
+			//更新缓存
+			this->labelEditingTime = time;
+
+			//刷新
+			this->repaint();
+			break;
+		}
+		case RulerState::Cursor:
+		{
+			//计算时间
+			double time = startTime + posX / ppb;
+			if (time < 0) { time = 0; }
+			if (time > this->totalTime) { time = totalTime; }
+
+			//发送更改
+			this->setCurrentPositionMethod(time);
+
+			//选区跟随或建立
+			if (this->loopEndTime > this->loopStartTime) {
+
+				if (time < this->loopStartTime) {
+					this->setLoopRangeMethod(time, this->loopEndTime);
+				}
+				else if (time > this->loopEndTime) {
+					this->setLoopRangeMethod(this->loopStartTime, time);
+				}
+			}
+			else {
+				if (time != this->timePressed) {
+					this->setLoopRangeMethod(
+						std::min(time, this->timePressed),
+						std::max(time, this->timePressed));
+				}
+			}
+
+			//刷新
+			this->repaint();
+			break;
+		}
+		}
+	}
 }
 
 void TimeRuler::mouseDrag(const juce::MouseEvent& event)
 {
-	//TODO
+	this->mouseMove(event);
 }
 
 void TimeRuler::mouseUp(const juce::MouseEvent& event)
 {
-	//TODO
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//获取鼠标指针属性
+	float posX = event.position.getX();
+	float posY = event.position.getY();
+
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project) {
+		//计算分辨率
+		double startTime = this->startTime;
+		double endTime = this->endTime;
+		double totalLength = endTime - startTime;
+		double ppb = this->getWidth() / totalLength;
+
+		//左键
+		if (event.mods.isLeftButtonDown()) {
+			switch (this->rulerState)
+			{
+			case RulerState::Label:
+			{
+				if (this->editModeFlag) {
+					//计算时间
+					double time = startTime + posX / ppb;
+
+					//展开面板或更新标签
+					if (time == this->timePressed) {
+						//TODO 显示面板
+					}
+					else {
+						//限制时间
+						{
+							double timeMin = 0, timeMax = this->totalTime;
+							int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+							if (this->labelEditingIndex > 0) {
+								auto lastLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex - 1);
+								if (lastLabel) {
+									timeMin = vocalshaper::LabelDAO::getPosition(lastLabel);
+								}
+							}
+							if (this->labelEditingIndex < labelSize - 1) {
+								auto nextLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex + 1);
+								if (nextLabel) {
+									timeMax = vocalshaper::LabelDAO::getPosition(nextLabel);
+								}
+							}
+							if (time < timeMin) { time = timeMin; }
+							if (time > timeMax) { time = timeMax; }
+						}
+
+						//编辑事件
+						using ActionType = vocalshaper::actions::label::PositionAction;
+						ActionType::TargetType target;
+						target.label = this->labelEditingIndex;
+						auto action = std::make_unique<ActionType>(
+							target, time, this->project
+							);
+
+						//发送事件
+						this->project->getProcesser()->processEvent(std::move(action));
+					}
+
+					//刷新
+					this->repaint();
+					break;
+				}
+			}
+			}
+
+			//重置缓存
+			this->rulerState = RulerState::Normal;
+			this->timePressed = -1;
+			this->labelEditingIndex = -1;
+			this->labelEditingTime = -1;
+
+			//设置鼠标并刷新
+			{
+				//标签覆盖
+				if (this->editModeFlag) {
+					//计算标签大小
+					float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+					float width_label = height_label;
+					float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+
+					//判断鼠标位置
+					if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
+						posY <= (this->getHeight() - height_labelBottomMargin)) {
+						//选择标签
+						int labelIndex = -1;
+						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						for (int i = labelSize; i >= 0; i--) {
+							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+							if (label) {
+								float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
+
+								if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
+									labelIndex = i;
+								}
+							}
+						}
+
+						//如果标签已选择
+						if (labelIndex >= 0 && labelIndex < labelSize) {
+							//更改鼠标并刷新
+							this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+							this->repaint();
+							return;
+						}
+					}
+				}
+
+				//选区覆盖
+				if (this->loopEndTime > this->loopStartTime) {
+					//计算选区位置
+					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
+					float startLoopPos = (this->loopStartTime - startTime) * ppb;
+					float endLoopPos = (this->loopEndTime - startTime) * ppb;
+					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
+					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
+
+					//判断选区
+					if (posX >= startLoopJudgePos && posX <= startLoopPos) {
+						//更改鼠标并刷新
+						this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+						this->repaint();
+						return;
+					}
+					else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
+						//更改鼠标并刷新
+						this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+						this->repaint();
+						return;
+					}
+				}
+
+				//更改鼠标并刷新
+				this->setMouseCursor(juce::MouseCursor::NormalCursor);
+				this->repaint();
+			}
+		}
+	}
 }
 
 void TimeRuler::mouseExit(const juce::MouseEvent& event)
 {
-	//TODO
+	if (this->rulerState != RulerState::Normal) {
+		this->rulerState = RulerState::Normal;
+		this->timePressed = -1;
+		this->labelEditingIndex = -1;
+		this->labelEditingTime = -1;
+		this->setMouseCursor(juce::MouseCursor::NormalCursor);
+		this->repaint();
+	}
 }
 
 void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 {
-	//TODO
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//获取鼠标指针属性
+	float posX = event.position.getX();
+	float posY = event.position.getY();
+
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project) {
+		//计算分辨率
+		double startTime = this->startTime;
+		double endTime = this->endTime;
+		double totalLength = endTime - startTime;
+		double ppb = this->getWidth() / totalLength;
+
+		//左键
+		if (event.mods.isLeftButtonDown()) {
+			if (this->editModeFlag) {
+				//计算标签大小
+				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+				float width_label = height_label;
+				float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+
+				//计算时间
+				double time = startTime + posX / ppb;
+
+				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				int newIndex = labelSize;
+				for (int i = labelSize; i >= 0; i--) {
+					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					if (label) {
+						//获取label时间
+						double labelTime = vocalshaper::LabelDAO::getPosition(label);
+
+						//计算label索引
+						if (labelTime > time) {
+							newIndex = i;
+						}
+
+						//获取label位置并确保指针不在标签上
+						float labelPos = (labelTime - startTime) * ppb;
+						if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
+							posY <= (this->getHeight() - height_labelBottomMargin)) {
+							if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
+								return;
+							}
+						}
+					}
+				}
+
+				//建立标签
+				auto label = new vocalshaper::Label;
+				vocalshaper::LabelDAO::setPosition(label, time);
+
+				//编辑事件
+				using ActionType = vocalshaper::actions::project::AddLabelAction;
+				ActionType::TargetType target{};
+				auto action = std::make_unique<ActionType>(
+					target, newIndex, label, this->project
+					);
+
+				//发送事件
+				this->project->getProcesser()->processEvent(std::move(action));
+
+				//刷新
+				this->repaint();
+			}
+		}
+	}
 }

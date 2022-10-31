@@ -862,14 +862,26 @@ void TabList::setCaller(const juce::String& caller)
 
 void TabList::listenActions(const vocalshaper::actions::ActionBase& /*action*/, vocalshaper::actions::ActionBase::UndoType /*type*/)
 {
-	juce::MessageManagerLock locker;
-	this->refreshCompCache();
+	//获取消息管理器
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+
+	//刷新
+	messageManager->callAsync([this] {this->refreshCompCache(); });
 }
 
 void TabList::listenSaved(const vocalshaper::ProjectProxy* /*proj*/)
 {
-	juce::MessageManagerLock locker;
-	this->refreshCompCache();
+	//获取消息管理器
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+
+	//刷新
+	messageManager->callAsync([this] {this->refreshCompCache(); });
 }
 
 bool TabList::checkThenClose(int index)

@@ -45,15 +45,15 @@ HScroller::HScroller()
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "height-horizontalScroller-loopBlock", this->sizes.height_horizontalScroller_labelBlock, result
+		"main", "size", "height-horizontalScroller-labelBlock", this->sizes.height_horizontalScroller_labelBlock, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "height-horizontalScroller-loopBlockTopMargin", this->sizes.height_horizontalScroller_labelBlockTopMargin, result
+		"main", "size", "height-horizontalScroller-labelBlockTopMargin", this->sizes.height_horizontalScroller_labelBlockTopMargin, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
-		"main", "size", "width-horizontalScroller-loopBlock", this->sizes.width_horizontalScroller_labelBlock, result
+		"main", "size", "width-horizontalScroller-labelBlock", this->sizes.width_horizontalScroller_labelBlock, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -63,6 +63,8 @@ HScroller::HScroller()
 	//position
 	//scale
 	//resource
+
+	//TODO 监听标签变化
 }
 
 void HScroller::limitSize(double& sp, double& ep, double nailPer)

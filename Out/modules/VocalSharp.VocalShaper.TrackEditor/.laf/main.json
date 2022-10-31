@@ -31,11 +31,11 @@
     "width-verticalScroller-trackBlockMarginLeft:number": 0.0025,
     "width-verticalScroller-curveBlockMarginLeft:number": 0.005,
 
-    "height-horizontalScroller-loopBlock:number": 0.002,
-    "height-horizontalScroller-loopBlockMarginTop:number": 0.002,
-    "height-horizontalScroller-labelBlock:number": 0.002,
-    "height-horizontalScroller-labelBlockMarginTop:number": 0.004,
-    "width-horizontalScroller-labelBlock:number": 0.0015,
+    "height-horizontalScroller-loopBlock:number": 0.004,
+    "height-horizontalScroller-loopBlockTopMargin:number": 0.004,
+    "height-horizontalScroller-labelBlock:number": 0.004,
+    "height-horizontalScroller-labelBlockTopMargin:number": 0.008,
+    "width-horizontalScroller-labelBlock:number": 0.0025,
 
     "height-timeRuler-barLine:number": 0.012,
     "height-timeRuler-beatLine:number": 0.007,

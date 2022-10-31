@@ -81,8 +81,10 @@ private:
 	double startTime, endTime;
 	double loopStartTime, loopEndTime;
 	double currentTime;
+	double totalTime = 0;
 	double labelEditingTime = -1;
 	int labelEditingIndex = -1;
+	double timePressed = -1;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
 
