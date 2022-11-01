@@ -105,7 +105,11 @@ TimeRuler::TimeRuler()
 
 	//resource
 
-	//TODO 监听标签更改
+	//监听标签变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenLabelChange(action, type); });
 }
 
 void TimeRuler::resized()
@@ -288,11 +292,11 @@ void TimeRuler::paint(juce::Graphics& g)
 						float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
 						if ((labelPos + width_label / 2) >= 0 && (labelPos - width_label / 2) <= this->getWidth()) {
-							if (this->editModeFlag) {
-								g.setColour(this->colors.timeRuler_label_on);
+							if (!this->editModeFlag || (i == this->labelEditingIndex)) {
+								g.setColour(this->colors.timeRuler_label_off);
 							}
 							else {
-								g.setColour(this->colors.timeRuler_label_off);
+								g.setColour(this->colors.timeRuler_label_on);
 							}
 
 							g.fillEllipse(
@@ -484,6 +488,7 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 								if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
 									labelIndex = i;
 									labelTime = vocalshaper::LabelDAO::getPosition(label);
+									break;
 								}
 							}
 						}
@@ -493,7 +498,7 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 							//更改状态缓存
 							this->labelEditingIndex = labelIndex;
 							this->labelEditingTime = labelTime;
-							this->timePressed = startTime + posX / ppb;;
+							this->timePressed = startTime + posX / ppb;
 							this->rulerState = RulerState::Label;
 
 							//更改鼠标并刷新
@@ -538,23 +543,27 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 				//播放指针更改
 				{
 					//更改状态缓存
-					this->timePressed = startTime + posX / ppb;
-					if (this->timePressed < 0) { this->timePressed = 0; }
-					if (this->timePressed > this->totalTime) { this->timePressed = totalTime; }
+					double time = startTime + posX / ppb;
+					this->timePressed = time;
+
+					time = vocalshaper::adsorb(time, this->adsorb);
+
+					if (time < 0) { time = 0; }
+					if (time > this->totalTime) { time = totalTime; }
 					this->rulerState = RulerState::Cursor;
 
 					//发送更改
-					this->setCurrentPositionMethod(this->timePressed);
+					this->setCurrentPositionMethod(time);
 
 					//如果在选区外，则取消选区
 					if (this->loopEndTime > this->loopStartTime) {
-						if (this->timePressed<this->loopStartTime || this->timePressed>this->loopEndTime) {
+						if (time < this->loopStartTime || time > this->loopEndTime) {
 							this->setLoopRangeMethod(-1, -1);
 						}
 					}
 
 					//更改鼠标并刷新
-					this->setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+					this->setMouseCursor(juce::MouseCursor::NormalCursor);
 					this->repaint();
 					return;
 				}
@@ -605,6 +614,7 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 
 							if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
 								labelIndex = i;
+								break;
 							}
 						}
 					}
@@ -653,6 +663,7 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
+			time = vocalshaper::adsorb(time, this->adsorb);
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
 			if (time > this->loopEndTime) { time = this->loopEndTime; }
@@ -673,6 +684,7 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
+			time = vocalshaper::adsorb(time, this->adsorb);
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
 			if (time < this->loopStartTime) { time = this->loopStartTime; }
@@ -693,6 +705,7 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
+			time = vocalshaper::adsorb(time, this->adsorb);
 
 			//限制时间
 			{
@@ -724,7 +737,8 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		case RulerState::Cursor:
 		{
 			//计算时间
-			double time = startTime + posX / ppb;
+			double posTime = startTime + posX / ppb;
+			double time = vocalshaper::adsorb(posTime, this->adsorb);
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
 
@@ -742,10 +756,10 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				}
 			}
 			else {
-				if (time != this->timePressed) {
+				if (posTime != this->timePressed) {
 					this->setLoopRangeMethod(
-						std::min(time, this->timePressed),
-						std::max(time, this->timePressed));
+						std::min(time, vocalshaper::adsorb(this->timePressed, this->adsorb)),
+						std::max(time, vocalshaper::adsorb(this->timePressed, this->adsorb)));
 				}
 			}
 
@@ -796,6 +810,7 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					}
 					else {
 						//限制时间
+						time = vocalshaper::adsorb(time, this->adsorb);
 						{
 							double timeMin = 0, timeMax = this->totalTime;
 							int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
@@ -862,6 +877,7 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 								if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
 									labelIndex = i;
+									break;
 								}
 							}
 						}
@@ -948,6 +964,7 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 
 				//计算时间
 				double time = startTime + posX / ppb;
+				time = vocalshaper::adsorb(time, this->adsorb);
 
 				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
 				int newIndex = labelSize;
@@ -976,6 +993,10 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 				//建立标签
 				auto label = new vocalshaper::Label;
 				vocalshaper::LabelDAO::setPosition(label, time);
+				//begin test
+				/*juce::String labelData("beat = 3");
+				vocalshaper::LabelDAO::setData(label, labelData);*/
+				//end test
 
 				//编辑事件
 				using ActionType = vocalshaper::actions::project::AddLabelAction;
@@ -991,5 +1012,30 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 				this->repaint();
 			}
 		}
+	}
+}
+
+void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+
+	//获取消息管理器
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+		if (
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
+			messageManager->callAsync([this] {this->repaint(); });
+		}
+	}
+	else if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Label) {
+		messageManager->callAsync([this] {this->repaint(); });
 	}
 }

@@ -46,7 +46,7 @@
     "width-timeRuler-barTextLeftMargin:number": 0.0025,
     "width-timeRuler-barTextRightMargin:number": 0.0025,
 
-    "width-timeRuler-loopJudgeArea:number": 0.01,
+    "width-timeRuler-loopJudgeArea:number": 0.005,
 
     "height-timeRuler-labelBottomMargin:number": 0.0025,
     "height-timeRuler-label:number": 0.0075

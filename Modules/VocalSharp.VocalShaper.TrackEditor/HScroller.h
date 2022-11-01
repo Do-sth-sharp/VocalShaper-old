@@ -21,6 +21,9 @@ protected:
 	//控件大小发生改变时重算卷滚条位置
 	void refreshSizeOnResized(int lastSize, int size, double& sp, double& ep) override;
 
+public:
+	void listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
 private:
 	struct Colors final
 	{

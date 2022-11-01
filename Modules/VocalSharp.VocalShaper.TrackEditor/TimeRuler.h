@@ -33,6 +33,9 @@ public:
 	void mouseExit(const juce::MouseEvent& event) override;
 	void mouseDoubleClick(const juce::MouseEvent& event) override;
 
+public:
+	void listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
 private:
 	struct Colors final
 	{

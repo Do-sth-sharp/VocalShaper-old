@@ -1078,7 +1078,7 @@ void ScrollerBase::setCurrentPosition(double currentTime)
 				double per = this->ptrTemp->currentPositionTemp / (double)this->ptrTemp->projectLengthTemp;
 
 				//需要翻页
-				if (per < this->ptrTemp->sp || per >= this->ptrTemp->ep) {
+				if (per < this->ptrTemp->sp || per > this->ptrTemp->ep) {
 					//计算翻页位置
 					double diff = this->ptrTemp->ep - this->ptrTemp->sp;
 					this->ptrTemp->sp = per;

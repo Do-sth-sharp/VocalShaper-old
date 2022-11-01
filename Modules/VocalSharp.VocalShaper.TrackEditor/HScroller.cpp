@@ -64,7 +64,11 @@ HScroller::HScroller()
 	//scale
 	//resource
 
-	//TODO 监听标签变化
+	//监听标签变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenLabelChange(action, type); });
 }
 
 void HScroller::limitSize(double& sp, double& ep, double nailPer)
@@ -243,5 +247,30 @@ void HScroller::refreshSizeOnResized(int lastSize, int size, double& sp, double&
 			sp = startTime / this->ptrTemp->projectLengthTemp;
 			ep = endTime / this->ptrTemp->projectLengthTemp;
 		}
+	}
+}
+
+void HScroller::listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+
+	//获取消息管理器
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+		if (
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
+			messageManager->callAsync([this] {this->repaint(); });
+		}
+	}
+	else if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Label) {
+		messageManager->callAsync([this] {this->repaint(); });
 	}
 }
