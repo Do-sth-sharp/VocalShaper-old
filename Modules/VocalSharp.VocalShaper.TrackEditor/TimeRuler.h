@@ -79,6 +79,7 @@ private:
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;
+	std::function<const juce::String(const juce::String&)> tr;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	double startTime, endTime;
