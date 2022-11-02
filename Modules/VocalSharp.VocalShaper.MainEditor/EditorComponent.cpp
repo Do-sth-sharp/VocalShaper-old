@@ -10,6 +10,12 @@ EditorComponent::EditorComponent()
 			"WuChang.JMADF.Device", "GetScreenSize"
 			);
 
+	//获取命令管理器
+	jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+		this->commandManager
+		);
+
 	//以下获取命令ID
 	this->initCommandID();
 
@@ -751,6 +757,22 @@ void EditorComponent::listenProjectLengthChange(const vocalshaper::actions::Acti
 	}
 }
 
+void EditorComponent::listenAllChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock locker(this->projectLock);
+	if (this->project != action.getProxy()) {
+		return;
+	}
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+	if (this->commandManager) {
+		auto ptrCM = this->commandManager;
+		messageManager->callAsync([ptrCM] {ptrCM->commandStatusChanged(); });
+	}
+}
+
 void EditorComponent::listenCurrentPositionChange(double currentTime)
 {
 	auto messageManager = juce::MessageManager::getInstance();
@@ -1249,6 +1271,12 @@ void EditorComponent::initProjectListener()
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 		{this->listenProjectLengthChange(action, type); });
+
+	//侦听全部变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenAllChange(action, type); });
 
 	//TODO 侦听播放状态变化
 }

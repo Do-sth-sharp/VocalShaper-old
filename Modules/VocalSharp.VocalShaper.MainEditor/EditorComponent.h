@@ -88,11 +88,13 @@ public:
 	//监听器，用于注册回调监听事件
 	void listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 	void listenProjectLengthChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenAllChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
 	//监听器，用于注册回调监听播放状态
 	void listenCurrentPositionChange(double currentTime);
 	void listenFollowStateChange(bool followState);
 	void listenLoopRangeChange(double startTime, double endTime);
+
 public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -123,6 +125,7 @@ private:
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;
+	juce::ApplicationCommandManager* commandManager = nullptr;
 
 	void initCommandID();
 	void initCommandFunction();

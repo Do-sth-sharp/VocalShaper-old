@@ -642,10 +642,9 @@ void PlayBar::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
-	this->playButton->enablementChanged();
-	this->stopButton->enablementChanged();
-	this->undoButton->enablementChanged();
-	this->redoButton->enablementChanged();
+	if (this->commandManager) {
+		this->commandManager->commandStatusChanged();
+	}
 }
 
 void PlayBar::resized()
