@@ -115,6 +115,62 @@ void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 	}
 }
 
+void ScrollerBase::sendWheelChange(double per, double delta)
+{
+	juce::ScopedWriteLock locker(this->tempLock);
+
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	if (this->ptrTemp && this->scrollerState == ScrollerState::Normal) {
+		if (!this->getVertical()) {
+			//更改值
+			this->ptrTemp->sp = this->ptrTemp->sp - delta;
+			this->ptrTemp->ep = this->ptrTemp->ep - delta;
+
+			//限制大小
+			this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+		}
+	}
+}
+
+void ScrollerBase::sendWheelChangeWithCtrl(double per, double delta)
+{
+	juce::ScopedWriteLock locker(this->tempLock);
+
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	if (this->ptrTemp && this->scrollerState == ScrollerState::Normal) {
+		if (!this->getVertical()) {
+			if (per >= 0. && per <= 1.) {
+				//更改值
+				this->ptrTemp->sp = this->ptrTemp->sp - delta * per;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta * (1 - per);
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, per);
+			}
+			else {
+				//更改值
+				this->ptrTemp->sp = this->ptrTemp->sp - delta / 2;
+				this->ptrTemp->ep = this->ptrTemp->ep + delta / 2;
+
+				//限制大小
+				this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.5);
+			}
+
+			//发送改变
+			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
+		}
+	}
+}
+
 void ScrollerBase::limitSize(double& sp, double& ep, double nailPer)
 {
 	double delta = ep - sp;
@@ -286,7 +342,6 @@ void ScrollerBase::mouseWheelMove(const juce::MouseEvent& event, const juce::Mou
 	
 	//计算delta
 	double delta = details.deltaY / 20.;
-	//TODO delta调优
 
 	//计算编辑
 	if (this->ptrTemp) {

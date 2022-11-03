@@ -61,10 +61,6 @@ TrackEditor::TrackEditor()
 	
 	//resource
 
-	//建立时间标尺
-	this->timeRuler = std::make_unique<TimeRuler>();
-	this->addAndMakeVisible(this->timeRuler.get());
-
 	//建立竖直卷滚条
 	this->vScroller = std::make_unique<VScroller>();
 	this->addAndMakeVisible(this->vScroller.get());
@@ -72,6 +68,14 @@ TrackEditor::TrackEditor()
 	//建立水平卷滚条
 	this->hScroller = std::make_unique<HScroller>();
 	this->addAndMakeVisible(this->hScroller.get());
+
+	//建立时间标尺
+	this->timeRuler = std::make_unique<TimeRuler>(
+		[this](double time, double delta)
+		{this->hScroller->sendWheelChange(time, delta); },
+		[this](double time, double delta)
+		{this->hScroller->sendWheelChangeWithCtrl(time, delta); });
+	this->addAndMakeVisible(this->timeRuler.get());
 }
 
 void TrackEditor::resized()

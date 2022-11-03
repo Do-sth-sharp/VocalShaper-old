@@ -5,7 +5,8 @@
 class TimeRuler final : public vocalshaper::EditorBase
 {
 public:
-	TimeRuler();
+	TimeRuler(std::function<void(double, double)> wheelChangeMethod,
+		std::function<void(double, double)> wheelChangeWithCtrlMethod);
 	~TimeRuler() override = default;
 
 	void resized() override;
@@ -80,6 +81,9 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;
 	std::function<const juce::String(const juce::String&)> tr;
+
+	std::function<void(double, double)> wheelChangeMethod;
+	std::function<void(double, double)> wheelChangeWithCtrlMethod;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	double startTime, endTime;

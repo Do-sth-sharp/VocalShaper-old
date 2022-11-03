@@ -12,6 +12,9 @@ public:
 	bool getVertical() const;
 	void showCurve(const vocalshaper::Track* track, bool show);
 
+	void sendWheelChange(double per, double delta);
+	void sendWheelChangeWithCtrl(double per, double delta);
+
 protected:
 	//根据大小限制计算滑块大小
 	virtual void limitSize(double& sp, double& ep, double nailPer);

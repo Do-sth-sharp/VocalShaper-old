@@ -1,8 +1,10 @@
 ﻿#include "TimeRuler.h"
 #include <libJModule.h>
 
-TimeRuler::TimeRuler()
-	:EditorBase()
+TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
+	std::function<void(double, double)> wheelChangeWithCtrlMethod)
+	: EditorBase() , wheelChangeMethod(wheelChangeMethod),
+	wheelChangeWithCtrlMethod(wheelChangeWithCtrlMethod)
 {
 	//获取屏幕属性接口
 	this->screenSizeFunc =
@@ -447,7 +449,39 @@ void TimeRuler::setVViewPort(double bottomTrack, double topTrack)
 
 void TimeRuler::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details)
 {
-	//TODO
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//获取鼠标指针属性
+	float posX = event.position.getX();
+	float posY = event.position.getY();
+
+	//计算delta
+	double delta = details.deltaY / 20.;
+
+	juce::ScopedReadLock projLocker(this->projectLock);
+	if (this->project) {
+		//计算分辨率
+		double startTime = this->startTime;
+		double endTime = this->endTime;
+		double totalLength = endTime - startTime;
+		double ppb = this->getWidth() / totalLength;
+
+		//在常规模式下
+		if (this->rulerState == RulerState::Normal) {
+			//计算时间
+			double per = posX / (double)this->getWidth();
+
+			//ctrl按下
+			if (event.mods.isCtrlDown()) {
+				this->wheelChangeWithCtrlMethod(per, delta);
+			}
+			else {
+				this->wheelChangeMethod(per, delta);
+			}
+		}
+	}
 }
 
 void TimeRuler::mouseDown(const juce::MouseEvent& event)
