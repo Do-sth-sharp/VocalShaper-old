@@ -49,13 +49,31 @@
     "width-timeRuler-loopJudgeArea:number": 0.005,
 
     "height-timeRuler-labelBottomMargin:number": 0.0025,
-    "height-timeRuler-label:number": 0.0075
+    "height-timeRuler-label:number": 0.0075,
+
+    "height-labelEditorMarginTop:number": 0.01,
+    "height-labelEditorMarginBottom:number": 0.01,
+
+    "width-labelEditorMargin:number": 0.01,
+    "width-labelEditorComboBox:number": 0.075,
+    "width-labelEditorButton:number": 0.075
   },
   "position": {
+    "posY-labelEditorCodeEditor:number": 0.2,
+    "posY-labelEditorResultLabel:number": 0.5,
+    "posY-labelEditorButton:number": 0.8,
+
+    "posX-labelEditorComboBox:number": 0.1,
+    "posX-labelEditorButton:number": 0.7
   },
   "scale": {
     "height-curveByTrack:number": 0.5,
 
-    "height-timeRuler-barText:number": 0.8
+    "height-timeRuler-barText:number": 0.8,
+
+    "height-labelEditorComboBox:number": 0.8,
+    "height-labelEditorCodeEditor:number": 0.95,
+    "height-labelEditorResultLabel:number": 0.95,
+    "height-labelEditorButton:number": 0.8
   }
 }

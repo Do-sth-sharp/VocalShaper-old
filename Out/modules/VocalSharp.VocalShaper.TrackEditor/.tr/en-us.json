@@ -2,5 +2,10 @@
   "bt_TimeUnselect": "Unselect Time",
   "bt_AddLabel": "Add Label",
   "bt_EditLabel": "Edit Label",
-  "bt_RemoveLabel": "RemoveLabel"
+  "bt_RemoveLabel": "RemoveLabel",
+
+  "bt_Accept": "Accept",
+  "tip_LabelParseHead": "Parse finished in",
+  "tip_LabelParseTail": "milliseconds.",
+  "tip_LabelParseError": "Parse failed!"
 }

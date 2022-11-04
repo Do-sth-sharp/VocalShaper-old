@@ -2,5 +2,10 @@
   "bt_TimeUnselect": "取消时间选区",
   "bt_AddLabel": "添加标签",
   "bt_EditLabel": "编辑标签",
-  "bt_RemoveLabel": "移除标签"
+  "bt_RemoveLabel": "移除标签",
+
+  "bt_Accept": "应用",
+  "tip_LabelParseHead": "解析完成，用时",
+  "tip_LabelParseTail": "毫秒。",
+  "tip_LabelParseError": "解析失败！"
 }

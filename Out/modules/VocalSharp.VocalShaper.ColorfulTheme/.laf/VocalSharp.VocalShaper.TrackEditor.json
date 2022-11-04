@@ -21,7 +21,28 @@
     "timeRuler-loopJudgeArea:string": "$ThemeColorD3",
 
     "timeRuler-label-on:string": "$ThemeColorA2",
-    "timeRuler-label-off:string": "$ThemeColorD2"
+    "timeRuler-label-off:string": "$ThemeColorD2",
+
+    "background-labelEditor:string": "$ThemeColorB3",
+
+    "text-comboBox:string": "$ThemeColorD2",
+    "background-comboBox:string": "$ThemeColorB1",
+
+    "text-codeEditor:string": "$ThemeColorD2",
+    "background-codeEditor:string": "$ThemeColorB1",
+    "text-codeEditor-highlight:string": "$ThemeColorD2",
+    "background-codeEditor-highlight:string": "$ThemeColorB1",
+    "caret-codeEditor:string": "$ThemeColorD1",
+
+    "thumb-codeEditor-scroller:string": "$ThemeColorD3",
+    "track-codeEditor-scroller:string": "$ThemeColorB1",
+
+    "text-labelEditorResultLabel:string": "$ThemeColorD2",
+    "text-labelEditorResultLabel-error:string": "#FF0000",
+    "background-labelEditorResultLabel:string": "$ThemeColorB3",
+
+    "text-labelEditorButton:string": "$ThemeColorD1",
+    "background-labelEditorButton:string": "$ThemeColorA2"
   },
   "resource": {
   }

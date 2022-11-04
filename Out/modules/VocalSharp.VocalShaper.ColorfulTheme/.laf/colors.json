@@ -1,21 +1,33 @@
-{
-    "ThemeColorA1":"#3A3F69",
-    "ThemeColorA2":"#626FFC",
+﻿{
+  "ThemeColorA1": "#3A3F69",
+  "ThemeColorA2": "#626FFC",
 
-    "ThemeColorB1":"#12121A",
-    "ThemeColorB2":"#1B1B24",
-    "ThemeColorB3":"#272736",
-    "ThemeColorB4":"#35354A",
+  "ThemeColorB1": "#12121A",
+  "ThemeColorB2": "#1B1B24",
+  "ThemeColorB3": "#272736",
+  "ThemeColorB4": "#35354A",
 
-    "ThemeColorC1":"#43CF7C",
-    "ThemeColorC2":"#00BAAD",
-    "ThemeColorC3":"#2097E6",
-    "ThemeColorC4":"#4654F0",
-    "ThemeColorC5":"#7948EA",
-    "ThemeColorC6":"#D935DB",
+  "ThemeColorC1": "#43CF7C",
+  "ThemeColorC2": "#00BAAD",
+  "ThemeColorC3": "#2097E6",
+  "ThemeColorC4": "#4654F0",
+  "ThemeColorC5": "#7948EA",
+  "ThemeColorC6": "#D935DB",
 
-    "ThemeColorD1":"#FFFFFFFF",
-    "ThemeColorD2":"#FFFFFFB3",
-    "ThemeColorD3":"#FFFFFF7F",
-    "ThemeColorD4":"#FFFFFF33"
+  "ThemeColorD1": "#FFFFFFFF",
+  "ThemeColorD2": "#FFFFFFB3",
+  "ThemeColorD3": "#FFFFFF7F",
+  "ThemeColorD4": "#FFFFFF33",
+
+  "CodeColorError": "#FF2A00",
+  "CodeColorComment": "$ThemeColorC2",
+  "CodeColorKeyWord": "$ThemeColorC6",
+  "CodeColorOperator": "$ThemeColorC4",
+  "CodeColorIdentifier": "$ThemeColorD1",
+  "CodeColorInteger": "$ThemeColorC1",
+  "CodeColorFloat": "$ThemeColorC1",
+  "CodeColorString": "$ThemeColorC5",
+  "CodeColorBracket": "$ThemeColorC3",
+  "CodeColorPunctuation": "$ThemeColorC4",
+  "CodeColorPreprocessorText": "$ThemeColorA2"
 }
