@@ -75,6 +75,26 @@ LabelEditor::LabelEditor()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "background-labelEditorButton", this->colors.background_labelEditorButton, result
         );
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-menu", this->colors.background_menu, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-menu", this->colors.text_menu, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "header-menu", this->colors.header_menu, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-menu-highlight", this->colors.background_menu_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-menu-highlight", this->colors.text_menu_highlight, result
+		);
 
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
@@ -204,6 +224,21 @@ LabelEditor::LabelEditor()
 	this->lafs.comboBox->setColour(
 		juce::ComboBox::ColourIds::focusedOutlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
 	);
+	this->lafs.comboBox->setColour(
+		juce::PopupMenu::ColourIds::backgroundColourId, this->colors.background_menu
+	);
+	this->lafs.comboBox->setColour(
+		juce::PopupMenu::ColourIds::textColourId, this->colors.text_menu
+	);
+	this->lafs.comboBox->setColour(
+		juce::PopupMenu::ColourIds::headerTextColourId, this->colors.header_menu
+	);
+	this->lafs.comboBox->setColour(
+		juce::PopupMenu::ColourIds::highlightedBackgroundColourId, this->colors.background_menu_highlight
+	);
+	this->lafs.comboBox->setColour(
+		juce::PopupMenu::ColourIds::highlightedTextColourId, this->colors.text_menu_highlight
+	);
 
 	//初始化标签类型下拉框
 	this->comboBox = std::make_unique<juce::ComboBox>("Label Type");
@@ -256,6 +291,15 @@ LabelEditor::LabelEditor()
 	);
 	this->lafs.codeEditor->setColour(
 		juce::CodeEditorComponent::ColourIds::lineNumberTextId, this->colors.text_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::ScrollBar::ColourIds::backgroundColourId, this->colors.background_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::ScrollBar::ColourIds::thumbColourId, this->colors.thumb_codeEditor_scroller
+	);
+	this->lafs.codeEditor->setColour(
+		juce::ScrollBar::ColourIds::trackColourId, this->colors.track_codeEditor_scroller
 	);
 	this->lafs.codeEditor->setColour(
 		juce::CaretComponent::ColourIds::caretColourId, this->colors.caret_codeEditor

@@ -37,6 +37,12 @@ private:
 		juce::Colour text_labelEditorButton;
 		juce::Colour background_labelEditorButton;
 
+		juce::Colour background_menu;
+		juce::Colour text_menu;
+		juce::Colour header_menu;
+		juce::Colour background_menu_highlight;
+		juce::Colour text_menu_highlight;
+
 		juce::Colour code_error;
 		juce::Colour code_comment;
 		juce::Colour code_keyword;
