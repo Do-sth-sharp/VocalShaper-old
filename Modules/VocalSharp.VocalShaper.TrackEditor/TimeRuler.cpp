@@ -1,5 +1,6 @@
 ﻿#include "TimeRuler.h"
 #include <libJModule.h>
+#include "LabelEditor.h"
 
 TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlMethod)
@@ -103,6 +104,18 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-timeRuler-label", this->sizes.height_timeRuler_label, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-labelEditor", this->sizes.width_labelEditor, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-labelEditor", this->sizes.height_labelEditor, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-labelEditorCalloutArrow", this->sizes.width_labelEditorCalloutArrow, result
+		);
 
 	//position
 	//scale
@@ -122,7 +135,6 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 
 void TimeRuler::resized()
 {
-
 }
 
 void TimeRuler::paint(juce::Graphics& g)
@@ -828,6 +840,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 	juce::ScopedReadLock projLocker(this->projectLock);
 	if (this->project) {
+		//计算标签大小
+		float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
+		float width_label = height_label;
+		float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+
 		//计算分辨率
 		double startTime = this->startTime;
 		double endTime = this->endTime;
@@ -846,7 +863,22 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 					//展开面板或更新标签
 					if (time == this->timePressed) {
-						//TODO 显示标签编辑面板
+						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						if (this->labelEditingIndex >= 0 && this->labelEditingIndex < labelSize) {
+							//获取标签
+							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex);
+							float labelSelectedPos = -1;
+							if (label) {
+								labelSelectedPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
+							}
+
+							//显示标签编辑面板
+							juce::Rectangle<int> labelRect(
+								labelSelectedPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
+								width_label, height_label
+							);
+							this->showLabelEditor(labelEditingIndex, labelRect);
+						}
 					}
 					else {
 						//限制时间
@@ -899,17 +931,12 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 			if (this->rulerState == RulerState::Normal) {
 				//标签覆盖
 				int labelSelectedIndex = -1;
+				float labelSelectedPos = -1.f;
 				if (this->editModeFlag) {
-					//计算标签大小
-					float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
-					float width_label = height_label;
-					float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
-
 					//判断鼠标位置
 					if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
 						posY <= (this->getHeight() - height_labelBottomMargin)) {
 						//选择标签
-						int labelIndex = -1;
 						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
 						for (int i = labelSize; i >= 0; i--) {
 							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
@@ -917,15 +944,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 								float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
 								if ((labelPos + width_label / 2) >= posX && (labelPos - width_label / 2) <= posX) {
-									labelIndex = i;
+									labelSelectedIndex = i;
+									labelSelectedPos = labelPos;
 									break;
 								}
 							}
-						}
-
-						//如果标签已选择
-						if (labelIndex >= 0 && labelIndex < labelSize) {
-							labelSelectedIndex = labelIndex;
 						}
 					}
 				}
@@ -952,11 +975,6 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				}
 				case 2:
 				{
-					//计算标签大小
-					float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
-					float width_label = height_label;
-					float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
-
 					//计算时间
 					double time = startTime + posX / ppb;
 					time = vocalshaper::adsorb(time, this->adsorb);
@@ -996,7 +1014,12 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				}
 				case 3:
 				{
-					//TODO 显示标签编辑面板
+					//显示标签编辑面板
+					juce::Rectangle<int> labelRect(
+						labelSelectedPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
+						width_label, height_label
+					);
+					this->showLabelEditor(labelSelectedIndex, labelRect);
 					break;
 				}
 				case 4:
@@ -1192,14 +1215,44 @@ void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action
 		return;
 	}
 
-	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
 		if (
-			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
-			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
+			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddLabel ||
+			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveLabel) {
 			messageManager->callAsync([this] {this->repaint(); });
 		}
 	}
 	else if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Label) {
 		messageManager->callAsync([this] {this->repaint(); });
 	}
+}
+
+void TimeRuler::showLabelEditor(int labelIndex, juce::Rectangle<int> place)
+{
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//计算控件大小
+	int width_labelEditor = this->sizes.width_labelEditor * screenSize.getWidth();
+	int height_labelEditor = this->sizes.height_labelEditor * screenSize.getHeight();
+	int width_labelEditorArrow = this->sizes.width_labelEditorCalloutArrow * screenSize.getWidth();
+
+	//初始化编辑器
+	auto labelEditor = std::make_unique<LabelEditor>();
+	labelEditor->setSize(width_labelEditor, height_labelEditor);
+	labelEditor->setProject(this->project);
+	labelEditor->setLabelIndex(labelIndex);
+
+	//计算屏幕显示位置
+	auto screenBounds = this->getScreenBounds();
+	juce::Rectangle<int> placeInScreen = place;
+	placeInScreen.setPosition(place.getX() + screenBounds.getX(), place.getY() + screenBounds.getY());
+
+	//显示控件
+	auto& callOutBox = juce::CallOutBox::launchAsynchronously(
+		std::move(labelEditor), placeInScreen, nullptr);
+
+	//调整控件
+	//callOutBox.setArrowSize(width_labelEditorArrow);
 }

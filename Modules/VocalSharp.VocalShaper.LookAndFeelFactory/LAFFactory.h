@@ -26,6 +26,10 @@ public:
 	juce::LookAndFeel* getStatusTextButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusRoundButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusFlatTextButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getLabelEditorComboBoxLAF(const juce::String& caller);
+	juce::LookAndFeel* getLabelEditorCodeEditorLAF(const juce::String& caller);
+	juce::LookAndFeel* getLabelEditorResultLabelLAF(const juce::String& caller);
+	juce::LookAndFeel* getLabelEditorButtonLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
 

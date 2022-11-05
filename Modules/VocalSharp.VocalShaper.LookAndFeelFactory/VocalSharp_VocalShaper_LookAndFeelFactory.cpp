@@ -97,6 +97,30 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getStatusFlatTextButtonLAF(caller);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetLabelEditorComboBoxLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getLabelEditorComboBoxLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetLabelEditorCodeEditorLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getLabelEditorCodeEditorLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetLabelEditorResultLabelLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getLabelEditorResultLabelLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetLabelEditorButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getLabelEditorButtonLAF(caller);
+		}
+	);
 
 	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {

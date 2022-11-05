@@ -263,10 +263,10 @@ void HScroller::listenLabelChange(const vocalshaper::actions::ActionBase& action
 		return;
 	}
 
-	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
 		if (
-			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
-			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
+			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddLabel ||
+			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveLabel) {
 			messageManager->callAsync([this] {this->repaint(); });
 		}
 	}

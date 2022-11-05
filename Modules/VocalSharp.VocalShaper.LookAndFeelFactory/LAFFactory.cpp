@@ -96,6 +96,34 @@ juce::LookAndFeel* LAFFactory::getStatusFlatTextButtonLAF(const juce::String& ca
 	return ptrLAF;
 }
 
+juce::LookAndFeel* LAFFactory::getLabelEditorComboBoxLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getLabelEditorCodeEditorLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getLabelEditorResultLabelLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getLabelEditorButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
 void LAFFactory::close(const juce::String& caller)
 {
 	juce::ScopedWriteLock sLock(this->setLock);

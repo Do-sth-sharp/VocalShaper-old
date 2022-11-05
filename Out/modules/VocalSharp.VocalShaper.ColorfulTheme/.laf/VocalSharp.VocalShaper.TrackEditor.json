@@ -30,8 +30,7 @@
 
     "text-codeEditor:string": "$ThemeColorD2",
     "background-codeEditor:string": "$ThemeColorB1",
-    "text-codeEditor-highlight:string": "$ThemeColorD2",
-    "background-codeEditor-highlight:string": "$ThemeColorB1",
+    "background-codeEditor-highlight:string": "$ThemeColorD4",
     "caret-codeEditor:string": "$ThemeColorD1",
 
     "thumb-codeEditor-scroller:string": "$ThemeColorD3",

@@ -41,10 +41,6 @@ LabelEditor::LabelEditor()
         );
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
-        "main", "color", "text-codeEditor-highlight", this->colors.text_codeEditor_highlight, result
-        );
-    jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
-        "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "background-codeEditor-highlight", this->colors.background_codeEditor_highlight, result
         );
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -79,6 +75,51 @@ LabelEditor::LabelEditor()
         "WuChang.JMADF.LookAndFeelConfigs", "GetColor",
         "main", "color", "background-labelEditorButton", this->colors.background_labelEditorButton, result
         );
+
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-error", this->colors.code_error, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-comment", this->colors.code_comment, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-keyword", this->colors.code_keyword, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-operator", this->colors.code_operator, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-identifier", this->colors.code_identifier, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-integer", this->colors.code_integer, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-float", this->colors.code_float, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-string", this->colors.code_string, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-bracket", this->colors.code_bracket, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-punctuation", this->colors.code_punctuation, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "code-preprocessorText", this->colors.code_preprocessorText, result
+		);
 
     //size
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -140,11 +181,36 @@ LabelEditor::LabelEditor()
         "main", "scale", "height-labelEditorButton", this->scales.height_labelEditorButton, result
         );
 
+	//建立下拉框样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF",
+		this->lafs.comboBox
+		);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::backgroundColourId, this->colors.background_comboBox
+	);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::textColourId, this->colors.text_comboBox
+	);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::buttonColourId, this->colors.background_comboBox
+	);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::arrowColourId, this->colors.text_comboBox
+	);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+	this->lafs.comboBox->setColour(
+		juce::ComboBox::ColourIds::focusedOutlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+
 	//初始化标签类型下拉框
 	this->comboBox = std::make_unique<juce::ComboBox>("Label Type");
+	this->comboBox->setLookAndFeel(this->lafs.comboBox);
 	this->comboBox->addItemList({ "LUA", "INI", "XML", "JSON" }, 1);
 	this->comboBox->setSelectedItemIndex(0);
-	this->comboBox->onChange = [this] {this->checkLabelData(); };
+	this->comboBox->onChange = [this] {this->comboBoxChanged(); };
 	this->addAndMakeVisible(this->comboBox.get());
 
 	//侦听文档变化
@@ -171,6 +237,44 @@ LabelEditor::LabelEditor()
 	};
 	this->documentListener = std::unique_ptr<juce::CodeDocument::Listener>(new DocumentListener(this));
 
+	//建立代码编辑器样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF",
+		this->lafs.codeEditor
+		);
+	this->lafs.codeEditor->setColour(
+		juce::CodeEditorComponent::ColourIds::backgroundColourId, this->colors.background_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::CodeEditorComponent::ColourIds::highlightColourId, this->colors.background_codeEditor_highlight
+	);
+	this->lafs.codeEditor->setColour(
+		juce::CodeEditorComponent::ColourIds::defaultTextColourId, this->colors.text_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::CodeEditorComponent::ColourIds::lineNumberBackgroundId, this->colors.background_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::CodeEditorComponent::ColourIds::lineNumberTextId, this->colors.text_codeEditor
+	);
+	this->lafs.codeEditor->setColour(
+		juce::CaretComponent::ColourIds::caretColourId, this->colors.caret_codeEditor
+	);
+
+	//建立代码调色板
+	juce::CodeEditorComponent::ColourScheme codeScheme;
+	codeScheme.set("Error", this->colors.code_error);
+	codeScheme.set("Comment", this->colors.code_comment);
+	codeScheme.set("Keyword", this->colors.code_keyword);
+	codeScheme.set("Operator", this->colors.code_operator);
+	codeScheme.set("Identifier", this->colors.code_identifier);
+	codeScheme.set("Integer", this->colors.code_integer);
+	codeScheme.set("Float", this->colors.code_float);
+	codeScheme.set("String", this->colors.code_string);
+	codeScheme.set("Bracket", this->colors.code_bracket);
+	codeScheme.set("Punctuation", this->colors.code_punctuation);
+	codeScheme.set("Preprocessor Text", this->colors.code_preprocessorText);
+
 	//初始化编辑器与数据模型
 	this->luaTokeniser = std::make_unique<juce::LuaTokeniser>();
 	this->iniTokeniser = std::make_unique<juce::LuaTokeniser>();
@@ -178,20 +282,98 @@ LabelEditor::LabelEditor()
 	this->jsonTokeniser = std::make_unique<juce::CPlusPlusCodeTokeniser>();
 
 	this->document.addListener(this->documentListener.get());
-	this->labelEditor
+
+	this->luaLabelEditor
 		= std::make_unique<juce::CodeEditorComponent>(
 			this->document, this->luaTokeniser.get());
-	this->labelEditor->setLineNumbersShown(false);
-	this->addAndMakeVisible(this->labelEditor.get());
+	this->iniLabelEditor
+		= std::make_unique<juce::CodeEditorComponent>(
+			this->document, this->iniTokeniser.get());
+	this->xmlLabelEditor
+		= std::make_unique<juce::CodeEditorComponent>(
+			this->document, this->xmlTokeniser.get());
+	this->jsonLabelEditor
+		= std::make_unique<juce::CodeEditorComponent>(
+			this->document, this->jsonTokeniser.get());
+
+	this->luaLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->luaLabelEditor->setColourScheme(codeScheme);
+	this->luaLabelEditor->setLineNumbersShown(false);
+	this->iniLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->iniLabelEditor->setColourScheme(codeScheme);
+	this->iniLabelEditor->setLineNumbersShown(false);
+	this->xmlLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->xmlLabelEditor->setColourScheme(codeScheme);
+	this->xmlLabelEditor->setLineNumbersShown(false);
+	this->jsonLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->jsonLabelEditor->setColourScheme(codeScheme);
+	this->jsonLabelEditor->setLineNumbersShown(false);
+
+	this->addAndMakeVisible(this->luaLabelEditor.get());
+	this->addChildComponent(this->iniLabelEditor.get());
+	this->addChildComponent(this->xmlLabelEditor.get());
+	this->addChildComponent(this->jsonLabelEditor.get());
+
+	//建立结果回显样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF",
+		this->lafs.label
+		);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::backgroundColourId, this->colors.background_labelEditorResultLabel
+	);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::textColourId, this->colors.text_labelEditorResultLabel
+	);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::backgroundWhenEditingColourId, this->colors.background_labelEditorResultLabel
+	);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::textWhenEditingColourId, this->colors.text_labelEditorResultLabel
+	);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+	this->lafs.label->setColour(
+		juce::Label::ColourIds::outlineWhenEditingColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
 
 	//初始化结果回显
 	this->resultLabel = std::make_unique<juce::Label>("Label Result");
+	this->resultLabel->setLookAndFeel(this->lafs.label);
+	this->resultLabel->setJustificationType(juce::Justification::topLeft);
 	this->addAndMakeVisible(this->resultLabel.get());
+
+	//建立确定按钮样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF",
+		this->lafs.button
+		);
+	this->lafs.button->setColour(
+		juce::TextButton::ColourIds::buttonColourId, this->colors.background_labelEditorButton);
+	this->lafs.button->setColour(
+		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_labelEditorButton);
+	this->lafs.button->setColour(
+		juce::TextButton::ColourIds::textColourOffId, this->colors.text_labelEditorButton);
+	this->lafs.button->setColour(
+		juce::TextButton::ColourIds::textColourOnId, this->colors.text_labelEditorButton);
+	this->lafs.button->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
 
 	//初始化确定按钮
 	this->okButton = std::make_unique<juce::TextButton>(this->tr("bt_Accept"));
+	this->okButton->setLookAndFeel(this->lafs.button);
 	this->okButton->onClick = [this] {this->acceptAndClose(); };
 	this->addAndMakeVisible(this->okButton.get());
+}
+
+LabelEditor::~LabelEditor()
+{
+	this->luaLabelEditor = nullptr;
+	this->iniLabelEditor = nullptr;
+	this->xmlLabelEditor = nullptr;
+	this->jsonLabelEditor = nullptr;
 }
 
 void LabelEditor::setProject(vocalshaper::ProjectProxy* project)
@@ -210,7 +392,96 @@ void LabelEditor::setLabelIndex(int index)
 
 void LabelEditor::resized()
 {
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
 
+	//计算控件大小
+	int height_marginTop = this->sizes.height_labelEditorMarginTop * screenSize.getHeight();
+	int height_marginBottom = this->sizes.height_labelEditorMarginBottom * screenSize.getHeight();
+	int width_margin = this->sizes.width_labelEditorMargin * screenSize.getWidth();
+	int width_comboBox = this->sizes.width_labelEditorComboBox * screenSize.getWidth();
+	int width_button = this->sizes.width_labelEditorButton * screenSize.getWidth();
+
+	int height_inside = this->getHeight() - height_marginTop - height_marginBottom;
+	int width_inside = this->getWidth() - width_margin * 2;
+
+	int posY_editorArea = height_marginTop +
+		this->positions.posY_labelEditorCodeEditor * height_inside;
+	int posY_resultArea = height_marginTop +
+		this->positions.posY_labelEditorResultLabel * height_inside;
+	int posY_buttonArea = height_marginTop +
+		this->positions.posY_labelEditorButton * height_inside;
+
+	int posX_comboBox = width_margin +
+		this->positions.posX_labelEditorComboBox * width_inside;
+	int posX_button = width_margin +
+		this->positions.posX_labelEditorButton * width_inside;
+
+	int height_comboBox = (posY_editorArea - height_marginTop) * this->scales.height_labelEditorComboBox;
+	int height_editor = (posY_resultArea - posY_editorArea) * this->scales.height_labelEditorCodeEditor;
+	int height_result = (posY_buttonArea - posY_resultArea) * this->scales.height_labelEditorResultLabel;
+	int height_button = (this->getHeight() - height_marginBottom - posY_buttonArea) * this->scales.height_labelEditorButton;
+
+	int posY_comboBox = height_marginTop + (posY_editorArea - height_marginTop) / 2 - height_comboBox / 2;
+	int posY_editor = posY_editorArea + (posY_resultArea - posY_editorArea) / 2 - height_editor / 2;
+	int posY_result = posY_resultArea + (posY_buttonArea - posY_resultArea) / 2 - height_result / 2;
+	int posY_button = posY_buttonArea + (this->getHeight() - height_marginBottom - posY_buttonArea) / 2 - height_button / 2;
+
+	//调整控件大小
+	this->comboBox->setBounds(posX_comboBox, posY_comboBox,
+		width_comboBox, height_comboBox);
+	this->luaLabelEditor->setBounds(width_margin, posY_editor,
+		width_inside, height_editor);
+	this->iniLabelEditor->setBounds(width_margin, posY_editor,
+		width_inside, height_editor);
+	this->xmlLabelEditor->setBounds(width_margin, posY_editor,
+		width_inside, height_editor);
+	this->jsonLabelEditor->setBounds(width_margin, posY_editor,
+		width_inside, height_editor);
+	this->resultLabel->setBounds(width_margin, posY_result,
+		width_inside, height_result);
+	this->okButton->setBounds(posX_button, posY_button,
+		width_button, height_button);
+}
+
+void LabelEditor::paint(juce::Graphics& g)
+{
+	//填充背景
+	g.fillAll(this->colors.background_labelEditor);
+}
+
+void LabelEditor::comboBoxChanged()
+{
+	switch (static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()))
+	{
+	case vocalshaper::Label::LabelType::Lua:
+		this->luaLabelEditor->setVisible(true);
+		this->iniLabelEditor->setVisible(false);
+		this->xmlLabelEditor->setVisible(false);
+		this->jsonLabelEditor->setVisible(false);
+		break;
+	case vocalshaper::Label::LabelType::Ini:
+		this->luaLabelEditor->setVisible(false);
+		this->iniLabelEditor->setVisible(true);
+		this->xmlLabelEditor->setVisible(false);
+		this->jsonLabelEditor->setVisible(false);
+		break;
+	case vocalshaper::Label::LabelType::Xml:
+		this->luaLabelEditor->setVisible(false);
+		this->iniLabelEditor->setVisible(false);
+		this->xmlLabelEditor->setVisible(true);
+		this->jsonLabelEditor->setVisible(false);
+		break;
+	case vocalshaper::Label::LabelType::Json:
+		this->luaLabelEditor->setVisible(false);
+		this->iniLabelEditor->setVisible(false);
+		this->xmlLabelEditor->setVisible(false);
+		this->jsonLabelEditor->setVisible(true);
+		break;
+	}
+
+	this->checkLabelData();
 }
 
 void LabelEditor::refreshLabel()
@@ -282,7 +553,7 @@ void LabelEditor::checkLabelData()
 			labelStr += ("time: " + juce::String(data.x) + "\n");
 			labelStr += ("tempo: " + juce::String(data.tempo) + "\n");
 			labelStr += ("beat: " + juce::String(data.beat) + "\n");
-			labelStr += ("autoTempo: " + juce::String(data.autoTempo ? "true" : "false") + "\n");
+			labelStr += ("auto: " + juce::String(data.autoTempo ? "true" : "false") + "\n");
 
 			this->resultLabel->setText(labelStr, juce::NotificationType::sendNotificationAsync);
 		}
@@ -292,24 +563,22 @@ void LabelEditor::checkLabelData()
 void LabelEditor::acceptAndClose()
 {
 	//应用改变
-	juce::ScopedWriteLock locker(this->projectLock);
+	juce::ScopedReadLock locker(this->projectLock);
 	if (this->project) {
 		juce::ScopedReadLock projLocker(this->project->getLock());
 		if (this->index >= 0 && this->index < vocalshaper::ProjectDAO::labelSize(this->project->getPtr())) {
 			vocalshaper::actions::LabelAction::TargetType target;
 			target.label = this->index;
 
-			juce::OwnedArray<vocalshaper::actions::ActionBase> actionList = {
+			juce::OwnedArray<vocalshaper::actions::ActionBase> actionList({
 				new vocalshaper::actions::label::TypeAction(
 					target,static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()),
 					this->project),
 				new vocalshaper::actions::label::DataAction(
 					target,this->document.getAllContent(),
 					this->project)
-			};
+				});
 			this->project->getProcesser()->processEvents(std::move(actionList));
 		}
 	}
-	this->project = nullptr;
-	this->setVisible(false);
 }

@@ -51,6 +51,10 @@
     "height-timeRuler-labelBottomMargin:number": 0.0025,
     "height-timeRuler-label:number": 0.0075,
 
+    "width-labelEditor": 0.2,
+    "height-labelEditor": 0.4,
+    "width-labelEditorCalloutArrow": 0.05,
+
     "height-labelEditorMarginTop:number": 0.01,
     "height-labelEditorMarginBottom:number": 0.01,
 
@@ -59,12 +63,12 @@
     "width-labelEditorButton:number": 0.075
   },
   "position": {
-    "posY-labelEditorCodeEditor:number": 0.2,
+    "posY-labelEditorCodeEditor:number": 0.1,
     "posY-labelEditorResultLabel:number": 0.5,
-    "posY-labelEditorButton:number": 0.8,
+    "posY-labelEditorButton:number": 0.85,
 
-    "posX-labelEditorComboBox:number": 0.1,
-    "posX-labelEditorButton:number": 0.7
+    "posX-labelEditorComboBox:number": 0.025,
+    "posX-labelEditorButton:number": 0.55
   },
   "scale": {
     "height-curveByTrack:number": 0.5,

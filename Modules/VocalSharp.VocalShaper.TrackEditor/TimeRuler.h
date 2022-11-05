@@ -72,11 +72,17 @@ private:
 
 		double height_timeRuler_labelBottomMargin;
 		double height_timeRuler_label;
+
+		double width_labelEditor;
+		double height_labelEditor;
+		double width_labelEditorCalloutArrow;
 	}sizes;//控件大小
 	struct Scales final
 	{
 		double height_timeRuler_barText;
 	}scales;//控件缩放
+
+	void showLabelEditor(int labelIndex, juce::Rectangle<int> place);
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;
@@ -109,4 +115,6 @@ private:
 
 	vocalshaper::AdsorbState adsorb = vocalshaper::AdsorbState::Adsorb1Beat;
 	vocalshaper::GridState grid = vocalshaper::GridState::Grid1Beat;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeRuler)
 };

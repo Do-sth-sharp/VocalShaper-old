@@ -67,6 +67,19 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		return false;
 	}
 	if (
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
+		return false;
+	}
+	if (
 		!jmadf::CheckInterface<const juce::String&, const std::function<void(void)>&>(
 			"VocalSharp.VocalShaper.CommandManager", "RegisterFunction") ||
 		!jmadf::CheckInterface<const juce::String&, const std::function<int(void)>&>(

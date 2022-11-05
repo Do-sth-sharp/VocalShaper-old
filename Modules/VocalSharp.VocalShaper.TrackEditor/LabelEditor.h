@@ -6,12 +6,13 @@ class LabelEditor final : public juce::Component
 {
 public:
 	LabelEditor();
-	~LabelEditor() override = default;
+	~LabelEditor() override;
 
 	void setProject(vocalshaper::ProjectProxy* project);
 	void setLabelIndex(int index);
 
 	void resized() override;
+	void paint(juce::Graphics& g) override;
 
 private:
 	struct Colors final
@@ -23,7 +24,6 @@ private:
 
 		juce::Colour text_codeEditor;
 		juce::Colour background_codeEditor;
-		juce::Colour text_codeEditor_highlight;
 		juce::Colour background_codeEditor_highlight;
 		juce::Colour caret_codeEditor;
 
@@ -36,6 +36,18 @@ private:
 
 		juce::Colour text_labelEditorButton;
 		juce::Colour background_labelEditorButton;
+
+		juce::Colour code_error;
+		juce::Colour code_comment;
+		juce::Colour code_keyword;
+		juce::Colour code_operator;
+		juce::Colour code_identifier;
+		juce::Colour code_integer;
+		juce::Colour code_float;
+		juce::Colour code_string;
+		juce::Colour code_bracket;
+		juce::Colour code_punctuation;
+		juce::Colour code_preprocessorText;
 	}colors;//界面颜色
 	struct Size final
 	{
@@ -74,7 +86,10 @@ private:
 	std::function<const juce::String(const juce::String&)> tr;
 
 	std::unique_ptr<juce::ComboBox> comboBox = nullptr;
-	std::unique_ptr<juce::CodeEditorComponent> labelEditor = nullptr;
+	std::unique_ptr<juce::CodeEditorComponent> luaLabelEditor = nullptr;
+	std::unique_ptr<juce::CodeEditorComponent> iniLabelEditor = nullptr;
+	std::unique_ptr<juce::CodeEditorComponent> xmlLabelEditor = nullptr;
+	std::unique_ptr<juce::CodeEditorComponent> jsonLabelEditor = nullptr;
 	juce::CodeDocument document;
 	std::unique_ptr<juce::CodeDocument::Listener> documentListener = nullptr;
 	std::unique_ptr<juce::Label> resultLabel = nullptr;
@@ -92,6 +107,7 @@ private:
 	juce::ReadWriteLock projectLock;
 
 	void refreshLabel();
+	void comboBoxChanged();
 	void checkLabelData();
 	void acceptAndClose();
 
