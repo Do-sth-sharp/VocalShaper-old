@@ -908,7 +908,7 @@ void ScrollerBase::mouseUp(const juce::MouseEvent& event)
 void ScrollerBase::mouseExit(const juce::MouseEvent& event)
 {
 	//重置全部状态并刷新
-	if (this->scrollerBlockHighlight || this->scrollerState != ScrollerState::Normal) {
+	if (this->scrollerBlockHighlight || this->scrollerBlockBorderHighlight || this->scrollerState != ScrollerState::Normal) {
 		this->scrollerBlockHighlight = false;
 		this->scrollerBlockBorderHighlight = false;
 		this->setMouseCursor(juce::MouseCursor::NormalCursor);
