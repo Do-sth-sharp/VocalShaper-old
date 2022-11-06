@@ -24,6 +24,7 @@
     "timeRuler-label-off:string": "$ThemeColorD2",
 
     "background-labelEditor:string": "$ThemeColorB3",
+    "border-labelEditor:string": "$ThemeColorB3",
 
     "text-comboBox:string": "$ThemeColorD2",
     "background-comboBox:string": "$ThemeColorB1",

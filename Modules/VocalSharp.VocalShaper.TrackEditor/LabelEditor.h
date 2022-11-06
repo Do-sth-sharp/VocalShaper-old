@@ -110,6 +110,8 @@ private:
 	double time = 0.;
 	double lastTempo = 120.;
 	uint8_t lastBeat = 4;
+	juce::String currentDataTemp;
+	vocalshaper::Label::LabelType currentTypeTemp = vocalshaper::Label::LabelType::Lua;
 	juce::ReadWriteLock projectLock;
 
 	void refreshLabel();
@@ -118,4 +120,68 @@ private:
 	void acceptAndClose();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LabelEditor)
+};
+
+class LabelEditorCallOutBox final
+{
+public:
+	LabelEditorCallOutBox(juce::Component* parent);
+
+	void setProject(vocalshaper::ProjectProxy* project);
+	void setLabelIndex(int index);
+
+	void resize(int width, int height);
+	void setArrowSize(float arrowWidth);
+	void setBorderSize(int borderSize);
+	void setCornerSize(float cornerSize);
+
+	void showAt(juce::Rectangle<int> rect);
+	void close();
+
+private:
+	class LabelEditorCallOutBoxCallback final 
+		: public juce::ModalComponentManager::Callback
+	{
+	public:
+		LabelEditorCallOutBoxCallback(LabelEditorCallOutBox* manager);
+
+		void setArrowSize(float arrowWidth);
+
+		void showAt(juce::Rectangle<int> rect);
+		void close();
+
+	public:
+		void modalStateFinished(int) override;
+
+	private:
+		std::unique_ptr<juce::CallOutBox> callOutBox = nullptr;
+
+		juce::Component* parent = nullptr;
+		LabelEditorCallOutBox* manager = nullptr;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LabelEditorCallOutBoxCallback)
+	};
+
+private:
+	struct Colors final
+	{
+		juce::Colour background_labelEditor;
+		juce::Colour border_labelEditor;
+	}colors;//界面颜色
+	struct LookAndFeels final
+	{
+		juce::LookAndFeel* callOutBox;
+	}lafs;//控件样式
+
+	friend class LabelEditorCallOutBoxCallback;
+
+	juce::Component* parent = nullptr;
+	float arrowWidth = 16.f;
+	int borderSize = 20;
+	float cornerSize = 9.f;
+
+	std::unique_ptr<LabelEditor> labelEditor = nullptr;
+	std::unique_ptr<LabelEditorCallOutBoxCallback> callback = nullptr;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LabelEditorCallOutBox)
 };

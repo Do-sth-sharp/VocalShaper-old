@@ -1,6 +1,5 @@
 ﻿#include "TimeRuler.h"
 #include <libJModule.h>
-#include "LabelEditor.h"
 
 TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlMethod)
@@ -116,6 +115,14 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-labelEditorCalloutArrow", this->sizes.width_labelEditorCalloutArrow, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-labelEditorCalloutBorder", this->sizes.width_labelEditorCalloutBorder, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-labelEditorCalloutCorner", this->sizes.width_labelEditorCalloutCorner, result
+		);
 
 	//position
 	//scale
@@ -126,6 +133,9 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 
 	//resource
 
+	//建立标签编辑器
+	this->labelEditor = std::make_unique<LabelEditorCallOutBox>(this);
+
 	//监听标签变化
 	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
@@ -135,6 +145,22 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 
 void TimeRuler::resized()
 {
+	//获取屏幕属性
+	juce::Rectangle<int> screenSize;
+	this->screenSizeFunc(this, screenSize);
+
+	//计算控件大小
+	int width_labelEditor = this->sizes.width_labelEditor * screenSize.getWidth();
+	int height_labelEditor = this->sizes.height_labelEditor * screenSize.getHeight();
+	float width_labelEditorArrow = this->sizes.width_labelEditorCalloutArrow * screenSize.getWidth();
+	int width_labelEditorBorder = this->sizes.width_labelEditorCalloutBorder * screenSize.getWidth();
+	float width_labelEditorCorner = this->sizes.width_labelEditorCalloutCorner * screenSize.getWidth();
+
+	//调整大小
+	this->labelEditor->resize(width_labelEditor, height_labelEditor);
+	this->labelEditor->setArrowSize(width_labelEditorArrow);
+	this->labelEditor->setBorderSize(width_labelEditorBorder);
+	this->labelEditor->setCornerSize(width_labelEditorCorner);
 }
 
 void TimeRuler::paint(juce::Graphics& g)
@@ -385,6 +411,7 @@ void TimeRuler::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->labelEditor->setProject(this->project);
 	this->repaint();
 }
 
@@ -1219,40 +1246,19 @@ void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action
 		if (
 			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddLabel ||
 			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveLabel) {
-			messageManager->callAsync([this] {this->repaint(); });
+			messageManager->callAsync([this] {this->labelEditor->close(); this->repaint(); });
 		}
 	}
 	else if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Label) {
-		messageManager->callAsync([this] {this->repaint(); });
+		messageManager->callAsync([this] {this->labelEditor->close(); this->repaint(); });
 	}
 }
 
 void TimeRuler::showLabelEditor(int labelIndex, juce::Rectangle<int> place)
 {
-	//获取屏幕属性
-	juce::Rectangle<int> screenSize;
-	this->screenSizeFunc(this, screenSize);
-
-	//计算控件大小
-	int width_labelEditor = this->sizes.width_labelEditor * screenSize.getWidth();
-	int height_labelEditor = this->sizes.height_labelEditor * screenSize.getHeight();
-	int width_labelEditorArrow = this->sizes.width_labelEditorCalloutArrow * screenSize.getWidth();
-
-	//初始化编辑器
-	auto labelEditor = std::make_unique<LabelEditor>();
-	labelEditor->setSize(width_labelEditor, height_labelEditor);
-	labelEditor->setProject(this->project);
-	labelEditor->setLabelIndex(labelIndex);
-
-	//计算屏幕显示位置
-	auto screenBounds = this->getScreenBounds();
-	juce::Rectangle<int> placeInScreen = place;
-	placeInScreen.setPosition(place.getX() + screenBounds.getX(), place.getY() + screenBounds.getY());
+	//设置编辑器标签号
+	this->labelEditor->setLabelIndex(labelIndex);
 
 	//显示控件
-	auto& callOutBox = juce::CallOutBox::launchAsynchronously(
-		std::move(labelEditor), placeInScreen, nullptr);
-
-	//调整控件
-	//callOutBox.setArrowSize(width_labelEditorArrow);
+	this->labelEditor->showAt(place);
 }

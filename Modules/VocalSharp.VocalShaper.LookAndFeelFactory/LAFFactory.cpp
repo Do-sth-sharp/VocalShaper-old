@@ -4,6 +4,7 @@
 #include "StretchableBarLAF.h"
 #include "StatusBarRoundButttonLAF.h"
 #include "StatusBarFlatTextButtonLAF.h"
+#include "LabelEditorCallOutBoxLAF.h"
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(const juce::String& caller, const std::function<int()>& fontHeightFunc)
 {
@@ -120,6 +121,15 @@ juce::LookAndFeel* LAFFactory::getLabelEditorResultLabelLAF(const juce::String& 
 juce::LookAndFeel* LAFFactory::getLabelEditorButtonLAF(const juce::String& caller)
 {
 	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getLabelEditorCallOutBoxLAF(const juce::String& caller,
+	const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc,
+	const juce::Colour colorBackground, const juce::Colour colorBorder)
+{
+	auto ptrLAF = new LabelEditorCallOutBoxLAF(borderSizeFunc, cornerSizeFunc, colorBackground, colorBorder);
 	this->addToList(caller, ptrLAF);
 	return ptrLAF;
 }

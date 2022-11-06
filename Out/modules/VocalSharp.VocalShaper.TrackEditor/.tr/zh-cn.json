@@ -7,5 +7,6 @@
   "bt_Accept": "应用",
   "tip_LabelParseHead": "解析完成，用时",
   "tip_LabelParseTail": "毫秒。",
+  "tip_LabelParseTimeOut": "解析超时！",
   "tip_LabelParseError": "解析失败！"
 }

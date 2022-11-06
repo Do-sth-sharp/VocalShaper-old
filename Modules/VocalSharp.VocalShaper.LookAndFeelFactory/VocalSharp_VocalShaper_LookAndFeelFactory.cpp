@@ -121,6 +121,16 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getLabelEditorButtonLAF(caller);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&,
+		const std::function<int()>&, const std::function<float()>&,
+		const juce::Colour, const juce::Colour>(
+		"GetLabelEditorCallOutBoxLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf, const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc,
+			const juce::Colour colorBackground, const juce::Colour colorBorder) {
+				laf = this->factory->getLabelEditorCallOutBoxLAF(caller,
+					borderSizeFunc, cornerSizeFunc, colorBackground, colorBorder);
+		}
+	);
 
 	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {

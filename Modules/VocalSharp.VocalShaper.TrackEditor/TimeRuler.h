@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
+#include "LabelEditor.h"
 
 class TimeRuler final : public vocalshaper::EditorBase
 {
@@ -76,6 +77,8 @@ private:
 		double width_labelEditor;
 		double height_labelEditor;
 		double width_labelEditorCalloutArrow;
+		double width_labelEditorCalloutBorder;
+		double width_labelEditorCalloutCorner;
 	}sizes;//控件大小
 	struct Scales final
 	{
@@ -90,6 +93,8 @@ private:
 
 	std::function<void(double, double)> wheelChangeMethod;
 	std::function<void(double, double)> wheelChangeWithCtrlMethod;
+
+	std::unique_ptr<LabelEditorCallOutBox> labelEditor = nullptr;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	double startTime, endTime;

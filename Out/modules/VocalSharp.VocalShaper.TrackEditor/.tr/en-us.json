@@ -7,5 +7,6 @@
   "bt_Accept": "Accept",
   "tip_LabelParseHead": "Parse finished in",
   "tip_LabelParseTail": "milliseconds.",
+  "tip_LabelParseTimeOut": "Parse TimeOut!",
   "tip_LabelParseError": "Parse failed!"
 }

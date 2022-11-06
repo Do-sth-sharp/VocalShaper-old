@@ -409,6 +409,7 @@ LabelEditor::LabelEditor()
 	this->okButton = std::make_unique<juce::TextButton>(this->tr("bt_Accept"));
 	this->okButton->setLookAndFeel(this->lafs.button);
 	this->okButton->onClick = [this] {this->acceptAndClose(); };
+	this->okButton->setEnabled(false);
 	this->addAndMakeVisible(this->okButton.get());
 }
 
@@ -424,6 +425,7 @@ void LabelEditor::setProject(vocalshaper::ProjectProxy* project)
 {
 	juce::ScopedWriteLock locker(this->projectLock);
 	this->project = project;
+	this->index = -1;
 	this->refreshLabel();
 }
 
@@ -539,6 +541,8 @@ void LabelEditor::refreshLabel()
 			auto label = vocalshaper::ProjectDAO::getLabel(
 				this->project->getPtr(), this->index);
 			this->time = vocalshaper::LabelDAO::getPosition(label);
+			this->currentDataTemp = vocalshaper::LabelDAO::getData(label);
+			this->currentTypeTemp = vocalshaper::LabelDAO::getLabelType(label);
 
 			//计算上一标签曲速与节拍
 			if (this->index > 0) {
@@ -567,31 +571,49 @@ void LabelEditor::checkLabelData()
 	if (this->project) {
 		juce::ScopedReadLock projLocker(this->project->getLock());
 		if (this->index >= 0 && this->index < vocalshaper::ProjectDAO::labelSize(this->project->getPtr())) {
+			//获取数据
+			auto strData = this->document.getAllContent();
+
+			//检查状态
+			auto label = vocalshaper::ProjectDAO::getLabel(
+				this->project->getPtr(), this->index);
+			bool couldAcceptFlag = !((static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()) == this->currentTypeTemp) &&
+				(strData == this->currentDataTemp));
+
+			//解析结果
 			vocalshaper::LabelTemp::LabelData data;
 
 			//执行解析
 			auto startTime = juce::Time::getMillisecondCounterHiRes();
-			bool result = this->project->getLabelParser()->parseNow(
-				this->document.getAllContent(),
-				data, static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()),
+			auto result = this->project->getLabelParser()->parseNow(
+				strData, data,
+				static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()),
 				this->time, this->lastTempo, this->lastBeat
 			);
 			auto elapsedMs = juce::Time::getMillisecondCounterHiRes() - startTime;
 
 			//显示状态
 			juce::String labelStr;
-			if (result) {
+			if (result == vocalshaper::LabelTemp::ParseResult::OK) {
 				labelStr +=
 					(this->tr("tip_LabelParseHead") + " " + juce::String(elapsedMs, 2) + " " + this->tr("tip_LabelParseTail") + "\n");
 				this->resultLabel->getLookAndFeel().setColour(
 					juce::Label::ColourIds::textColourId, this->colors.text_labelEditorResultLabel
 				);
 			}
+			else if (result == vocalshaper::LabelTemp::ParseResult::TLE) {
+				labelStr += (this->tr("tip_LabelParseTimeOut") + "\n");
+				this->resultLabel->getLookAndFeel().setColour(
+					juce::Label::ColourIds::textColourId, this->colors.text_labelEditorResultLabel_error
+				);
+				couldAcceptFlag = false;
+			}
 			else {
 				labelStr += (this->tr("tip_LabelParseError") + "\n");
 				this->resultLabel->getLookAndFeel().setColour(
 					juce::Label::ColourIds::textColourId, this->colors.text_labelEditorResultLabel_error
 				);
+				couldAcceptFlag = false;
 			}
 
 			labelStr += ("time: " + juce::String(data.x) + "\n");
@@ -600,6 +622,7 @@ void LabelEditor::checkLabelData()
 			labelStr += ("auto: " + juce::String(data.autoTempo ? "true" : "false") + "\n");
 
 			this->resultLabel->setText(labelStr, juce::NotificationType::sendNotificationAsync);
+			this->okButton->setEnabled(couldAcceptFlag);
 		}
 	}
 }
@@ -625,4 +648,128 @@ void LabelEditor::acceptAndClose()
 			this->project->getProcesser()->processEvents(std::move(actionList));
 		}
 	}
+}
+
+LabelEditorCallOutBox::LabelEditorCallOutBox(juce::Component* parent)
+	: parent(parent)
+{
+	//以下获取界面属性
+	bool result = false;
+	//color
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-labelEditor", this->colors.background_labelEditor, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "border-labelEditor", this->colors.border_labelEditor, result
+		);
+
+	//size
+	//position
+	//scale
+
+	//构建呼出框样式
+	jmadf::CallInterface<juce::LookAndFeel*&,
+		const std::function<int()>&, const std::function<float()>&,
+		const juce::Colour, const juce::Colour>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCallOutBoxLAF",
+			this->lafs.callOutBox,
+			[this] {return this->borderSize; }, [this] {return this->cornerSize; },
+			this->colors.background_labelEditor, this->colors.border_labelEditor
+			);
+
+	//初始化控件
+	this->labelEditor = std::make_unique<LabelEditor>();
+}
+
+void LabelEditorCallOutBox::setProject(vocalshaper::ProjectProxy* project)
+{
+	this->labelEditor->setProject(project);
+}
+
+void LabelEditorCallOutBox::setLabelIndex(int index)
+{
+	this->labelEditor->setLabelIndex(index);
+}
+
+void LabelEditorCallOutBox::resize(int width, int height)
+{
+	this->labelEditor->setSize(width, height);
+}
+
+void LabelEditorCallOutBox::setArrowSize(float arrowWidth)
+{
+	this->arrowWidth = arrowWidth;
+	if (this->callback) {
+		this->callback->setArrowSize(arrowWidth);
+	}
+}
+
+void LabelEditorCallOutBox::setBorderSize(int borderSize)
+{
+	this->borderSize = borderSize;
+}
+
+void LabelEditorCallOutBox::setCornerSize(float cornerSize)
+{
+	this->cornerSize = cornerSize;
+}
+
+void LabelEditorCallOutBox::showAt(juce::Rectangle<int> rect)
+{
+	if (!this->callback) {
+		this->callback = std::make_unique<LabelEditorCallOutBoxCallback>(this);
+	}
+	this->callback->showAt(rect);
+}
+
+void LabelEditorCallOutBox::close()
+{
+	if (this->callback) {
+		this->callback->close();
+	}
+}
+
+LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::LabelEditorCallOutBoxCallback(LabelEditorCallOutBox* manager)
+	: manager(manager), parent(manager->parent)
+{
+	//初始化控件
+	this->callOutBox = std::make_unique<juce::CallOutBox>(
+		*(manager->labelEditor.get()), juce::Rectangle<int>({ 0, 0, 0, 0 }), nullptr);
+	this->callOutBox->setLookAndFeel(manager->lafs.callOutBox);
+	this->callOutBox->setArrowSize(manager->arrowWidth);
+	//this->callOutBox->setDismissalMouseClicksAreAlwaysConsumed(true);
+}
+
+void LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::setArrowSize(float arrowWidth)
+{
+	this->callOutBox->setArrowSize(arrowWidth);
+}
+
+void LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::showAt(juce::Rectangle<int> rect)
+{
+	//获取控件所在窗口
+	auto window = parent->getTopLevelComponent();
+	auto windowSize = window->getScreenBounds();
+
+	//计算屏幕显示位置
+	auto screenBounds = parent->getScreenBounds();
+	juce::Rectangle<int> placeInScreen = rect;
+	placeInScreen.setPosition(rect.getX() + screenBounds.getX(), rect.getY() + screenBounds.getY());
+
+	//更新位置并显示
+	this->callOutBox->updatePosition(placeInScreen, windowSize);
+	this->callOutBox->setVisible(true);
+	this->callOutBox->enterModalState(true, this, false);
+}
+
+void LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::close()
+{
+	this->callOutBox->dismiss();
+}
+
+void LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::modalStateFinished(int)
+{
+	manager->callback.release();
 }
