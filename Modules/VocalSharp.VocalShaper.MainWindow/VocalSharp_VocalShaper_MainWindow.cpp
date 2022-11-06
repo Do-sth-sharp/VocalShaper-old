@@ -24,6 +24,7 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 	jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub");
 	jmadf::LoadModule("WuChang.JMADF.GlobalConfigs");
 	jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor");
+	jmadf::LoadModule("WuChang.JMADF.Translates");
 
 	if (!jmadf::GetException().isEmpty()) {
 		return false;
@@ -115,6 +116,13 @@ bool VocalSharp_VocalShaper_MainWindow::init()
 			"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<std::function<const juce::String(const juce::String&)>&>(
+			"WuChang.JMADF.Translates", "GetFunc")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
 		return false;
 	}
 

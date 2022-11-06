@@ -12,6 +12,11 @@ MainWindow::MainWindow(juce::String name)
             "WuChang.JMADF.Device", "GetScreenSizeTruth"
             );
 
+    jmadf::CallInterface<std::function<const juce::String(const juce::String&)>&>(
+        "WuChang.JMADF.Translates", "GetFunc",
+        this->tr
+        );
+
     this->setUsingNativeTitleBar(true);
     this->setContentOwned(this->mComp = new MainComponent(), false);
     this->setResizable(true, true);
@@ -149,6 +154,22 @@ MainWindow::MainWindow(juce::String name)
     mainLAF.setColour(juce::TooltipWindow::ColourIds::backgroundColourId, cBackgroundToolTip);
     mainLAF.setColour(juce::TooltipWindow::ColourIds::textColourId, cTextToolTip);
     mainLAF.setColour(juce::TooltipWindow::ColourIds::outlineColourId, cBackgroundToolTip);
+
+    //配置默认翻译表
+    {
+        auto createLineFunction = [](const juce::String& key, const juce::String& value) -> juce::String {
+            return "\"" + key + "\" = \"" + value + "\"\n";
+        };
+        juce::String mapStr;
+        mapStr += createLineFunction("Cut", this->tr("Cut"));
+        mapStr += createLineFunction("Copy", this->tr("Copy"));
+        mapStr += createLineFunction("Paste", this->tr("Paste"));
+        mapStr += createLineFunction("Delete", this->tr("Delete"));
+        mapStr += createLineFunction("Select All", this->tr("SelectAll"));
+        mapStr += createLineFunction("Undo", this->tr("Undo"));
+        mapStr += createLineFunction("Redo", this->tr("Redo"));
+        juce::LocalisedStrings::setCurrentMappings(new juce::LocalisedStrings(mapStr, false));
+    }
 
     //侦听事件变化
     jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(

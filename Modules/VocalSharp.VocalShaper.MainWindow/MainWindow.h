@@ -34,6 +34,7 @@ public:
 private:
     std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc
         = [](juce::Component*, juce::Rectangle<int>&) {};
+    std::function<const juce::String(const juce::String&)> tr;
 
     MainComponent* mComp = nullptr;
     int closeEditorCommandID = -1;

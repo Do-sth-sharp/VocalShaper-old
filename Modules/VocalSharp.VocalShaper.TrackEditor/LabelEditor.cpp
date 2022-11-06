@@ -304,6 +304,21 @@ LabelEditor::LabelEditor()
 	this->lafs.codeEditor->setColour(
 		juce::CaretComponent::ColourIds::caretColourId, this->colors.caret_codeEditor
 	);
+	this->lafs.codeEditor->setColour(
+		juce::PopupMenu::ColourIds::backgroundColourId, this->colors.background_menu
+	);
+	this->lafs.codeEditor->setColour(
+		juce::PopupMenu::ColourIds::textColourId, this->colors.text_menu
+	);
+	this->lafs.codeEditor->setColour(
+		juce::PopupMenu::ColourIds::headerTextColourId, this->colors.header_menu
+	);
+	this->lafs.codeEditor->setColour(
+		juce::PopupMenu::ColourIds::highlightedBackgroundColourId, this->colors.background_menu_highlight
+	);
+	this->lafs.codeEditor->setColour(
+		juce::PopupMenu::ColourIds::highlightedTextColourId, this->colors.text_menu_highlight
+	);
 
 	//建立代码调色板
 	juce::CodeEditorComponent::ColourScheme codeScheme;
