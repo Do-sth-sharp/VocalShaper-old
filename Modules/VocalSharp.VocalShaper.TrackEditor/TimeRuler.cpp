@@ -1246,10 +1246,27 @@ void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action
 		if (
 			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::AddLabel ||
 			action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveLabel) {
+
+			//刷新工程长度
+			{
+				juce::ScopedReadLock projLock(this->project->getLock());
+				double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
+				messageManager->callAsync([this, totalLength] {this->setTotalLength(totalLength); });
+			}
+
+			//刷新控件
 			messageManager->callAsync([this] {this->labelEditor->close(); this->repaint(); });
 		}
 	}
 	else if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Label) {
+		//刷新工程长度
+		{
+			juce::ScopedReadLock projLock(this->project->getLock());
+			double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
+			messageManager->callAsync([this, totalLength] {this->setTotalLength(totalLength); });
+		}
+
+		//刷新控件
 		messageManager->callAsync([this] {this->labelEditor->close(); this->repaint(); });
 	}
 }

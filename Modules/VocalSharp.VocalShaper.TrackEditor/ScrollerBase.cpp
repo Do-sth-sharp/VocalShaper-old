@@ -1081,7 +1081,6 @@ void ScrollerBase::setTotalLength(double totalLength)
 			trackSizeTemp =
 				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
 
-			double totalLength = vocalshaper::CountTime::count(this->project->getPtr());
 			double bar =
 				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
 			bar = std::max(std::floor(bar) + 4, 20.);
