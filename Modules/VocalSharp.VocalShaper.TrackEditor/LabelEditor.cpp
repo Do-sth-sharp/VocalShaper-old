@@ -336,9 +336,9 @@ LabelEditor::LabelEditor()
 
 	//初始化编辑器与数据模型
 	this->luaTokeniser = std::make_unique<juce::LuaTokeniser>();
-	this->iniTokeniser = std::make_unique<juce::LuaTokeniser>();
+	this->iniTokeniser = std::make_unique<vocalshaper::IniTokeniser>();
 	this->xmlTokeniser = std::make_unique<juce::XmlTokeniser>();
-	this->jsonTokeniser = std::make_unique<juce::CPlusPlusCodeTokeniser>();
+	this->jsonTokeniser = std::make_unique<vocalshaper::JsonTokeniser>();
 
 	this->document.addListener(this->documentListener.get());
 

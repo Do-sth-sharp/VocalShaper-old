@@ -20,14 +20,14 @@
   "ThemeColorD4": "#FFFFFF33",
 
   "CodeColorError": "#FF2A00",
-  "CodeColorComment": "$ThemeColorC2",
-  "CodeColorKeyWord": "$ThemeColorC6",
-  "CodeColorOperator": "$ThemeColorC4",
-  "CodeColorIdentifier": "$ThemeColorD1",
-  "CodeColorInteger": "$ThemeColorC1",
-  "CodeColorFloat": "$ThemeColorC1",
-  "CodeColorString": "$ThemeColorC5",
-  "CodeColorBracket": "$ThemeColorC3",
-  "CodeColorPunctuation": "$ThemeColorC4",
-  "CodeColorPreprocessorText": "$ThemeColorA2"
+  "CodeColorComment": "#579F3F",
+  "CodeColorKeyWord": "#458DD4",
+  "CodeColorOperator": "#C8C8C8",
+  "CodeColorIdentifier": "#91CFF2",
+  "CodeColorInteger": "#B5CEA8",
+  "CodeColorFloat": "#B5CEA8",
+  "CodeColorString": "#D69D85",
+  "CodeColorBracket": "#C8C8C8",
+  "CodeColorPunctuation": "#C8C8C8",
+  "CodeColorPreprocessorText": "#9B9B9B"
 }

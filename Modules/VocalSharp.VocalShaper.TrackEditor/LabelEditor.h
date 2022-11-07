@@ -101,9 +101,9 @@ private:
 	std::unique_ptr<juce::Label> resultLabel = nullptr;
 	std::unique_ptr<juce::TextButton> okButton = nullptr;
 	std::unique_ptr<juce::LuaTokeniser> luaTokeniser = nullptr;
-	std::unique_ptr<juce::LuaTokeniser> iniTokeniser = nullptr;
+	std::unique_ptr<vocalshaper::IniTokeniser> iniTokeniser = nullptr;
 	std::unique_ptr<juce::XmlTokeniser> xmlTokeniser = nullptr;
-	std::unique_ptr<juce::CPlusPlusCodeTokeniser> jsonTokeniser = nullptr;
+	std::unique_ptr<vocalshaper::JsonTokeniser> jsonTokeniser = nullptr;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int index = -1;

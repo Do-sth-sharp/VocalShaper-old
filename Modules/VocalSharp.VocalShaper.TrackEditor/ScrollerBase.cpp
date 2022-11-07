@@ -1138,6 +1138,10 @@ void ScrollerBase::setCurrentPosition(double currentTime)
 					double diff = this->ptrTemp->ep - this->ptrTemp->sp;
 					this->ptrTemp->sp = per;
 					this->ptrTemp->ep = per + diff;
+					if (this->ptrTemp->ep > 1.) {
+						this->ptrTemp->ep = 1.;
+						this->ptrTemp->sp = this->ptrTemp->ep - diff;
+					}
 
 					//限制大小
 					this->limitSize(this->ptrTemp->sp, this->ptrTemp->ep, 0.);
