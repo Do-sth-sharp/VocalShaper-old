@@ -145,7 +145,7 @@ private:
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
-	double totalLengthTemp = 0.;
+	double totalTimeTemp = 0., totalLengthTemp = 0.;
 	juce::ReadWriteLock projectLock;
 
 	static double countProjectTime(vocalshaper::ProjectProxy* ptr);

@@ -750,10 +750,19 @@ void EditorComponent::listenProjectLengthChange(const vocalshaper::actions::Acti
 	if (!messageManager) {
 		return;
 	}
-	double totalLength = EditorComponent::countProjectTime(this->project);
-	if (totalLength != this->totalLengthTemp) {
-		this->totalLengthTemp = totalLength;
-		messageManager->callAsync([this] {this->refreshTotalLength(); });
+	{
+		juce::ScopedReadLock projLocker(this->project->getLock());
+		double totalLength = EditorComponent::countProjectTime(this->project);
+		double bar =
+			this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+		bar = std::max(std::floor(bar) + 4, 20.);
+		double totalTime =
+			this->project->getBeat()->getTimeAtBar(bar);
+		if (totalTime != this->totalTimeTemp || totalLength != this->totalLengthTemp) {
+			this->totalTimeTemp = totalTime;
+			this->totalLengthTemp = totalLength;
+			messageManager->callAsync([this] {this->refreshTotalLength(); });
+		}
 	}
 }
 
