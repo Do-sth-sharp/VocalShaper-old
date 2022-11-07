@@ -162,6 +162,10 @@ LabelEditor::LabelEditor()
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
         "main", "size", "width-labelEditorButton", this->sizes.width_labelEditorButton, result
         );
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-labelEditorCodeFont", this->sizes.height_labelEditorCodeFont, result
+		);
     //position
     jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
         "WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -334,6 +338,29 @@ LabelEditor::LabelEditor()
 	codeScheme.set("Punctuation", this->colors.code_punctuation);
 	codeScheme.set("Preprocessor Text", this->colors.code_preprocessorText);
 
+	//获取字体
+	{
+		juce::String font_code;
+		{
+			juce::var* config = nullptr;
+			bool ok = false;
+			jmadf::CallInterface<const juce::String&, juce::var*&, bool&>(
+				"WuChang.JMADF.GlobalConfigs", "GetReference",
+				"config", config, ok
+				);
+
+			if (ok && (config != nullptr)) {
+				if ((*config)["Font-Code"].isString()) {
+					font_code = (*config)["Font-Code"].toString();
+				}
+			}
+		}
+		bool fontResult = false;
+		jmadf::CallInterface<const juce::String&, juce::Typeface::Ptr&, bool&>(
+			"WuChang.JMADF.Fonts", "GetFont",
+			font_code, this->codeTypeface, fontResult);
+	}
+
 	//初始化编辑器与数据模型
 	this->luaTokeniser = std::make_unique<juce::LuaTokeniser>();
 	this->iniTokeniser = std::make_unique<vocalshaper::IniTokeniser>();
@@ -467,6 +494,8 @@ void LabelEditor::resized()
 	int height_inside = this->getHeight() - height_marginTop - height_marginBottom;
 	int width_inside = this->getWidth() - width_margin * 2;
 
+	float height_codeFont = this->sizes.height_labelEditorCodeFont * screenSize.getHeight();
+
 	int posY_editorArea = height_marginTop +
 		this->positions.posY_labelEditorCodeEditor * height_inside;
 	int posY_resultArea = height_marginTop +
@@ -504,6 +533,14 @@ void LabelEditor::resized()
 		width_inside, height_result);
 	this->okButton->setBounds(posX_button, posY_button,
 		width_button, height_button);
+
+	//调整字体
+	juce::Font codeFont(this->codeTypeface);
+	codeFont.setHeight(height_codeFont);
+	this->luaLabelEditor->setFont(codeFont);
+	this->iniLabelEditor->setFont(codeFont);
+	this->xmlLabelEditor->setFont(codeFont);
+	this->jsonLabelEditor->setFont(codeFont);
 }
 
 void LabelEditor::paint(juce::Graphics& g)

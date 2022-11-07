@@ -23,7 +23,8 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")
+		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")&&
+		jmadf::LoadModule("WuChang.JMADF.Fonts")
 		)) {
 		return false;
 	}
@@ -107,6 +108,13 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::Typeface::Ptr&, bool&>(
+			"WuChang.JMADF.Fonts", "GetFont")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Fonts:Bad Interfaces!");
 		return false;
 	}
 

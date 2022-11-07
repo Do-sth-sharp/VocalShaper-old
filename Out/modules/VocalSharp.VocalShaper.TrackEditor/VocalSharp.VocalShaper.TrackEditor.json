@@ -13,6 +13,7 @@
     "WuChang.JMADF.Translates",
     "VocalSharp.VocalShaper.LookAndFeelFactory",
     "VocalSharp.VocalShaper.CommandManager",
-    "VocalSharp.VocalShaper.CallbackReactor"
+    "VocalSharp.VocalShaper.CallbackReactor",
+    "WuChang.JMADF.Fonts"
   ]
 }

@@ -1,6 +1,7 @@
 ﻿{
   "Language": "zh-cn",
   "Font": "HarmonyOS_Sans_SC_Regular",
+  "Font-Code": "SourceCodePro-Regular",
   "ProjectExtension": ".vsp3",
   "Theme": "VocalSharp.VocalShaper.ColorfulTheme",
   "FreeMemoryLimit": 1073741824

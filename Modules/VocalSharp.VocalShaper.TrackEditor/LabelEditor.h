@@ -63,6 +63,8 @@ private:
 
 		double width_labelEditorComboBox;
 		double width_labelEditorButton;
+
+		double height_labelEditorCodeFont;
 	}sizes;//控件大小
 	struct Positions final
 	{
@@ -104,6 +106,8 @@ private:
 	std::unique_ptr<vocalshaper::IniTokeniser> iniTokeniser = nullptr;
 	std::unique_ptr<juce::XmlTokeniser> xmlTokeniser = nullptr;
 	std::unique_ptr<vocalshaper::JsonTokeniser> jsonTokeniser = nullptr;
+
+	juce::Typeface::Ptr codeTypeface;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	int index = -1;

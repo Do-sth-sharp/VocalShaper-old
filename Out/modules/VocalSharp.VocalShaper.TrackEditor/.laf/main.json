@@ -62,7 +62,9 @@
 
     "width-labelEditorMargin:number": 0.01,
     "width-labelEditorComboBox:number": 0.075,
-    "width-labelEditorButton:number": 0.075
+    "width-labelEditorButton:number": 0.075,
+
+    "height-labelEditorCodeFont:number": 0.02
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
