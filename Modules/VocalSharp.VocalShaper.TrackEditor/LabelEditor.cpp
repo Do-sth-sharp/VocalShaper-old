@@ -612,6 +612,7 @@ void LabelEditor::refreshLabel()
 			this->comboBox->setSelectedItemIndex(
 				static_cast<int>(vocalshaper::LabelDAO::getLabelType(label)));
 			this->document.replaceAllContent(vocalshaper::LabelDAO::getData(label));
+			this->checkLabelData();
 		}
 	}
 }

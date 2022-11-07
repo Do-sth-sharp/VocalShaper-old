@@ -129,6 +129,7 @@ private:
 class LabelEditorCallOutBox final
 {
 public:
+	LabelEditorCallOutBox() = delete;
 	LabelEditorCallOutBox(juce::Component* parent);
 
 	void setProject(vocalshaper::ProjectProxy* project);
@@ -147,6 +148,7 @@ private:
 		: public juce::ModalComponentManager::Callback
 	{
 	public:
+		LabelEditorCallOutBoxCallback() = delete;
 		LabelEditorCallOutBoxCallback(LabelEditorCallOutBox* manager);
 
 		void setArrowSize(float arrowWidth);

@@ -42,7 +42,12 @@
     "background-labelEditorResultLabel:string": "$ThemeColorB3",
 
     "text-labelEditorButton:string": "$ThemeColorD1",
-    "background-labelEditorButton:string": "$ThemeColorA2"
+    "background-labelEditorButton:string": "$ThemeColorA2",
+
+    "background-timeViewer:string": "$ThemeColorB4",
+    "text-timeViewer:string": "$ThemeColorD2",
+    "border-timeViewer:string": "$ThemeColorB4",
+    "value-timeViewer:string": "$ThemeColorA2"
   },
   "resource": {
   }

@@ -64,7 +64,17 @@
     "width-labelEditorComboBox:number": 0.075,
     "width-labelEditorButton:number": 0.075,
 
-    "height-labelEditorCodeFont:number": 0.02
+    "height-labelEditorCodeFont:number": 0.02,
+
+    "width-timeViewerMargin:number": 0.005,
+    "height-timeViewerMargin:number": 0.005,
+    "height-timeViewerLineSplit:number": 0.005,
+    "height-timeViewerText:number": 0.015,
+    "width-timeViewerTextSplit:number": 0.005,
+    "height-timeViewerArrow:number": 0.01,
+
+    "width-timeViewerBorder:number": 0.001,
+    "width-timeViewerCorner:number": 0.0025
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
