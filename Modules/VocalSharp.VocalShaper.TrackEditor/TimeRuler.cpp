@@ -260,7 +260,8 @@ void TimeRuler::paint(juce::Graphics& g)
 			bool beatLineOn = ppb > width_lineMinSpace;
 
 			//计算实际绘制的第一个和最后一个节拍
-			double trueStartTime = std::floor(startTime);
+			double trueStartBar = std::floor(this->project->getBeat()->getBarAtTime(startTime));
+			double trueStartTime = this->project->getBeat()->getTimeAtBar(trueStartBar);
 			double trueEndTime = std::ceil(endTime);
 
 			//根据缓存绘制刻度线和文字

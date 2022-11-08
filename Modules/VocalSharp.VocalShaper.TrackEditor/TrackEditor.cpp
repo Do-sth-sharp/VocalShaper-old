@@ -397,9 +397,9 @@ void TrackEditor::setGrid(vocalshaper::GridState state)
 
 void TrackEditor::changeHViewPort(double startTime, double endTime)
 {
-	if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
+	/*if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
 		return;
-	}
+	}*/
 	juce::ScopedReadLock locker1(this->projectLock);
 	juce::ScopedReadLock locker2(this->project->getLock());
 	auto project = this->project->getPtr();
@@ -413,9 +413,9 @@ void TrackEditor::changeHViewPort(double startTime, double endTime)
 
 void TrackEditor::changeVViewPort(double bottomTrack, double topTrack)
 {
-	if (this->bottomVTrackTemp == bottomTrack && this->topVTrackTemp == topTrack) {
+	/*if (this->bottomVTrackTemp == bottomTrack && this->topVTrackTemp == topTrack) {
 		return;
-	}
+	}*/
 	if (bottomTrack > topTrack) {
 		this->setVViewPort(bottomTrack, topTrack);
 	}
