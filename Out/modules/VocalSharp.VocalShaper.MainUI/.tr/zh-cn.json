@@ -1,4 +1,4 @@
-{
+﻿{
   "bt_Yes": "是",
   "bt_No": "否",
   "bt_Cancel": "取消",
@@ -12,24 +12,24 @@
   "lb_Adsorb": "吸附",
   "lb_Grid": "网格",
 
-  "sn_Adsorb1Beat": "1 拍",
-  "sn_Adsorb1/2Beat": "1/2 拍",
-  "sn_Adsorb1/4Beat": "1/4 拍",
-  "sn_Adsorb1/6Beat": "1/6 拍",
-  "sn_Adsorb1/8Beat": "1/8 拍",
-  "sn_Adsorb1/12Beat": "1/12 拍",
-  "sn_Adsorb1/16Beat": "1/16 拍",
-  "sn_Adsorb1/24Beat": "1/24 拍",
-  "sn_Adsorb1/32Beat": "1/32 拍",
+  "sn_Adsorb1Beat": "四分音符",
+  "sn_Adsorb1/2Beat": "1/2 个四分音符",
+  "sn_Adsorb1/4Beat": "1/4 个四分音符",
+  "sn_Adsorb1/6Beat": "1/6 个四分音符",
+  "sn_Adsorb1/8Beat": "1/8 个四分音符",
+  "sn_Adsorb1/12Beat": "1/12 个四分音符",
+  "sn_Adsorb1/16Beat": "1/16 个四分音符",
+  "sn_Adsorb1/24Beat": "1/24 个四分音符",
+  "sn_Adsorb1/32Beat": "1/32 个四分音符",
   "sn_AdsorbOff": "关闭",
 
-  "sn_Grid1Beat": "1 拍",
-  "sn_Grid1/2Beat": "1/2 拍",
-  "sn_Grid1/4Beat": "1/4 拍",
-  "sn_Grid1/6Beat": "1/6 拍",
-  "sn_Grid1/8Beat": "1/8 拍",
-  "sn_Grid1/12Beat": "1/12 拍",
-  "sn_Grid1/16Beat": "1/16 拍",
-  "sn_Grid1/24Beat": "1/24 拍",
-  "sn_Grid1/32Beat": "1/32 拍"
+  "sn_Grid1Beat": "四分音符",
+  "sn_Grid1/2Beat": "1/2 个四分音符",
+  "sn_Grid1/4Beat": "1/4 个四分音符",
+  "sn_Grid1/6Beat": "1/6 个四分音符",
+  "sn_Grid1/8Beat": "1/8 个四分音符",
+  "sn_Grid1/12Beat": "1/12 个四分音符",
+  "sn_Grid1/16Beat": "1/16 个四分音符",
+  "sn_Grid1/24Beat": "1/24 个四分音符",
+  "sn_Grid1/32Beat": "1/32 个四分音符"
 }

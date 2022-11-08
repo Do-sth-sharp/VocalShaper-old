@@ -10,14 +10,11 @@
   "tip_LabelParseTimeOut": "Parse TimeOut!",
   "tip_LabelParseError": "Parse failed!",
 
-  "tip_xLead": "At",
   "tip_xInBarLead": "At",
   "tip_timeLead": "At",
-  "tip_xUnit": "beat",
   "tip_xInBarUnit": "bar",
-  "tip_timeUnit": "sec",
+  "tip_timeUnit": "s",
   "tip_beatLead": "beat:",
   "tip_tempoLead": "tempo:",
-  "tip_beatUnit": "beat per bar",
   "tip_tempoUnit": "bpm"
 }

@@ -606,6 +606,7 @@ void LabelEditor::refreshLabel()
 					this->project->getTempo()->selectLabelBy_x(lastTime)).Ts;
 				
 				this->lastBeat = this->project->getBeat()->getBeatAtTime(lastTime);
+				this->lastBase = this->project->getBeat()->getBaseAtTime(lastTime);
 			}
 
 			//更新数据
@@ -641,7 +642,7 @@ void LabelEditor::checkLabelData()
 			auto result = this->project->getLabelParser()->parseNow(
 				strData, data,
 				static_cast<vocalshaper::Label::LabelType>(this->comboBox->getSelectedItemIndex()),
-				this->time, this->lastTempo, this->lastBeat
+				this->time, this->lastTempo, this->lastBeat, this->lastBase
 			);
 			auto elapsedMs = juce::Time::getMillisecondCounterHiRes() - startTime;
 
@@ -672,6 +673,7 @@ void LabelEditor::checkLabelData()
 			labelStr += ("time: " + juce::String(data.x) + "\n");
 			labelStr += ("tempo: " + juce::String(data.tempo) + "\n");
 			labelStr += ("beat: " + juce::String(data.beat) + "\n");
+			labelStr += ("base: " + juce::String(data.base) + "\n");
 			labelStr += ("auto: " + juce::String(data.autoTempo ? "true" : "false") + "\n");
 
 			this->resultLabel->setText(labelStr, juce::NotificationType::sendNotificationAsync);

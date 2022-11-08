@@ -71,13 +71,15 @@ TimeValueViewer::TimeValueViewer(juce::Component* parent)
 	this->fontLabel = std::make_unique<juce::Label>();
 }
 
-void TimeValueViewer::setValue(double x, double xInBar, double xFromBar, double time, uint8_t beat, double tempo)
+void TimeValueViewer::setValue(
+	double x, double xInBar, double bFromBar, double time, uint8_t beat, uint8_t base, double tempo)
 {
 	this->x = x;
 	this->xInBar = xInBar;
-	this->xFromBar = xFromBar;
+	this->bFromBar = bFromBar;
 	this->time = time;
 	this->beat = beat;
+	this->base = base;
 	this->tempo = tempo;
 	this->repaint();
 }
@@ -106,10 +108,9 @@ void TimeValueViewer::close()
 }
 
 //bar+beat
-//At timeInBeat unit
 //At timeInBar unit
 //At timeInSec unit
-//beat: beat unit
+//beat: beat/base
 //tempo: tempo unit
 
 void TimeValueViewer::getContentSize(int& width, int& height)
@@ -131,48 +132,39 @@ void TimeValueViewer::getContentSize(int& width, int& height)
 	font.setHeight(height_text);
 
 	//计算文字大小
-	juce::String xBarBeatStr(juce::String((uint64_t)std::floor(this->xInBar + 1)) + " + " + juce::String(this->xFromBar + 1, 2));
-	juce::String xStr(this->x + 1, 2);
+	juce::String xBarBeatStr(juce::String((uint64_t)std::floor(this->xInBar + 1)) + " + " + juce::String(this->bFromBar + 1, 2));
 	juce::String xInBarStr(this->xInBar + 1, 2);
 	juce::String timeStr(this->time, 2);
-	juce::String beatStr((int)this->beat);
+	juce::String beatStr(juce::String((uint64_t)this->beat) + "/" + juce::String((uint64_t)this->base));
 	juce::String tempoStr(this->tempo, 2);
 
-	juce::String xLeadStr(this->tr("tip_xLead"));
 	juce::String xInBarLeadStr(this->tr("tip_xInBarLead"));
 	juce::String timeLeadStr(this->tr("tip_timeLead"));
-	juce::String xUnitStr(this->tr("tip_xUnit"));
 	juce::String xInBarUnitStr(this->tr("tip_xInBarUnit"));
 	juce::String timeUnitStr(this->tr("tip_timeUnit"));
 	juce::String beatLeadStr(this->tr("tip_beatLead"));
 	juce::String tempoLeadStr(this->tr("tip_tempoLead"));
-	juce::String beatUnitStr(this->tr("tip_beatUnit"));
 	juce::String tempoUnitStr(this->tr("tip_tempoUnit"));
 
 	int width_xBarBeatStr = font.getStringWidth(xBarBeatStr);
-	int width_xStr = font.getStringWidth(xStr);
 	int width_xInBarStr = font.getStringWidth(xInBarStr);
 	int width_timeStr = font.getStringWidth(timeStr);
 	int width_beatStr = font.getStringWidth(beatStr);
 	int width_tempoStr = font.getStringWidth(tempoStr);
 
-	int width_xLeadStr = font.getStringWidth(xLeadStr);
 	int width_xInBarLeadStr = font.getStringWidth(xInBarLeadStr);
 	int width_timeLeadStr = font.getStringWidth(timeLeadStr);
-	int width_xUnitStr = font.getStringWidth(xUnitStr);
 	int width_xInBarUnitStr = font.getStringWidth(xInBarUnitStr);
 	int width_timeUnitStr = font.getStringWidth(timeUnitStr);
 	int width_beatLeadStr = font.getStringWidth(beatLeadStr);
 	int width_tempoLeadStr = font.getStringWidth(tempoLeadStr);
-	int width_beatUnitStr = font.getStringWidth(beatUnitStr);
 	int width_tempoUnitStr = font.getStringWidth(tempoUnitStr);
 
 	int width_line0 = width_xBarBeatStr;
-	int width_line1 = width_xLeadStr + width_xStr + width_xUnitStr + width_split * 2;
-	int width_line2 = width_xInBarLeadStr + width_xInBarStr + width_xInBarUnitStr + width_split * 2;
-	int width_line3 = width_timeLeadStr + width_timeStr + width_timeUnitStr + width_split * 2;
-	int width_line4 = width_beatLeadStr + width_beatStr + width_beatUnitStr + width_split * 2;
-	int width_line5 = width_tempoLeadStr + width_tempoStr + width_tempoUnitStr + width_split * 2;
+	int width_line1 = width_xInBarLeadStr + width_xInBarStr + width_xInBarUnitStr + width_split * 2;
+	int width_line2 = width_timeLeadStr + width_timeStr + width_timeUnitStr + width_split * 2;
+	int width_line3 = width_beatLeadStr + width_beatStr + width_split * 2;
+	int width_line4 = width_tempoLeadStr + width_tempoStr + width_tempoUnitStr + width_split * 2;
 
 	//寻找最长行
 	int width_lineMax = width_line0;
@@ -180,10 +172,9 @@ void TimeValueViewer::getContentSize(int& width, int& height)
 	width_lineMax = std::max(width_lineMax, width_line2);
 	width_lineMax = std::max(width_lineMax, width_line3);
 	width_lineMax = std::max(width_lineMax, width_line4);
-	width_lineMax = std::max(width_lineMax, width_line5);
 
 	//设置高度
-	height = height_margin * 2 + height_text * 6 + height_split * 5;
+	height = height_margin * 2 + height_text * 5 + height_split * 4;
 	width = width_margin * 2 + width_lineMax;
 }
 
@@ -207,40 +198,32 @@ void TimeValueViewer::paintContent(juce::Graphics& g, int width, int height)
 	g.setFont(font);
 
 	//计算文字大小
-	juce::String xBarBeatStr(juce::String((uint64_t)std::floor(this->xInBar + 1)) + " + " + juce::String(this->xFromBar + 1, 2));
-	juce::String xStr(this->x + 1, 2);
+	juce::String xBarBeatStr(juce::String((uint64_t)std::floor(this->xInBar + 1)) + " + " + juce::String(this->bFromBar + 1, 2));
 	juce::String xInBarStr(this->xInBar + 1, 2);
 	juce::String timeStr(this->time, 2);
-	juce::String beatStr((int)this->beat);
+	juce::String beatStr(juce::String((uint64_t)this->beat) + "/" + juce::String((uint64_t)this->base));
 	juce::String tempoStr(this->tempo, 2);
 
-	juce::String xLeadStr(this->tr("tip_xLead"));
 	juce::String xInBarLeadStr(this->tr("tip_xInBarLead"));
 	juce::String timeLeadStr(this->tr("tip_timeLead"));
-	juce::String xUnitStr(this->tr("tip_xUnit"));
 	juce::String xInBarUnitStr(this->tr("tip_xInBarUnit"));
 	juce::String timeUnitStr(this->tr("tip_timeUnit"));
 	juce::String beatLeadStr(this->tr("tip_beatLead"));
 	juce::String tempoLeadStr(this->tr("tip_tempoLead"));
-	juce::String beatUnitStr(this->tr("tip_beatUnit"));
 	juce::String tempoUnitStr(this->tr("tip_tempoUnit"));
 
 	int width_xBarBeatStr = font.getStringWidth(xBarBeatStr);
-	int width_xStr = font.getStringWidth(xStr);
 	int width_xInBarStr = font.getStringWidth(xInBarStr);
 	int width_timeStr = font.getStringWidth(timeStr);
 	int width_beatStr = font.getStringWidth(beatStr);
 	int width_tempoStr = font.getStringWidth(tempoStr);
 
-	int width_xLeadStr = font.getStringWidth(xLeadStr);
 	int width_xInBarLeadStr = font.getStringWidth(xInBarLeadStr);
 	int width_timeLeadStr = font.getStringWidth(timeLeadStr);
-	int width_xUnitStr = font.getStringWidth(xUnitStr);
 	int width_xInBarUnitStr = font.getStringWidth(xInBarUnitStr);
 	int width_timeUnitStr = font.getStringWidth(timeUnitStr);
 	int width_beatLeadStr = font.getStringWidth(beatLeadStr);
 	int width_tempoLeadStr = font.getStringWidth(tempoLeadStr);
-	int width_beatUnitStr = font.getStringWidth(beatUnitStr);
 	int width_tempoUnitStr = font.getStringWidth(tempoUnitStr);
 
 	//计算值绘制区域
@@ -248,68 +231,52 @@ void TimeValueViewer::paintContent(juce::Graphics& g, int width, int height)
 		width_margin,
 		height_margin + height_text * 0 + height_split * 0,
 		width_xBarBeatStr, height_text);
-	juce::Rectangle<int> xRect(
-		width_margin + width_xLeadStr + width_split * 1,
-		height_margin + height_text * 1 + height_split * 1,
-		width_xStr, height_text);
 	juce::Rectangle<int> xInBarRect(
 		width_margin + width_xInBarLeadStr + width_split * 1,
-		height_margin + height_text * 2 + height_split * 2,
+		height_margin + height_text * 1 + height_split * 1,
 		width_xInBarStr, height_text);
 	juce::Rectangle<int> timeRect(
 		width_margin + width_timeLeadStr + width_split * 1,
-		height_margin + height_text * 3 + height_split * 3,
+		height_margin + height_text * 2 + height_split * 2,
 		width_timeStr, height_text);
 	juce::Rectangle<int> beatRect(
 		width_margin + width_beatLeadStr + width_split * 1,
-		height_margin + height_text * 4 + height_split * 4,
+		height_margin + height_text * 3 + height_split * 3,
 		width_beatStr, height_text);
 	juce::Rectangle<int> tempoRect(
 		width_margin + width_tempoLeadStr + width_split * 1,
-		height_margin + height_text * 5 + height_split * 5,
+		height_margin + height_text * 4 + height_split * 4,
 		width_tempoStr, height_text);
 
 	//计算文字提示绘制区域
-	juce::Rectangle<int> xLeadRect(
-		width_margin,
-		height_margin + height_text * 1 + height_split * 1,
-		width_xLeadStr, height_text);
 	juce::Rectangle<int> xInBarLeadRect(
 		width_margin,
-		height_margin + height_text * 2 + height_split * 2,
+		height_margin + height_text * 1 + height_split * 1,
 		width_xInBarLeadStr, height_text);
 	juce::Rectangle<int> timeLeadRect(
 		width_margin,
-		height_margin + height_text * 3 + height_split * 3,
+		height_margin + height_text * 2 + height_split * 2,
 		width_timeLeadStr, height_text);
 	juce::Rectangle<int> beatLeadRect(
 		width_margin,
-		height_margin + height_text * 4 + height_split * 4,
+		height_margin + height_text * 3 + height_split * 3,
 		width_beatLeadStr, height_text);
 	juce::Rectangle<int> tempoLeadRect(
 		width_margin,
-		height_margin + height_text * 5 + height_split * 5,
+		height_margin + height_text * 4 + height_split * 4,
 		width_tempoLeadStr, height_text);
 
-	juce::Rectangle<int> xUnitRect(
-		width_margin + width_xLeadStr + width_xStr + width_split * 2,
-		height_margin + height_text * 1 + height_split * 1,
-		width_xUnitStr, height_text);
 	juce::Rectangle<int> xInBarUnitRect(
 		width_margin + width_xInBarLeadStr + width_xInBarStr + width_split * 2,
-		height_margin + height_text * 2 + height_split * 2,
+		height_margin + height_text * 1 + height_split * 1,
 		width_xInBarUnitStr, height_text);
 	juce::Rectangle<int> timeUnitRect(
 		width_margin + width_timeLeadStr + width_timeStr + width_split * 2,
-		height_margin + height_text * 3 + height_split * 3,
+		height_margin + height_text * 2 + height_split * 2,
 		width_timeUnitStr, height_text);
-	juce::Rectangle<int> beatUnitRect(
-		width_margin + width_beatLeadStr + width_beatStr + width_split * 2,
-		height_margin + height_text * 4 + height_split * 4,
-		width_beatUnitStr, height_text);
 	juce::Rectangle<int> tempoUnitRect(
 		width_margin + width_tempoLeadStr + width_tempoStr + width_split * 2,
-		height_margin + height_text * 5 + height_split * 5,
+		height_margin + height_text * 4 + height_split * 4,
 		width_tempoUnitStr, height_text);
 
 	//填充背景
@@ -318,7 +285,6 @@ void TimeValueViewer::paintContent(juce::Graphics& g, int width, int height)
 	//绘制值
 	g.setColour(this->colors.value_timeViewer);
 	g.drawFittedText(xBarBeatStr, xBarBeatRect, juce::Justification::centred, 1);
-	g.drawFittedText(xStr, xRect, juce::Justification::centred, 1);
 	g.drawFittedText(xInBarStr, xInBarRect, juce::Justification::centred, 1);
 	g.drawFittedText(timeStr, timeRect, juce::Justification::centred, 1);
 	g.drawFittedText(beatStr, beatRect, juce::Justification::centred, 1);
@@ -326,15 +292,12 @@ void TimeValueViewer::paintContent(juce::Graphics& g, int width, int height)
 
 	//绘制文字提示
 	g.setColour(this->colors.text_timeViewer);
-	g.drawFittedText(xLeadStr, xLeadRect, juce::Justification::centred, 1);
 	g.drawFittedText(xInBarLeadStr, xInBarLeadRect, juce::Justification::centred, 1);
 	g.drawFittedText(timeLeadStr, timeLeadRect, juce::Justification::centred, 1);
 	g.drawFittedText(beatLeadStr, beatLeadRect, juce::Justification::centred, 1);
 	g.drawFittedText(tempoLeadStr, tempoLeadRect, juce::Justification::centred, 1);
 
-	g.drawFittedText(xUnitStr, xUnitRect, juce::Justification::centred, 1);
 	g.drawFittedText(xInBarUnitStr, xInBarUnitRect, juce::Justification::centred, 1);
 	g.drawFittedText(timeUnitStr, timeUnitRect, juce::Justification::centred, 1);
-	g.drawFittedText(beatUnitStr, beatUnitRect, juce::Justification::centred, 1);
 	g.drawFittedText(tempoUnitStr, tempoUnitRect, juce::Justification::centred, 1);
 }

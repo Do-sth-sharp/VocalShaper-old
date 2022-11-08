@@ -143,10 +143,14 @@ void MainComponent::setSMVisible(bool isVisible)
     this->ptrStartMenu->setVisible(isVisible);
     this->ptrMainUI->setVisible(!isVisible);
     if (isVisible) {
-        this->ptrStartMenu->grabKeyboardFocus();
+        if (this->ptrStartMenu->isShowing()) {
+            this->ptrStartMenu->grabKeyboardFocus();
+        }
     }
     else {
-        this->ptrMainUI->grabKeyboardFocus();
+        if (this->ptrMainUI->isShowing()) {
+            this->ptrMainUI->grabKeyboardFocus();
+        }
     }
 }
 

@@ -41,7 +41,7 @@
     "height-timeRuler-beatLine:number": 0.007,
     "width-timeRuler-barLine:number": 0.00075,
     "width-timeRuler-beatLine:number": 0.0005,
-    "width-timeRuler-minLineSpace:number": 0.01,
+    "width-timeRuler-minLineSpace:number": 0.02,
 
     "width-timeRuler-barTextLeftMargin:number": 0.001,
     "width-timeRuler-barTextRightMargin:number": 0.0025,

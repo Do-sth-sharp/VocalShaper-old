@@ -260,13 +260,13 @@ void TimeRuler::paint(juce::Graphics& g)
 			bool beatLineOn = ppb > width_lineMinSpace;
 
 			//计算实际绘制的第一个和最后一个节拍
-			double trueStartTime = std::ceil(startTime);
-			double trueEndTime = std::floor(endTime);
+			double trueStartTime = std::floor(startTime);
+			double trueEndTime = std::ceil(endTime);
 
 			//根据缓存绘制刻度线和文字
 			float lastBarTextEndPos = 0.f;				//上一个拍号序号结束位置
 			float firstBarTextPos = this->getWidth();	//第一个拍号序号位置
-			for (auto t = trueStartTime; t <= trueEndTime; t++) {
+			for (auto t = trueStartTime; t <= trueEndTime; ) {
 				//计算线位置
 				float pos = (t - startTime) * ppb;
 
@@ -320,6 +320,10 @@ void TimeRuler::paint(juce::Graphics& g)
 						g.fillRect(rectLine);
 					}
 				}
+
+				//向下增加一个节拍的距离
+				auto beatBase = this->project->getBeat()->getBaseAtTime(t);
+				t += 1. / (beatBase / 4.);
 			}
 
 			//判断并绘制前端小节序号
@@ -658,13 +662,15 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 							//计算时间
 							double x = this->loopStartTime;
 							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 							double time = this->project->getTempo()->get_t(x);
 							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double xFromBar 
+								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 							double tempo = this->project->getTempo()->get_T(x);
 
 							//设置预览位置
-							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 							this->timeValue->showAt(juce::Point<int>(
 								(x - startTime) * ppb, this->getHeight()));
 						}
@@ -682,13 +688,15 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 							//计算时间
 							double x = this->loopEndTime;
 							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 							double time = this->project->getTempo()->get_t(x);
 							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double xFromBar
+								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 							double tempo = this->project->getTempo()->get_T(x);
 
 							//设置预览位置
-							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 							this->timeValue->showAt(juce::Point<int>(
 								(x - startTime) * ppb, this->getHeight()));
 						}
@@ -726,13 +734,15 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 						//计算时间
 						double x = time;
 						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 						double time = this->project->getTempo()->get_t(x);
 						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xFromBar
+							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 						double tempo = this->project->getTempo()->get_T(x);
 
 						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 						this->timeValue->showAt(juce::Point<int>(
 							(x - startTime) * ppb, this->getHeight()));
 					}
@@ -803,13 +813,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), labelIndex);
 							double x = vocalshaper::LabelDAO::getPosition(label);
 							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 							double time = this->project->getTempo()->get_t(x);
 							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double xFromBar
+								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 							double tempo = this->project->getTempo()->get_T(x);
 
 							//设置预览位置
-							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 							this->timeValue->showAt(juce::Point<int>(
 								(x - startTime) * ppb, this->getHeight()));
 						}
@@ -838,13 +850,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 						//计算时间
 						double x = this->loopStartTime;
 						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 						double time = this->project->getTempo()->get_t(x);
 						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xFromBar
+							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 						double tempo = this->project->getTempo()->get_T(x);
 
 						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 						this->timeValue->showAt(juce::Point<int>(
 							startLoopPos, this->getHeight()));
 					}
@@ -859,13 +873,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 						//计算时间
 						double x = this->loopEndTime;
 						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 						double time = this->project->getTempo()->get_t(x);
 						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xFromBar
+							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 						double tempo = this->project->getTempo()->get_T(x);
 
 						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 						this->timeValue->showAt(juce::Point<int>(
 							endLoopPos, this->getHeight()));
 					}
@@ -881,13 +897,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				//计算时间
 				double x = startTime + posX / ppb;
 				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 				double time = this->project->getTempo()->get_t(x);
 				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xFromBar
+					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 				double tempo = this->project->getTempo()->get_T(x);
 
 				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 				this->timeValue->showAt(juce::Point<int>(
 					posX, this->getHeight()));
 			}
@@ -918,13 +936,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				//计算时间
 				double x = time;
 				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 				double t = this->project->getTempo()->get_t(x);
 				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xFromBar
+					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 				double tempo = this->project->getTempo()->get_T(x);
 
 				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, tempo);
+				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, base, tempo);
 				this->timeValue->showAt(juce::Point<int>(
 					(time - startTime)* ppb, this->getHeight()));
 			}
@@ -954,13 +974,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				//计算时间
 				double x = time;
 				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 				double t = this->project->getTempo()->get_t(x);
 				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xFromBar
+					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 				double tempo = this->project->getTempo()->get_T(x);
 
 				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, tempo);
+				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, base, tempo);
 				this->timeValue->showAt(juce::Point<int>(
 					(time - startTime) * ppb, this->getHeight()));
 			}
@@ -1038,13 +1060,15 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				//计算时间
 				double x = time;
 				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 				double time = this->project->getTempo()->get_t(x);
 				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xFromBar
+					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 				double tempo = this->project->getTempo()->get_T(x);
 
 				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 				this->timeValue->showAt(juce::Point<int>(
 					(x - startTime) * ppb, this->getHeight()));
 			}
@@ -1334,13 +1358,15 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 						//计算时间
 						double x = this->loopStartTime;
 						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 						double time = this->project->getTempo()->get_t(x);
 						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xFromBar
+							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 						double tempo = this->project->getTempo()->get_T(x);
 
 						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 						this->timeValue->showAt(juce::Point<int>(
 							(x - startTime) * ppb, this->getHeight()));
 					}
@@ -1355,13 +1381,15 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 						//计算时间
 						double x = this->loopEndTime;
 						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 						double time = this->project->getTempo()->get_t(x);
 						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xFromBar
+							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 						double tempo = this->project->getTempo()->get_T(x);
 
 						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 						this->timeValue->showAt(juce::Point<int>(
 							(x - startTime) * ppb, this->getHeight()));
 					}
@@ -1377,13 +1405,15 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				//计算时间
 				double x = startTime + posX / ppb;
 				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double xFromBar = x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar));
 				double time = this->project->getTempo()->get_t(x);
 				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xFromBar
+					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
 				double tempo = this->project->getTempo()->get_T(x);
 
 				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, tempo);
+				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
 				this->timeValue->showAt(juce::Point<int>(
 					posX, this->getHeight()));
 			}

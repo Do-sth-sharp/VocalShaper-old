@@ -215,6 +215,9 @@ juce::PopupMenu MainMenu::create()
 		MainMenu::initAutomaticCommand();
 		MainMenu::initConfigCommand();
 		MainMenu::initMiscCommand();
+
+		MainMenu::initAdsorbCommand();
+		MainMenu::initGridCommand();
 	}
 	
 	juce::PopupMenu menu;
@@ -454,7 +457,7 @@ void MainMenu::initMiscCommand()
 
 }
 
-void initAdsorbCommand()
+void MainMenu::initAdsorbCommand()
 {
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
@@ -498,7 +501,7 @@ void initAdsorbCommand()
 		);
 }
 
-void initGridCommand()
+void MainMenu::initGridCommand()
 {
 	jmadf::CallInterface<const juce::String&, int&>(
 		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",

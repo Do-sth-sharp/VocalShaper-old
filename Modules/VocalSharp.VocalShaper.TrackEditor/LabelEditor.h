@@ -114,6 +114,7 @@ private:
 	double time = 0.;
 	double lastTempo = 120.;
 	uint8_t lastBeat = 4;
+	uint8_t lastBase = 4;
 	juce::String currentDataTemp;
 	vocalshaper::Label::LabelType currentTypeTemp = vocalshaper::Label::LabelType::Lua;
 	juce::ReadWriteLock projectLock;

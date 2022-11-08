@@ -10,14 +10,11 @@
   "tip_LabelParseTimeOut": "解析超时！",
   "tip_LabelParseError": "解析失败！",
 
-  "tip_xLead": "第",
   "tip_xInBarLead": "第",
   "tip_timeLead": "第",
-  "tip_xUnit": "拍",
   "tip_xInBarUnit": "小节",
   "tip_timeUnit": "秒",
   "tip_beatLead": "拍号:",
   "tip_tempoLead": "曲速:",
-  "tip_beatUnit": "拍每小节",
-  "tip_tempoUnit": "拍每分钟"
+  "tip_tempoUnit": "bpm"
 }
