@@ -2,6 +2,7 @@
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 #include "LabelEditor.h"
+#include "TimeValueViewer.h"
 
 class TimeRuler final : public vocalshaper::EditorBase
 {
@@ -50,6 +51,9 @@ private:
 		juce::Colour timeRuler_label_on;
 		juce::Colour timeRuler_label_off;
 
+		juce::Colour background_timeViewer;
+		juce::Colour border_timeViewer;
+
 		juce::Colour border;
 		juce::Colour cursor;
 	}colors;//界面颜色
@@ -79,11 +83,18 @@ private:
 		double width_labelEditorCalloutArrow;
 		double width_labelEditorCalloutBorder;
 		double width_labelEditorCalloutCorner;
+
+		double width_timeViewerBorder;
+		double width_timeViewerCorner;
 	}sizes;//控件大小
 	struct Scales final
 	{
 		double height_timeRuler_barText;
 	}scales;//控件缩放
+	struct LookAndFeels final
+	{
+		juce::LookAndFeel* timeViewerBubble;
+	}lafs;//控件样式
 
 	void showLabelEditor(int labelIndex, juce::Rectangle<int> place);
 
@@ -95,6 +106,10 @@ private:
 	std::function<void(double, double)> wheelChangeWithCtrlMethod;
 
 	std::unique_ptr<LabelEditorCallOutBox> labelEditor = nullptr;
+	std::unique_ptr<TimeValueViewer> timeValue = nullptr;
+
+	int timeViewerBorderSize = 1;
+	float timeViewerCornerSize = 5.f;
 
 	vocalshaper::ProjectProxy* project = nullptr;
 	double startTime, endTime;

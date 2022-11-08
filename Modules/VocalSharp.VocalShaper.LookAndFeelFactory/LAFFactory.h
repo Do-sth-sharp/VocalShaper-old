@@ -33,6 +33,8 @@ public:
 	juce::LookAndFeel* getLabelEditorCallOutBoxLAF(const juce::String& caller, 
 		const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc,
 		const juce::Colour colorBackground, const juce::Colour colorBorder);
+	juce::LookAndFeel* getLabelEditorBubbleLAF(const juce::String& caller,
+		const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc);
 
 	void close(const juce::String& caller);
 

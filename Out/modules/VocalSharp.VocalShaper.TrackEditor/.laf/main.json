@@ -66,10 +66,10 @@
 
     "height-labelEditorCodeFont:number": 0.02,
 
-    "width-timeViewerMargin:number": 0.005,
-    "height-timeViewerMargin:number": 0.005,
+    "width-timeViewerMargin:number": 0.0075,
+    "height-timeViewerMargin:number": 0.0075,
     "height-timeViewerLineSplit:number": 0.005,
-    "height-timeViewerText:number": 0.015,
+    "height-timeViewerText:number": 0.0175,
     "width-timeViewerTextSplit:number": 0.005,
     "height-timeViewerArrow:number": 0.01,
 

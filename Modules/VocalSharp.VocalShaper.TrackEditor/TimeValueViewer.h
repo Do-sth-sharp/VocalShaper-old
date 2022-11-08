@@ -36,6 +36,8 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	std::function<const juce::String(const juce::String&)> tr;
 
+	std::unique_ptr<juce::Label> fontLabel = nullptr;
+
 	juce::Component* parent = nullptr;
 
 	double x = 0., xInBar = 0., time = 0., tempo = 120.;
