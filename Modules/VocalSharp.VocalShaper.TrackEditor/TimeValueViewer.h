@@ -7,7 +7,7 @@ public:
 	TimeValueViewer() = delete;
 	TimeValueViewer(juce::Component* parent);
 
-	void setValue(double x, double xInBar, double time, uint8_t beat, double tempo);
+	void setValue(double x, double xInBar, double xFromBar, double time, uint8_t beat, double tempo);
 	void showAt(juce::Point<int> pos);
 	void close();
 
@@ -40,7 +40,7 @@ private:
 
 	juce::Component* parent = nullptr;
 
-	double x = 0., xInBar = 0., time = 0., tempo = 120.;
+	double x = 0., xInBar = 0., xFromBar = 0., time = 0., tempo = 120.;
 	uint8_t beat = 4;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeValueViewer)
