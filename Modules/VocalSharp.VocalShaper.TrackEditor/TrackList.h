@@ -1,16 +1,11 @@
 ﻿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
-#include "TimeRuler.h"
-#include "VScroller.h"
-#include "HScroller.h"
-#include "TrackList.h"
 
-class TrackEditor final : public vocalshaper::EditorBase
+class TrackList final : public vocalshaper::EditorBase
 {
 public:
-	TrackEditor();
-	~TrackEditor() override = default;
+	TrackList();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -35,7 +30,6 @@ public:
 	void trackChanged(int trackID) override;
 	void setTotalLength(double totalLength) override;
 	void setCurrentPosition(double currentTime) override;
-	void setFollowState(bool follow) override;
 	void setLoopRange(double startTime, double endTime) override;
 	void setHorizontalViewPort(double startTime, double endTime) override;
 	void setVerticalViewPort(double bottomPitch, double topPitch) override;
@@ -44,41 +38,7 @@ public:
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
 
-public:
-	void changeHViewPort(double startTime, double endTime);
-	void changeVViewPort(double bottomTrack, double topTrack);
-
 private:
-	struct Colors final
-	{
-		juce::Colour background;
-		juce::Colour border;
-
-		juce::Colour background_rulerHead;
-		juce::Colour background_timeRuler;
-	}colors;//界面颜色
-	struct Size final
-	{
-		double width_trackHead;
-		double height_timeRuler;
-		double width_verticalScroller;
-		double height_horizontalScroller;
-
-		double height_borderTop;
-		double width_borderRight;
-	}sizes;//控件大小
-	struct Scales final
-	{
-	}scales;//控件缩放
-
-	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
-	juce::Rectangle<int> screenSize;
-
-	std::unique_ptr<TimeRuler> timeRuler = nullptr;
-	std::unique_ptr<VScroller> vScroller = nullptr;
-	std::unique_ptr<HScroller> hScroller = nullptr;
-	std::unique_ptr<TrackList> tracks = nullptr;
-
 	vocalshaper::ProjectProxy* project = nullptr;
 	int trackID = -1;
 	juce::ReadWriteLock projectLock;
@@ -86,8 +46,13 @@ private:
 	bool editModeFlag = false;
 	uint8_t toolID = 1;
 
-	double startTimeTemp = 0., endTimeTemp = 0.;
-	double bottomVTrackTemp = 0., topVTrackTemp = 0.;
+	double startTime = 0., endTime = 0.;
+	double bottomTrack = 0., topTrack = 0.;
+	double loopStartTime = 0., loopEndTime = 0.;
+	double currentTime = 0.;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackEditor)
+	vocalshaper::AdsorbState adsorb = vocalshaper::AdsorbState::Adsorb1Beat;
+	vocalshaper::GridState grid = vocalshaper::GridState::Grid1Beat;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };
