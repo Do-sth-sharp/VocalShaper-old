@@ -15,15 +15,15 @@ public:
 	void paint(juce::Graphics& g) override;
 
 public:
-	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
-	void setEditMode(bool editMode) override;
-	void trackChanged(int trackID) override;
-	void setTotalLength(double totalLength) override;
-	void setCurrentPosition(double currentTime) override;
-	void setLoopRange(double startTime, double endTime) override;
-	void setAdsorb(vocalshaper::AdsorbState state) override;
-	void setGrid(vocalshaper::GridState state) override;
-	void setHViewPort(double startTime, double endTime) override;
+	void projectChangedCallback(const vocalshaper::ProjectProxy* ptr) override;
+	void setEditModeCallback(bool editMode) override;
+	void trackChangedCallback(int trackID) override;
+	void setTotalLengthCallback(double totalLength) override;
+	void setCurrentPositionCallback(double currentTime) override;
+	void setLoopRangeCallback(double startTime, double endTime) override;
+	void setAdsorbCallback(vocalshaper::AdsorbState state) override;
+	void setGridCallback(vocalshaper::GridState state) override;
+	void setHViewPortCallback(double startTime, double endTime) override;
 
 public:
 	void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details) override;

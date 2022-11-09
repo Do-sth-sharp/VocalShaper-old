@@ -206,15 +206,13 @@ StatusBar::StatusBar()
 	this->refreshTrackComponent();
 }
 
-void StatusBar::projectChanged(const vocalshaper::ProjectProxy* ptr)
+void StatusBar::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
 {
-	this->EditorBase::projectChanged(ptr);
 	this->refreshTrackComponent();
 }
 
-void StatusBar::trackChanged(int trackID)
+void StatusBar::trackChangedCallback(int trackID)
 {
-	this->EditorBase::trackChanged(trackID);
 	this->refreshTrackComponent();
 }
 

@@ -455,29 +455,25 @@ void TimeRuler::paint(juce::Graphics& g)
 
 }
 
-void TimeRuler::projectChanged(const vocalshaper::ProjectProxy* ptr)
+void TimeRuler::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
 {
-	this->EditorBase::projectChanged(ptr);
 	this->labelEditor->setProject(const_cast<vocalshaper::ProjectProxy*>(ptr));
 	this->timeValue->close();
 	this->repaint();
 }
 
-void TimeRuler::setEditMode(bool editMode)
+void TimeRuler::setEditModeCallback(bool editMode)
 {
-	this->EditorBase::setEditMode(editMode);
 	this->repaint();
 }
 
-void TimeRuler::trackChanged(int trackID)
+void TimeRuler::trackChangedCallback(int trackID)
 {
-	this->EditorBase::trackChanged(trackID);
 	this->repaint();
 }
 
-void TimeRuler::setTotalLength(double totalLength)
+void TimeRuler::setTotalLengthCallback(double totalLength)
 {
-	this->EditorBase::setTotalLength(totalLength);
 	juce::ScopedWriteLock locker(this->getProjLock());
 	if (this->getProject()) {
 		double bar =
@@ -490,33 +486,28 @@ void TimeRuler::setTotalLength(double totalLength)
 	}
 }
 
-void TimeRuler::setCurrentPosition(double currentTime)
+void TimeRuler::setCurrentPositionCallback(double currentTime)
 {
-	this->EditorBase::setCurrentPosition(currentTime);
 	this->repaint();
 }
 
-void TimeRuler::setLoopRange(double startTime, double endTime)
+void TimeRuler::setLoopRangeCallback(double startTime, double endTime)
 {
-	this->EditorBase::setLoopRange(startTime, endTime);
 	this->repaint();
 }
 
-void TimeRuler::setAdsorb(vocalshaper::AdsorbState state)
+void TimeRuler::setAdsorbCallback(vocalshaper::AdsorbState state)
 {
-	this->EditorBase::setAdsorb(state);
 	this->repaint();
 }
 
-void TimeRuler::setGrid(vocalshaper::GridState state)
+void TimeRuler::setGridCallback(vocalshaper::GridState state)
 {
-	this->EditorBase::setGrid(state);
 	this->repaint();
 }
 
-void TimeRuler::setHViewPort(double startTime, double endTime)
+void TimeRuler::setHViewPortCallback(double startTime, double endTime)
 {
-	this->EditorBase::setHViewPort(startTime, endTime);
 	this->timeValue->close();
 	this->repaint();
 }

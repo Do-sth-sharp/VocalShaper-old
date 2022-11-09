@@ -921,10 +921,9 @@ void ScrollerBase::mouseExit(const juce::MouseEvent& event)
 }
 
 //
-void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
+void ScrollerBase::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	juce::ScopedWriteLock locker1(this->tempLock),locker2(this->getProjLock());
-	this->EditorBase::projectChanged(ptr);
 
 	if (ptr) {
 		//获取或建立缓存
@@ -966,10 +965,9 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 	}
 }
 
-void ScrollerBase::trackChanged(int trackID)
+void ScrollerBase::trackChangedCallback(int trackID)
 {
 	juce::ScopedWriteLock locker1(this->tempLock), locker2(this->getProjLock());
-	this->EditorBase::trackChanged(trackID);
 	if (!this->getProject() || !this->ptrTemp) {
 		//刷新
 		this->repaint();
@@ -1033,11 +1031,10 @@ void ScrollerBase::trackChanged(int trackID)
 	this->repaint();
 }
 
-void ScrollerBase::setHViewPort(double startTime, double endTime)
+void ScrollerBase::setHViewPortCallback(double startTime, double endTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
-	this->EditorBase::setHViewPort(startTime, endTime);
 	if (this->getProject() && this->ptrTemp) {
 		if (!this->getVertical()) {
 			//计算起止位置
@@ -1050,11 +1047,10 @@ void ScrollerBase::setHViewPort(double startTime, double endTime)
 	this->repaint();
 }
 
-void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
+void ScrollerBase::setVViewPortCallback(double bottomTrack, double topTrack)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
-	this->EditorBase::setVViewPort(bottomTrack, topTrack);
 	if (this->getProject() && this->ptrTemp) {
 		if (this->getVertical()) {
 			//计算起止位置
@@ -1067,11 +1063,10 @@ void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
 	this->repaint();
 }
 
-void ScrollerBase::setTotalLength(double totalLength)
+void ScrollerBase::setTotalLengthCallback(double totalLength)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
-	this->EditorBase::setTotalLength(totalLength);
 	if (this->getProject() && this->ptrTemp) {
 		//取缓存
 		auto trackSizeTemp = this->ptrTemp->trackSizeTemp;
@@ -1120,11 +1115,10 @@ void ScrollerBase::setTotalLength(double totalLength)
 	this->repaint();
 }
 
-void ScrollerBase::setCurrentPosition(double currentTime)
+void ScrollerBase::setCurrentPositionCallback(double currentTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
-	this->EditorBase::setCurrentPosition(currentTime);
 	if (this->getProject() && this->ptrTemp) {
 		//更新缓存
 		this->ptrTemp->currentPositionTemp = currentTime;
@@ -1160,9 +1154,8 @@ void ScrollerBase::setCurrentPosition(double currentTime)
 	}
 }
 
-void ScrollerBase::setFollowState(bool follow)
+void ScrollerBase::setFollowStateCallback(bool follow)
 {
-	this->EditorBase::setFollowState(follow);
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
 	if (this->getProject() && this->ptrTemp) {
@@ -1170,9 +1163,8 @@ void ScrollerBase::setFollowState(bool follow)
 	}
 }
 
-void ScrollerBase::setLoopRange(double startTime, double endTime)
+void ScrollerBase::setLoopRangeCallback(double startTime, double endTime)
 {
-	this->EditorBase::setLoopRange(startTime, endTime);
 	juce::ScopedWriteLock locker1(this->tempLock);
 	juce::ScopedReadLock locker2(this->getProjLock());
 	if (this->getProject() && this->ptrTemp) {

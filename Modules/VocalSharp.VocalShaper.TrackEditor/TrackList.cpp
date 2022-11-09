@@ -16,80 +16,67 @@ void TrackList::paint(juce::Graphics& g)
 
 }
 
-void TrackList::projectChanged(const vocalshaper::ProjectProxy* ptr)
+void TrackList::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
 {
-	this->EditorBase::projectChanged(ptr);
 	//TODO
 }
 
-void TrackList::setEditMode(bool editMode)
+void TrackList::setEditModeCallback(bool editMode)
 {
-	this->EditorBase::setEditMode(editMode);
 	//TODO
 }
 
-void TrackList::setToolID(uint8_t toolID)
+void TrackList::setToolIDCallback(uint8_t toolID)
 {
-	this->EditorBase::setToolID(toolID);
 	//TODO
 }
 
-void TrackList::trackChanged(int trackID)
+void TrackList::trackChangedCallback(int trackID)
 {
-	this->EditorBase::trackChanged(trackID);
 	//TODO
 }
 
-void TrackList::setTotalLength(double totalLength)
+void TrackList::setTotalLengthCallback(double totalLength)
 {
-	this->EditorBase::setTotalLength(totalLength);
 	//TODO
 }
 
-void TrackList::setCurrentPosition(double currentTime)
+void TrackList::setCurrentPositionCallback(double currentTime)
 {
-	this->EditorBase::setCurrentPosition(currentTime);
 	//TODO
 }
 
-void TrackList::setLoopRange(double startTime, double endTime)
+void TrackList::setLoopRangeCallback(double startTime, double endTime)
 {
-	this->EditorBase::setLoopRange(startTime, endTime);
 	//TODO
 }
 
-void TrackList::setHorizontalViewPort(double startTime, double endTime)
+void TrackList::setHorizontalViewPortCallback(double startTime, double endTime)
 {
-	this->EditorBase::setHorizontalViewPort(startTime, endTime);
 	//TODO
 }
 
-void TrackList::setVerticalViewPort(double bottomPitch, double topPitch)
+void TrackList::setVerticalViewPortCallback(double bottomPitch, double topPitch)
 {
-	this->EditorBase::setVerticalViewPort(bottomPitch, topPitch);
 	//TODO
 }
 
-void TrackList::setHViewPort(double startTime, double endTime)
+void TrackList::setHViewPortCallback(double startTime, double endTime)
 {
-	this->EditorBase::setHViewPort(startTime, endTime);
 	//TODO
 }
 
-void TrackList::setVViewPort(double bottomTrack, double topTrack)
+void TrackList::setVViewPortCallback(double bottomTrack, double topTrack)
 {
-	this->EditorBase::setVViewPort(bottomTrack, topTrack);
 	//TODO
 }
 
-void TrackList::setAdsorb(vocalshaper::AdsorbState state)
+void TrackList::setAdsorbCallback(vocalshaper::AdsorbState state)
 {
-	this->EditorBase::setAdsorb(state);
 	//TODO
 }
 
-void TrackList::setGrid(vocalshaper::GridState state)
+void TrackList::setGridCallback(vocalshaper::GridState state)
 {
-	this->EditorBase::setGrid(state);
 	//TODO
 }

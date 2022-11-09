@@ -48,21 +48,21 @@ public:
 
 public:
 	//当项目实例发生切换时被调用
-	virtual void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
+	virtual void projectChangedCallback(const vocalshaper::ProjectProxy* ptr) override;
 	//当切换当前轨道时被调用
-	virtual void trackChanged(int trackID) override;
+	virtual void trackChangedCallback(int trackID) override;
 	//切换水平浏览范围时被调用（针对轨道面板）
-	virtual void setHViewPort(double startTime, double endTime) override;
+	virtual void setHViewPortCallback(double startTime, double endTime) override;
 	//切换垂直浏览范围时被调用（针对轨道面板）
-	virtual void setVViewPort(double bottomTrack, double topTrack) override;
+	virtual void setVViewPortCallback(double bottomTrack, double topTrack) override;
 	//更改总长度时被调用
-	virtual void setTotalLength(double totalLength) override;
+	virtual void setTotalLengthCallback(double totalLength) override;
 	//更改当前播放位置时被调用
-	virtual void setCurrentPosition(double currentTime) override;
+	virtual void setCurrentPositionCallback(double currentTime) override;
 	//更改播放跟随状态时被调用
-	virtual void setFollowState(bool follow) override;
+	virtual void setFollowStateCallback(bool follow) override;
 	//更改播放循环范围时被调用
-	virtual void setLoopRange(double startTime, double endTime) override;
+	virtual void setLoopRangeCallback(double startTime, double endTime) override;
 
 public:
 	//监听项目关闭
