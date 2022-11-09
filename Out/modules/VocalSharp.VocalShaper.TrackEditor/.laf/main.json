@@ -4,8 +4,8 @@
     "class": "VocalSharp.VocalShaper.TrackEditor"
   },
   "size": {
-    "width-trackHead:number": 0.075,
-    "height-timeRuler:number": 0.02,
+    "width-trackHead:number": 0.065,
+    "height-timeRuler:number": 0.025,
     "width-verticalScroller:number": 0.0125,
     "height-horizontalScroller:number": 0.0225,
 
@@ -37,7 +37,7 @@
     "height-horizontalScroller-labelBlockTopMargin:number": 0.008,
     "width-horizontalScroller-labelBlock:number": 0.0025,
 
-    "height-timeRuler-barLine:number": 0.015,
+    "height-timeRuler-barLine:number": 0.017,
     "height-timeRuler-beatLine:number": 0.0075,
     "width-timeRuler-barLine:number": 0.00075,
     "width-timeRuler-beatLine:number": 0.0005,
