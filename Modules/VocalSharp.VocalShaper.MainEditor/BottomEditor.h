@@ -9,19 +9,6 @@ public:
 	BottomEditor();
 	~BottomEditor() override = default;
 
-	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
-	void trackChanged(int trackID) override;
-	void setEditMode(bool editMode) override;
-	void setToolID(uint8_t toolID) override;
-	void setHorizontalViewPort(double startTime, double endTime) override;
-	void setVerticalViewPort(double bottomPitch, double topPitch) override;
-	void setTotalLength(double totalLength) override;
-	void setCurrentPosition(double currentTime) override;
-	void setFollowState(bool follow) override;
-	void setLoopRange(double startTime, double endTime) override;
-	void setAdsorb(vocalshaper::AdsorbState state) override;
-	void setGrid(vocalshaper::GridState state) override;
-
 	bool isActive() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
 	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut() override;

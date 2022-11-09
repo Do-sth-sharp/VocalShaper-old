@@ -72,9 +72,6 @@ public:
 	void listenCurveChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
 protected:
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
 
 	struct SizeTemp
 	{
@@ -112,8 +109,6 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	const bool isVertical = false;
-
-	bool isFollow = true;
 
 	enum class ScrollerState {
 		Normal,					//正常状态

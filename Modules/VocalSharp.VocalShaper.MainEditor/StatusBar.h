@@ -2,14 +2,14 @@
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
 
-class StatusBar final : public juce::Component
+class StatusBar final : public vocalshaper::EditorBase
 {
 public:
 	StatusBar();
 	~StatusBar() override = default;
 
-	void projectChanged(const vocalshaper::ProjectProxy* ptr);
-	void trackChanged(int trackID);
+	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
+	void trackChanged(int trackID) override;
 	void editorControlerChanged(juce::Component* controler);
 
 	int selectNoteEditorPlugin(const juce::Array<std::pair<juce::String, bool>>& list);
@@ -104,10 +104,6 @@ private:
 		noteEditorPluginCommandID = -1, noteEditorAdditionPluginCommandID = -1;
 	int lastTrackCommandID = -1, nextTrackCommandID = -1, switchTrackCommandID = -1;
 	juce::ApplicationCommandManager* commandManager = nullptr;
-
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
 
 	juce::Component* editorControlerComponent = nullptr;
 	juce::ReadWriteLock controlerLock;

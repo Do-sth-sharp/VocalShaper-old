@@ -10,19 +10,6 @@ public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
-	void setMethods(
-		const std::function<void(int)>& setCurrentTrackFunc,
-		const std::function<void(void)>& refreshTotalTimeFunc,
-		const std::function<void(double)>& setCurrentPositionFunc,
-		const std::function<void(double, double)>& setLoopRangeFunc,
-		const std::function<void(double, double)>& setHorizontalViewPortFunc,
-		const std::function<void(double, double)>& setVerticalViewPortFunc
-	) override;
-	void setTrackViewMethods(
-		std::function<void(double, double)> setHViewPortFunc,
-		std::function<void(double, double)> setVViewPortFunc
-	) override;
-
 public:
 	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
 	void setEditMode(bool editMode) override;
@@ -39,20 +26,5 @@ public:
 	void setGrid(vocalshaper::GridState state) override;
 
 private:
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
-
-	bool editModeFlag = false;
-	uint8_t toolID = 1;
-
-	double startTime = 0., endTime = 0.;
-	double bottomTrack = 0., topTrack = 0.;
-	double loopStartTime = 0., loopEndTime = 0.;
-	double currentTime = 0.;
-
-	vocalshaper::AdsorbState adsorb = vocalshaper::AdsorbState::Adsorb1Beat;
-	vocalshaper::GridState grid = vocalshaper::GridState::Grid1Beat;
-
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };

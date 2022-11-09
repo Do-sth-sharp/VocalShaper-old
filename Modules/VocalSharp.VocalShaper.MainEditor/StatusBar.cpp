@@ -2,7 +2,7 @@
 #include <libJModule.h>
 
 StatusBar::StatusBar()
-	:Component("Status Bar")
+	: EditorBase()
 {
 	//获取屏幕属性接口
 	this->screenSizeFunc =
@@ -208,15 +208,13 @@ StatusBar::StatusBar()
 
 void StatusBar::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->EditorBase::projectChanged(ptr);
 	this->refreshTrackComponent();
 }
 
 void StatusBar::trackChanged(int trackID)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->trackID = trackID;
+	this->EditorBase::trackChanged(trackID);
 	this->refreshTrackComponent();
 }
 
@@ -256,19 +254,19 @@ int StatusBar::selectNoteEditionAdditionPlugin(const juce::Array<std::pair<juce:
 
 int StatusBar::switchTrack()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker1(this->getProjLock());
 	juce::PopupMenu menu;
 
-	if (this->project) {
+	if (this->getProject()) {
 		juce::String prefix = this->tr("pre_Track");
-		juce::ScopedReadLock locker2(this->project->getLock());
-		for (int i = 0; i < vocalshaper::ProjectDAO::trackSize(this->project->getPtr()); i++) {
-			auto* track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), i);
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		for (int i = 0; i < vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr()); i++) {
+			auto* track = vocalshaper::ProjectDAO::getTrack(this->getProject()->getPtr(), i);
 			juce::String name = prefix + " " + juce::String(i);
 			juce::Colour color = vocalshaper::TrackDAO::getColour(track);
 
 			menu.addColouredItem(i + 1, name, this->colors.text_statusBarCurrentTrackName,
-				true, i == this->trackID, nullptr);
+				true, i == this->getTrackID(), nullptr);
 		}
 	}
 	return menu.showAt(this->switchTrackButton.get(), 0, 0, 10);
@@ -1075,13 +1073,14 @@ void StatusBar::initUIConfigAndIcon()
 
 void StatusBar::refreshTrackComponent()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker1(this->getProjLock());
 	juce::String buttonText = this->tr("bt_NoTrack");
 
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		if (this->trackID >= 0 && this->trackID < ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr())) {
-			buttonText = this->tr("pre_Track") + " " + juce::String(this->trackID);
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		if (this->getTrackID() >= 0 &&
+			this->getTrackID() < ::vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr())) {
+			buttonText = this->tr("pre_Track") + " " + juce::String(this->getTrackID());
 		}
 	}
 
@@ -1092,13 +1091,16 @@ void StatusBar::refreshTrackComponent()
 
 juce::Colour StatusBar::getCurrentTrackColour()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker1(this->getProjLock());
 	juce::Colour result = this->colors.point_statusBarCurrentTrackDefault;
 
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		if (this->trackID >= 0 && this->trackID < ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr())) {
-			auto* track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), this->trackID);
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		if (this->getTrackID() >= 0 &&
+			this->getTrackID() < ::vocalshaper::ProjectDAO::trackSize(
+				this->getProject()->getPtr())) {
+			auto* track = vocalshaper::ProjectDAO::getTrack(
+				this->getProject()->getPtr(), this->getTrackID());
 			result = vocalshaper::TrackDAO::getColour(track);
 		}
 	}

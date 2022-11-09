@@ -35,91 +35,7 @@ TopEditor::TopEditor()
 	//以下获取编辑器
 	jmadf::CallInterface<vocalshaper::EditorBase*&>(
 		"VocalSharp.VocalShaper.TrackEditor", "GetPtr", this->topEditor);
-	this->addAndMakeVisible(this->topEditor);
-}
-
-void TopEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
-{
-	if (this->topEditor) {
-		this->topEditor->projectChanged(ptr);
-	}
-}
-
-void TopEditor::trackChanged(int trackID)
-{
-	if (this->topEditor) {
-		this->topEditor->trackChanged(trackID);
-	}
-}
-
-void TopEditor::setEditMode(bool editMode)
-{
-	if (this->topEditor) {
-		this->topEditor->setEditMode(editMode);
-	}
-}
-
-void TopEditor::setToolID(uint8_t toolID)
-{
-	if (this->topEditor) {
-		this->topEditor->setToolID(toolID);
-	}
-}
-
-void TopEditor::setHorizontalViewPort(double startTime, double endTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setHorizontalViewPort(startTime, endTime);
-	}
-}
-
-void TopEditor::setVerticalViewPort(double bottomPitch, double topPitch)
-{
-	if (this->topEditor) {
-		this->topEditor->setVerticalViewPort(bottomPitch, topPitch);
-	}
-}
-
-void TopEditor::setTotalLength(double totalLength)
-{
-	if (this->topEditor) {
-		this->topEditor->setTotalLength(totalLength);
-	}
-}
-
-void TopEditor::setCurrentPosition(double currentTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setCurrentPosition(currentTime);
-	}
-}
-
-void TopEditor::setFollowState(bool follow)
-{
-	if (this->topEditor) {
-		this->topEditor->setFollowState(follow);
-	}
-}
-
-void TopEditor::setLoopRange(double startTime, double endTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setLoopRange(startTime, endTime);
-	}
-}
-
-void TopEditor::setAdsorb(vocalshaper::AdsorbState state)
-{
-	if (this->topEditor) {
-		this->topEditor->setAdsorb(state);
-	}
-}
-
-void TopEditor::setGrid(vocalshaper::GridState state)
-{
-	if (this->topEditor) {
-		this->topEditor->setGrid(state);
-	}
+	this->addChildEditorAndMakeVisible(this->topEditor);
 }
 
 bool TopEditor::isActive()
@@ -208,25 +124,6 @@ void TopEditor::resized()
 			this->getWidth() - width_toolBar - 1, this->getHeight());
 	}
 	this->TopLevelEditorBase::resized();
-}
-
-void TopEditor::setMethods(
-	const std::function<void(int)>& setCurrentTrackFunc,
-	const std::function<void(void)>& refreshTotalTimeFunc,
-	const std::function<void(double)>& setCurrentPositionFunc,
-	const std::function<void(double, double)>& setLoopRangeFunc,
-	const std::function<void(double, double)>& setHorizontalViewPortFunc,
-	const std::function<void(double, double)>& setVerticalViewPortFunc
-)
-{
-	if (this->topEditor) {
-		this->topEditor->setMethods(
-			setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
-	}
-	this->EditorBase::setMethods(
-		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
 }
 
 void TopEditor::initCommandID()

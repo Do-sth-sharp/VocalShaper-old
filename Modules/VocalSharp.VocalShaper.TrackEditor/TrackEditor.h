@@ -15,39 +15,6 @@ public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 
-	void setMethods(
-		const std::function<void(int)>& setCurrentTrackFunc,
-		const std::function<void(void)>& refreshTotalTimeFunc,
-		const std::function<void(double)>& setCurrentPositionFunc,
-		const std::function<void(double, double)>& setLoopRangeFunc,
-		const std::function<void(double, double)>& setHorizontalViewPortFunc,
-		const std::function<void(double, double)>& setVerticalViewPortFunc
-	) override;
-	void setTrackViewMethods(
-		std::function<void(double, double)> setHViewPortFunc,
-		std::function<void(double, double)> setVViewPortFunc
-	) override;
-
-public:
-	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
-	void setEditMode(bool editMode) override;
-	void setToolID(uint8_t toolID) override;
-	void trackChanged(int trackID) override;
-	void setTotalLength(double totalLength) override;
-	void setCurrentPosition(double currentTime) override;
-	void setFollowState(bool follow) override;
-	void setLoopRange(double startTime, double endTime) override;
-	void setHorizontalViewPort(double startTime, double endTime) override;
-	void setVerticalViewPort(double bottomPitch, double topPitch) override;
-	void setHViewPort(double startTime, double endTime) override;
-	void setVViewPort(double bottomTrack, double topTrack) override;
-	void setAdsorb(vocalshaper::AdsorbState state) override;
-	void setGrid(vocalshaper::GridState state) override;
-
-public:
-	void changeHViewPort(double startTime, double endTime);
-	void changeVViewPort(double bottomTrack, double topTrack);
-
 private:
 	struct Colors final
 	{
@@ -78,13 +45,6 @@ private:
 	std::unique_ptr<VScroller> vScroller = nullptr;
 	std::unique_ptr<HScroller> hScroller = nullptr;
 	std::unique_ptr<TrackList> tracks = nullptr;
-
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
-
-	bool editModeFlag = false;
-	uint8_t toolID = 1;
 
 	double startTimeTemp = 0., endTimeTemp = 0.;
 	double bottomVTrackTemp = 0., topVTrackTemp = 0.;

@@ -101,8 +101,8 @@ void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 	this->screenSizeFunc(this, screenSize);
 
 	juce::ScopedReadLock tempLocker(this->tempLock);
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->ptrTemp && this->project) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->ptrTemp && this->getProject()) {
 		//计算轨道区最大最小大小
 		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
 		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
@@ -130,7 +130,7 @@ void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 
 		//绘制轨道与曲线色块
 		{
-			juce::ScopedReadLock locker(this->project->getLock());
+			juce::ScopedReadLock locker(this->getProject()->getLock());
 
 			//基础大小属性
 			int trackBlockXPos = this->sizes.width_verticalScroller_trackBlockMarginLeft * screenSize.getWidth();
@@ -141,7 +141,8 @@ void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 
 			//绘主轨
 			{
-				auto track = vocalshaper::ProjectDAO::getMasterTrack(this->project->getPtr());
+				auto track = vocalshaper::ProjectDAO::getMasterTrack(
+					this->getProject()->getPtr());
 				
 				g.setColour(vocalshaper::TrackDAO::getColour(track));
 
@@ -158,8 +159,10 @@ void VScroller::paintPreView(juce::Graphics& g, int width, int height)
 			}
 
 			//绘其它轨
-			for (int i = 0; i < vocalshaper::ProjectDAO::trackSize(this->project->getPtr()); i++) {
-				auto track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), i);
+			for (int i = 0; i < vocalshaper::ProjectDAO::trackSize(
+				this->getProject()->getPtr()); i++) {
+				auto track = vocalshaper::ProjectDAO::getTrack(
+					this->getProject()->getPtr(), i);
 
 				g.setColour(vocalshaper::TrackDAO::getColour(track));
 
@@ -185,8 +188,8 @@ void VScroller::noticeChange(double sp, double ep)
 	this->screenSizeFunc(this, screenSize);
 
 	juce::ScopedReadLock tempLocker(this->tempLock);
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->ptrTemp && this->project) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->ptrTemp && this->getProject()) {
 		//计算轨道区最大最小大小
 		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
 		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
@@ -274,8 +277,8 @@ void VScroller::refreshSizeOnResized(int lastSize, int size, double& sp, double&
 	this->screenSizeFunc(this, screenSize);
 
 	juce::ScopedReadLock tempLocker(this->tempLock);
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->ptrTemp && this->project) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->ptrTemp && this->getProject()) {
 		//计算轨道区最大最小大小
 		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
 		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();
@@ -324,8 +327,8 @@ void VScroller::updateVViewPort(double bottomTrack, double topTrack, double& sp,
 	this->screenSizeFunc(this, screenSize);
 
 	juce::ScopedReadLock tempLocker(this->tempLock);
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->ptrTemp && this->project) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->ptrTemp && this->getProject()) {
 		//计算轨道区最大最小大小
 		int trackMaxHeight = this->sizes.height_track_max * screenSize.getHeight();
 		int trackMinHeight = this->sizes.height_track_min * screenSize.getHeight();

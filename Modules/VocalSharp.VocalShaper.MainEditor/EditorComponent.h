@@ -62,6 +62,8 @@ public:
 	void setLoopRange(double startTime, double endTime);
 	void setHorizontalViewPort(double startTime, double endTime);
 	void setVerticalViewPort(double bottomPitch, double topPitch);
+	void changeHViewPort(double startTime, double endTime);
+	void changeVViewPort(double bottomTrack, double topTrack);
 
 	//外部调用，执行状态更改
 	void setAdsorb(vocalshaper::AdsorbState state);
@@ -76,6 +78,8 @@ private:
 	void loopRangeChanged(double startTime, double endTime);
 	void horizontalViewPortChanged(double startTime, double endTime);
 	void verticalViewPortChanged(double bottomPitch, double topPitch);
+	void setHViewPort(double startTime, double endTime);
+	void setVViewPort(double bottomTrack, double topTrack);
 
 public:
 	//被命令调用，设置编辑器状态

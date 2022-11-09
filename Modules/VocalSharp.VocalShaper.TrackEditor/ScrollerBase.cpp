@@ -71,9 +71,9 @@ bool ScrollerBase::getVertical() const
 
 void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 {
-	juce::ScopedReadLock projLocker(this->projectLock);
+	juce::ScopedReadLock projLocker(this->getProjLock());
 	juce::ScopedWriteLock locker(this->tempLock);
-	if (this->project && this->ptrTemp) {
+	if (this->getProject() && this->ptrTemp) {
 		//复制缓存
 		std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
 		{
@@ -923,8 +923,8 @@ void ScrollerBase::mouseExit(const juce::MouseEvent& event)
 //
 void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::ScopedWriteLock locker1(this->tempLock),locker2(this->projectLock);
-	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	juce::ScopedWriteLock locker1(this->tempLock),locker2(this->getProjLock());
+	this->EditorBase::projectChanged(ptr);
 
 	if (ptr) {
 		//获取或建立缓存
@@ -938,20 +938,20 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 
 		//缓存工程相关信息
 		{
-			juce::ScopedReadLock projLock(this->project->getLock());
+			juce::ScopedReadLock projLock(this->getProject()->getLock());
 
-			this->ptrTemp->followTemp = this->isFollow;
+			this->ptrTemp->followTemp = this->getFollowState();
 
 			this->ptrTemp->trackSizeTemp =
-				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+				vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
 
 			double totalLength =
-				vocalshaper::CountTime::count(this->project->getPtr());
+				vocalshaper::CountTime::count(this->getProject()->getPtr());
 			double bar =
-				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+				this->getProject()->getBeat()->getBarAtTime(std::floor(totalLength));
 			bar = std::max(std::floor(bar) + 4, 20.);
 			this->ptrTemp->projectLengthTemp =
-				this->project->getBeat()->getTimeAtBar(bar);
+				this->getProject()->getBeat()->getTimeAtBar(bar);
 		}
 
 		//限制大小
@@ -968,9 +968,9 @@ void ScrollerBase::projectChanged(const vocalshaper::ProjectProxy* ptr)
 
 void ScrollerBase::trackChanged(int trackID)
 {
-	juce::ScopedWriteLock locker1(this->tempLock), locker2(this->projectLock);
-	this->trackID = trackID;
-	if (!this->project || !this->ptrTemp) {
+	juce::ScopedWriteLock locker1(this->tempLock), locker2(this->getProjLock());
+	this->EditorBase::trackChanged(trackID);
+	if (!this->getProject() || !this->ptrTemp) {
 		//刷新
 		this->repaint();
 		return;
@@ -980,17 +980,17 @@ void ScrollerBase::trackChanged(int trackID)
 	int trackSize = this->ptrTemp->trackSizeTemp;
 	std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
 	{
-		juce::ScopedReadLock projLocker(this->project->getLock());
+		juce::ScopedReadLock projLocker(this->getProject()->getLock());
 
 		//获取轨道总数
-		trackSize = vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+		trackSize = vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
 
 		//移除无效缓存，更新有效缓存的曲线数量
 		std::set<const vocalshaper::Track*> trackSet;
 		for (int i = 0; i < trackSize; i++) {
-			trackSet.insert(vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), i));
+			trackSet.insert(vocalshaper::ProjectDAO::getTrack(this->getProject()->getPtr(), i));
 		}
-		trackSet.insert(vocalshaper::ProjectDAO::getMasterTrack(this->project->getPtr()));
+		trackSet.insert(vocalshaper::ProjectDAO::getMasterTrack(this->getProject()->getPtr()));
 		for (auto it = trackState.begin(); it != trackState.end();) {
 			if (trackSet.count(it->first) > 0) {
 				if (it->second > 0) {
@@ -1036,8 +1036,9 @@ void ScrollerBase::trackChanged(int trackID)
 void ScrollerBase::setHViewPort(double startTime, double endTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	this->EditorBase::setHViewPort(startTime, endTime);
+	if (this->getProject() && this->ptrTemp) {
 		if (!this->getVertical()) {
 			//计算起止位置
 			this->ptrTemp->sp = startTime / this->ptrTemp->projectLengthTemp;
@@ -1052,8 +1053,9 @@ void ScrollerBase::setHViewPort(double startTime, double endTime)
 void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	this->EditorBase::setVViewPort(bottomTrack, topTrack);
+	if (this->getProject() && this->ptrTemp) {
 		if (this->getVertical()) {
 			//计算起止位置
 			this->updateVViewPort(bottomTrack, topTrack,
@@ -1068,24 +1070,25 @@ void ScrollerBase::setVViewPort(double bottomTrack, double topTrack)
 void ScrollerBase::setTotalLength(double totalLength)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	this->EditorBase::setTotalLength(totalLength);
+	if (this->getProject() && this->ptrTemp) {
 		//取缓存
 		auto trackSizeTemp = this->ptrTemp->trackSizeTemp;
 		auto projectLengthTemp = this->ptrTemp->projectLengthTemp;
 
 		//计算工程相关信息
 		{
-			juce::ScopedReadLock projLock(this->project->getLock());
+			juce::ScopedReadLock projLock(this->getProject()->getLock());
 
 			trackSizeTemp =
-				vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+				vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
 
 			double bar =
-				this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+				this->getProject()->getBeat()->getBarAtTime(std::floor(totalLength));
 			bar = std::max(std::floor(bar) + 4, 20.);
 			projectLengthTemp =
-				this->project->getBeat()->getTimeAtBar(bar);
+				this->getProject()->getBeat()->getTimeAtBar(bar);
 		}
 
 		//如果是水平，则更新滑块大小
@@ -1120,8 +1123,9 @@ void ScrollerBase::setTotalLength(double totalLength)
 void ScrollerBase::setCurrentPosition(double currentTime)
 {
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	this->EditorBase::setCurrentPosition(currentTime);
+	if (this->getProject() && this->ptrTemp) {
 		//更新缓存
 		this->ptrTemp->currentPositionTemp = currentTime;
 
@@ -1158,19 +1162,20 @@ void ScrollerBase::setCurrentPosition(double currentTime)
 
 void ScrollerBase::setFollowState(bool follow)
 {
-	this->isFollow = follow;
+	this->EditorBase::setFollowState(follow);
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	if (this->getProject() && this->ptrTemp) {
 		this->ptrTemp->followTemp = follow;
 	}
 }
 
 void ScrollerBase::setLoopRange(double startTime, double endTime)
 {
+	this->EditorBase::setLoopRange(startTime, endTime);
 	juce::ScopedWriteLock locker1(this->tempLock);
-	juce::ScopedReadLock locker2(this->projectLock);
-	if (this->project && this->ptrTemp) {
+	juce::ScopedReadLock locker2(this->getProjLock());
+	if (this->getProject() && this->ptrTemp) {
 		this->ptrTemp->loopST = startTime;
 		this->ptrTemp->loopET = endTime;
 	}
@@ -1193,8 +1198,8 @@ void ScrollerBase::listenProjectClose(const vocalshaper::ProjectProxy* ptr)
 
 void ScrollerBase::listenCurveChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
@@ -1202,7 +1207,7 @@ void ScrollerBase::listenCurveChange(const vocalshaper::actions::ActionBase& act
 			action.getActionType() == vocalshaper::actions::TrackAction::Actions::AddCurve ||
 			action.getActionType() == vocalshaper::actions::TrackAction::Actions::RemoveCurve) {
 			juce::ScopedWriteLock locker(this->tempLock);
-			if (this->project && this->ptrTemp) {
+			if (this->getProject() && this->ptrTemp) {
 				//获取消息队列
 				auto messageManager = juce::MessageManager::getInstance();
 				if (!messageManager) {
@@ -1215,12 +1220,15 @@ void ScrollerBase::listenCurveChange(const vocalshaper::actions::ActionBase& act
 					//获取目标轨道
 					const vocalshaper::Track* track = nullptr;
 					auto target =
-						reinterpret_cast<const vocalshaper::actions::TrackAction::TargetType*>(action.getTarget());
+						reinterpret_cast<const vocalshaper::actions::TrackAction::TargetType*>(
+							action.getTarget());
 					if (target->track > -1) {
-						track = vocalshaper::ProjectDAO::getMasterTrack(this->project->getPtr());
+						track = vocalshaper::ProjectDAO::getMasterTrack(
+							this->getProject()->getPtr());
 					}
 					else {
-						track = vocalshaper::ProjectDAO::getTrack(this->project->getPtr(), target->track);
+						track = vocalshaper::ProjectDAO::getTrack(
+							this->getProject()->getPtr(), target->track);
 					}
 
 					//更新缓存的曲线数量

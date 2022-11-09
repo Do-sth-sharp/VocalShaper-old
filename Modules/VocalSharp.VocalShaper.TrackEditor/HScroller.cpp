@@ -128,8 +128,10 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 
 	{
 		juce::ScopedReadLock tempLocker(this->tempLock);
-		juce::ScopedReadLock proxyLocker(this->project->getLock());
-		if (this->ptrTemp && this->project) {
+		juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
+		if (this->ptrTemp && this->getProject()) {
+			juce::ScopedReadLock projLocker(this->getProjLock());
+
 			//计算指针位置
 			float curPos
 				= width * (this->ptrTemp->currentPositionTemp / this->ptrTemp->projectLengthTemp);
@@ -171,9 +173,9 @@ void HScroller::paintPreView(juce::Graphics& g, int width, int height)
 				float width_labelRect = this->sizes.width_horizontalScroller_labelBlock * screenSize.getWidth();
 
 				//绘制色块
-				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				int labelSize = vocalshaper::ProjectDAO::labelSize(this->getProject()->getPtr());
 				for (int i = 0; i < labelSize; i++) {
-					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					auto label = vocalshaper::ProjectDAO::getLabel(this->getProject()->getPtr(), i);
 					if (label) {
 						float labelPos
 							= width * (vocalshaper::LabelDAO::getPosition(label) / this->ptrTemp->projectLengthTemp);
@@ -252,8 +254,8 @@ void HScroller::refreshSizeOnResized(int lastSize, int size, double& sp, double&
 
 void HScroller::listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 

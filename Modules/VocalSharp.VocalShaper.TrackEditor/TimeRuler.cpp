@@ -243,16 +243,13 @@ void TimeRuler::paint(juce::Graphics& g)
 
 	//根据数据绘图
 	{
-		juce::ScopedReadLock projLocker(this->projectLock);
-		if (this->project) {
-			juce::ScopedReadLock proxyLocker(this->project->getLock());
-			//获取曲线量化
-			auto curveQuant
-				= vocalshaper::ProjectDAO::getCurveQuantification(this->project->getPtr());
-
+		juce::ScopedReadLock projLocker(this->getProjLock());
+		if (this->getProject()) {
+			juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
 			//计算分辨率
-			double startTime = this->startTime;
-			double endTime = this->endTime;
+			double startTime = 0.;
+			double endTime = 0.;
+			std::tie(startTime, endTime) = this->getHViewPort();
 			double totalLength = endTime - startTime;
 			double ppb = this->getWidth() / totalLength;
 
@@ -260,8 +257,10 @@ void TimeRuler::paint(juce::Graphics& g)
 			bool beatLineOn = ppb > width_lineMinSpace;
 
 			//计算实际绘制的第一个和最后一个节拍
-			double trueStartBar = std::floor(this->project->getBeat()->getBarAtTime(startTime));
-			double trueStartTime = this->project->getBeat()->getTimeAtBar(trueStartBar);
+			double trueStartBar = std::floor(
+				this->getProject()->getBeat()->getBarAtTime(startTime));
+			double trueStartTime 
+				= this->getProject()->getBeat()->getTimeAtBar(trueStartBar);
 			double trueEndTime = std::ceil(endTime);
 
 			//根据缓存绘制刻度线和文字
@@ -272,8 +271,8 @@ void TimeRuler::paint(juce::Graphics& g)
 				float pos = (t - startTime) * ppb;
 
 				//判断是否为小节线
-				double bar = std::floor(this->project->getBeat()->getBarAtTime(t));
-				double beatAtBar = this->project->getBeat()->getTimeAtBar(bar);
+				double bar = std::floor(this->getProject()->getBeat()->getBarAtTime(t));
+				double beatAtBar = this->getProject()->getBeat()->getTimeAtBar(bar);
 				bool isBarLine = (beatAtBar == t);
 
 				//绘制线
@@ -323,14 +322,15 @@ void TimeRuler::paint(juce::Graphics& g)
 				}
 
 				//向下增加一个节拍的距离
-				auto beatBase = this->project->getBeat()->getBaseAtTime(t);
+				auto beatBase = this->getProject()->getBeat()->getBaseAtTime(t);
 				t += 1. / (beatBase / 4.);
 			}
 
 			//判断并绘制前端小节序号
 			{
 				//生成文字并计算大小
-				auto startBar = std::floor(this->project->getBeat()->getBarAtTime(std::floor(startTime)));
+				auto startBar = std::floor(
+					this->getProject()->getBeat()->getBarAtTime(std::floor(startTime)));
 				juce::String frontBarText = "<" + juce::String((int64_t)(startBar + 1));
 				float width_barText = barTextFont.getStringWidthFloat(frontBarText);
 
@@ -351,7 +351,7 @@ void TimeRuler::paint(juce::Graphics& g)
 
 			//判断并绘制播放指针
 			{
-				double currentTime = this->currentTime;
+				double currentTime = this->getCurrentPosition();
 				if (currentTime >= startTime && currentTime <= endTime) {
 					//计算指针位置
 					float width_cursor = this->sizes.width_cursor * screenSize.getWidth();
@@ -375,14 +375,16 @@ void TimeRuler::paint(juce::Graphics& g)
 				float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
 
 				//遍历并绘制标签
-				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				int labelSize = vocalshaper::ProjectDAO::labelSize(
+					this->getProject()->getPtr());
 				for (int i = 0; i < labelSize; i++) {
-					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					auto label = vocalshaper::ProjectDAO::getLabel(
+						this->getProject()->getPtr(), i);
 					if (label) {
 						float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
 						if ((labelPos + width_label / 2) >= 0 && (labelPos - width_label / 2) <= this->getWidth()) {
-							if (!this->editModeFlag || (i == this->labelEditingIndex)) {
+							if (!this->getEditMode() || (i == this->labelEditingIndex)) {
 								g.setColour(this->colors.timeRuler_label_off);
 							}
 							else {
@@ -411,13 +413,15 @@ void TimeRuler::paint(juce::Graphics& g)
 			//判断并绘制选区
 			{
 				//判断选区有效
-				if (this->loopEndTime > this->loopStartTime ||
+				double loopStartTime = 0., loopEndTime = 0.;
+				std::tie(loopStartTime, loopEndTime) = this->getLoopRange();
+				if (loopEndTime > loopStartTime ||
 					this->rulerState == RulerState::LoopSP ||
 					this->rulerState == RulerState::LoopEP) {
 					//计算选区位置
 					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
-					float startLoopPos = (this->loopStartTime - startTime) * ppb;
-					float endLoopPos = (this->loopEndTime - startTime) * ppb;
+					float startLoopPos = (loopStartTime - startTime) * ppb;
+					float endLoopPos = (loopEndTime - startTime) * ppb;
 					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
 					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
 
@@ -453,40 +457,34 @@ void TimeRuler::paint(juce::Graphics& g)
 
 void TimeRuler::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
-	this->labelEditor->setProject(this->project);
+	this->EditorBase::projectChanged(ptr);
+	this->labelEditor->setProject(const_cast<vocalshaper::ProjectProxy*>(ptr));
 	this->timeValue->close();
 	this->repaint();
 }
 
 void TimeRuler::setEditMode(bool editMode)
 {
-	this->editModeFlag = editMode;
+	this->EditorBase::setEditMode(editMode);
 	this->repaint();
-}
-
-void TimeRuler::setToolID(uint8_t toolID)
-{
-	this->toolID = toolID;
 }
 
 void TimeRuler::trackChanged(int trackID)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->trackID = trackID;
+	this->EditorBase::trackChanged(trackID);
 	this->repaint();
 }
 
 void TimeRuler::setTotalLength(double totalLength)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	if (this->project) {
+	this->EditorBase::setTotalLength(totalLength);
+	juce::ScopedWriteLock locker(this->getProjLock());
+	if (this->getProject()) {
 		double bar =
-			this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+			this->getProject()->getBeat()->getBarAtTime(std::floor(totalLength));
 		bar = std::max(std::floor(bar) + 4, 20.);
 		this->totalTime =
-			this->project->getBeat()->getTimeAtBar(bar);
+			this->getProject()->getBeat()->getTimeAtBar(bar);
 		this->timeValue->close();
 		this->repaint();
 	}
@@ -494,42 +492,33 @@ void TimeRuler::setTotalLength(double totalLength)
 
 void TimeRuler::setCurrentPosition(double currentTime)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->currentTime = currentTime;
+	this->EditorBase::setCurrentPosition(currentTime);
 	this->repaint();
 }
 
 void TimeRuler::setLoopRange(double startTime, double endTime)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->loopStartTime = startTime;
-	this->loopEndTime = endTime;
+	this->EditorBase::setLoopRange(startTime, endTime);
 	this->repaint();
 }
 
 void TimeRuler::setAdsorb(vocalshaper::AdsorbState state)
 {
-	this->adsorb = state;
+	this->EditorBase::setAdsorb(state);
 	this->repaint();
 }
 
 void TimeRuler::setGrid(vocalshaper::GridState state)
 {
-	this->grid = state;
+	this->EditorBase::setGrid(state);
 	this->repaint();
 }
 
 void TimeRuler::setHViewPort(double startTime, double endTime)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->startTime = startTime;
-	this->endTime = endTime;
+	this->EditorBase::setHViewPort(startTime, endTime);
 	this->timeValue->close();
 	this->repaint();
-}
-
-void TimeRuler::setVViewPort(double bottomTrack, double topTrack)
-{
 }
 
 void TimeRuler::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details)
@@ -545,13 +534,14 @@ void TimeRuler::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseW
 	//计算delta
 	double delta = details.deltaY / 20.;
 
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock projDataLocker(this->project->getLock());
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
 
 		//计算分辨率
-		double startTime = this->startTime;
-		double endTime = this->endTime;
+		double startTime = 0.;
+		double endTime = 0.;
+		std::tie(startTime, endTime) = this->getHViewPort();
 		double totalLength = endTime - startTime;
 		double ppb = this->getWidth() / totalLength;
 
@@ -584,13 +574,14 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 	float posX = event.position.getX();
 	float posY = event.position.getY();
 
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock projDataLocker(this->project->getLock());
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
 
 		//计算分辨率
-		double startTime = this->startTime;
-		double endTime = this->endTime;
+		double startTime = 0.;
+		double endTime = 0.;
+		std::tie(startTime, endTime) = this->getHViewPort();
 		double totalLength = endTime - startTime;
 		double ppb = this->getWidth() / totalLength;
 
@@ -599,7 +590,7 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 			//左键按下
 			if (event.mods.isLeftButtonDown()) {
 				//标签更改
-				if (this->editModeFlag) {
+				if (this->getEditMode()) {
 					//计算标签大小
 					float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
 					float width_label = height_label;
@@ -611,9 +602,11 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 						//选择标签
 						int labelIndex = -1;
 						double labelTime = -1;
-						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						int labelSize = vocalshaper::ProjectDAO::labelSize(
+							this->getProject()->getPtr());
 						for (int i = labelSize; i >= 0; i--) {
-							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+							auto label = vocalshaper::ProjectDAO::getLabel(
+								this->getProject()->getPtr(), i);
 							if (label) {
 								float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
@@ -646,11 +639,13 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 				}
 
 				//选区更改
-				if (this->loopEndTime > this->loopStartTime) {
+				double loopStartTime = 0., loopEndTime = 0.;
+				std::tie(loopStartTime, loopEndTime) = this->getLoopRange();
+				if (loopEndTime > loopStartTime) {
 					//计算选区位置
 					float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
-					float startLoopPos = (this->loopStartTime - startTime) * ppb;
-					float endLoopPos = (this->loopEndTime - startTime) * ppb;
+					float startLoopPos = (loopStartTime - startTime) * ppb;
+					float endLoopPos = (loopEndTime - startTime) * ppb;
 					float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
 					float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
 
@@ -661,14 +656,14 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 
 						{
 							//计算时间
-							double x = this->loopStartTime;
-							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double time = this->project->getTempo()->get_t(x);
-							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double x = loopStartTime;
+							double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+							double time = this->getProject()->getTempo()->get_t(x);
+							uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 							double xFromBar 
-								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-							double tempo = this->project->getTempo()->get_T(x);
+								= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+							double tempo = this->getProject()->getTempo()->get_T(x);
 
 							//设置预览位置
 							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -687,14 +682,14 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 
 						{
 							//计算时间
-							double x = this->loopEndTime;
-							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double time = this->project->getTempo()->get_t(x);
-							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double x = loopEndTime;
+							double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+							double time = this->getProject()->getTempo()->get_t(x);
+							uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 							double xFromBar
-								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-							double tempo = this->project->getTempo()->get_T(x);
+								= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+							double tempo = this->getProject()->getTempo()->get_T(x);
 
 							//设置预览位置
 							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -715,7 +710,7 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 					double time = startTime + posX / ppb;
 					this->timePressed = time;
 
-					time = vocalshaper::adsorb(time, this->adsorb);
+					time = vocalshaper::adsorb(time, this->getAdsorb());
 
 					if (time < 0) { time = 0; }
 					if (time > this->totalTime) { time = totalTime; }
@@ -725,8 +720,8 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 					this->setCurrentPositionMethod(time);
 
 					//如果在选区外，则取消选区
-					if (this->loopEndTime > this->loopStartTime) {
-						if (time < this->loopStartTime || time > this->loopEndTime) {
+					if (loopEndTime > loopStartTime) {
+						if (time < loopStartTime || time > loopEndTime) {
 							this->setLoopRangeMethod(-1, -1);
 						}
 					}
@@ -734,13 +729,13 @@ void TimeRuler::mouseDown(const juce::MouseEvent& event)
 					{
 						//计算时间
 						double x = time;
-						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double time = this->project->getTempo()->get_t(x);
-						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+						double time = this->getProject()->getTempo()->get_t(x);
+						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 						double xFromBar
-							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->project->getTempo()->get_T(x);
+							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+						double tempo = this->getProject()->getTempo()->get_T(x);
 
 						//设置预览位置
 						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -768,22 +763,27 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 	float posX = event.position.getX();
 	float posY = event.position.getY();
 
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock projDataLocker(this->project->getLock());
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
 
 		//计算分辨率
-		double startTime = this->startTime;
-		double endTime = this->endTime;
+		double startTime = 0.;
+		double endTime = 0.;
+		std::tie(startTime, endTime) = this->getHViewPort();
 		double totalLength = endTime - startTime;
 		double ppb = this->getWidth() / totalLength;
+
+		//选区
+		double loopStartTime = 0., loopEndTime = 0.;
+		std::tie(loopStartTime, loopEndTime) = this->getLoopRange();
 
 		switch (this->rulerState)
 		{
 		case RulerState::Normal:
 		{
 			//标签覆盖
-			if (this->editModeFlag) {
+			if (this->getEditMode()) {
 				//计算标签大小
 				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
 				float width_label = height_label;
@@ -794,9 +794,11 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 					posY <= (this->getHeight() - height_labelBottomMargin)) {
 					//选择标签
 					int labelIndex = -1;
-					int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+					int labelSize = vocalshaper::ProjectDAO::labelSize(
+						this->getProject()->getPtr());
 					for (int i = labelSize; i >= 0; i--) {
-						auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+						auto label = vocalshaper::ProjectDAO::getLabel(
+							this->getProject()->getPtr(), i);
 						if (label) {
 							float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
@@ -811,15 +813,16 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 					if (labelIndex >= 0 && labelIndex < labelSize) {
 						{
 							//计算时间
-							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), labelIndex);
+							auto label = vocalshaper::ProjectDAO::getLabel(
+								this->getProject()->getPtr(), labelIndex);
 							double x = vocalshaper::LabelDAO::getPosition(label);
-							double xInBar = this->project->getBeat()->getBarAtTime(x);
-							double time = this->project->getTempo()->get_t(x);
-							uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-							uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+							double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+							double time = this->getProject()->getTempo()->get_t(x);
+							uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+							uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 							double xFromBar
-								= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-							double tempo = this->project->getTempo()->get_T(x);
+								= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+							double tempo = this->getProject()->getTempo()->get_T(x);
 
 							//设置预览位置
 							this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -837,11 +840,11 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 			}
 
 			//选区覆盖
-			if (this->loopEndTime > this->loopStartTime) {
+			if (loopEndTime > loopStartTime) {
 				//计算选区位置
 				float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
-				float startLoopPos = (this->loopStartTime - startTime) * ppb;
-				float endLoopPos = (this->loopEndTime - startTime) * ppb;
+				float startLoopPos = (loopStartTime - startTime) * ppb;
+				float endLoopPos = (loopEndTime - startTime) * ppb;
 				float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
 				float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
 
@@ -849,14 +852,14 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				if (posX >= startLoopJudgePos && posX <= startLoopPos) {
 					{
 						//计算时间
-						double x = this->loopStartTime;
-						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double time = this->project->getTempo()->get_t(x);
-						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double x = loopStartTime;
+						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+						double time = this->getProject()->getTempo()->get_t(x);
+						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 						double xFromBar
-							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->project->getTempo()->get_T(x);
+							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+						double tempo = this->getProject()->getTempo()->get_T(x);
 
 						//设置预览位置
 						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -872,14 +875,14 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 				else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
 					{
 						//计算时间
-						double x = this->loopEndTime;
-						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double time = this->project->getTempo()->get_t(x);
-						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double x = loopEndTime;
+						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+						double time = this->getProject()->getTempo()->get_t(x);
+						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 						double xFromBar
-							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->project->getTempo()->get_T(x);
+							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+						double tempo = this->getProject()->getTempo()->get_T(x);
 
 						//设置预览位置
 						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -897,13 +900,13 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 			{
 				//计算时间
 				double x = startTime + posX / ppb;
-				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double time = this->project->getTempo()->get_t(x);
-				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+				double time = this->getProject()->getTempo()->get_t(x);
+				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 				double xFromBar
-					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->project->getTempo()->get_T(x);
+					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+				double tempo = this->getProject()->getTempo()->get_T(x);
 
 				//设置预览位置
 				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -920,29 +923,30 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
-			time = vocalshaper::adsorb(time, this->adsorb);
+			time = vocalshaper::adsorb(time, this->getAdsorb());
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
-			if (time > this->loopEndTime) { time = this->loopEndTime; }
+			if (time > loopEndTime) { time = loopEndTime; }
 
 			//发送更改
-			this->setLoopRangeMethod(time, this->loopEndTime);
+			this->setLoopRangeMethod(time, loopEndTime);
 
 			//指针跟随
-			if (this->currentTime < time || this->currentTime > this->loopEndTime) {
+			if (this->getCurrentPosition() < time ||
+				this->getCurrentPosition() > loopEndTime) {
 				this->setCurrentPositionMethod(time);
 			}
 
 			{
 				//计算时间
 				double x = time;
-				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double t = this->project->getTempo()->get_t(x);
-				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+				double t = this->getProject()->getTempo()->get_t(x);
+				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 				double xFromBar
-					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->project->getTempo()->get_T(x);
+					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+				double tempo = this->getProject()->getTempo()->get_T(x);
 
 				//设置预览位置
 				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, base, tempo);
@@ -958,29 +962,30 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
-			time = vocalshaper::adsorb(time, this->adsorb);
+			time = vocalshaper::adsorb(time, this->getAdsorb());
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
-			if (time < this->loopStartTime) { time = this->loopStartTime; }
+			if (time < loopStartTime) { time = loopStartTime; }
 
 			//发送更改
-			this->setLoopRangeMethod(this->loopStartTime, time);
+			this->setLoopRangeMethod(loopStartTime, time);
 
 			//指针跟随
-			if (this->currentTime > time || this->currentTime < this->loopStartTime) {
+			if (this->getCurrentPosition() > time ||
+				this->getCurrentPosition() < loopStartTime) {
 				this->setCurrentPositionMethod(time);
 			}
 
 			{
 				//计算时间
 				double x = time;
-				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double t = this->project->getTempo()->get_t(x);
-				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+				double t = this->getProject()->getTempo()->get_t(x);
+				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 				double xFromBar
-					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->project->getTempo()->get_T(x);
+					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+				double tempo = this->getProject()->getTempo()->get_T(x);
 
 				//设置预览位置
 				this->timeValue->setValue(x, xInBar, xFromBar, t, beat, base, tempo);
@@ -996,20 +1001,23 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double time = startTime + posX / ppb;
-			time = vocalshaper::adsorb(time, this->adsorb);
+			time = vocalshaper::adsorb(time, this->getAdsorb());
 
 			//限制时间
 			{
 				double timeMin = 0, timeMax = this->totalTime;
-				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				int labelSize = vocalshaper::ProjectDAO::labelSize(
+					this->getProject()->getPtr());
 				if (this->labelEditingIndex > 0) {
-					auto lastLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex - 1);
+					auto lastLabel = vocalshaper::ProjectDAO::getLabel(
+						this->getProject()->getPtr(), this->labelEditingIndex - 1);
 					if (lastLabel) {
 						timeMin = vocalshaper::LabelDAO::getPosition(lastLabel);
 					}
 				}
 				if (this->labelEditingIndex < labelSize - 1) {
-					auto nextLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex + 1);
+					auto nextLabel = vocalshaper::ProjectDAO::getLabel(
+						this->getProject()->getPtr(), this->labelEditingIndex + 1);
 					if (nextLabel) {
 						timeMax = vocalshaper::LabelDAO::getPosition(nextLabel);
 					}
@@ -1032,7 +1040,7 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 		{
 			//计算时间
 			double posTime = startTime + posX / ppb;
-			double time = vocalshaper::adsorb(posTime, this->adsorb);
+			double time = vocalshaper::adsorb(posTime, this->getAdsorb());
 			if (time < 0) { time = 0; }
 			if (time > this->totalTime) { time = totalTime; }
 
@@ -1040,33 +1048,33 @@ void TimeRuler::mouseMove(const juce::MouseEvent& event)
 			this->setCurrentPositionMethod(time);
 
 			//选区跟随或建立
-			if (this->loopEndTime > this->loopStartTime) {
+			if (loopEndTime > loopStartTime) {
 
-				if (time < this->loopStartTime) {
-					this->setLoopRangeMethod(time, this->loopEndTime);
+				if (time < loopStartTime) {
+					this->setLoopRangeMethod(time, loopEndTime);
 				}
-				else if (time > this->loopEndTime) {
-					this->setLoopRangeMethod(this->loopStartTime, time);
+				else if (time > loopEndTime) {
+					this->setLoopRangeMethod(loopStartTime, time);
 				}
 			}
 			else {
 				if (posTime != this->timePressed) {
 					this->setLoopRangeMethod(
-						std::min(time, vocalshaper::adsorb(this->timePressed, this->adsorb)),
-						std::max(time, vocalshaper::adsorb(this->timePressed, this->adsorb)));
+						std::min(time, vocalshaper::adsorb(this->timePressed, this->getAdsorb())),
+						std::max(time, vocalshaper::adsorb(this->timePressed, this->getAdsorb())));
 				}
 			}
 
 			{
 				//计算时间
 				double x = time;
-				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double time = this->project->getTempo()->get_t(x);
-				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+				double time = this->getProject()->getTempo()->get_t(x);
+				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 				double xFromBar
-					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->project->getTempo()->get_T(x);
+					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+				double tempo = this->getProject()->getTempo()->get_T(x);
 
 				//设置预览位置
 				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -1097,9 +1105,9 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 	float posX = event.position.getX();
 	float posY = event.position.getY();
 
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock projDataLocker(this->project->getLock());
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
 
 		//计算标签大小
 		float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
@@ -1107,10 +1115,15 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 		float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
 
 		//计算分辨率
-		double startTime = this->startTime;
-		double endTime = this->endTime;
+		double startTime = 0.;
+		double endTime = 0.;
+		std::tie(startTime, endTime) = this->getHViewPort();
 		double totalLength = endTime - startTime;
 		double ppb = this->getWidth() / totalLength;
+
+		//循环范围
+		double loopStartTime = 0., loopEndTime = 0.;
+		std::tie(loopStartTime, loopEndTime) = this->getLoopRange();
 
 		//左键
 		if (event.mods.isLeftButtonDown()) {
@@ -1118,16 +1131,18 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 			{
 			case RulerState::Label:
 			{
-				if (this->editModeFlag) {
+				if (this->getEditMode()) {
 					//计算时间
 					double time = startTime + posX / ppb;
 
 					//展开面板或更新标签
 					if (time == this->timePressed) {
-						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						int labelSize = vocalshaper::ProjectDAO::labelSize(
+							this->getProject()->getPtr());
 						if (this->labelEditingIndex >= 0 && this->labelEditingIndex < labelSize) {
 							//获取标签
-							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex);
+							auto label = vocalshaper::ProjectDAO::getLabel(
+								this->getProject()->getPtr(), this->labelEditingIndex);
 							float labelSelectedPos = -1;
 							if (label) {
 								labelSelectedPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
@@ -1143,18 +1158,21 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					}
 					else {
 						//限制时间
-						time = vocalshaper::adsorb(time, this->adsorb);
+						time = vocalshaper::adsorb(time, this->getAdsorb());
 						{
 							double timeMin = 0, timeMax = this->totalTime;
-							int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+							int labelSize = vocalshaper::ProjectDAO::labelSize(
+								this->getProject()->getPtr());
 							if (this->labelEditingIndex > 0) {
-								auto lastLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex - 1);
+								auto lastLabel = vocalshaper::ProjectDAO::getLabel(
+									this->getProject()->getPtr(), this->labelEditingIndex - 1);
 								if (lastLabel) {
 									timeMin = vocalshaper::LabelDAO::getPosition(lastLabel);
 								}
 							}
 							if (this->labelEditingIndex < labelSize - 1) {
-								auto nextLabel = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), this->labelEditingIndex + 1);
+								auto nextLabel = vocalshaper::ProjectDAO::getLabel(
+									this->getProject()->getPtr(), this->labelEditingIndex + 1);
 								if (nextLabel) {
 									timeMax = vocalshaper::LabelDAO::getPosition(nextLabel);
 								}
@@ -1168,11 +1186,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 						ActionType::TargetType target;
 						target.label = this->labelEditingIndex;
 						auto action = std::make_unique<ActionType>(
-							target, time, this->project
+							target, time, this->getProject()
 							);
 
 						//发送事件
-						this->project->getProcesser()->processEvent(std::move(action));
+						this->getProject()->getProcesser()->processEvent(std::move(action));
 					}
 
 					//刷新
@@ -1193,14 +1211,16 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				//标签覆盖
 				int labelSelectedIndex = -1;
 				float labelSelectedPos = -1.f;
-				if (this->editModeFlag) {
+				if (this->getEditMode()) {
 					//判断鼠标位置
 					if (posY >= (this->getHeight() - height_labelBottomMargin - height_label) &&
 						posY <= (this->getHeight() - height_labelBottomMargin)) {
 						//选择标签
-						int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+						int labelSize = vocalshaper::ProjectDAO::labelSize(
+							this->getProject()->getPtr());
 						for (int i = labelSize; i >= 0; i--) {
-							auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+							auto label = vocalshaper::ProjectDAO::getLabel(
+								this->getProject()->getPtr(), i);
 							if (label) {
 								float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
@@ -1216,11 +1236,15 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 				//右键菜单
 				juce::PopupMenu menu;
-				menu.addItem(1, this->tr("bt_TimeUnselect"), (this->loopEndTime > this->loopStartTime));
+				menu.addItem(1, this->tr("bt_TimeUnselect"),
+					(loopEndTime > loopStartTime));
 				menu.addSeparator();
-				menu.addItem(2, this->tr("bt_AddLabel"), (labelSelectedIndex == -1) && this->editModeFlag);
-				menu.addItem(3, this->tr("bt_EditLabel"), (labelSelectedIndex > -1) && this->editModeFlag);
-				menu.addItem(4, this->tr("bt_RemoveLabel"), (labelSelectedIndex > -1) && this->editModeFlag);
+				menu.addItem(2, this->tr("bt_AddLabel"),
+					(labelSelectedIndex == -1) && this->getEditMode());
+				menu.addItem(3, this->tr("bt_EditLabel"),
+					(labelSelectedIndex > -1) && this->getEditMode());
+				menu.addItem(4, this->tr("bt_RemoveLabel"),
+					(labelSelectedIndex > -1) && this->getEditMode());
 
 				//显示右键菜单
 				int result = menu.show();
@@ -1238,12 +1262,14 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				{
 					//计算时间
 					double time = startTime + posX / ppb;
-					time = vocalshaper::adsorb(time, this->adsorb);
+					time = vocalshaper::adsorb(time, this->getAdsorb());
 
-					int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+					int labelSize = vocalshaper::ProjectDAO::labelSize(
+						this->getProject()->getPtr());
 					int newIndex = labelSize;
 					for (int i = labelSize; i >= 0; i--) {
-						auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+						auto label = vocalshaper::ProjectDAO::getLabel(
+							this->getProject()->getPtr(), i);
 						if (label) {
 							//获取label时间
 							double labelTime = vocalshaper::LabelDAO::getPosition(label);
@@ -1263,11 +1289,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					using ActionType = vocalshaper::actions::project::AddLabelAction;
 					ActionType::TargetType target{};
 					auto action = std::make_unique<ActionType>(
-						target, newIndex, label, this->project
+						target, newIndex, label, this->getProject()
 						);
 
 					//发送事件
-					this->project->getProcesser()->processEvent(std::move(action));
+					this->getProject()->getProcesser()->processEvent(std::move(action));
 
 					//刷新
 					this->repaint();
@@ -1289,12 +1315,12 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					using ActionType = vocalshaper::actions::project::RemoveLabelAction;
 					ActionType::TargetType target{};
 					auto action = std::make_unique<ActionType>(
-						target, labelSelectedIndex, nullptr, this->project
+						target, labelSelectedIndex, nullptr, this->getProject()
 						);
 
 					//发送事件
 					auto ptrAction = action.get();
-					this->project->getProcesser()->processEvent(std::move(action));
+					this->getProject()->getProcesser()->processEvent(std::move(action));
 
 					//刷新
 					this->repaint();
@@ -1307,7 +1333,7 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 		//设置鼠标并刷新
 		{
 			//标签覆盖
-			if (this->editModeFlag) {
+			if (this->getEditMode()) {
 				//计算标签大小
 				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
 				float width_label = height_label;
@@ -1318,9 +1344,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					posY <= (this->getHeight() - height_labelBottomMargin)) {
 					//选择标签
 					int labelIndex = -1;
-					int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+					int labelSize = vocalshaper::ProjectDAO::labelSize(
+						this->getProject()->getPtr());
 					for (int i = labelSize; i >= 0; i--) {
-						auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+						auto label = vocalshaper::ProjectDAO::getLabel(
+							this->getProject()->getPtr(), i);
 						if (label) {
 							float labelPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 
@@ -1345,11 +1373,11 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 			}
 
 			//选区覆盖
-			if (this->loopEndTime > this->loopStartTime) {
+			if (loopEndTime > loopStartTime) {
 				//计算选区位置
 				float width_loopJudgeArea = this->sizes.width_timeRuler_loopJudgeArea * screenSize.getWidth();
-				float startLoopPos = (this->loopStartTime - startTime) * ppb;
-				float endLoopPos = (this->loopEndTime - startTime) * ppb;
+				float startLoopPos = (loopStartTime - startTime) * ppb;
+				float endLoopPos = (loopEndTime - startTime) * ppb;
 				float startLoopJudgePos = startLoopPos - width_loopJudgeArea;
 				float endLoopJudgePos = endLoopPos + width_loopJudgeArea;
 
@@ -1357,14 +1385,14 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				if (posX >= startLoopJudgePos && posX <= startLoopPos) {
 					{
 						//计算时间
-						double x = this->loopStartTime;
-						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double time = this->project->getTempo()->get_t(x);
-						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double x = loopStartTime;
+						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+						double time = this->getProject()->getTempo()->get_t(x);
+						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 						double xFromBar
-							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->project->getTempo()->get_T(x);
+							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+						double tempo = this->getProject()->getTempo()->get_T(x);
 
 						//设置预览位置
 						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -1380,14 +1408,14 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
 					{
 						//计算时间
-						double x = this->loopEndTime;
-						double xInBar = this->project->getBeat()->getBarAtTime(x);
-						double time = this->project->getTempo()->get_t(x);
-						uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+						double x = loopEndTime;
+						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+						double time = this->getProject()->getTempo()->get_t(x);
+						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 						double xFromBar
-							= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->project->getTempo()->get_T(x);
+							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+						double tempo = this->getProject()->getTempo()->get_T(x);
 
 						//设置预览位置
 						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -1405,13 +1433,13 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 			{
 				//计算时间
 				double x = startTime + posX / ppb;
-				double xInBar = this->project->getBeat()->getBarAtTime(x);
-				double time = this->project->getTempo()->get_t(x);
-				uint8_t beat = this->project->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->project->getBeat()->getBaseAtTime(x);
+				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
+				double time = this->getProject()->getTempo()->get_t(x);
+				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
+				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
 				double xFromBar
-					= (x - this->project->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->project->getTempo()->get_T(x);
+					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
+				double tempo = this->getProject()->getTempo()->get_T(x);
 
 				//设置预览位置
 				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
@@ -1455,19 +1483,20 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 	float posX = event.position.getX();
 	float posY = event.position.getY();
 
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock projDataLocker(this->project->getLock());
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
 
 		//计算分辨率
-		double startTime = this->startTime;
-		double endTime = this->endTime;
+		double startTime = 0.;
+		double endTime = 0.;
+		std::tie(startTime, endTime) = this->getHViewPort();
 		double totalLength = endTime - startTime;
 		double ppb = this->getWidth() / totalLength;
 
 		//左键
 		if (event.mods.isLeftButtonDown()) {
-			if (this->editModeFlag) {
+			if (this->getEditMode()) {
 				//计算标签大小
 				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
 				float width_label = height_label;
@@ -1475,12 +1504,14 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 
 				//计算时间
 				double time = startTime + posX / ppb;
-				time = vocalshaper::adsorb(time, this->adsorb);
+				time = vocalshaper::adsorb(time, this->getAdsorb());
 
-				int labelSize = vocalshaper::ProjectDAO::labelSize(this->project->getPtr());
+				int labelSize = vocalshaper::ProjectDAO::labelSize(
+					this->getProject()->getPtr());
 				int newIndex = labelSize;
 				for (int i = labelSize; i >= 0; i--) {
-					auto label = vocalshaper::ProjectDAO::getLabel(this->project->getPtr(), i);
+					auto label = vocalshaper::ProjectDAO::getLabel(
+						this->getProject()->getPtr(), i);
 					if (label) {
 						//获取label时间
 						double labelTime = vocalshaper::LabelDAO::getPosition(label);
@@ -1513,11 +1544,11 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 				using ActionType = vocalshaper::actions::project::AddLabelAction;
 				ActionType::TargetType target{};
 				auto action = std::make_unique<ActionType>(
-					target, newIndex, label, this->project
+					target, newIndex, label, this->getProject()
 					);
 
 				//发送事件
-				this->project->getProcesser()->processEvent(std::move(action));
+				this->getProject()->getProcesser()->processEvent(std::move(action));
 
 				//关闭时间值预览
 				this->timeValue->close();
@@ -1531,8 +1562,8 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 
 void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock projLocker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 

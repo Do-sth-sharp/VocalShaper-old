@@ -38,70 +38,7 @@ BottomEditor::BottomEditor()
 
 	//创建底栏
 	this->statusBar = std::make_unique<StatusBar>();
-	this->addAndMakeVisible(this->statusBar.get());
-}
-
-void BottomEditor::projectChanged(const vocalshaper::ProjectProxy* ptr)
-{
-	this->statusBar->projectChanged(ptr);
-	//TODO
-}
-
-void BottomEditor::trackChanged(int trackID)
-{
-	this->statusBar->trackChanged(trackID);
-	//TODO
-}
-
-
-void BottomEditor::setEditMode(bool editMode)
-{
-	//TODO
-}
-
-void BottomEditor::setToolID(uint8_t toolID)
-{
-	//TODO
-}
-
-void BottomEditor::setHorizontalViewPort(double startTime, double endTime)
-{
-	//TODO
-}
-
-void BottomEditor::setVerticalViewPort(double bottomPitch, double topPitch)
-{
-	//TODO
-}
-
-void BottomEditor::setTotalLength(double totalLength)
-{
-	//TODO
-}
-
-void BottomEditor::setCurrentPosition(double currentTime)
-{
-	//TODO
-}
-
-void BottomEditor::setFollowState(bool follow)
-{
-	//TODO
-}
-
-void BottomEditor::setLoopRange(double startTime, double endTime)
-{
-	//TODO
-}
-
-void BottomEditor::setAdsorb(vocalshaper::AdsorbState state)
-{
-	//TODO
-}
-
-void BottomEditor::setGrid(vocalshaper::GridState state)
-{
-	//TODO
+	this->addChildEditorAndMakeVisible(this->statusBar.get());
 }
 
 bool BottomEditor::isActive()

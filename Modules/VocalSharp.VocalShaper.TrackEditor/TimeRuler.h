@@ -17,7 +17,6 @@ public:
 public:
 	void projectChanged(const vocalshaper::ProjectProxy* ptr) override;
 	void setEditMode(bool editMode) override;
-	void setToolID(uint8_t toolID) override;
 	void trackChanged(int trackID) override;
 	void setTotalLength(double totalLength) override;
 	void setCurrentPosition(double currentTime) override;
@@ -25,7 +24,6 @@ public:
 	void setAdsorb(vocalshaper::AdsorbState state) override;
 	void setGrid(vocalshaper::GridState state) override;
 	void setHViewPort(double startTime, double endTime) override;
-	void setVViewPort(double bottomTrack, double topTrack) override;
 
 public:
 	void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details) override;
@@ -111,19 +109,10 @@ private:
 	int timeViewerBorderSize = 1;
 	float timeViewerCornerSize = 5.f;
 
-	vocalshaper::ProjectProxy* project = nullptr;
-	double startTime, endTime;
-	double loopStartTime, loopEndTime;
-	double currentTime;
-	double totalTime = 0;
 	double labelEditingTime = -1;
 	int labelEditingIndex = -1;
 	double timePressed = -1;
-	int trackID = -1;
-	juce::ReadWriteLock projectLock;
-
-	bool editModeFlag = false;
-	uint8_t toolID = 1;
+	double totalTime = 0.;
 
 	enum class RulerState {
 		Normal,		//未更改
@@ -132,9 +121,6 @@ private:
 		Label,		//更改标签位置
 		Cursor		//更改播放指针位置
 	}rulerState = RulerState::Normal;
-
-	vocalshaper::AdsorbState adsorb = vocalshaper::AdsorbState::Adsorb1Beat;
-	vocalshaper::GridState grid = vocalshaper::GridState::Grid1Beat;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeRuler)
 };

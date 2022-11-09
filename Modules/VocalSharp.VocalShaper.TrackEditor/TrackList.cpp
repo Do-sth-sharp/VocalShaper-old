@@ -16,106 +16,80 @@ void TrackList::paint(juce::Graphics& g)
 
 }
 
-void TrackList::setMethods(
-	const std::function<void(int)>& setCurrentTrackFunc,
-	const std::function<void(void)>& refreshTotalTimeFunc,
-	const std::function<void(double)>& setCurrentPositionFunc,
-	const std::function<void(double, double)>& setLoopRangeFunc,
-	const std::function<void(double, double)>& setHorizontalViewPortFunc,
-	const std::function<void(double, double)>& setVerticalViewPortFunc
-)
-{
-	//TODO
-	this->EditorBase::setMethods(
-		setCurrentTrackFunc, refreshTotalTimeFunc, setCurrentPositionFunc,
-		setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
-}
-
-void TrackList::setTrackViewMethods(
-	std::function<void(double, double)> setHViewPortFunc,
-	std::function<void(double, double)> setVViewPortFunc
-)
-{
-	//TODO
-	this->EditorBase::setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
-}
-
 void TrackList::projectChanged(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
+	this->EditorBase::projectChanged(ptr);
 	//TODO
 }
 
 void TrackList::setEditMode(bool editMode)
 {
-	this->editModeFlag = editMode;
+	this->EditorBase::setEditMode(editMode);
 	//TODO
 }
 
 void TrackList::setToolID(uint8_t toolID)
 {
-	this->toolID = toolID;
+	this->EditorBase::setToolID(toolID);
 	//TODO
 }
 
 void TrackList::trackChanged(int trackID)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->trackID = trackID;
+	this->EditorBase::trackChanged(trackID);
 	//TODO
 }
 
 void TrackList::setTotalLength(double totalLength)
 {
+	this->EditorBase::setTotalLength(totalLength);
 	//TODO
 }
 
 void TrackList::setCurrentPosition(double currentTime)
 {
-	this->currentTime = currentTime;
+	this->EditorBase::setCurrentPosition(currentTime);
 	//TODO
 }
 
 void TrackList::setLoopRange(double startTime, double endTime)
 {
-	this->loopStartTime = startTime;
-	this->loopEndTime = endTime;
+	this->EditorBase::setLoopRange(startTime, endTime);
 	//TODO
 }
 
 void TrackList::setHorizontalViewPort(double startTime, double endTime)
 {
+	this->EditorBase::setHorizontalViewPort(startTime, endTime);
 	//TODO
 }
 
 void TrackList::setVerticalViewPort(double bottomPitch, double topPitch)
 {
+	this->EditorBase::setVerticalViewPort(bottomPitch, topPitch);
 	//TODO
 }
 
 void TrackList::setHViewPort(double startTime, double endTime)
 {
-	this->startTime = startTime;
-	this->endTime = endTime;
+	this->EditorBase::setHViewPort(startTime, endTime);
 	//TODO
 }
 
 void TrackList::setVViewPort(double bottomTrack, double topTrack)
 {
-	this->bottomTrack = bottomTrack;
-	this->topTrack = topTrack;
+	this->EditorBase::setVViewPort(bottomTrack, topTrack);
 	//TODO
 }
 
 void TrackList::setAdsorb(vocalshaper::AdsorbState state)
 {
-	this->adsorb = state;
+	this->EditorBase::setAdsorb(state);
 	//TODO
 }
 
 void TrackList::setGrid(vocalshaper::GridState state)
 {
-	this->grid = state;
+	this->EditorBase::setGrid(state);
 	//TODO
 }

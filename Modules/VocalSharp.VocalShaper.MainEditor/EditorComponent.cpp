@@ -86,6 +86,8 @@ EditorComponent::EditorComponent()
 		auto setLoopRangeFunc = [this](double startTime, double endTime) {this->setLoopRange(startTime, endTime); };
 		auto setHorizontalViewPortFunc = [this](double startTime, double endTime) {this->setHorizontalViewPort(startTime, endTime); };
 		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->setVerticalViewPort(bottomPitch, topPitch); };
+		auto setHViewPortFunc = [this](double startTime, double endTime) {this->changeHViewPort(startTime, endTime); };
+		auto setVViewPortFunc = [this](double bottomPer, double topPer) {this->changeVViewPort(bottomPer, topPer); };
 
 		this->topEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
@@ -93,6 +95,8 @@ EditorComponent::EditorComponent()
 		this->bottomEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
 			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
+		this->topEditor->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
+		this->bottomEditor->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
 	}
 
 	//创建分割器
@@ -218,12 +222,31 @@ void EditorComponent::horizontalViewPortChanged(double startTime, double endTime
 
 void EditorComponent::verticalViewPortChanged(double bottomPitch, double topPitch)
 {
-	//轨道面板的横竖显示范围具有独立性
 	if (this->topEditor) {
 		this->topEditor->setVerticalViewPort(bottomPitch, topPitch);
 	}
 	if (this->bottomEditor) {
 		this->bottomEditor->setVerticalViewPort(bottomPitch, topPitch);
+	}
+}
+
+void EditorComponent::setHViewPort(double startTime, double endTime)
+{
+	if (this->topEditor) {
+		this->topEditor->setHViewPort(startTime, endTime);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setHViewPort(startTime, endTime);
+	}
+}
+
+void EditorComponent::setVViewPort(double bottomTrack, double topTrack)
+{
+	if (this->topEditor) {
+		this->topEditor->setVViewPort(bottomTrack, topTrack);
+	}
+	if (this->bottomEditor) {
+		this->bottomEditor->setVViewPort(bottomTrack, topTrack);
 	}
 }
 
@@ -643,6 +666,32 @@ void EditorComponent::setVerticalViewPort(double bottomPitch, double topPitch)
 			//至少要有一个音符的高度
 			this->verticalViewPortChanged(bottomPitch, topPitch);
 		}
+	}
+}
+
+void EditorComponent::changeHViewPort(double startTime, double endTime)
+{
+	/*if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
+		return;
+	}*/
+	juce::ScopedReadLock locker1(this->projectLock);
+	juce::ScopedReadLock locker2(this->project->getLock());
+	auto project = this->project->getPtr();
+	if (!project) {
+		return;
+	}
+	if (startTime < endTime) {
+		this->setHViewPort(startTime, endTime);
+	}
+}
+
+void EditorComponent::changeVViewPort(double bottomTrack, double topTrack)
+{
+	/*if (this->bottomVTrackTemp == bottomTrack && this->topVTrackTemp == topTrack) {
+		return;
+	}*/
+	if (bottomTrack > topTrack) {
+		this->setVViewPort(bottomTrack, topTrack);
 	}
 }
 
