@@ -8,8 +8,8 @@ public:
 	StatusBar();
 	~StatusBar() override = default;
 
-	void projectChangedCallback(const vocalshaper::ProjectProxy* ptr) override;
-	void trackChangedCallback(int trackID) override;
+	void setProjectCallback(const vocalshaper::ProjectProxy* ptr) override;
+	void setTrackIDCallback(int trackID) override;
 	void editorControlerChanged(juce::Component* controler);
 
 	int selectNoteEditorPlugin(const juce::Array<std::pair<juce::String, bool>>& list);

@@ -4,7 +4,7 @@
 #include "BottomEditor.h"
 #include <libVocalShaper.h>
 
-class EditorComponent final : public juce::Component
+class EditorComponent final : public vocalshaper::EditorBase
 {
 public:
 	EditorComponent();
@@ -14,9 +14,6 @@ public:
 	//被命令调用，设置编辑器显示状态
 	void setTrackOpen(bool trackOpen);
 	bool isTrackOpen();
-
-	//被回调调用，设置当前工程
-	void projectChanged(const vocalshaper::ProjectProxy* ptr);
 
 	//被命令调用，执行工程操作
 	void undo();
@@ -56,37 +53,18 @@ public:
 	bool couldSwitchTrack();
 
 	//外部/内部调用，申请更改状态
-	void setCurrentTrack(int trackID);
-	void refreshTotalLength();
-	void setCurrentPosition(double currentTime);
-	void setLoopRange(double startTime, double endTime);
-	void setHorizontalViewPort(double startTime, double endTime);
-	void setVerticalViewPort(double bottomPitch, double topPitch);
-	void changeHViewPort(double startTime, double endTime);
-	void changeVViewPort(double bottomTrack, double topTrack);
+	void wannaSetCurrentTrack(int trackID);
+	void wannaRefreshTotalLength();
+	void wannaSetCurrentPosition(double currentTime);
+	void wannaSetLoopRange(double startTime, double endTime);
+	void wannaSetHorizontalViewPort(double startTime, double endTime);
+	void wannaSetVerticalViewPort(double bottomPitch, double topPitch);
+	void wannaChangeHViewPort(double startTime, double endTime);
+	void wannaChangeVViewPort(double bottomTrack, double topTrack);
 
-	//外部调用，执行状态更改
-	void setAdsorb(vocalshaper::AdsorbState state);
-	void setGrid(vocalshaper::GridState state);
-
-private:
-	//内部调用，执行状态更改
-	void trackChanged(int trackID);
-	void totalLengthChanged(double totalLength);
-	void currentPositionChanged(double currentTime);
-	void followStateChanged(bool followState);
-	void loopRangeChanged(double startTime, double endTime);
-	void horizontalViewPortChanged(double startTime, double endTime);
-	void verticalViewPortChanged(double bottomPitch, double topPitch);
-	void setHViewPort(double startTime, double endTime);
-	void setVViewPort(double bottomTrack, double topTrack);
-
-public:
-	//被命令调用，设置编辑器状态
-	bool isEditMode();
-	void setEditMode(bool editMode);
-	uint8_t getToolID();
-	void setToolID(uint8_t toolID);
+protected:
+	//内部调用，状态更改回调
+	void setProjectCallback(const vocalshaper::ProjectProxy* ptr) override;
 
 public:
 	//监听器，用于注册回调监听事件
@@ -144,13 +122,7 @@ private:
 	std::unique_ptr<juce::StretchableLayoutResizerBar> slBar;
 
 	bool trackOpenStateChanged = false;
-	bool editModeFlag = false;
-	uint8_t toolID = 1;
-
-	vocalshaper::ProjectProxy* project = nullptr;
-	int trackID = -1;
 	double totalTimeTemp = 0., totalLengthTemp = 0.;
-	juce::ReadWriteLock projectLock;
 
 	static double countProjectTime(vocalshaper::ProjectProxy* ptr);
 	static double countTrackTime(vocalshaper::ProjectProxy* ptr, int trackID);

@@ -16,7 +16,7 @@ void TrackList::paint(juce::Graphics& g)
 
 }
 
-void TrackList::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
+void TrackList::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	//TODO
 }
@@ -31,7 +31,7 @@ void TrackList::setToolIDCallback(uint8_t toolID)
 	//TODO
 }
 
-void TrackList::trackChangedCallback(int trackID)
+void TrackList::setTrackIDCallback(int trackID)
 {
 	//TODO
 }

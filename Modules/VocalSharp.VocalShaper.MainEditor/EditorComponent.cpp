@@ -2,7 +2,7 @@
 #include <libJModule.h>
 
 EditorComponent::EditorComponent()
-	: Component("Editor")
+	: EditorBase()
 {
 	//获取屏幕属性接口
 	this->screenSizeFunc =
@@ -74,20 +74,20 @@ EditorComponent::EditorComponent()
 
 	//创建编辑器
 	this->topEditor = std::make_unique<TopEditor>();
-	this->addChildComponent(this->topEditor.get());
+	this->addChildEditor(this->topEditor.get());
 	this->bottomEditor = std::make_unique<BottomEditor>();
-	this->addChildComponent(this->bottomEditor.get());
+	this->addChildEditor(this->bottomEditor.get());
 
 	//注册编辑器方法
 	{
-		auto setCurrentTrackFunc = [this](int trackID) {this->setCurrentTrack(trackID); };
-		auto refreshTotalLengthFunc = [this] {this->refreshTotalLength(); };
-		auto setCurrentPositionFunc = [this](double currentTime) {this->setCurrentPosition(currentTime); };
-		auto setLoopRangeFunc = [this](double startTime, double endTime) {this->setLoopRange(startTime, endTime); };
-		auto setHorizontalViewPortFunc = [this](double startTime, double endTime) {this->setHorizontalViewPort(startTime, endTime); };
-		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->setVerticalViewPort(bottomPitch, topPitch); };
-		auto setHViewPortFunc = [this](double startTime, double endTime) {this->changeHViewPort(startTime, endTime); };
-		auto setVViewPortFunc = [this](double bottomPer, double topPer) {this->changeVViewPort(bottomPer, topPer); };
+		auto setCurrentTrackFunc = [this](int trackID) {this->wannaSetCurrentTrack(trackID); };
+		auto refreshTotalLengthFunc = [this] {this->wannaRefreshTotalLength(); };
+		auto setCurrentPositionFunc = [this](double currentTime) {this->wannaSetCurrentPosition(currentTime); };
+		auto setLoopRangeFunc = [this](double startTime, double endTime) {this->wannaSetLoopRange(startTime, endTime); };
+		auto setHorizontalViewPortFunc = [this](double startTime, double endTime) {this->wannaSetHorizontalViewPort(startTime, endTime); };
+		auto setVerticalViewPortFunc = [this](double bottomPitch, double topPitch) {this->wannaSetVerticalViewPort(bottomPitch, topPitch); };
+		auto setHViewPortFunc = [this](double startTime, double endTime) {this->wannaChangeHViewPort(startTime, endTime); };
+		auto setVViewPortFunc = [this](double bottomPer, double topPer) {this->wannaChangeVViewPort(bottomPer, topPer); };
 
 		this->topEditor->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
@@ -119,7 +119,7 @@ EditorComponent::EditorComponent()
 	jmadf::CallInterface<const std::function<void(const vocalshaper::ProjectProxy*)>&>(
 		"VocalSharp.VocalShaper.ProjectHub", "AddNotice",
 		[this](const vocalshaper::ProjectProxy* project) {
-			this->projectChanged(project);
+			this->setProject(project);
 		}
 	);
 
@@ -153,113 +153,21 @@ bool EditorComponent::isTrackOpen()
 	return false;
 }
 
-void EditorComponent::projectChanged(const vocalshaper::ProjectProxy* ptr)
+void EditorComponent::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->project = const_cast<vocalshaper::ProjectProxy*>(ptr);
-	this->topEditor->projectChanged(ptr);
-	this->bottomEditor->projectChanged(ptr);
-	this->totalLengthChanged(this->countProjectTime(this->project));
-}
-
-void EditorComponent::trackChanged(int trackID)
-{
-	juce::ScopedWriteLock locker(this->projectLock);
-	this->trackID = trackID;
-	this->topEditor->trackChanged(trackID);
-	this->bottomEditor->trackChanged(trackID);
-}
-
-void EditorComponent::totalLengthChanged(double totalLength)
-{
-	if (this->topEditor) {
-		this->topEditor->setTotalLength(totalLength);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setTotalLength(totalLength);
-	}
-}
-
-void EditorComponent::currentPositionChanged(double currentTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setCurrentPosition(currentTime);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setCurrentPosition(currentTime);
-	}
-}
-
-void EditorComponent::followStateChanged(bool followState)
-{
-	if (this->topEditor) {
-		this->topEditor->setFollowState(followState);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setFollowState(followState);
-	}
-}
-
-void EditorComponent::loopRangeChanged(double startTime, double endTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setLoopRange(startTime, endTime);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setLoopRange(startTime, endTime);
-	}
-}
-
-void EditorComponent::horizontalViewPortChanged(double startTime, double endTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setHorizontalViewPort(startTime, endTime);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setHorizontalViewPort(startTime, endTime);
-	}
-}
-
-void EditorComponent::verticalViewPortChanged(double bottomPitch, double topPitch)
-{
-	if (this->topEditor) {
-		this->topEditor->setVerticalViewPort(bottomPitch, topPitch);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setVerticalViewPort(bottomPitch, topPitch);
-	}
-}
-
-void EditorComponent::setHViewPort(double startTime, double endTime)
-{
-	if (this->topEditor) {
-		this->topEditor->setHViewPort(startTime, endTime);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setHViewPort(startTime, endTime);
-	}
-}
-
-void EditorComponent::setVViewPort(double bottomTrack, double topTrack)
-{
-	if (this->topEditor) {
-		this->topEditor->setVViewPort(bottomTrack, topTrack);
-	}
-	if (this->bottomEditor) {
-		this->bottomEditor->setVViewPort(bottomTrack, topTrack);
-	}
+	this->setTotalLength(this->countProjectTime(this->getProject()));
 }
 
 void EditorComponent::undo()
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	return this->project->getProcesser()->undo();
+	juce::ScopedReadLock locker(this->getProjLock());
+	return this->getProject()->getProcesser()->undo();
 }
 
 void EditorComponent::redo()
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	return this->project->getProcesser()->redo();
+	juce::ScopedReadLock locker(this->getProjLock());
+	return this->getProject()->getProcesser()->redo();
 }
 
 void EditorComponent::cut()
@@ -369,9 +277,9 @@ void EditorComponent::copyToSystem()
 		temp = this->bottomEditor->getCopy();
 	}
 	else {
-		juce::ScopedReadLock locker1(this->projectLock);
-		juce::ScopedReadLock locker2(this->project->getLock());
-		temp.add(vocalshaper::ProjectCopier::copy(this->project->getPtr()));
+		juce::ScopedReadLock locker1(this->getProjLock());
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		temp.add(vocalshaper::ProjectCopier::copy(this->getProject()->getPtr()));
 	}
 	{
 		//判断是否多元素
@@ -388,7 +296,8 @@ void EditorComponent::copyToSystem()
 		for (auto o : temp) {
 			//Json序列化
 			juce::String tempStr;
-			if (vocalshaper::files::vsp3::ProtoConverter::serilazeToJson(o, tempStr, true)) {
+			if (vocalshaper::files::vsp3::ProtoConverter::serilazeToJson(
+				o, tempStr, true)) {
 				tempS += tempStr;
 				//多元素加分隔
 				if (arrayMode) {
@@ -444,9 +353,9 @@ void EditorComponent::selectAll()
 
 bool EditorComponent::couldUndo()
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	if (this->project) {
-		auto ptrProcesser = this->project->getProcesser();
+	juce::ScopedReadLock locker(this->getProjLock());
+	if (this->getProject()) {
+		auto ptrProcesser = this->getProject()->getProcesser();
 		if (ptrProcesser) {
 			return ptrProcesser->couldUndo();
 		}
@@ -456,9 +365,9 @@ bool EditorComponent::couldUndo()
 
 bool EditorComponent::couldRedo()
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	if (this->project) {
-		auto ptrProcesser = this->project->getProcesser();
+	juce::ScopedReadLock locker(this->getProjLock());
+	if (this->getProject()) {
+		auto ptrProcesser = this->getProject()->getProcesser();
 		if (ptrProcesser) {
 			return ptrProcesser->couldRedo();
 		}
@@ -529,24 +438,26 @@ bool EditorComponent::couldSelectAll()
 
 void EditorComponent::lastTrack()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (this->trackID > 0 && this->trackID < trackSize) {
-			this->trackChanged(this->trackID - 1);
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(
+			this->getProject()->getPtr());
+		if (this->getTrackID() > 0 && this->getTrackID() < trackSize) {
+			this->setTrackID(this->getTrackID() - 1);
 		}
 	}
 }
 
 void EditorComponent::nextTrack()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (this->trackID >= 0 && this->trackID < trackSize - 1) {
-			this->trackChanged(this->trackID + 1);
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(
+			this->getProject()->getPtr());
+		if (this->getTrackID() >= 0 && this->getTrackID() < trackSize - 1) {
+			this->setTrackID(this->getTrackID() + 1);
 		}
 	}
 }
@@ -554,26 +465,27 @@ void EditorComponent::nextTrack()
 void EditorComponent::switchTrack()
 {
 	int result = this->bottomEditor->switchTrack();
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (result > 0 && this->trackID <= trackSize) {
-			this->trackChanged(result - 1);
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(
+			this->getProject()->getPtr());
+		if (result > 0 && this->getTrackID() <= trackSize) {
+			this->setTrackID(result - 1);
 		}
 		else {
-			this->trackChanged(-1);
+			this->setTrackID(-1);
 		}
 	}
 }
 
 bool EditorComponent::couldLastTrack()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (this->trackID > 0 && this->trackID < trackSize) {
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
+		if (this->getTrackID() > 0 && this->getTrackID() < trackSize) {
 			return true;
 		}
 	}
@@ -582,11 +494,11 @@ bool EditorComponent::couldLastTrack()
 
 bool EditorComponent::couldNextTrack()
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
-		if (this->trackID >= 0 && this->trackID < trackSize - 1) {
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
+		if (this->getTrackID() >= 0 && this->getTrackID() < trackSize - 1) {
 			return true;
 		}
 	}
@@ -601,10 +513,11 @@ bool EditorComponent::couldSwitchTrack()
 	if (!this->bottomEditor->isVisible()) {
 		return false;
 	}
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(
+			this->getProject()->getPtr());
 		if (trackSize > 0) {
 			return true;
 		}
@@ -612,71 +525,71 @@ bool EditorComponent::couldSwitchTrack()
 	return false;
 }
 
-void EditorComponent::setCurrentTrack(int trackID)
+void EditorComponent::wannaSetCurrentTrack(int trackID)
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	if (this->project) {
-		juce::ScopedReadLock locker2(this->project->getLock());
-		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->project->getPtr());
+	juce::ScopedReadLock locker1(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock locker2(this->getProject()->getLock());
+		int trackSize = ::vocalshaper::ProjectDAO::trackSize(this->getProject()->getPtr());
 		if (trackID >= -1 && trackID < trackSize) {
-			this->trackChanged(trackID);
+			this->setTrackID(trackID);
 		}
 	}
 }
 
-void EditorComponent::refreshTotalLength()
+void EditorComponent::wannaRefreshTotalLength()
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	this->totalLengthChanged(this->countProjectTime(this->project));
+	juce::ScopedReadLock locker(this->getProjLock());
+	this->setTotalLength(this->countProjectTime(this->getProject()));
 }
 
-void EditorComponent::setCurrentPosition(double currentTime)
+void EditorComponent::wannaSetCurrentPosition(double currentTime)
 {
 	//TODO 同步至播放控制器
 	//begin test
-	this->currentPositionChanged(currentTime);
+	this->setCurrentPosition(currentTime);
 	//end test
 }
 
-void EditorComponent::setLoopRange(double startTime, double endTime)
+void EditorComponent::wannaSetLoopRange(double startTime, double endTime)
 {
 	//TODO 同步至播放控制器
 	//begin test
-	this->loopRangeChanged(startTime, endTime);
+	this->setLoopRange(startTime, endTime);
 	//end test
 }
 
-void EditorComponent::setHorizontalViewPort(double startTime, double endTime)
+void EditorComponent::wannaSetHorizontalViewPort(double startTime, double endTime)
 {
-	juce::ScopedReadLock locker1(this->projectLock);
-	juce::ScopedReadLock locker2(this->project->getLock());
-	auto project = this->project->getPtr();
+	juce::ScopedReadLock locker1(this->getProjLock());
+	juce::ScopedReadLock locker2(this->getProject()->getLock());
+	auto project = this->getProject()->getPtr();
 	if (!project) {
 		return;
 	}
 	if (startTime < endTime) {
-		this->horizontalViewPortChanged(startTime, endTime);
+		this->setHorizontalViewPort(startTime, endTime);
 	}
 }
 
-void EditorComponent::setVerticalViewPort(double bottomPitch, double topPitch)
+void EditorComponent::wannaSetVerticalViewPort(double bottomPitch, double topPitch)
 {
 	if (bottomPitch >= 0 && bottomPitch <= 127 && topPitch >= 0 && topPitch <= 127) {
 		if (bottomPitch < topPitch - 1) {
 			//至少要有一个音符的高度
-			this->verticalViewPortChanged(bottomPitch, topPitch);
+			this->setVerticalViewPort(bottomPitch, topPitch);
 		}
 	}
 }
 
-void EditorComponent::changeHViewPort(double startTime, double endTime)
+void EditorComponent::wannaChangeHViewPort(double startTime, double endTime)
 {
 	/*if (this->startTimeTemp == startTime && this->endTimeTemp == endTime) {
 		return;
 	}*/
-	juce::ScopedReadLock locker1(this->projectLock);
-	juce::ScopedReadLock locker2(this->project->getLock());
-	auto project = this->project->getPtr();
+	juce::ScopedReadLock locker1(this->getProjLock());
+	juce::ScopedReadLock locker2(this->getProject()->getLock());
+	auto project = this->getProject()->getPtr();
 	if (!project) {
 		return;
 	}
@@ -685,7 +598,7 @@ void EditorComponent::changeHViewPort(double startTime, double endTime)
 	}
 }
 
-void EditorComponent::changeVViewPort(double bottomTrack, double topTrack)
+void EditorComponent::wannaChangeVViewPort(double bottomTrack, double topTrack)
 {
 	/*if (this->bottomVTrackTemp == bottomTrack && this->topVTrackTemp == topTrack) {
 		return;
@@ -695,44 +608,10 @@ void EditorComponent::changeVViewPort(double bottomTrack, double topTrack)
 	}
 }
 
-void EditorComponent::setAdsorb(vocalshaper::AdsorbState state)
-{
-	this->topEditor->setAdsorb(state);
-	this->bottomEditor->setAdsorb(state);
-}
-
-void EditorComponent::setGrid(vocalshaper::GridState state)
-{
-	this->topEditor->setGrid(state);
-	this->bottomEditor->setGrid(state);
-}
-
-bool EditorComponent::isEditMode()
-{
-	return this->editModeFlag;
-}
-
-void EditorComponent::setEditMode(bool editMode)
-{
-	this->editModeFlag = editMode;
-	this->topEditor->setEditMode(editMode);
-	this->bottomEditor->setEditMode(editMode);
-}
-
-uint8_t EditorComponent::getToolID()
-{
-	return this->toolID;
-}
-
-void EditorComponent::setToolID(uint8_t toolID)
-{
-	this->toolID = toolID;
-}
-
 void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock locker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 	auto messageManager = juce::MessageManager::getInstance();
@@ -744,10 +623,10 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 			auto data = reinterpret_cast<const vocalshaper::actions::project::AddTrackAction::DataType*>(action.getData());
 			if (type == vocalshaper::actions::ActionBase::UndoType::Perform) {
 				int index = data->index;
-				messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+				messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 			}
 			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
-				if (data->index == this->trackID) {
+				if (data->index == this->getTrackID()) {
 					juce::ScopedReadLock projLock(action.getProxy()->getLock());
 					int size = vocalshaper::ProjectDAO::trackSize(action.getProxy()->getPtr());
 					int nextID = data->index - 1;
@@ -755,18 +634,18 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 						nextID = 0;
 					}
 					int index = nextID;
-					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+					messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 				}
 				else {
-					int index = this->trackID;
-					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+					int index = this->getTrackID();
+					messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 				}
 			}
 		}
 		else if (action.getActionType() == vocalshaper::actions::ProjectAction::Actions::RemoveTrack) {
 			auto data = reinterpret_cast<const vocalshaper::actions::project::RemoveTrackAction::DataType*>(action.getData());
 			if (type == vocalshaper::actions::ActionBase::UndoType::Perform) {
-				if (data->index == this->trackID) {
+				if (data->index == this->getTrackID()) {
 					juce::ScopedReadLock projLock(action.getProxy()->getLock());
 					int size = vocalshaper::ProjectDAO::trackSize(action.getProxy()->getPtr());
 					int nextID = data->index - 1;
@@ -774,16 +653,16 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 						nextID = 0;
 					}
 					int index = nextID;
-					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+					messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 				}
 				else {
-					int index = this->trackID;
-					messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+					int index = this->getTrackID();
+					messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 				}
 			}
 			else if (type == vocalshaper::actions::ActionBase::UndoType::Undo) {
 				int index = data->index;
-				messageManager->callAsync([this, index] {this->setCurrentTrack(index); });
+				messageManager->callAsync([this, index] {this->wannaSetCurrentTrack(index); });
 			}
 		}
 	}
@@ -791,8 +670,8 @@ void EditorComponent::listenTrackSizeChange(const vocalshaper::actions::ActionBa
 
 void EditorComponent::listenProjectLengthChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock locker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 	auto messageManager = juce::MessageManager::getInstance();
@@ -800,25 +679,25 @@ void EditorComponent::listenProjectLengthChange(const vocalshaper::actions::Acti
 		return;
 	}
 	{
-		juce::ScopedReadLock projLocker(this->project->getLock());
-		double totalLength = EditorComponent::countProjectTime(this->project);
+		juce::ScopedReadLock projLocker(this->getProject()->getLock());
+		double totalLength = EditorComponent::countProjectTime(this->getProject());
 		double bar =
-			this->project->getBeat()->getBarAtTime(std::floor(totalLength));
+			this->getProject()->getBeat()->getBarAtTime(std::floor(totalLength));
 		bar = std::max(std::floor(bar) + 4, 20.);
 		double totalTime =
-			this->project->getBeat()->getTimeAtBar(bar);
+			this->getProject()->getBeat()->getTimeAtBar(bar);
 		if (totalTime != this->totalTimeTemp || totalLength != this->totalLengthTemp) {
 			this->totalTimeTemp = totalTime;
 			this->totalLengthTemp = totalLength;
-			messageManager->callAsync([this] {this->refreshTotalLength(); });
+			messageManager->callAsync([this] {this->wannaRefreshTotalLength(); });
 		}
 	}
 }
 
 void EditorComponent::listenAllChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
-	juce::ScopedReadLock locker(this->projectLock);
-	if (this->project != action.getProxy()) {
+	juce::ScopedReadLock locker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
 		return;
 	}
 	auto messageManager = juce::MessageManager::getInstance();
@@ -837,7 +716,7 @@ void EditorComponent::listenCurrentPositionChange(double currentTime)
 	if (!messageManager) {
 		return;
 	}
-	messageManager->callAsync([this, currentTime] {this->currentPositionChanged(currentTime); });
+	messageManager->callAsync([this, currentTime] {this->setCurrentPosition(currentTime); });
 }
 
 void EditorComponent::listenFollowStateChange(bool followState)
@@ -846,7 +725,7 @@ void EditorComponent::listenFollowStateChange(bool followState)
 	if (!messageManager) {
 		return;
 	}
-	messageManager->callAsync([this, followState] {this->followStateChanged(followState); });
+	messageManager->callAsync([this, followState] {this->setFollowState(followState); });
 }
 
 void EditorComponent::listenLoopRangeChange(double startTime, double endTime)
@@ -855,7 +734,7 @@ void EditorComponent::listenLoopRangeChange(double startTime, double endTime)
 	if (!messageManager) {
 		return;
 	}
-	messageManager->callAsync([this, startTime, endTime] {this->loopRangeChanged(startTime, endTime); });
+	messageManager->callAsync([this, startTime, endTime] {this->setLoopRange(startTime, endTime); });
 }
 
 void EditorComponent::resized()
@@ -1202,7 +1081,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"View Mode", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
 			}
 			return flag;
@@ -1212,7 +1091,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Edit Mode", [this]()->int {
 			int flag = 0;
-			if (this->isEditMode()) {
+			if (this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isTicked;
 			}
 			return flag;
@@ -1223,7 +1102,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Tool 1", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			if (this->getToolID() == 1) {
@@ -1236,7 +1115,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Tool 2", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			if (this->getToolID() == 2) {
@@ -1249,7 +1128,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Tool 3", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			if (this->getToolID() == 3) {
@@ -1262,7 +1141,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Tool 4", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			if (this->getToolID() == 4) {
@@ -1275,7 +1154,7 @@ void EditorComponent::initCommandFlagHook()
 		"VocalSharp.VocalShaper.CommandManager", "RegisterFlagHook",
 		"Tool 5", [this]()->int {
 			int flag = 0;
-			if (!this->isEditMode()) {
+			if (!this->getEditMode()) {
 				flag |= juce::ApplicationCommandInfo::CommandFlags::isDisabled;
 			}
 			if (this->getToolID() == 5) {

@@ -48,9 +48,9 @@ public:
 
 public:
 	//当项目实例发生切换时被调用
-	virtual void projectChangedCallback(const vocalshaper::ProjectProxy* ptr) override;
+	virtual void setProjectCallback(const vocalshaper::ProjectProxy* ptr) override;
 	//当切换当前轨道时被调用
-	virtual void trackChangedCallback(int trackID) override;
+	virtual void setTrackIDCallback(int trackID) override;
 	//切换水平浏览范围时被调用（针对轨道面板）
 	virtual void setHViewPortCallback(double startTime, double endTime) override;
 	//切换垂直浏览范围时被调用（针对轨道面板）

@@ -921,7 +921,7 @@ void ScrollerBase::mouseExit(const juce::MouseEvent& event)
 }
 
 //
-void ScrollerBase::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
+void ScrollerBase::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	juce::ScopedWriteLock locker1(this->tempLock),locker2(this->getProjLock());
 
@@ -965,7 +965,7 @@ void ScrollerBase::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
 	}
 }
 
-void ScrollerBase::trackChangedCallback(int trackID)
+void ScrollerBase::setTrackIDCallback(int trackID)
 {
 	juce::ScopedWriteLock locker1(this->tempLock), locker2(this->getProjLock());
 	if (!this->getProject() || !this->ptrTemp) {

@@ -455,7 +455,7 @@ void TimeRuler::paint(juce::Graphics& g)
 
 }
 
-void TimeRuler::projectChangedCallback(const vocalshaper::ProjectProxy* ptr)
+void TimeRuler::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	this->labelEditor->setProject(const_cast<vocalshaper::ProjectProxy*>(ptr));
 	this->timeValue->close();
@@ -467,7 +467,7 @@ void TimeRuler::setEditModeCallback(bool editMode)
 	this->repaint();
 }
 
-void TimeRuler::trackChangedCallback(int trackID)
+void TimeRuler::setTrackIDCallback(int trackID)
 {
 	this->repaint();
 }

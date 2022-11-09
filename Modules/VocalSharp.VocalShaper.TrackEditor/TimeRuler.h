@@ -15,9 +15,9 @@ public:
 	void paint(juce::Graphics& g) override;
 
 public:
-	void projectChangedCallback(const vocalshaper::ProjectProxy* ptr) override;
+	void setProjectCallback(const vocalshaper::ProjectProxy* ptr) override;
 	void setEditModeCallback(bool editMode) override;
-	void trackChangedCallback(int trackID) override;
+	void setTrackIDCallback(int trackID) override;
 	void setTotalLengthCallback(double totalLength) override;
 	void setCurrentPositionCallback(double currentTime) override;
 	void setLoopRangeCallback(double startTime, double endTime) override;
