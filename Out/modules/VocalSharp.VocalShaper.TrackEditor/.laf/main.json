@@ -5,7 +5,7 @@
   },
   "size": {
     "width-trackHead:number": 0.075,
-    "height-timeRuler:number": 0.03,
+    "height-timeRuler:number": 0.02,
     "width-verticalScroller:number": 0.0125,
     "height-horizontalScroller:number": 0.0225,
 
@@ -37,13 +37,13 @@
     "height-horizontalScroller-labelBlockTopMargin:number": 0.008,
     "width-horizontalScroller-labelBlock:number": 0.0025,
 
-    "height-timeRuler-barLine:number": 0.012,
-    "height-timeRuler-beatLine:number": 0.007,
+    "height-timeRuler-barLine:number": 0.015,
+    "height-timeRuler-beatLine:number": 0.0075,
     "width-timeRuler-barLine:number": 0.00075,
     "width-timeRuler-beatLine:number": 0.0005,
     "width-timeRuler-minLineSpace:number": 0.02,
 
-    "width-timeRuler-barTextLeftMargin:number": 0.001,
+    "width-timeRuler-barTextLeftMargin:number": 0.0025,
     "width-timeRuler-barTextRightMargin:number": 0.0025,
 
     "width-timeRuler-loopJudgeArea:number": 0.005,
@@ -87,7 +87,7 @@
   "scale": {
     "height-curveByTrack:number": 0.5,
 
-    "height-timeRuler-barText:number": 0.8,
+    "height-timeRuler-barText:number": 0.9,
 
     "height-labelEditorComboBox:number": 0.8,
     "height-labelEditorCodeEditor:number": 0.95,

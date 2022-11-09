@@ -232,7 +232,7 @@ void TimeRuler::paint(juce::Graphics& g)
 	int posY_barLine = this->getHeight() - height_barLine;
 	int posY_beatLine = this->getHeight() - height_beatLine;
 
-	float height_barText = posY_barLine * this->scales.height_timeRuler_barText;
+	float height_barText = (this->getHeight() - posY_barLine) * this->scales.height_timeRuler_barText;
 
 	float width_barTextLeftMargin = this->sizes.width_timeRuler_barTextLeftMargin * screenSize.getWidth();
 	float width_barTextRightMargin = this->sizes.width_timeRuler_barTextRightMargin * screenSize.getWidth();
@@ -263,7 +263,14 @@ void TimeRuler::paint(juce::Graphics& g)
 				= this->getProject()->getBeat()->getTimeAtBar(trueStartBar);
 			double trueEndTime = std::ceil(endTime);
 
-			//根据缓存绘制刻度线和文字
+			//序号缓存
+			struct BarTextTemp {
+				juce::String text;
+				juce::Rectangle<int> rect;
+			};
+			std::queue<BarTextTemp> barTextList;
+
+			//根据缓存绘制刻度线和并保存文字缓存
 			float lastBarTextEndPos = 0.f;				//上一个拍号序号结束位置
 			float firstBarTextPos = this->getWidth();	//第一个拍号序号位置
 			for (auto t = trueStartTime; t <= trueEndTime; ) {
@@ -299,14 +306,13 @@ void TimeRuler::paint(juce::Graphics& g)
 						//计算序号绘制位置
 						lastBarTextEndPos = pos + width_barTextLeftMargin + width_barText + width_barTextRightMargin;
 						juce::Rectangle<int> rectBarText(
-							pos + width_barTextLeftMargin, 0,
-							width_barText, posY_barLine
-							);
+							pos + width_barTextLeftMargin,
+							posY_barLine + (this->getHeight() - posY_barLine) / 2 - height_barText / 2,
+							width_barText, height_barText
+						);
 
-						//绘制序号
-						g.setFont(barTextFont);
-						g.setColour(this->colors.text_timeRuler);
-						g.drawFittedText(barText, rectBarText, juce::Justification::centred, 1);
+						//放入缓存
+						barTextList.push({ barText,rectBarText });
 					}
 				}
 				else {
@@ -326,6 +332,20 @@ void TimeRuler::paint(juce::Graphics& g)
 				t += 1. / (beatBase / 4.);
 			}
 
+			//由缓存绘制序号
+			for (; barTextList.size() > 0; barTextList.pop()) {
+				auto& i = barTextList.front();
+
+				//填充文字下方
+				g.setColour(this->colors.background_timeRuler);
+				g.fillRect(i.rect);
+
+				//绘制序号
+				g.setFont(barTextFont);
+				g.setColour(this->colors.text_timeRuler);
+				g.drawFittedText(i.text, i.rect, juce::Justification::centred, 1);
+			}
+
 			//判断并绘制前端小节序号
 			{
 				//生成文字并计算大小
@@ -338,9 +358,14 @@ void TimeRuler::paint(juce::Graphics& g)
 				if (width_barTextLeftMargin + width_barText + width_barTextRightMargin <= firstBarTextPos) {
 					//计算序号绘制位置
 					juce::Rectangle<int> rectBarText(
-						width_barTextLeftMargin, 0,
-						width_barText, posY_barLine
+						width_barTextLeftMargin,
+						posY_barLine + (this->getHeight() - posY_barLine) / 2 - height_barText / 2,
+						width_barText, height_barText
 					);
+
+					//填充文字下方
+					g.setColour(this->colors.background_timeRuler);
+					g.fillRect(rectBarText);
 
 					//绘制序号
 					g.setFont(barTextFont);
