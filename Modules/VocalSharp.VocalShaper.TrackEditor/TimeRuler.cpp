@@ -1250,6 +1250,9 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					}
 				}
 
+				//关闭预览
+				this->timeValue->close();
+
 				//右键菜单
 				juce::PopupMenu menu;
 				menu.addItem(1, this->tr("bt_TimeUnselect"),
@@ -1377,9 +1380,6 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 					//如果标签已选择
 					if (labelIndex >= 0 && labelIndex < labelSize) {
-						//关闭时间值预览
-						this->timeValue->close();
-
 						//更改鼠标并刷新
 						this->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 						this->repaint();
@@ -1399,46 +1399,12 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 				//判断选区
 				if (posX >= startLoopJudgePos && posX <= startLoopPos) {
-					{
-						//计算时间
-						double x = loopStartTime;
-						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
-						double time = this->getProject()->getTempo()->get_t(x);
-						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
-						double xFromBar
-							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->getProject()->getTempo()->get_T(x);
-
-						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
-						this->timeValue->showAt(juce::Point<int>(
-							(x - startTime) * ppb, this->getHeight()));
-					}
-
 					//更改鼠标并刷新
 					this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
 					this->repaint();
 					return;
 				}
 				else if (posX >= endLoopPos && posX <= endLoopJudgePos) {
-					{
-						//计算时间
-						double x = loopEndTime;
-						double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
-						double time = this->getProject()->getTempo()->get_t(x);
-						uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
-						uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
-						double xFromBar
-							= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-						double tempo = this->getProject()->getTempo()->get_T(x);
-
-						//设置预览位置
-						this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
-						this->timeValue->showAt(juce::Point<int>(
-							(x - startTime) * ppb, this->getHeight()));
-					}
-
 					//更改鼠标并刷新
 					this->setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
 					this->repaint();
@@ -1446,33 +1412,10 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				}
 			}
 
-			{
-				//计算时间
-				double x = startTime + posX / ppb;
-				double xInBar = this->getProject()->getBeat()->getBarAtTime(x);
-				double time = this->getProject()->getTempo()->get_t(x);
-				uint8_t beat = this->getProject()->getBeat()->getBeatAtTime(x);
-				uint8_t base = this->getProject()->getBeat()->getBaseAtTime(x);
-				double xFromBar
-					= (x - this->getProject()->getBeat()->getTimeAtBar(std::floor(xInBar))) * (base / 4.);
-				double tempo = this->getProject()->getTempo()->get_T(x);
-
-				//设置预览位置
-				this->timeValue->setValue(x, xInBar, xFromBar, time, beat, base, tempo);
-				this->timeValue->showAt(juce::Point<int>(
-					posX, this->getHeight()));
-			}
-
 			//更改鼠标并刷新
 			this->setMouseCursor(juce::MouseCursor::NormalCursor);
 			this->repaint();
 		}	
-	}
-
-	//超范围强制关闭
-	if (posY < 0 || posY > this->getHeight()) {
-		this->timeValue->close();
-		this->setMouseCursor(juce::MouseCursor::NormalCursor);
 	}
 }
 
