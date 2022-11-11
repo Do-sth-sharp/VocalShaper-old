@@ -47,6 +47,10 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "timeRuler-labelBorderSelected", this->colors.timeRuler_labelBorderSelected, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
 		"main", "color", "background-timeViewer", this->colors.background_timeViewer, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
@@ -110,6 +114,10 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-timeRuler-label", this->sizes.height_timeRuler_label, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-timeRuler-labelBorderSelected", this->sizes.height_timeRuler_labelBorderSelected, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -398,6 +406,7 @@ void TimeRuler::paint(juce::Graphics& g)
 				float height_label = this->sizes.height_timeRuler_label * screenSize.getHeight();
 				float width_label = height_label;
 				float height_labelBottomMargin = this->sizes.height_timeRuler_labelBottomMargin * screenSize.getHeight();
+				float height_labelBorderSelected = this->sizes.height_timeRuler_labelBorderSelected * screenSize.getHeight();
 
 				//遍历并绘制标签
 				int labelSize = vocalshaper::ProjectDAO::labelSize(
@@ -419,6 +428,13 @@ void TimeRuler::paint(juce::Graphics& g)
 							g.fillEllipse(
 								labelPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
 								width_label, height_label);
+
+							//如果选中，绘边框
+							if (i == this->labelSelectedIndex) {
+								g.setColour(this->colors.timeRuler_labelBorderSelected);
+								g.drawEllipse(labelPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
+									width_label, height_label, height_labelBorderSelected);
+							}
 						}
 					}
 				}
@@ -483,12 +499,22 @@ void TimeRuler::paint(juce::Graphics& g)
 void TimeRuler::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	this->labelEditor->setProject(const_cast<vocalshaper::ProjectProxy*>(ptr));
+	jmadf::CallInterface<const vocalshaper::EditorBase*>(
+		"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+	jmadf::CallInterface<const vocalshaper::EditorBase*>(
+		"VocalSharp.VocalShaper.ClipBoard", "UnacceptPaste", this);
 	this->timeValue->close();
 	this->repaint();
 }
 
 void TimeRuler::setEditModeCallback(bool editMode)
 {
+	if (!editMode) {
+		jmadf::CallInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+		jmadf::CallInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptPaste", this);
+	}
 	this->repaint();
 }
 
@@ -1164,12 +1190,21 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 								labelSelectedPos = (vocalshaper::LabelDAO::getPosition(label) - startTime) * ppb;
 							}
 
+							//缓存选择
+							auto indexTemp = this->labelEditingIndex;
+
 							//显示标签编辑面板
 							juce::Rectangle<int> labelRect(
 								labelSelectedPos - width_label / 2, this->getHeight() - height_labelBottomMargin - height_label,
 								width_label, height_label
 							);
 							this->showLabelEditor(labelEditingIndex, labelRect);
+
+							//记录选择
+							this->labelSelectedIndex = indexTemp;
+							jmadf::CallInterface<const vocalshaper::EditorBase*>(
+								"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+								this);
 						}
 					}
 					else {
@@ -1197,6 +1232,9 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 							if (time > timeMax) { time = timeMax; }
 						}
 
+						//缓存选择
+						auto indexTemp = this->labelEditingIndex;
+
 						//编辑事件
 						using ActionType = vocalshaper::actions::label::PositionAction;
 						ActionType::TargetType target;
@@ -1207,12 +1245,42 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 						//发送事件
 						this->getProject()->getProcesser()->processEvent(std::move(action));
+
+						//记录选择
+						this->labelSelectedIndex = indexTemp;
+						jmadf::CallInterface<const vocalshaper::EditorBase*>(
+							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+							this);
 					}
 
 					//刷新
 					this->repaint();
 					break;
 				}
+				else {
+					//取消选择
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+				}
+			}
+			case RulerState::Cursor:
+			{
+				//取消选择
+				jmadf::CallInterface<const vocalshaper::EditorBase*>(
+					"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+
+				//接受粘贴
+				jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "AcceptPaste",
+						this);
+				break;
+			}
+			default:
+			{
+				//取消选择
+				jmadf::CallInterface<const vocalshaper::EditorBase*>(
+					"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+				break;
 			}
 			}
 
@@ -1314,6 +1382,12 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					//发送事件
 					this->getProject()->getProcesser()->processEvent(std::move(action));
 
+					//记录选择
+					this->labelSelectedIndex = newIndex;
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+							this);
+
 					//刷新
 					this->repaint();
 					break;
@@ -1326,6 +1400,13 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 						width_label, height_label
 					);
 					this->showLabelEditor(labelSelectedIndex, labelRect);
+
+					//记录选择
+					this->labelSelectedIndex = labelSelectedIndex;
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+							this);
+
 					break;
 				}
 				case 4:
@@ -1338,11 +1419,24 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 						);
 
 					//发送事件
-					auto ptrAction = action.get();
 					this->getProject()->getProcesser()->processEvent(std::move(action));
+
+					//取消选择
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
 
 					//刷新
 					this->repaint();
+					break;
+				}
+				default:
+				{
+					//记录选择
+					this->labelSelectedIndex = labelSelectedIndex;
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+							this);
+
 					break;
 				}
 				}
@@ -1512,6 +1606,12 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 				//关闭时间值预览
 				this->timeValue->close();
 
+				//记录选择
+				this->labelSelectedIndex = newIndex;
+				jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+						this);
+
 				//刷新
 				this->repaint();
 			}
@@ -1521,6 +1621,7 @@ void TimeRuler::mouseDoubleClick(const juce::MouseEvent& event)
 
 void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 {
+	//比对实例
 	juce::ScopedReadLock projLocker(this->getProjLock());
 	if (this->getProject() != action.getProxy()) {
 		return;
@@ -1531,6 +1632,10 @@ void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action
 	if (!messageManager) {
 		return;
 	}
+
+	//清理选区
+	messageManager->callAsync([this] {jmadf::CallInterface<const vocalshaper::EditorBase*>(
+		"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this); });
 
 	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Project) {
 		if (
@@ -1550,6 +1655,124 @@ void TimeRuler::listenLabelChange(const vocalshaper::actions::ActionBase& action
 
 		//关闭时间值预览
 		messageManager->callAsync([this] {this->timeValue->close(); });
+	}
+}
+
+void TimeRuler::onCopy(vocalshaper::SPSList& list)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
+
+		//标签总数
+		int labelSize
+			= vocalshaper::ProjectDAO::labelSize(this->getProject()->getPtr());
+		if (this->labelSelectedIndex >= 0 && this->labelSelectedIndex < labelSize) {
+			auto label = vocalshaper::ProjectDAO::getLabel(
+				this->getProject()->getPtr(), this->labelSelectedIndex);
+			list.add(vocalshaper::ProjectCopier::copy(label));
+		}
+	}
+}
+
+void TimeRuler::onDelete()
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
+
+		//标签总数
+		int labelSize
+			= vocalshaper::ProjectDAO::labelSize(this->getProject()->getPtr());
+		if (this->labelSelectedIndex >= 0 && this->labelSelectedIndex < labelSize) {
+			//建立事件
+			using ActionType = vocalshaper::actions::project::RemoveLabelAction;
+			ActionType::TargetType target{};
+			auto action = std::make_unique<ActionType>(
+				target, this->labelSelectedIndex, nullptr, this->getProject()
+			);
+
+			//发送事件
+			this->getProject()->getProcesser()->processEvent(std::move(action));
+
+			//取消选择
+			jmadf::CallInterface<const vocalshaper::EditorBase*>(
+				"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+		}
+	}
+}
+
+void TimeRuler::onUnselectAll()
+{
+	this->labelSelectedIndex = -1;
+	this->repaint();
+}
+
+void TimeRuler::onPaste(const vocalshaper::SPSList& list)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		juce::ScopedReadLock projDataLocker(this->getProject()->getLock());
+
+		if (list.size() > 0) {
+			//获取第一个对象
+			auto obj = list.getFirst();
+			if (obj->getType() == vocalshaper::SerializableProjectStructure::Type::Label) {
+				auto ptr = std::unique_ptr<vocalshaper::Label>(vocalshaper::ProjectCopier::copy(
+					dynamic_cast<vocalshaper::Label*>(obj)));
+				auto position = this->getCurrentPosition();
+
+				//获取目标位置
+				int index = -1;
+				{
+					int labelSize
+						= vocalshaper::ProjectDAO::labelSize(this->getProject()->getPtr());
+					for (int i = 0; i < labelSize - 1; i++) {
+						auto label = vocalshaper::ProjectDAO::getLabel(this->getProject()->getPtr(), i);
+						auto nextLabel = vocalshaper::ProjectDAO::getLabel(this->getProject()->getPtr(), i + 1);
+						auto pos = vocalshaper::LabelDAO::getPosition(label);
+						auto nextPos = vocalshaper::LabelDAO::getPosition(nextLabel);
+						if (position >= pos && position < nextPos) {
+							index = i + 1;
+							break;
+						}
+					}
+					if (index < 0) {
+						if (labelSize == 0) {
+							index = 0;
+						}
+						else {
+							auto firstLabel =
+								vocalshaper::ProjectDAO::getLabel(this->getProject()->getPtr(), 0);
+							auto pos = vocalshaper::LabelDAO::getPosition(firstLabel);
+							if (position < pos) {
+								index = 0;
+							}
+							else {
+								index = labelSize;
+							}
+						}
+					}
+				}
+
+				//设置目标位置
+				vocalshaper::LabelDAO::setPosition(ptr.get(), position);
+
+				//编辑事件
+				using ActionType = vocalshaper::actions::project::AddLabelAction;
+				ActionType::TargetType target{};
+				auto action = std::make_unique<ActionType>(
+					target, index, ptr.release(), this->getProject()
+					);
+
+				//发送事件
+				this->getProject()->getProcesser()->processEvent(std::move(action));
+			}
+		}
+
+		//取消选择
+		jmadf::CallInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
 	}
 }
 

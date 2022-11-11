@@ -9,16 +9,6 @@ public:
 	BottomEditor();
 	~BottomEditor() override = default;
 
-	bool isActive() override;
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCopy() override;
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> getCut() override;
-	bool wannaDelete() override;
-	bool wannaCopy() override;
-	bool wannaSelectAll() override;
-	bool wannaPaste(juce::OwnedArray<vocalshaper::SerializableProjectStructure> list) override;
-	bool wannaPaste(const juce::StringArray& list) override;
-	int showClipBoard(const juce::StringArray& list) override;
-
 	void resized() override;
 	void paint(juce::Graphics& g) override;
 

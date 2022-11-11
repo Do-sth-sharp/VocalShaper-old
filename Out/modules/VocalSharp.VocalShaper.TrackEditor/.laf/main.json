@@ -50,6 +50,7 @@
 
     "height-timeRuler-labelBottomMargin:number": 0.0025,
     "height-timeRuler-label:number": 0.0075,
+    "height-timeRuler-labelBorderSelected:number": 0.0015,
 
     "width-labelEditor": 0.2,
     "height-labelEditor": 0.4,

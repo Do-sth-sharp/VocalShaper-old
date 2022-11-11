@@ -89,14 +89,10 @@ EditorComponent::EditorComponent()
 		auto setHViewPortFunc = [this](double startTime, double endTime) {this->wannaChangeHViewPort(startTime, endTime); };
 		auto setVViewPortFunc = [this](double bottomPer, double topPer) {this->wannaChangeVViewPort(bottomPer, topPer); };
 
-		this->topEditor->setMethods(
+		this->setMethods(
 			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
 			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
-		this->bottomEditor->setMethods(
-			setCurrentTrackFunc, refreshTotalLengthFunc, setCurrentPositionFunc,
-			setLoopRangeFunc, setHorizontalViewPortFunc, setVerticalViewPortFunc);
-		this->topEditor->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
-		this->bottomEditor->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
+		this->setTrackViewMethods(setHViewPortFunc, setVViewPortFunc);
 	}
 
 	//创建分割器
@@ -172,44 +168,22 @@ void EditorComponent::redo()
 
 void EditorComponent::cut()
 {
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
-	if (this->topEditor->isActive()) {
-		temp = this->topEditor->getCut();
-	}
-	else if (this->bottomEditor->isActive()) {
-		temp = this->bottomEditor->getCut();
-	}
-	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
-		"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut",
-		std::move(temp));
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendCopy");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendDelete");
 }
 
 void EditorComponent::copy()
 {
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
-	if (this->topEditor->isActive()) {
-		temp = this->topEditor->getCopy();
-	}
-	else if (this->bottomEditor->isActive()) {
-		temp = this->bottomEditor->getCopy();
-	}
-	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
-		"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut",
-		std::move(temp));
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendCopy");
 }
 
 void EditorComponent::paste()
 {
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
-	jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&>(
-		"VocalSharp.VocalShaper.ClipBoard", "Paste",
-		temp);
-	if (this->topEditor->isActive()) {
-		this->topEditor->wannaPaste(std::move(temp));
-	}
-	else if (this->bottomEditor->isActive()) {
-		this->bottomEditor->wannaPaste(std::move(temp));
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendPaste");
 }
 
 void EditorComponent::clipBoard()
@@ -220,24 +194,11 @@ void EditorComponent::clipBoard()
 		clipList);
 
 	int result = -1;
-	if (this->topEditor->isActive()) {
-		result = this->topEditor->showClipBoard(clipList);
-	}
-	else if (this->bottomEditor->isActive()) {
-		result = this->bottomEditor->showClipBoard(clipList);
-	}
+	//TODO 显示剪贴板
 
 	if (result > -1) {
-		juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
-		jmadf::CallInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&, int>(
-			"VocalSharp.VocalShaper.ClipBoard", "PasteItem",
-			temp, result);
-		if (this->topEditor->isActive()) {
-			this->topEditor->wannaPaste(std::move(temp));
-		}
-		else if (this->bottomEditor->isActive()) {
-			this->bottomEditor->wannaPaste(std::move(temp));
-		}
+		jmadf::CallInterface<int>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendPasteWithIndex", result);
 	}
 }
 
@@ -249,106 +210,34 @@ void EditorComponent::cleanClipBoard()
 
 void EditorComponent::createCopy()
 {
-	if (this->topEditor->isActive()) {
-		this->topEditor->wannaCopy();
-	}
-	else if (this->bottomEditor->isActive()) {
-		this->bottomEditor->wannaCopy();
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendCopy");
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendPaste");
 }
 
 void EditorComponent::delete_()
 {
-	if (this->topEditor->isActive()) {
-		this->topEditor->wannaDelete();
-	}
-	else if (this->bottomEditor->isActive()) {
-		this->bottomEditor->wannaDelete();
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendDelete");
 }
 
 void EditorComponent::copyToSystem()
 {
-	juce::OwnedArray<vocalshaper::SerializableProjectStructure> temp;
-	if (this->topEditor->isActive()) {
-		temp = this->topEditor->getCopy();
-	}
-	else if (this->bottomEditor->isActive()) {
-		temp = this->bottomEditor->getCopy();
-	}
-	else {
-		juce::ScopedReadLock locker1(this->getProjLock());
-		juce::ScopedReadLock locker2(this->getProject()->getLock());
-		temp.add(vocalshaper::ProjectCopier::copy(this->getProject()->getPtr()));
-	}
-	{
-		//判断是否多元素
-		bool arrayMode = false;
-		if (temp.size() > 1) {
-			arrayMode = true;
-		}
-
-		//多元素添加列表头
-		juce::String tempS;
-		if (arrayMode) {
-			tempS += "[\n";
-		}
-		for (auto o : temp) {
-			//Json序列化
-			juce::String tempStr;
-			if (vocalshaper::files::vsp3::ProtoConverter::serilazeToJson(
-				o, tempStr, true)) {
-				tempS += tempStr;
-				//多元素加分隔
-				if (arrayMode) {
-					tempS += "\n,\n";
-				}
-			}
-		}
-		//多元素添尾
-		if (arrayMode) {
-			tempS.dropLastCharacters(2);
-			tempS += "]";
-		}
-		juce::SystemClipboard::copyTextToClipboard(tempS);
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendCopyToSystem");
 }
 
 void EditorComponent::pasteFromSystem()
 {
-	juce::String str = juce::SystemClipboard::getTextFromClipboard();
-	juce::StringArray clipList;
-	{
-		juce::var var;
-		if (!juce::JSON::parse(str, var).wasOk()) {
-			return;
-		}
-		if (var.isArray()) {
-			auto array = var.getArray();
-			for (auto& i : *array) {
-				clipList.add(juce::JSON::toString(i, true));
-			}
-		}
-		else {
-			clipList.add(str);
-		}
-	}
-	if (this->topEditor->isActive()) {
-		this->topEditor->wannaPaste(clipList);
-	}
-	else if (this->bottomEditor->isActive()) {
-		this->bottomEditor->wannaPaste(clipList);
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendPasteFromSystem");
 }
 
 void EditorComponent::selectAll()
 {
-	if (this->topEditor->isActive()) {
-		this->topEditor->wannaSelectAll();
-	}
-	else if (this->bottomEditor->isActive()) {
-		this->bottomEditor->wannaSelectAll();
-	}
+	jmadf::CallInterface<void>(
+		"VocalSharp.VocalShaper.ClipBoard", "SendSelectAll");
 }
 
 bool EditorComponent::couldUndo()
@@ -377,25 +266,26 @@ bool EditorComponent::couldRedo()
 
 bool EditorComponent::couldCut()
 {
-	return this->topEditor->isActive() || this->bottomEditor->isActive();
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result);
+	return result;
 }
 
 bool EditorComponent::couldCopy()
 {
-	return this->topEditor->isActive() || this->bottomEditor->isActive();
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result);
+	return result;
 }
 
 bool EditorComponent::couldPaste()
 {
-	if (!this->topEditor->isActive() && !this->bottomEditor->isActive()) {
-		return false;
-	}
-	int size = 0;
-	jmadf::CallInterface<int&>(
-		"VocalSharp.VocalShaper.ClipBoard", "GetSize",
-		size
-		);
-	return size > 0;
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldPaste", result);
+	return result;
 }
 
 bool EditorComponent::couldCleanClipBoard()
@@ -410,30 +300,44 @@ bool EditorComponent::couldCleanClipBoard()
 
 bool EditorComponent::couldCreateCopy()
 {
-	return this->topEditor->isActive() || this->bottomEditor->isActive();
+	bool result1 = false, result2 = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result1);
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldPaste", result2);
+	return result1 && result2;
 }
 
 bool EditorComponent::couldDelete()
 {
-	return this->topEditor->isActive() || this->bottomEditor->isActive();
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result);
+	return result;
 }
 
 bool EditorComponent::couldCopyToSystem()
 {
-	//return this->topEditor->isActive() || this->bottomEditor->isActive();
-	return true;
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyToSystem", result);
+	return result;
 }
 
 bool EditorComponent::couldPasteFromSystem()
 {
-	juce::String str = juce::SystemClipboard::getTextFromClipboard();
-	juce::var var;
-	return juce::JSON::parse(str, var).wasOk();
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldPasteFromSystem", result);
+	return result;
 }
 
 bool EditorComponent::couldSelectAll()
 {
-	return this->topEditor->isActive() || this->bottomEditor->isActive();
+	bool result = false;
+	jmadf::CallInterface<bool&>(
+		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result);
+	return result;
 }
 
 void EditorComponent::lastTrack()

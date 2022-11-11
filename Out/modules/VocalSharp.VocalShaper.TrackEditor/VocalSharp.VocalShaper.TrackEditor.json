@@ -14,6 +14,7 @@
     "VocalSharp.VocalShaper.LookAndFeelFactory",
     "VocalSharp.VocalShaper.CommandManager",
     "VocalSharp.VocalShaper.CallbackReactor",
+    "VocalSharp.VocalShaper.ClipBoard",
     "WuChang.JMADF.Fonts"
   ]
 }

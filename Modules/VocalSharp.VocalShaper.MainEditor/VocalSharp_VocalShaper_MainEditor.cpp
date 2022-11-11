@@ -129,18 +129,42 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		return false;
 	}
 	if (
-		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&&>(
-			"VocalSharp.VocalShaper.ClipBoard", "CopyAndCut") ||
-		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&>(
-			"VocalSharp.VocalShaper.ClipBoard", "Paste") ||
-		!jmadf::CheckInterface<juce::OwnedArray<::vocalshaper::SerializableProjectStructure>&, int>(
-			"VocalSharp.VocalShaper.ClipBoard", "PasteItem") ||
 		!jmadf::CheckInterface<juce::StringArray&>(
 			"VocalSharp.VocalShaper.ClipBoard", "GetList") ||
 		!jmadf::CheckInterface<int&>(
 			"VocalSharp.VocalShaper.ClipBoard", "GetSize") ||
 		!jmadf::CheckInterface<void>(
-			"VocalSharp.VocalShaper.ClipBoard", "Clean")
+			"VocalSharp.VocalShaper.ClipBoard", "Clean") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "AcceptPaste") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptPaste") ||
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete") ||
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CouldPaste") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendCopy") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendDelete") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendSelectAll") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendPaste") ||
+		!jmadf::CheckInterface<int>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendPasteWithIndex") ||
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CouldCopyToSystem") ||
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CouldPasteFromSystem") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendCopyToSystem") ||
+		!jmadf::CheckInterface<void>(
+			"VocalSharp.VocalShaper.ClipBoard", "SendPasteFromSystem")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.ClipBoard:Bad Interfaces!");
 		return false;

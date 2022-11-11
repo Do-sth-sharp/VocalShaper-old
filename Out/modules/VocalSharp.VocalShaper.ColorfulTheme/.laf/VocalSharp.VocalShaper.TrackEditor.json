@@ -22,6 +22,7 @@
 
     "timeRuler-label-on:string": "$ThemeColorA2",
     "timeRuler-label-off:string": "$ThemeColorD2",
+    "timeRuler-labelBorderSelected:string": "$ThemeColorD1",
 
     "background-labelEditor:string": "$ThemeColorB3",
     "border-labelEditor:string": "$ThemeColorB3",

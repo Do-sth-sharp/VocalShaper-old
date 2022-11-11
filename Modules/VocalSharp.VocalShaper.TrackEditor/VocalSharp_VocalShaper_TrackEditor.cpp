@@ -23,7 +23,8 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor")&&
+		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor") &&
+		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard") &&
 		jmadf::LoadModule("WuChang.JMADF.Fonts")
 		)) {
 		return false;
@@ -77,11 +78,11 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		!jmadf::CheckInterface<juce::LookAndFeel*&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&,
-		const std::function<int()>&, const std::function<float()>&,
-		const juce::Colour, const juce::Colour>(
+			const std::function<int()>&, const std::function<float()>&,
+			const juce::Colour, const juce::Colour>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCallOutBoxLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&,
-		const std::function<int()>&, const std::function<float()>&>(
+			const std::function<int()>&, const std::function<float()>&>(
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorBubbleLAF")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
@@ -111,6 +112,19 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.CallbackReactor:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "AcceptPaste") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete") ||
+		!jmadf::CheckInterface<const vocalshaper::EditorBase*>(
+			"VocalSharp.VocalShaper.ClipBoard", "UnacceptPaste")
+		) {
+		jmadf::RaiseException("@VocalSharp.VocalShaper.ClipBoard:Bad Interfaces!");
 		return false;
 	}
 	if (

@@ -37,6 +37,12 @@ public:
 public:
 	void listenLabelChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
+public:
+	void onCopy(vocalshaper::SPSList& list) override;
+	void onDelete() override;
+	void onUnselectAll() override;
+	void onPaste(const vocalshaper::SPSList& list) override;
+
 private:
 	struct Colors final
 	{
@@ -48,6 +54,7 @@ private:
 
 		juce::Colour timeRuler_label_on;
 		juce::Colour timeRuler_label_off;
+		juce::Colour timeRuler_labelBorderSelected;
 
 		juce::Colour background_timeViewer;
 		juce::Colour border_timeViewer;
@@ -75,6 +82,7 @@ private:
 
 		double height_timeRuler_labelBottomMargin;
 		double height_timeRuler_label;
+		double height_timeRuler_labelBorderSelected;
 
 		double width_labelEditor;
 		double height_labelEditor;
@@ -111,6 +119,7 @@ private:
 
 	double labelEditingTime = -1;
 	int labelEditingIndex = -1;
+	int labelSelectedIndex = -1;
 	double timePressed = -1;
 	double totalTime = 0.;
 
