@@ -104,6 +104,8 @@ private:
 
 	void showLabelEditor(int labelIndex, juce::Rectangle<int> place);
 
+	void initCommandID();
+
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	juce::Rectangle<int> screenSize;
 	std::function<const juce::String(const juce::String&)> tr;
@@ -130,6 +132,11 @@ private:
 		Label,		//更改标签位置
 		Cursor		//更改播放指针位置
 	}rulerState = RulerState::Normal;
+
+	int cutCommandID = -1, copyCommandID = -1, pasteCommandID = -1,
+		createCopyCommandID= -1,
+		copyToSystemCommandID = -1, pasteFromSystemCommandID = -1;
+	juce::ApplicationCommandManager* commandManager = nullptr;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeRuler)
 };

@@ -68,6 +68,11 @@ bool VocalSharp_VocalShaper_ClipBoard::init()
 			result = this->clipBoard->couldPaste();
 		}
 	);
+	jmadf::RegisterInterface<bool&>(
+		"CouldAcceptPaste", [this](const juce::String&, bool& result) {
+			result = this->clipBoard->couldAcceptPaste();
+		}
+	);
 
 	jmadf::RegisterInterface<void>(
 		"SendCopy", [this](const juce::String&) {

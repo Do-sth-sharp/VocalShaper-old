@@ -304,7 +304,7 @@ bool EditorComponent::couldCreateCopy()
 	jmadf::CallInterface<bool&>(
 		"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete", result1);
 	jmadf::CallInterface<bool&>(
-		"VocalSharp.VocalShaper.ClipBoard", "CouldPaste", result2);
+		"VocalSharp.VocalShaper.ClipBoard", "CouldAcceptPaste", result2);
 	return result1 && result2;
 }
 

@@ -136,7 +136,13 @@ bool ClipBoard::couldCopyAndDelete()
 bool ClipBoard::couldPaste()
 {
 	juce::ScopedReadLock locker(this->funcLock);
-	return this->pMethod.editor && (this->size() > 0);
+	return this->couldAcceptPaste() && (this->size() > 0);
+}
+
+bool ClipBoard::couldAcceptPaste()
+{
+	juce::ScopedReadLock locker(this->funcLock);
+	return this->pMethod.editor;
 }
 
 void ClipBoard::sendCopy()
@@ -221,7 +227,7 @@ bool ClipBoard::couldCopyToSystem()
 bool ClipBoard::couldPasteFromSystem()
 {
 	juce::ScopedReadLock locker(this->funcLock);
-	if (!this->couldPaste()) {
+	if (!this->couldAcceptPaste()) {
 		return false;
 	}
 
@@ -278,7 +284,7 @@ void ClipBoard::sendCopyToSystem()
 void ClipBoard::sendPasteFromSystem()
 {
 	juce::ScopedReadLock locker(this->funcLock);
-	if (this->couldPaste()) {
+	if (this->couldAcceptPaste()) {
 		if (this->pMethod.editor) {
 			juce::String str = juce::SystemClipboard::getTextFromClipboard();
 			juce::StringArray clipList;
@@ -302,10 +308,8 @@ void ClipBoard::sendPasteFromSystem()
 			//对数据类型进行判断转换
 			auto temp = std::make_unique<ArrayType>();
 			for (auto& s : clipList) {
-				auto object = std::make_unique<vocalshaper::SerializableProjectStructure>(
-					vocalshaper::SerializableProjectStructure::Type::Empty);
-				if (vocalshaper::files::vsp3::ProtoConverter::parseFromJson(
-					s, object.get())) {
+				if (auto object = 
+					vocalshaper::files::vsp3::ProtoConverter::parseFromJsonWithUnknownType(s)) {
 					temp->add(object.release());
 				}
 			}

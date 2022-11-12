@@ -147,6 +147,8 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"VocalSharp.VocalShaper.ClipBoard", "CouldCopyAndDelete") ||
 		!jmadf::CheckInterface<bool&>(
 			"VocalSharp.VocalShaper.ClipBoard", "CouldPaste") ||
+		!jmadf::CheckInterface<bool&>(
+			"VocalSharp.VocalShaper.ClipBoard", "CouldAcceptPaste") ||
 		!jmadf::CheckInterface<void>(
 			"VocalSharp.VocalShaper.ClipBoard", "SendCopy") ||
 		!jmadf::CheckInterface<void>(

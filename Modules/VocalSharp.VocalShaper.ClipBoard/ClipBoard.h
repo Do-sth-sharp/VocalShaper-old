@@ -32,6 +32,7 @@ public:
 
 	bool couldCopyAndDelete();
 	bool couldPaste();
+	bool couldAcceptPaste();
 	void sendCopy();
 	void sendDelete();
 	void sendSelectAll();

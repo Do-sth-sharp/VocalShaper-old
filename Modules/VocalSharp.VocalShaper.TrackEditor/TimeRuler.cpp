@@ -18,6 +18,15 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 		this->tr
 		);
 
+	//以下获取命令管理器
+	jmadf::CallInterface<juce::ApplicationCommandManager*&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandManager",
+		this->commandManager
+		);
+
+	//获取命令
+	this->initCommandID();
+
 	//以下获取界面属性
 	bool result = false;
 	//color
@@ -1321,6 +1330,21 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 				//关闭预览
 				this->timeValue->close();
 
+				//记录选择
+				if ((labelSelectedIndex > -1) && this->getEditMode()) {
+					this->labelSelectedIndex = labelSelectedIndex;
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
+						this);
+					this->repaint();
+				}
+				else {
+					//取消选择
+					jmadf::CallInterface<const vocalshaper::EditorBase*>(
+						"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
+				}
+				
+
 				//右键菜单
 				juce::PopupMenu menu;
 				menu.addItem(1, this->tr("bt_TimeUnselect"),
@@ -1332,6 +1356,14 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					(labelSelectedIndex > -1) && this->getEditMode());
 				menu.addItem(4, this->tr("bt_RemoveLabel"),
 					(labelSelectedIndex > -1) && this->getEditMode());
+				menu.addSeparator();
+				menu.addCommandItem(this->commandManager, this->cutCommandID);
+				menu.addCommandItem(this->commandManager, this->copyCommandID);
+				menu.addCommandItem(this->commandManager, this->pasteCommandID);
+				menu.addCommandItem(this->commandManager, this->createCopyCommandID);
+				menu.addSeparator();
+				menu.addCommandItem(this->commandManager, this->copyToSystemCommandID);
+				menu.addCommandItem(this->commandManager, this->pasteFromSystemCommandID);
 
 				//显示右键菜单
 				int result = menu.show();
@@ -1401,12 +1433,6 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 					);
 					this->showLabelEditor(labelSelectedIndex, labelRect);
 
-					//记录选择
-					this->labelSelectedIndex = labelSelectedIndex;
-					jmadf::CallInterface<const vocalshaper::EditorBase*>(
-							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
-							this);
-
 					break;
 				}
 				case 4:
@@ -1427,16 +1453,6 @@ void TimeRuler::mouseUp(const juce::MouseEvent& event)
 
 					//刷新
 					this->repaint();
-					break;
-				}
-				default:
-				{
-					//记录选择
-					this->labelSelectedIndex = labelSelectedIndex;
-					jmadf::CallInterface<const vocalshaper::EditorBase*>(
-							"VocalSharp.VocalShaper.ClipBoard", "AcceptCopyAndDelete",
-							this);
-
 					break;
 				}
 				}
@@ -1694,10 +1710,6 @@ void TimeRuler::onDelete()
 
 			//发送事件
 			this->getProject()->getProcesser()->processEvent(std::move(action));
-
-			//取消选择
-			jmadf::CallInterface<const vocalshaper::EditorBase*>(
-				"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
 		}
 	}
 }
@@ -1769,10 +1781,6 @@ void TimeRuler::onPaste(const vocalshaper::SPSList& list)
 				this->getProject()->getProcesser()->processEvent(std::move(action));
 			}
 		}
-
-		//取消选择
-		jmadf::CallInterface<const vocalshaper::EditorBase*>(
-			"VocalSharp.VocalShaper.ClipBoard", "UnacceptCopyAndDelete", this);
 	}
 }
 
@@ -1783,4 +1791,32 @@ void TimeRuler::showLabelEditor(int labelIndex, juce::Rectangle<int> place)
 
 	//显示控件
 	this->labelEditor->showAt(place);
+}
+
+void TimeRuler::initCommandID()
+{
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Cut", this->cutCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy", this->copyCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Paste", this->pasteCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Create Copy", this->createCopyCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Copy To System", this->copyToSystemCommandID
+		);
+	jmadf::CallInterface<const juce::String&, int&>(
+		"VocalSharp.VocalShaper.CommandManager", "GetCommandID",
+		"Paste From System", this->pasteFromSystemCommandID
+		);
 }
