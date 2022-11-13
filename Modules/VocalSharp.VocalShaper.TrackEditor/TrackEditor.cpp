@@ -71,14 +71,22 @@ TrackEditor::TrackEditor()
 
 	//建立时间标尺
 	this->timeRuler = std::make_unique<TimeRuler>(
-		[this](double time, double delta)
-		{this->hScroller->sendWheelChange(time, delta); },
-		[this](double time, double delta)
-		{this->hScroller->sendWheelChangeWithCtrl(time, delta); });
+		[this](double per, double delta)
+		{this->hScroller->sendWheelChange(per, delta); },
+		[this](double per, double delta)
+		{this->hScroller->sendWheelChangeWithCtrl(per, delta); });
 	this->addChildEditorAndMakeVisible(this->timeRuler.get());
 
 	//建立轨道列表
-	this->tracks = std::make_unique<TrackList>();
+	this->tracks = std::make_unique<TrackList>(
+		[this](double per, double delta)
+		{this->hScroller->sendWheelChange(per, delta); },
+		[this](double per, double delta)
+		{this->hScroller->sendWheelChangeWithCtrl(per, delta); },
+		[this](double per, double delta)
+		{this->vScroller->sendWheelChange(per, delta); },
+		[this](double per, double delta)
+		{this->vScroller->sendWheelChangeWithCtrl(per, delta); });
 	this->addChildEditorAndMakeVisible(this->tracks.get());
 }
 
