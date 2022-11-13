@@ -154,12 +154,6 @@ void ClipBoard::sendCopy()
 			if (ptr) {
 				this->cadMethod.editor->onCopy(*ptr);
 			}
-			else {
-				jassertfalse;
-			}
-		}
-		else {
-			jassertfalse;
 		}
 	}
 }
@@ -171,9 +165,8 @@ void ClipBoard::sendDelete()
 		if (this->cadMethod.editor) {
 			this->cadMethod.editor->onDelete();
 			this->cadMethod.editor->onUnselectAll();
-		}
-		else {
-			jassertfalse;
+			this->cadMethod =
+			{ juce::String(), nullptr };
 		}
 	}
 }
@@ -184,9 +177,6 @@ void ClipBoard::sendSelectAll()
 	if (this->couldCopyAndDelete()) {
 		if (this->cadMethod.editor) {
 			this->cadMethod.editor->onSelectAll();
-		}
-		else {
-			jassertfalse;
 		}
 	}
 }
@@ -206,13 +196,12 @@ void ClipBoard::sendPasteWithIndex(int index)
 				if (ptr) {
 					this->pMethod.editor->onPaste(*ptr);
 					this->pMethod.editor->onUnselectAll();
+					if (this->cadMethod.editor) {
+						this->cadMethod.editor->onUnselectAll();
+						this->cadMethod =
+						{ juce::String(), nullptr };
+					}
 				}
-				else {
-					jassertfalse;
-				}
-			}
-			else {
-				jassertfalse;
 			}
 		}
 	}
@@ -275,9 +264,6 @@ void ClipBoard::sendCopyToSystem()
 				juce::SystemClipboard::copyTextToClipboard(tempS);
 			}
 		}
-		else {
-			jassertfalse;
-		}
 	}
 }
 
@@ -318,10 +304,12 @@ void ClipBoard::sendPasteFromSystem()
 			if (temp->size() > 0) {
 				this->pMethod.editor->onPaste(*temp);
 				this->pMethod.editor->onUnselectAll();
+				if (this->cadMethod.editor) {
+					this->cadMethod.editor->onUnselectAll();
+					this->cadMethod =
+					{ juce::String(), nullptr };
+				}
 			}
-		}
-		else {
-			jassertfalse;
 		}
 	}
 }
