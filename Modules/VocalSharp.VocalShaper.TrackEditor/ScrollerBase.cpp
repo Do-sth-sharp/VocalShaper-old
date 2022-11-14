@@ -104,6 +104,11 @@ void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 			//发送改变
 			this->noticeChange(this->ptrTemp->sp, this->ptrTemp->ep);
 
+			//发送更新
+			if (this->curveChangeCallback) {
+				this->curveChangeCallback();
+			}
+
 			return;
 		}
 
@@ -113,6 +118,22 @@ void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 		//刷新
 		this->repaint();
 	}
+}
+
+bool ScrollerBase::curveIsShown(const vocalshaper::Track* track)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	juce::ScopedReadLock locker(this->tempLock);
+	if (this->getProject() && this->ptrTemp) {
+		auto it = this->ptrTemp->trackState.find(track);
+		return (it != this->ptrTemp->trackState.end()) && it->second;
+	}
+	return false;
+}
+
+void ScrollerBase::setCurveChangeCallback(std::function<void(void)> func)
+{
+	this->curveChangeCallback = func;
 }
 
 void ScrollerBase::sendWheelChange(double per, double delta)
@@ -1243,6 +1264,11 @@ void ScrollerBase::listenCurveChange(const vocalshaper::actions::ActionBase& act
 					double sp = this->ptrTemp->sp, ep = this->ptrTemp->ep;
 					messageManager->callAsync([sp, ep, this] {this->noticeChange(sp, ep); });
 					
+					//发送更新
+					if (this->curveChangeCallback) {
+						messageManager->callAsync([this] {this->curveChangeCallback(); });
+					}
+
 					return;
 				}
 

@@ -19,6 +19,16 @@
   "ThemeColorD3": "#FFFFFF7F",
   "ThemeColorD4": "#FFFFFF33",
 
+  "ThemeColorE1": "3E3EBDFF",
+  "ThemeColorE2": "3E3EBDB3",
+  "ThemeColorE3": "3E3EBD7F",
+  "ThemeColorE4": "3E3EBD33",
+
+  "ThemeColorF1": "12121AFF",
+  "ThemeColorF2": "12121AB3",
+  "ThemeColorF3": "12121A7F",
+  "ThemeColorF4": "12121A33",
+
   "CodeColorError": "#FF2A00",
   "CodeColorComment": "#579F3F",
   "CodeColorKeyWord": "#458DD4",

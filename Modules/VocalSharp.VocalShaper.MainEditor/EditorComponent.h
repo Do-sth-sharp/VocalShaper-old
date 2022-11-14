@@ -77,6 +77,9 @@ public:
 	void listenFollowStateChange(bool followState);
 	void listenLoopRangeChange(double startTime, double endTime);
 
+	//监听器，监听项目列表
+	void listenProjectClose(const vocalshaper::ProjectProxy* ptr);
+
 public:
 	void resized() override;
 	void paint(juce::Graphics& g) override;

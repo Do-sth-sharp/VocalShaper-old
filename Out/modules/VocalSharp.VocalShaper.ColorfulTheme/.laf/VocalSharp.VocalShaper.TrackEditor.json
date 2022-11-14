@@ -48,7 +48,9 @@
     "background-timeViewer:string": "$ThemeColorB4",
     "border-timeViewer:string": "$ThemeColorB4",
     "text-timeViewer:string": "$ThemeColorD2",
-    "value-timeViewer:string": "$ThemeColorA2"
+    "value-timeViewer:string": "$ThemeColorA2",
+
+    "fill-trackList-timeUnselect:string": "$ThemeColorF2"
   },
   "resource": {
   }

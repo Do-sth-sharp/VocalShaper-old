@@ -86,8 +86,16 @@ TrackEditor::TrackEditor()
 		[this](double per, double delta)
 		{this->vScroller->sendWheelChange(per, delta); },
 		[this](double per, double delta)
-		{this->vScroller->sendWheelChangeWithCtrl(per, delta); });
+		{this->vScroller->sendWheelChangeWithCtrl(per, delta); },
+		[this](const vocalshaper::Track* track, bool show)
+		{this->vScroller->showCurve(track, show); },
+		[this](const vocalshaper::Track* track)
+		{return this->vScroller->curveIsShown(track); });
 	this->addChildEditorAndMakeVisible(this->tracks.get());
+
+	//设置回调
+	this->vScroller->setCurveChangeCallback(
+		[this] {this->tracks->refreshList(); });
 }
 
 void TrackEditor::resized()
@@ -137,78 +145,25 @@ void TrackEditor::paint(juce::Graphics& g)
 	g.fillAll(this->colors.background);
 
 	//计算控件大小
-	int width_trackHead = this->sizes.width_trackHead * screenSize.getWidth();
-	int height_timeRuler = this->sizes.height_timeRuler * screenSize.getHeight();
-	int height_borderTop = this->sizes.height_borderTop * screenSize.getHeight();
-	int width_verticalScroller = this->sizes.width_verticalScroller * screenSize.getWidth();
-	int height_horizontalScroller = this->sizes.height_horizontalScroller * screenSize.getHeight();
-	int width_borderRight = this->sizes.width_borderRight * screenSize.getWidth();
+	float width_trackHead = this->sizes.width_trackHead * screenSize.getWidth();
+	float height_timeRuler = this->sizes.height_timeRuler * screenSize.getHeight();
+	float height_borderTop = this->sizes.height_borderTop * screenSize.getHeight();
+	float width_verticalScroller = this->sizes.width_verticalScroller * screenSize.getWidth();
+	float height_horizontalScroller = this->sizes.height_horizontalScroller * screenSize.getHeight();
+	float width_borderRight = this->sizes.width_borderRight * screenSize.getWidth();
 
 	//绘制标尺头部
-	juce::Rectangle<int> rectRulerHead(0, 0, width_trackHead, height_timeRuler);
+	juce::Rectangle<float> rectRulerHead(0, 0, width_trackHead, height_timeRuler);
 	g.setColour(this->colors.background_rulerHead);
 	g.fillRect(rectRulerHead);
 
 	//绘制标尺头上边框
-	juce::Rectangle<int> rectRulerHeadTopBorder(
+	juce::Rectangle<float> rectRulerHeadTopBorder(
 		0, 0,
 		width_trackHead, height_borderTop
 	);
 	g.setColour(this->colors.border);
 	g.fillRect(rectRulerHeadTopBorder);
-
-	//绘制标尺尾部
-	juce::Rectangle<int> rectRulerTail(
-		this->getWidth() - width_verticalScroller, 0,
-		width_verticalScroller, height_timeRuler);
-	g.setColour(this->colors.background_rulerHead);
-	g.fillRect(rectRulerTail);
-
-	//绘制标尺尾上边框
-	juce::Rectangle<int> rectRulerTailTopBorder(
-		this->getWidth() - width_verticalScroller, 0,
-		width_verticalScroller, height_borderTop
-	);
-	g.setColour(this->colors.border);
-	g.fillRect(rectRulerTailTopBorder);
-
-	//绘制标尺尾右边框
-	juce::Rectangle<int> rectRulerTailRightBorder(
-		this->getWidth() - width_borderRight, 0,
-		width_borderRight, height_timeRuler
-	);
-	g.setColour(this->colors.border);
-	g.fillRect(rectRulerTailRightBorder);
-
-	//绘制右下卷滚条交点
-	juce::Rectangle<int> rectScrollerTail(
-		this->getWidth() - width_verticalScroller, this->getHeight() - height_horizontalScroller,
-		width_verticalScroller, height_horizontalScroller);
-	g.setColour(this->colors.background_rulerHead);
-	g.fillRect(rectScrollerTail);
-
-	//绘制卷滚条交点右边框
-	juce::Rectangle<int> rectScrollerTailRightBorder(
-		this->getWidth() - width_borderRight, this->getHeight() - height_horizontalScroller,
-		width_borderRight, height_horizontalScroller
-	);
-	g.setColour(this->colors.border);
-	g.fillRect(rectScrollerTailRightBorder);
-
-	//绘制下卷滚条头部
-	juce::Rectangle<int> rectScrollerHead(
-		0, this->getHeight() - height_horizontalScroller,
-		width_trackHead, height_horizontalScroller);
-	g.setColour(this->colors.background_rulerHead);
-	g.fillRect(rectScrollerHead);
-
-	//绘制卷滚条头部上边框
-	juce::Rectangle<int> rectScrollerHeadTopBorder(
-		0, this->getHeight() - height_horizontalScroller,
-		width_trackHead, height_borderTop
-	);
-	g.setColour(this->colors.border);
-	g.fillRect(rectScrollerHeadTopBorder);
 
 	//绘制轨道头背景
 	juce::Rectangle<int> rectTrackHead(
@@ -217,10 +172,70 @@ void TrackEditor::paint(juce::Graphics& g)
 	g.setColour(this->colors.background_rulerHead);
 	g.fillRect(rectTrackHead);
 
+	//绘制轨道头背景右边框
+	juce::Rectangle<int> rectTrackHeadRightBorder(
+		width_trackHead - width_borderRight, height_timeRuler,
+		width_borderRight, this->getHeight() - height_timeRuler - height_horizontalScroller);
+	g.setColour(this->colors.border);
+	g.fillRect(rectTrackHeadRightBorder);
+
 	//绘制轨道头背景上边框
-	juce::Rectangle<int> rectTrackHeadTopBorder(
+	/*juce::Rectangle<int> rectTrackHeadTopBorder(
 		0, height_timeRuler,
 		width_trackHead, height_borderTop);
 	g.setColour(this->colors.border);
-	g.fillRect(rectTrackHeadTopBorder);
+	g.fillRect(rectTrackHeadTopBorder);*/
+
+	//绘制标尺尾部
+	juce::Rectangle<float> rectRulerTail(
+		this->getWidth() - width_verticalScroller, 0,
+		width_verticalScroller, height_timeRuler);
+	g.setColour(this->colors.background_rulerHead);
+	g.fillRect(rectRulerTail);
+
+	//绘制标尺尾上边框
+	juce::Rectangle<float> rectRulerTailTopBorder(
+		this->getWidth() - width_verticalScroller, 0,
+		width_verticalScroller, height_borderTop
+	);
+	g.setColour(this->colors.border);
+	g.fillRect(rectRulerTailTopBorder);
+
+	//绘制标尺尾右边框
+	juce::Rectangle<float> rectRulerTailRightBorder(
+		this->getWidth() - width_borderRight, 0,
+		width_borderRight, height_timeRuler
+	);
+	g.setColour(this->colors.border);
+	g.fillRect(rectRulerTailRightBorder);
+
+	//绘制右下卷滚条交点
+	juce::Rectangle<float> rectScrollerTail(
+		this->getWidth() - width_verticalScroller, this->getHeight() - height_horizontalScroller,
+		width_verticalScroller, height_horizontalScroller);
+	g.setColour(this->colors.background_rulerHead);
+	g.fillRect(rectScrollerTail);
+
+	//绘制卷滚条交点右边框
+	juce::Rectangle<float> rectScrollerTailRightBorder(
+		this->getWidth() - width_borderRight, this->getHeight() - height_horizontalScroller,
+		width_borderRight, height_horizontalScroller
+	);
+	g.setColour(this->colors.border);
+	g.fillRect(rectScrollerTailRightBorder);
+
+	//绘制下卷滚条头部
+	juce::Rectangle<float> rectScrollerHead(
+		0, this->getHeight() - height_horizontalScroller,
+		width_trackHead, height_horizontalScroller);
+	g.setColour(this->colors.background_rulerHead);
+	g.fillRect(rectScrollerHead);
+
+	//绘制卷滚条头部上边框
+	juce::Rectangle<float> rectScrollerHeadTopBorder(
+		0, this->getHeight() - height_horizontalScroller,
+		width_trackHead, height_borderTop
+	);
+	g.setColour(this->colors.border);
+	g.fillRect(rectScrollerHeadTopBorder);
 }

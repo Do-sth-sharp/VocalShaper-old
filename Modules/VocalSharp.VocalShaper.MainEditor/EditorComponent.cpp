@@ -119,6 +119,11 @@ EditorComponent::EditorComponent()
 		}
 	);
 
+	//监听项目关闭
+	jmadf::CallInterface<const vocalshaper::ProjectProxy::CloseCallbackFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddCloseCallback",
+		[this](const vocalshaper::ProjectProxy* ptr) {this->listenProjectClose(ptr); });
+
 	//添加监听器
 	this->initProjectListener();
 
@@ -152,6 +157,11 @@ bool EditorComponent::isTrackOpen()
 void EditorComponent::setProjectCallback(const vocalshaper::ProjectProxy* ptr)
 {
 	this->setTotalLength(this->countProjectTime(this->getProject()));
+	//TODO 通过播放控制器调整选区
+	//begin test
+	this->setCurrentPosition(0.);
+	this->setLoopRange(-1., -1.);
+	//end test
 }
 
 void EditorComponent::undo()
@@ -639,6 +649,13 @@ void EditorComponent::listenLoopRangeChange(double startTime, double endTime)
 		return;
 	}
 	messageManager->callAsync([this, startTime, endTime] {this->setLoopRange(startTime, endTime); });
+}
+
+void EditorComponent::listenProjectClose(const vocalshaper::ProjectProxy* ptr)
+{
+	if (ptr == this->getProject()) {
+		this->setProject(nullptr);
+	}
 }
 
 void EditorComponent::resized()

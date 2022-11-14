@@ -11,6 +11,8 @@ public:
 public:
 	bool getVertical() const;
 	void showCurve(const vocalshaper::Track* track, bool show);
+	bool curveIsShown(const vocalshaper::Track* track);
+	void setCurveChangeCallback(std::function<void(void)> func);
 
 	void sendWheelChange(double per, double delta);
 	void sendWheelChangeWithCtrl(double per, double delta);
@@ -122,6 +124,8 @@ private:
 	double blockPerTemp = 0.5;						//按在滑块的位置百分比
 
 	int sizeTemp = 0;			//卷滚条长度缓存
+
+	std::function<void(void)> curveChangeCallback;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScrollerBase)
 };
