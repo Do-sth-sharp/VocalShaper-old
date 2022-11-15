@@ -45,9 +45,10 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	//resource
 }
 
-void TrackView::setTrack(const vocalshaper::Track* track, bool isMaster)
+void TrackView::setTrack(const vocalshaper::Track* track, int index, bool isMaster)
 {
 	this->track = track;
+	this->index = index;
 	this->isMaster = isMaster;
 	this->repaint();
 }
@@ -55,6 +56,11 @@ void TrackView::setTrack(const vocalshaper::Track* track, bool isMaster)
 const vocalshaper::Track* TrackView::getTrack()
 {
 	return this->track;
+}
+
+int TrackView::getIndex()
+{
+	return this->index;
 }
 
 bool TrackView::getIsMaster()

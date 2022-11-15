@@ -11,8 +11,9 @@ public:
 		std::function<void(double, double)> wheelChangeWithCtrlVMethod,
 		std::function<void(const vocalshaper::Track*, bool)> showCurveMethod);
 
-	void setTrack(const vocalshaper::Track* track, bool isMaster = false);
+	void setTrack(const vocalshaper::Track* track, int index = -1, bool isMaster = false);
 	const vocalshaper::Track* getTrack();
+	int getIndex();
 	bool getIsMaster();
 
 	void setCurveShown(bool show);
@@ -34,6 +35,7 @@ private:
 	struct Size final
 	{
 		double width_trackHead;
+		double width_trackColorLabel;
 	}sizes;//控件大小
 	struct Scale final
 	{
@@ -43,6 +45,7 @@ private:
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 
 	const vocalshaper::Track* track = nullptr;
+	int index = -1;
 	bool isMaster = false;
 	bool curveShown = false;
 

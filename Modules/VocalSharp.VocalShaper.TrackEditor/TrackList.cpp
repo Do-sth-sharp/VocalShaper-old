@@ -221,7 +221,7 @@ void TrackList::refreshList()
 			);
 			auto track = 
 				vocalshaper::ProjectDAO::getMasterTrack(this->getProject()->getPtr());
-			trackView->setTrack(track, true);
+			trackView->setTrack(track, -1, true);
 			trackView->setCurveShown(this->curveIsShownMethod(track));
 			this->addChildEditor(trackView);
 			this->trackList.add(trackView);
@@ -238,7 +238,7 @@ void TrackList::refreshList()
 			);
 			auto track =
 				vocalshaper::ProjectDAO::getTrack(this->getProject()->getPtr(), i);
-			trackView->setTrack(track);
+			trackView->setTrack(track, i);
 			trackView->setCurveShown(this->curveIsShownMethod(track));
 			this->addChildEditor(trackView);
 			this->trackList.add(trackView);
