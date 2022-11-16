@@ -16,5 +16,8 @@
   "tip_timeUnit": "秒",
   "tip_beatLead": "拍号:",
   "tip_tempoLead": "曲速:",
-  "tip_tempoUnit": "bpm"
+  "tip_tempoUnit": "bpm",
+
+  "tip_UntitledMasterTrack": "未命名主轨道",
+  "tip_UntitledTrackLead": "未命名轨道"
 }

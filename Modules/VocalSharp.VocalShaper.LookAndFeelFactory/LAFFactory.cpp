@@ -6,6 +6,7 @@
 #include "StatusBarFlatTextButtonLAF.h"
 #include "LabelEditorCallOutBoxLAF.h"
 #include "LabelEditorBubbleLAF.h"
+#include "TrackViewSMButtonLAF.h"
 
 juce::LookAndFeel* LAFFactory::getStartMenuButtonLAF(const juce::String& caller, const std::function<int()>& fontHeightFunc)
 {
@@ -139,6 +140,13 @@ juce::LookAndFeel* LAFFactory::getLabelEditorBubbleLAF(const juce::String& calle
 	const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc)
 {
 	auto ptrLAF = new LabelEditorBubbleLAF(borderSizeFunc, cornerSizeFunc);
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getTrackViewSMButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new TrackViewSMButtonLAF;
 	this->addToList(caller, ptrLAF);
 	return ptrLAF;
 }

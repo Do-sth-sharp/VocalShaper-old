@@ -50,7 +50,13 @@
     "text-timeViewer:string": "$ThemeColorD2",
     "value-timeViewer:string": "$ThemeColorA2",
 
-    "fill-trackList-timeUnselect:string": "$ThemeColorF2"
+    "fill-trackList-timeUnselect:string": "$ThemeColorF2",
+
+    "text-trackHeadName:string": "$ThemeColorD2",
+
+    "text-MSButton:string": "$ThemeColorD3",
+    "background-MSButton:string": "$ThemeColorB1",
+    "text-MSButton-highlight:string": "$ThemeColorD1"
   },
   "resource": {
   }

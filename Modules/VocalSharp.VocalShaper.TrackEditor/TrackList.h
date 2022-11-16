@@ -33,6 +33,10 @@ public:
 	void setGridCallback(vocalshaper::GridState state) override;
 
 private:
+	void listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenSMChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
+private:
 	struct Colors final
 	{
 		juce::Colour border;
@@ -64,6 +68,7 @@ private:
 	std::function<bool(const vocalshaper::Track*)> curveIsShownMethod;
 
 	juce::OwnedArray<TrackView> trackList;
+	juce::ReadWriteLock listLock;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };

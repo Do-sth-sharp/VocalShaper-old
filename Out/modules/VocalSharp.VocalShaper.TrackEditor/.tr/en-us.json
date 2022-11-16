@@ -16,5 +16,8 @@
   "tip_timeUnit": "s",
   "tip_beatLead": "beat:",
   "tip_tempoLead": "tempo:",
-  "tip_tempoUnit": "bpm"
+  "tip_tempoUnit": "bpm",
+
+  "tip_UntitledMasterTrack": "Untitled Master Track",
+  "tip_UntitledTrackLead": "Untitled Track"
 }

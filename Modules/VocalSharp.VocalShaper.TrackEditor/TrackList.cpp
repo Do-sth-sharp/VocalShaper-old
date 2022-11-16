@@ -62,6 +62,18 @@ TrackList::TrackList(
 		);
 
 	//resource
+
+	//监听颜色变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenColorChange(action, type); });
+
+	//监听MS状态变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenSMChange(action, type); });
 }
 
 void TrackList::resized()
@@ -128,6 +140,8 @@ void TrackList::paint(juce::Graphics& g)
 
 	//绘制轨道上边框
 	{
+		juce::ScopedReadLock listLocker(this->listLock);
+
 		//绘制轨道上边框
 		int posYView = -(topTrack * ppt);
 		for (int i = 0; i < this->trackList.size(); i++) {
@@ -195,6 +209,8 @@ void TrackList::paintOverChildren(juce::Graphics& g)
 
 void TrackList::refreshList()
 {
+	juce::ScopedWriteLock listLocker(this->listLock);
+
 	//清理轨道视图
 	{
 		for (auto i : this->trackList) {
@@ -223,7 +239,7 @@ void TrackList::refreshList()
 				vocalshaper::ProjectDAO::getMasterTrack(this->getProject()->getPtr());
 			trackView->setTrack(track, -1, true);
 			trackView->setCurveShown(this->curveIsShownMethod(track));
-			this->addChildEditor(trackView);
+			this->addChildEditorAndMakeVisible(trackView);
 			this->trackList.add(trackView);
 		}
 
@@ -240,7 +256,7 @@ void TrackList::refreshList()
 				vocalshaper::ProjectDAO::getTrack(this->getProject()->getPtr(), i);
 			trackView->setTrack(track, i);
 			trackView->setCurveShown(this->curveIsShownMethod(track));
-			this->addChildEditor(trackView);
+			this->addChildEditorAndMakeVisible(trackView);
 			this->trackList.add(trackView);
 		}
 
@@ -258,6 +274,7 @@ void TrackList::resizeList()
 	juce::ScopedReadLock projLocker(this->getProjLock());
 	if (this->getProject()) {
 		juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
+		juce::ScopedReadLock listLocker(this->listLock);
 
 		//获取轨道状态
 		double bottomTrack = 0., topTrack = 0.;
@@ -372,4 +389,20 @@ void TrackList::setVViewPortCallback(double bottomTrack, double topTrack)
 void TrackList::setGridCallback(vocalshaper::GridState state)
 {
 	//TODO 更新背景网格
+}
+
+void TrackList::listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock listLocker(this->listLock);
+	for (auto i : this->trackList) {
+		i->listenColorChange(action, type);
+	}
+}
+
+void TrackList::listenSMChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock listLocker(this->listLock);
+	for (auto i : this->trackList) {
+		i->listenSMChange(action, type);
+	}
 }

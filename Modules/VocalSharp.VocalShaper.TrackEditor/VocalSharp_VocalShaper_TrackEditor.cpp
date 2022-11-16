@@ -83,7 +83,9 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCallOutBoxLAF") ||
 		!jmadf::CheckInterface<juce::LookAndFeel*&,
 			const std::function<int()>&, const std::function<float()>&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorBubbleLAF")
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorBubbleLAF") ||
+		!jmadf::CheckInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewSMButtonLAF")
 		) {
 		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;

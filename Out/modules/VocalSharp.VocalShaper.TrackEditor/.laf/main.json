@@ -4,7 +4,7 @@
     "class": "VocalSharp.VocalShaper.TrackEditor"
   },
   "size": {
-    "width-trackHead:number": 0.065,
+    "width-trackHead:number": 0.1,
     "height-timeRuler:number": 0.025,
     "width-verticalScroller:number": 0.0125,
     "height-horizontalScroller:number": 0.0225,
@@ -75,7 +75,25 @@
     "height-timeViewerArrow:number": 0.01,
 
     "width-timeViewerBorder:number": 0.001,
-    "width-timeViewerCorner:number": 0.0025
+    "width-timeViewerCorner:number": 0.0025,
+
+    "width-trackHeadLeftMargin:number": 0.005,
+    "width-trackHeadRightMargin:number": 0.0075,
+    "height-trackHeadTopMargin:number": 0.0175,
+    "height-trackHeadBottomMargin:number": 0.0175,
+
+    "height-trackHeadTitleAndButtonLine:number": 0.025,
+    "height-trackHeadNameText:number": 0.0175,
+
+    "width-trackHeadColorLightLeftMargin:number": 0.0005,
+    "width-trackHeadLightNameSplit:number": 0.005,
+    "width-trackHeadNameButtonSplit:number": 0.0025,
+    "width-trackHeadButtonSplit:number": 0.0025,
+
+    "height-trackHeadLineSplit:number": 0.01,
+    "height-trackHeadControlLine:number": 0.025,
+
+    "width-trackHeadLinkCurveSplit:number": 0.0025
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
@@ -93,6 +111,9 @@
     "height-labelEditorComboBox:number": 0.8,
     "height-labelEditorCodeEditor:number": 0.95,
     "height-labelEditorResultLabel:number": 0.95,
-    "height-labelEditorButton:number": 0.8
+    "height-labelEditorButton:number": 0.8,
+
+    "height-trackHeadColorLight:number": 0.25,
+    "height-trackHeadMSButton:number": 1.0
   }
 }

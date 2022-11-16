@@ -166,14 +166,14 @@ void TrackEditor::paint(juce::Graphics& g)
 	g.fillRect(rectRulerHeadTopBorder);
 
 	//绘制轨道头背景
-	juce::Rectangle<int> rectTrackHead(
+	juce::Rectangle<float> rectTrackHead(
 		0, height_timeRuler,
 		width_trackHead, this->getHeight() - height_timeRuler - height_horizontalScroller);
 	g.setColour(this->colors.background_rulerHead);
 	g.fillRect(rectTrackHead);
 
 	//绘制轨道头背景右边框
-	juce::Rectangle<int> rectTrackHeadRightBorder(
+	juce::Rectangle<float> rectTrackHeadRightBorder(
 		width_trackHead - width_borderRight, height_timeRuler,
 		width_borderRight, this->getHeight() - height_timeRuler - height_horizontalScroller);
 	g.setColour(this->colors.border);
