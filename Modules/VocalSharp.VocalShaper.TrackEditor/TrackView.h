@@ -30,6 +30,7 @@ public:
 public:
 	void listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 	void listenSMChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenLinkChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
 private:
 	struct Colors final
@@ -41,6 +42,14 @@ private:
 		juce::Colour text_MSButton;
 		juce::Colour background_MSButton;
 		juce::Colour text_MSButton_highlight;
+
+		juce::Colour text_trackViewLinkButton;
+		juce::Colour background_trackViewLinkButton;
+
+		juce::Colour icon_trackViewShowCurveButton;
+		juce::Colour background_trackViewShowCurveButton;
+		juce::Colour icon_trackViewShowCurveButton_highlight;
+		juce::Colour background_trackViewShowCurveButton_highlight;
 	}colors;//界面颜色
 	struct Size final
 	{
@@ -75,6 +84,7 @@ private:
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* SMButton;
+		juce::LookAndFeel* linkButton;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
@@ -96,9 +106,12 @@ private:
 	std::unique_ptr<juce::DrawableButton> curveButton = nullptr;
 
 	void setColor(juce::Colour color);
+	void setTrackType(const vocalshaper::Track* track);
 
 	void sendSolo(bool solo);
 	void sendMute(bool mute);
+
+	void showLinkMenu();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackView)
 };

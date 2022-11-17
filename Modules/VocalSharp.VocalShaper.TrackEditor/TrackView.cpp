@@ -50,6 +50,30 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
 		"main", "color", "text-MSButton-highlight", this->colors.text_MSButton_highlight, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-trackViewLinkButton", this->colors.text_trackViewLinkButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-trackViewLinkButton", this->colors.background_trackViewLinkButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "icon-trackViewShowCurveButton", this->colors.icon_trackViewShowCurveButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-trackViewShowCurveButton", this->colors.background_trackViewShowCurveButton, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "icon-trackViewShowCurveButton-highlight", this->colors.icon_trackViewShowCurveButton_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-trackViewShowCurveButton-highlight", this->colors.background_trackViewShowCurveButton_highlight, result
+		);
 
 	//size
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
@@ -145,7 +169,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	);
 
 	//建立MS按钮
-	this->mButton = std::make_unique<juce::TextButton>("M");
+	this->mButton = std::make_unique<juce::TextButton>("M", this->tr("tip_Mute"));
 	this->mButton->setToggleable(true);
 	this->mButton->setWantsKeyboardFocus(false);
 	this->mButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
@@ -155,7 +179,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	};
 	this->addAndMakeVisible(this->mButton.get());
 
-	this->sButton = std::make_unique<juce::TextButton>("S");
+	this->sButton = std::make_unique<juce::TextButton>("S", this->tr("tip_Solo"));
 	this->sButton->setToggleable(true);
 	this->sButton->setWantsKeyboardFocus(false);
 	this->sButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
@@ -165,8 +189,35 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	};
 	this->addAndMakeVisible(this->sButton.get());
 
+	//建立链接按钮样式
+	jmadf::CallInterface<juce::LookAndFeel*&>(
+		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewLinkButtonLAF",
+		this->lafs.linkButton
+		);
+	this->lafs.linkButton->setColour(
+		juce::TextButton::ColourIds::buttonColourId, this->colors.background_trackViewLinkButton
+	);
+	this->lafs.linkButton->setColour(
+		juce::TextButton::ColourIds::buttonOnColourId, this->colors.background_trackViewLinkButton
+	);
+	this->lafs.linkButton->setColour(
+		juce::TextButton::ColourIds::textColourOnId, this->colors.text_trackViewLinkButton
+	);
+	this->lafs.linkButton->setColour(
+		juce::TextButton::ColourIds::textColourOffId, this->colors.text_trackViewLinkButton
+	);
+	this->lafs.linkButton->setColour(
+		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+
 	//建立链接按钮
-	this->linkButton = std::make_unique<juce::TextButton>("");
+	this->linkButton = std::make_unique<juce::TextButton>(
+		this->tr("bt_EmptyTrack"), this->tr("tip_Link"));
+	this->linkButton->setWantsKeyboardFocus(false);
+	this->linkButton->setFocusContainerType(juce::Component::FocusContainerType::none);
+	this->linkButton->setLookAndFeel(this->lafs.linkButton);
+	this->linkButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+	this->linkButton->onClick = [this] {this->showLinkMenu(); };
 	this->addChildComponent(this->linkButton.get());
 
 	//建立曲线显示按钮
@@ -187,6 +238,17 @@ void TrackView::setTrack(const vocalshaper::Track* track, int index, bool isMast
 		juce::NotificationType::dontSendNotification);
 	this->sButton->setToggleState(vocalshaper::TrackDAO::getSolo(track),
 		juce::NotificationType::dontSendNotification);
+
+	this->mButton->setEnabled(!isMaster);
+	this->sButton->setEnabled(!isMaster);
+
+	{
+		juce::ScopedReadLock projLocker(this->getProjLock());
+		if (this->getProject()) {
+			juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
+			this->setTrackType(track);
+		}
+	}
 
 	this->repaint();
 }
@@ -501,6 +563,48 @@ void TrackView::listenSMChange(const vocalshaper::actions::ActionBase& action, v
 	}
 }
 
+void TrackView::listenLinkChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	auto refreshFunc = [this] {
+		juce::ScopedReadLock projLocker(this->getProjLock());
+		if (this->getProject()) {
+			juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
+			this->setTrackType(this->getTrack());
+		}
+	};
+
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track &&
+		(action.getActionType() == vocalshaper::actions::TrackAction::ActionType::AddNote ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::RemoveNote ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::AddWave ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::RemoveWave ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::AddInstr ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::RemoveInstr ||
+			action.getActionType() == vocalshaper::actions::TrackAction::ActionType::Singer)) {
+		if (action.getProxy() == this->getProject()) {
+			juce::ScopedReadLock projLocker(this->getProjLock());
+			if (this->getProject() && this->getTrack()) {
+				juce::ScopedReadLock proxyLocker(this->getProject()->getLock());
+
+				auto target =
+					reinterpret_cast<vocalshaper::actions::TrackAction::TargetType*>(action.getTarget());
+				auto track = vocalshaper::ProjectDAO::getTrack(action.getProxy()->getPtr(), target->track);
+				if (target->track == -1) {
+					track = vocalshaper::ProjectDAO::getMasterTrack(action.getProxy()->getPtr());
+				}
+				if (this->getTrack() == track) {
+					auto messageManager = juce::MessageManager::getInstance();
+					if (!messageManager) {
+						return;
+					}
+
+					messageManager->callAsync(refreshFunc);
+				}
+			}
+		}
+	}
+}
+
 void TrackView::setColor(juce::Colour color)
 {
 	this->lafs.SMButton->setColour(
@@ -509,6 +613,52 @@ void TrackView::setColor(juce::Colour color)
 	);
 	this->mButton->repaint();
 	this->sButton->repaint();
+}
+
+void TrackView::setTrackType(const vocalshaper::Track* track)
+{
+	if (!track) {
+		return;
+	}
+
+	switch (vocalshaper::TrackDAO::getTrackType(track))
+	{
+	case vocalshaper::Track::TrackType::Empty:
+	{
+		this->linkButton->setButtonText(this->tr("bt_EmptyTrack"));
+		break;
+	}
+	case vocalshaper::Track::TrackType::Voice:
+	{
+		auto singer = vocalshaper::TrackDAO::getSinger(track);
+		if (!singer.isEmpty()) {
+			//TODO 将按钮设为显示名称
+			this->linkButton->setButtonText(singer);
+		}
+		else {
+			this->linkButton->setButtonText(this->tr("bt_UnlinkedVoiceTrack"));
+		}
+		break;
+	}
+	case vocalshaper::Track::TrackType::Midi:
+	{
+		auto instr = vocalshaper::TrackDAO::getInstrument(track);
+		if (instr) {
+			//TODO 将按钮设为显示名称
+			this->linkButton->setButtonText(
+				juce::String(vocalshaper::InstrDAO::getUniqueId(instr)));
+		}
+		else {
+			this->linkButton->setButtonText(this->tr("bt_UnlinkedMidiTrack"));
+		}
+		break;
+	}
+	case vocalshaper::Track::TrackType::Wave:
+	{
+		this->linkButton->setButtonText(this->tr("bt_WaveTrack"));
+		break;
+	}
+	}
 }
 
 void TrackView::sendSolo(bool solo)
@@ -541,4 +691,9 @@ void TrackView::sendMute(bool mute)
 		//发送事件
 		this->getProject()->getProcesser()->processEvent(std::move(action));
 	}
+}
+
+void TrackView::showLinkMenu()
+{
+	//TODO 显示链接列表（声库、乐器）
 }

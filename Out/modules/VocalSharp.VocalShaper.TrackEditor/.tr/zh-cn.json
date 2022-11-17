@@ -19,5 +19,14 @@
   "tip_tempoUnit": "bpm",
 
   "tip_UntitledMasterTrack": "未命名主轨道",
-  "tip_UntitledTrackLead": "未命名轨道"
+  "tip_UntitledTrackLead": "未命名轨道",
+
+  "tip_Mute": "轨道静音",
+  "tip_Solo": "轨道独奏",
+
+  "bt_EmptyTrack": "空轨道",
+  "bt_WaveTrack": "波形轨道",
+  "bt_UnlinkedVoiceTrack": "未链接歌声轨",
+  "bt_UnlinkedMidiTrack": "未链接MIDI轨",
+  "tip_Link": "链接至歌声数据库或数字乐器"
 }

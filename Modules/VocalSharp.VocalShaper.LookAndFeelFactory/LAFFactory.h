@@ -36,6 +36,7 @@ public:
 	juce::LookAndFeel* getLabelEditorBubbleLAF(const juce::String& caller,
 		const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc);
 	juce::LookAndFeel* getTrackViewSMButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getTrackViewLinkButtonLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
 

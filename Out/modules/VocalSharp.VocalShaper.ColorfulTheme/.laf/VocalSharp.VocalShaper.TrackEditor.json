@@ -56,7 +56,15 @@
 
     "text-MSButton:string": "$ThemeColorD3",
     "background-MSButton:string": "$ThemeColorB1",
-    "text-MSButton-highlight:string": "$ThemeColorD1"
+    "text-MSButton-highlight:string": "$ThemeColorD1",
+
+    "text-trackViewLinkButton:string": "$ThemeColorD2",
+    "background-trackViewLinkButton:string": "ThemeColorB3",
+
+    "icon-trackViewShowCurveButton": "$ThemeColorD2",
+    "background-trackViewShowCurveButton": "$ThemeColorB3",
+    "icon-trackViewShowCurveButton-highlight": "$ThemeColorD1",
+    "background-trackViewShowCurveButton-highlight": "$ThemeColorB2"
   },
   "resource": {
   }

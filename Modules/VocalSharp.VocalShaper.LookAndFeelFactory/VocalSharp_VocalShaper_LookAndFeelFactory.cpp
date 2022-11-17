@@ -145,6 +145,12 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getTrackViewSMButtonLAF(caller);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetTrackViewLinkButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getTrackViewLinkButtonLAF(caller);
+		}
+	);
 
 	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {

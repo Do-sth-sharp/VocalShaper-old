@@ -19,5 +19,14 @@
   "tip_tempoUnit": "bpm",
 
   "tip_UntitledMasterTrack": "Untitled Master Track",
-  "tip_UntitledTrackLead": "Untitled Track"
+  "tip_UntitledTrackLead": "Untitled Track",
+
+  "tip_Mute": "Track Mute",
+  "tip_Solo": "Track Solo",
+
+  "bt_EmptyTrack": "Empty Track",
+  "bt_WaveTrack": "Wave Track",
+  "bt_UnlinkedVoiceTrack": "Unlinked Voice Track",
+  "bt_UnlinkedMidiTrack": "Unlinked Midi Track",
+  "tip_Link": "Link to voice database or digital instrument"
 }

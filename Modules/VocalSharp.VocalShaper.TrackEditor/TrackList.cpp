@@ -74,6 +74,12 @@ TrackList::TrackList(
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 		{this->listenSMChange(action, type); });
+
+	//监听链接状态变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenLinkChange(action, type); });
 }
 
 void TrackList::resized()
@@ -404,5 +410,13 @@ void TrackList::listenSMChange(const vocalshaper::actions::ActionBase& action, v
 	juce::ScopedReadLock listLocker(this->listLock);
 	for (auto i : this->trackList) {
 		i->listenSMChange(action, type);
+	}
+}
+
+void TrackList::listenLinkChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock listLocker(this->listLock);
+	for (auto i : this->trackList) {
+		i->listenLinkChange(action, type);
 	}
 }
