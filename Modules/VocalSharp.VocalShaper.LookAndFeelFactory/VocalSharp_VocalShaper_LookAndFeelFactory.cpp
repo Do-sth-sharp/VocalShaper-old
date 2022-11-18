@@ -151,6 +151,18 @@ bool VocalSharp_VocalShaper_LookAndFeelFactory::init()
 			laf = this->factory->getTrackViewLinkButtonLAF(caller);
 		}
 	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetTrackViewShowCurveButtonLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getTrackViewShowCurveButtonLAF(caller);
+		}
+	);
+	jmadf::RegisterInterface<juce::LookAndFeel*&>(
+		"GetTrackNameTextEditorLAF",
+		[this](const juce::String& caller, juce::LookAndFeel*& laf) {
+			laf = this->factory->getTrackNameTextEditorLAF(caller);
+		}
+	);
 
 	jmadf::SetUnloadCallback(
 		[this](const juce::String& caller) {

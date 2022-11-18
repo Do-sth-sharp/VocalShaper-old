@@ -84,10 +84,10 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* button;
-		juce::LookAndFeel* label;
-		juce::LookAndFeel* codeEditor;
-		juce::LookAndFeel* comboBox;
+		static juce::LookAndFeel* button;
+		static juce::LookAndFeel* label;
+		static juce::LookAndFeel* codeEditor;
+		static juce::LookAndFeel* comboBox;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;

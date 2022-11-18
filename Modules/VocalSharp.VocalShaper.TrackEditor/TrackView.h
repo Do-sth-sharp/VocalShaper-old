@@ -26,9 +26,15 @@ public:
 
 public:
 	void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& details) override;
+	void mouseDown(const juce::MouseEvent& event) override;
+	void mouseMove(const juce::MouseEvent& event) override;
+	void mouseDrag(const juce::MouseEvent& event) override;
+	void mouseUp(const juce::MouseEvent& event) override;
+	void mouseExit(const juce::MouseEvent& event) override;
 
 public:
 	void listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+	void listenNameChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 	void listenSMChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 	void listenLinkChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
 
@@ -37,7 +43,12 @@ private:
 	{
 		juce::Colour border;
 
-		juce::Colour text_trackHeadName;
+		juce::Colour text_trackNameEditor;
+		juce::Colour text_trackNameEditor_empty;
+		juce::Colour background_trackNameEditor;
+		juce::Colour text_trackNameEditor_highlight;
+		juce::Colour background_trackNameEditor_highlight;
+		juce::Colour caret_trackNameEditor;
 
 		juce::Colour text_MSButton;
 		juce::Colour background_MSButton;
@@ -84,8 +95,12 @@ private:
 	struct LookAndFeels final
 	{
 		juce::LookAndFeel* SMButton;
-		juce::LookAndFeel* linkButton;
+		static juce::LookAndFeel* linkButton;
+		static juce::LookAndFeel* showCurveButton;
+		static juce::LookAndFeel* textEditor;
 	}lafs;//控件样式
+
+	void initUIConfigAndIcon();
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
 	std::function<const juce::String(const juce::String&)> tr;
@@ -101,17 +116,24 @@ private:
 	std::function<void(double, double)> wheelChangeWithCtrlVMethod;
 	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod;
 
+	std::unique_ptr<juce::TextEditor> nameEditor = nullptr;
 	std::unique_ptr<juce::TextButton> mButton = nullptr, sButton = nullptr;
 	std::unique_ptr<juce::TextButton> linkButton = nullptr;
 	std::unique_ptr<juce::DrawableButton> curveButton = nullptr;
+	std::unique_ptr<juce::Drawable> iconCurve = nullptr, iconCurveHighlight = nullptr;
+
+	friend class TrackNameEditor;
 
 	void setColor(juce::Colour color);
+	void setTrackName(const juce::String& name);
 	void setTrackType(const vocalshaper::Track* track);
 
 	void sendSolo(bool solo);
 	void sendMute(bool mute);
+	void sendName(const juce::String& name);
 
 	void showLinkMenu();
+	void showCurve(bool show);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackView)
 };

@@ -1,6 +1,11 @@
 ﻿#include "LabelEditor.h"
 #include <libJModule.h>
 
+juce::LookAndFeel* LabelEditor::LookAndFeels::button = nullptr;
+juce::LookAndFeel* LabelEditor::LookAndFeels::codeEditor = nullptr;
+juce::LookAndFeel* LabelEditor::LookAndFeels::comboBox = nullptr;
+juce::LookAndFeel* LabelEditor::LookAndFeels::label = nullptr;
+
 LabelEditor::LabelEditor()
 	: Component("Label Editor")
 {
@@ -206,10 +211,12 @@ LabelEditor::LabelEditor()
         );
 
 	//建立下拉框样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF",
-		this->lafs.comboBox
-		);
+	if (!this->lafs.comboBox) {
+		jmadf::CallInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF",
+			this->lafs.comboBox
+			);
+	}
 	this->lafs.comboBox->setColour(
 		juce::ComboBox::ColourIds::backgroundColourId, this->colors.background_comboBox
 	);
@@ -277,10 +284,12 @@ LabelEditor::LabelEditor()
 	this->documentListener = std::unique_ptr<juce::CodeDocument::Listener>(new DocumentListener(this));
 
 	//建立代码编辑器样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF",
-		this->lafs.codeEditor
-		);
+	if (!this->lafs.codeEditor) {
+		jmadf::CallInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF",
+			this->lafs.codeEditor
+			);
+	}
 	this->lafs.codeEditor->setColour(
 		juce::CodeEditorComponent::ColourIds::backgroundColourId, this->colors.background_codeEditor
 	);
@@ -401,10 +410,12 @@ LabelEditor::LabelEditor()
 	this->addChildComponent(this->jsonLabelEditor.get());
 
 	//建立结果回显样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF",
-		this->lafs.label
-		);
+	if (!this->lafs.label) {
+		jmadf::CallInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF",
+			this->lafs.label
+			);
+	}
 	this->lafs.label->setColour(
 		juce::Label::ColourIds::backgroundColourId, this->colors.background_labelEditorResultLabel
 	);
@@ -431,10 +442,12 @@ LabelEditor::LabelEditor()
 	this->addAndMakeVisible(this->resultLabel.get());
 
 	//建立确定按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF",
-		this->lafs.button
-		);
+	if (!this->lafs.button) {
+		jmadf::CallInterface<juce::LookAndFeel*&>(
+			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF",
+			this->lafs.button
+			);
+	}
 	this->lafs.button->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_labelEditorButton);
 	this->lafs.button->setColour(

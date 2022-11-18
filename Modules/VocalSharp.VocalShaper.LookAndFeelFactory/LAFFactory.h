@@ -18,14 +18,18 @@ public:
 
 	juce::LookAndFeel* getMainMenuButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getTabCloseButtonLAF(const juce::String& caller);
+
 	juce::LookAndFeel* getPlayButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getPlayTextButtonLAF(const juce::String& caller);
+
 	juce::LookAndFeel* getToolButtonLAF(const juce::String& caller);
+
 	juce::LookAndFeel* getStretchableBarLAF(const juce::String& caller, juce::Colour mainColour);
 	juce::LookAndFeel* getStatusButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusTextButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusRoundButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getStatusFlatTextButtonLAF(const juce::String& caller);
+
 	juce::LookAndFeel* getLabelEditorComboBoxLAF(const juce::String& caller);
 	juce::LookAndFeel* getLabelEditorCodeEditorLAF(const juce::String& caller);
 	juce::LookAndFeel* getLabelEditorResultLabelLAF(const juce::String& caller);
@@ -37,6 +41,8 @@ public:
 		const std::function<int()>& borderSizeFunc, const std::function<float()>& cornerSizeFunc);
 	juce::LookAndFeel* getTrackViewSMButtonLAF(const juce::String& caller);
 	juce::LookAndFeel* getTrackViewLinkButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getTrackViewShowCurveButtonLAF(const juce::String& caller);
+	juce::LookAndFeel* getTrackNameTextEditorLAF(const juce::String& caller);
 
 	void close(const juce::String& caller);
 

@@ -159,6 +159,20 @@ juce::LookAndFeel* LAFFactory::getTrackViewLinkButtonLAF(const juce::String& cal
 	return ptrLAF;
 }
 
+juce::LookAndFeel* LAFFactory::getTrackViewShowCurveButtonLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
+juce::LookAndFeel* LAFFactory::getTrackNameTextEditorLAF(const juce::String& caller)
+{
+	auto ptrLAF = new juce::LookAndFeel_V4;
+	this->addToList(caller, ptrLAF);
+	return ptrLAF;
+}
+
 void LAFFactory::close(const juce::String& caller)
 {
 	juce::ScopedWriteLock sLock(this->setLock);

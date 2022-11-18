@@ -69,6 +69,12 @@ TrackList::TrackList(
 		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
 		{this->listenColorChange(action, type); });
 
+	//监听名称变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenNameChange(action, type); });
+
 	//监听MS状态变化
 	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
 		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
@@ -292,12 +298,13 @@ void TrackList::resizeList()
 		for (int i = 0; i < this->trackList.size(); i++) {
 			auto trackView = this->trackList.getUnchecked(i);
 			int heightView = ppt;
-			if (trackView->isCurveShown()) {
+			if (this->curveIsShownMethod(trackView->getTrack())) {
 				heightView += (ppt * this->scales.height_curveByTrack)
 					* trackView->getCurveSize();
 			}
 
 			trackView->setBounds(0, posYView, this->getWidth(), heightView);
+			trackView->setCurveShown(this->curveIsShownMethod(trackView->getTrack()));
 			posYView += heightView;
 		}
 	}
@@ -402,6 +409,14 @@ void TrackList::listenColorChange(const vocalshaper::actions::ActionBase& action
 	juce::ScopedReadLock listLocker(this->listLock);
 	for (auto i : this->trackList) {
 		i->listenColorChange(action, type);
+	}
+}
+
+void TrackList::listenNameChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock listLocker(this->listLock);
+	for (auto i : this->trackList) {
+		i->listenNameChange(action, type);
 	}
 }
 

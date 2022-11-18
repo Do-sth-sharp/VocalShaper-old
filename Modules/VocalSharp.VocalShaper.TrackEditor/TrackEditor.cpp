@@ -95,7 +95,7 @@ TrackEditor::TrackEditor()
 
 	//设置回调
 	this->vScroller->setCurveChangeCallback(
-		[this] {this->tracks->refreshList(); });
+		[this] {this->tracks->resizeList(); });
 }
 
 void TrackEditor::resized()

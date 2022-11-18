@@ -61,11 +61,19 @@
     "text-trackViewLinkButton:string": "$ThemeColorD2",
     "background-trackViewLinkButton:string": "ThemeColorB3",
 
-    "icon-trackViewShowCurveButton": "$ThemeColorD2",
-    "background-trackViewShowCurveButton": "$ThemeColorB3",
-    "icon-trackViewShowCurveButton-highlight": "$ThemeColorD1",
-    "background-trackViewShowCurveButton-highlight": "$ThemeColorB2"
+    "icon-trackViewShowCurveButton:string": "$ThemeColorD2",
+    "background-trackViewShowCurveButton:string": "$ThemeColorB3",
+    "icon-trackViewShowCurveButton-highlight:string": "$ThemeColorD1",
+    "background-trackViewShowCurveButton-highlight:string": "$ThemeColorA1",
+
+    "text-trackNameEditor": "$ThemeColorD2",
+    "text-trackNameEditor-empty": "$ThemeColorD2",
+    "background-trackNameEditor": "$ThemeColorB3",
+    "text-trackNameEditor-highlight": "$ThemeColorB1",
+    "background-trackNameEditor-highlight": "$ThemeColorD2",
+    "caret-trackNameEditor": "$ThemeColorD1"
   },
   "resource": {
+    "icon-showCurveButton:string": "/rc/third-party/RemixIcon/icons/Business/line-chart-line.svg"
   }
 }

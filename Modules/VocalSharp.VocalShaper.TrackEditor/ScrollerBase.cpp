@@ -78,14 +78,23 @@ void ScrollerBase::showCurve(const vocalshaper::Track* track, bool show)
 		std::map<const vocalshaper::Track*, int> trackState = this->ptrTemp->trackState;
 		{
 			//更新缓存的曲线数量
-			auto itState = trackState.find(track);
-			if ((itState != trackState.end())) {
-				itState->second = show ? vocalshaper::TrackDAO::curveSize(track) : 0;
+			if (show) {
+				auto itState = trackState.find(track);
+				if ((itState != trackState.end())) {
+					itState->second = vocalshaper::TrackDAO::curveSize(track);
+				}
+				else {
+					trackState.insert(
+						std::make_pair(track, vocalshaper::TrackDAO::curveSize(track)));
+				}
 			}
 			else {
-				trackState.insert(std::make_pair(track,
-					show ? vocalshaper::TrackDAO::curveSize(track) : 0));
+				auto itState = trackState.find(track);
+				if ((itState != trackState.end())) {
+					trackState.erase(itState);
+				}
 			}
+			
 		}
 
 		if ((trackState != this->ptrTemp->trackState) && this->getVertical()) {
@@ -126,7 +135,7 @@ bool ScrollerBase::curveIsShown(const vocalshaper::Track* track)
 	juce::ScopedReadLock locker(this->tempLock);
 	if (this->getProject() && this->ptrTemp) {
 		auto it = this->ptrTemp->trackState.find(track);
-		return (it != this->ptrTemp->trackState.end()) && it->second;
+		return (it != this->ptrTemp->trackState.end());
 	}
 	return false;
 }
