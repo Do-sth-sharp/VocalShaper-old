@@ -1,5 +1,7 @@
 ﻿#include "StatusBar.h"
 #include <libJModule.h>
+#include "StatusBarFlatTextButtonLAF.h"
+#include "StatusBarRoundButttonLAF.h"
 
 StatusBar::StatusBar()
 	: EditorBase()
@@ -35,10 +37,7 @@ StatusBar::StatusBar()
 	this->initUIConfigAndIcon();
 
 	//建立文字按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusTextButtonLAF",
-		this->lafs.statusTextButton
-		);
+	this->lafs.statusTextButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.statusTextButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_statusBarTextButton
 	);
@@ -56,10 +55,7 @@ StatusBar::StatusBar()
 	);
 
 	//建立按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusButtonLAF",
-		this->lafs.statusButton
-		);
+	this->lafs.statusButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.statusButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_statusBarButton
 	);
@@ -76,7 +72,7 @@ StatusBar::StatusBar()
 	this->mixtureEditorButton->setCommandToTrigger(this->commandManager, this->showMixtureEditorCommandID, true);
 	this->mixtureEditorButton->setWantsKeyboardFocus(false);
 	this->mixtureEditorButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->mixtureEditorButton->setLookAndFeel(this->lafs.statusTextButton);
+	this->mixtureEditorButton->setLookAndFeel(this->lafs.statusTextButton.get());
 	this->addAndMakeVisible(this->mixtureEditorButton.get());
 
 	this->additionEditorButton = std::make_unique<juce::TextButton>(
@@ -84,7 +80,7 @@ StatusBar::StatusBar()
 	this->additionEditorButton->setCommandToTrigger(this->commandManager, this->showAdditionEditorCommandID, true);
 	this->additionEditorButton->setWantsKeyboardFocus(false);
 	this->additionEditorButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->additionEditorButton->setLookAndFeel(this->lafs.statusTextButton);
+	this->additionEditorButton->setLookAndFeel(this->lafs.statusTextButton.get());
 	this->addAndMakeVisible(this->additionEditorButton.get());
 
 	//建立编辑器类型按钮
@@ -92,7 +88,7 @@ StatusBar::StatusBar()
 		"bt_NoteEditor", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->noteEditorButton->setImages(this->iconNoteEditor.get(), nullptr, nullptr, nullptr,
 		this->iconNoteEditorHighlight.get(), nullptr, nullptr, nullptr);
-	this->noteEditorButton->setLookAndFeel(this->lafs.statusButton);
+	this->noteEditorButton->setLookAndFeel(this->lafs.statusButton.get());
 	this->noteEditorButton->setWantsKeyboardFocus(false);
 	this->noteEditorButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->noteEditorButton->setCommandToTrigger(this->commandManager, this->noteEditorCommandID, true);
@@ -102,7 +98,7 @@ StatusBar::StatusBar()
 		"bt_MixEditor", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->mixEditorButton->setImages(this->iconMixEditor.get(), nullptr, nullptr, nullptr,
 		this->iconMixEditorHighlight.get(), nullptr, nullptr, nullptr);
-	this->mixEditorButton->setLookAndFeel(this->lafs.statusButton);
+	this->mixEditorButton->setLookAndFeel(this->lafs.statusButton.get());
 	this->mixEditorButton->setWantsKeyboardFocus(false);
 	this->mixEditorButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->mixEditorButton->setCommandToTrigger(this->commandManager, this->mixEditorCommandID, true);
@@ -112,7 +108,7 @@ StatusBar::StatusBar()
 		"bt_ScriptEditor", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->scriptEditorButton->setImages(this->iconScriptEditor.get(), nullptr, nullptr, nullptr,
 		this->iconScriptEditorHighlight.get(), nullptr, nullptr, nullptr);
-	this->scriptEditorButton->setLookAndFeel(this->lafs.statusButton);
+	this->scriptEditorButton->setLookAndFeel(this->lafs.statusButton.get());
 	this->scriptEditorButton->setWantsKeyboardFocus(false);
 	this->scriptEditorButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->scriptEditorButton->setCommandToTrigger(this->commandManager, this->scriptEditorCommandID, true);
@@ -124,7 +120,7 @@ StatusBar::StatusBar()
 	this->noteEditorPluginButton->setCommandToTrigger(this->commandManager, this->noteEditorPluginCommandID, true);
 	this->noteEditorPluginButton->setWantsKeyboardFocus(false);
 	this->noteEditorPluginButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->noteEditorPluginButton->setLookAndFeel(this->lafs.statusTextButton);
+	this->noteEditorPluginButton->setLookAndFeel(this->lafs.statusTextButton.get());
 	this->addAndMakeVisible(this->noteEditorPluginButton.get());
 
 	this->noteEditorAdditionPluginButton = std::make_unique<juce::TextButton>(
@@ -132,14 +128,11 @@ StatusBar::StatusBar()
 	this->noteEditorAdditionPluginButton->setCommandToTrigger(this->commandManager, this->noteEditorAdditionPluginCommandID, true);
 	this->noteEditorAdditionPluginButton->setWantsKeyboardFocus(false);
 	this->noteEditorAdditionPluginButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->noteEditorAdditionPluginButton->setLookAndFeel(this->lafs.statusTextButton);
+	this->noteEditorAdditionPluginButton->setLookAndFeel(this->lafs.statusTextButton.get());
 	this->addAndMakeVisible(this->noteEditorAdditionPluginButton.get());
 
 	//获取翻页按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusRoundButtonLAF",
-		this->lafs.statusRoundButton
-		);
+	this->lafs.statusRoundButton = std::unique_ptr<juce::LookAndFeel>(new StatusBarRoundButtonLAF);
 	this->lafs.statusRoundButton->setColour(
 		juce::DrawableButton::ColourIds::backgroundColourId, this->colors.background_statusBarRoundButton
 	);
@@ -154,7 +147,7 @@ StatusBar::StatusBar()
 	this->lastTrackButton = std::make_unique<juce::DrawableButton>(
 		"bt_LastTrack", juce::DrawableButton::ButtonStyle::ImageFitted);
 	this->lastTrackButton->setImages(this->iconLastTrack.get());
-	this->lastTrackButton->setLookAndFeel(this->lafs.statusRoundButton);
+	this->lastTrackButton->setLookAndFeel(this->lafs.statusRoundButton.get());
 	this->lastTrackButton->setWantsKeyboardFocus(false);
 	this->lastTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->lastTrackButton->setCommandToTrigger(this->commandManager, this->lastTrackCommandID, true);
@@ -163,17 +156,14 @@ StatusBar::StatusBar()
 	this->nextTrackButton = std::make_unique<juce::DrawableButton>(
 		"bt_NextTrack", juce::DrawableButton::ButtonStyle::ImageFitted);
 	this->nextTrackButton->setImages(this->iconNextTrack.get());
-	this->nextTrackButton->setLookAndFeel(this->lafs.statusRoundButton);
+	this->nextTrackButton->setLookAndFeel(this->lafs.statusRoundButton.get());
 	this->nextTrackButton->setWantsKeyboardFocus(false);
 	this->nextTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->nextTrackButton->setCommandToTrigger(this->commandManager, this->nextTrackCommandID, true);
 	this->addAndMakeVisible(this->nextTrackButton.get());
 
 	//获取轨道切换按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF",
-		this->lafs.statusSwitchTrackButton
-		);
+	this->lafs.statusSwitchTrackButton = std::unique_ptr<juce::LookAndFeel>(new StatusBarFlatTextButtonLAF);
 	this->lafs.statusSwitchTrackButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_statusBar
 	);
@@ -197,7 +187,7 @@ StatusBar::StatusBar()
 		juce::Button::ConnectedEdgeFlags::ConnectedOnRight);
 	this->switchTrackButton->setWantsKeyboardFocus(false);
 	this->switchTrackButton->setFocusContainerType(juce::Component::FocusContainerType::none);
-	this->switchTrackButton->setLookAndFeel(this->lafs.statusSwitchTrackButton);
+	this->switchTrackButton->setLookAndFeel(this->lafs.statusSwitchTrackButton.get());
 	this->switchTrackButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->switchTrackButton->setCommandToTrigger(this->commandManager, this->switchTrackCommandID, false);
 	this->addAndMakeVisible(this->switchTrackButton.get());

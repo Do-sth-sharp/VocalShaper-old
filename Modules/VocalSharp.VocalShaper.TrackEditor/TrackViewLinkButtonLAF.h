@@ -48,5 +48,8 @@ public:
             g.setColour(button.findColour(juce::ComboBox::outlineColourId));
             g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
         }
-    }
+    };
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackViewLinkButtonLAF);
 };

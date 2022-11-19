@@ -1,6 +1,7 @@
 ﻿#include "SMComponent.h"
 #include <libJModule.h>
 #include <libVocalShaper.h>
+#include "StartMenuButtonLAF.h"
 
 SMComponent::SMComponent()
 	: Component("Start Menu Component")
@@ -243,10 +244,8 @@ SMComponent::SMComponent()
     this->logoImage = juce::ImageFileFormat::loadFrom(logoPtr, logoSize);
 
     //以下构建按钮样式
-    jmadf::CallInterface<const std::function<int()>&, juce::LookAndFeel*&>(
-        "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF",
-        [this] {return this->getButtonFontSize(); }, this->lafs.button
-        );
+    this->lafs.button = std::unique_ptr<juce::LookAndFeel>(
+        new StartMenuButtonLAF([this] {return this->getButtonFontSize(); }));
     this->lafs.button->setColour(
         juce::TextButton::ColourIds::buttonColourId, this->colors.background_button);
     this->lafs.button->setColour(
@@ -271,8 +270,8 @@ SMComponent::SMComponent()
     this->btNewProj->setWantsKeyboardFocus(false);
     this->btOpenProj->setWantsKeyboardFocus(false);
 
-    this->btNewProj->setLookAndFeel(this->lafs.button);
-    this->btOpenProj->setLookAndFeel(this->lafs.button);
+    this->btNewProj->setLookAndFeel(this->lafs.button.get());
+    this->btOpenProj->setLookAndFeel(this->lafs.button.get());
 
     this->addAndMakeVisible(this->btNewProj.get());
     this->addAndMakeVisible(this->btOpenProj.get());
@@ -297,10 +296,7 @@ SMComponent::SMComponent()
     }
 
     //以下构建搜索框样式
-    jmadf::CallInterface<juce::LookAndFeel*&>(
-        "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF",
-        this->lafs.textEditor
-        );
+    this->lafs.textEditor = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
     this->lafs.textEditor->setColour(
         juce::TextEditor::ColourIds::textColourId, this->colors.text_search
     );
@@ -328,7 +324,7 @@ SMComponent::SMComponent()
 
     //以下初始化搜索框
     this->teSearchProj = std::make_unique<juce::TextEditor>();
-    this->teSearchProj->setLookAndFeel(this->lafs.textEditor);
+    this->teSearchProj->setLookAndFeel(this->lafs.textEditor.get());
     this->teSearchProj->setHasFocusOutline(false);
     this->teSearchProj->setMultiLine(false);
     this->teSearchProj->setJustification(juce::Justification::centredLeft);
@@ -342,10 +338,7 @@ SMComponent::SMComponent()
     this->addAndMakeVisible(this->teSearchProj.get());
 
     //以下构建项目列表样式
-    jmadf::CallInterface<juce::LookAndFeel*&>(
-        "VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuListBoxLAF",
-        this->lafs.listBox
-        );
+    this->lafs.listBox = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
     this->lafs.listBox->setColour(
         juce::ListBox::ColourIds::backgroundColourId, this->colors.background_list
     );
@@ -365,7 +358,7 @@ SMComponent::SMComponent()
     //以下初始化项目列表
     this->lstProj = std::make_unique<juce::ListBox>();
     this->lstProj->setWantsKeyboardFocus(false);
-    this->lstProj->setLookAndFeel(this->lafs.listBox);
+    this->lstProj->setLookAndFeel(this->lafs.listBox.get());
     this->lstProj->setRowSelectedOnMouseDown(false);
     this->addAndMakeVisible(this->lstProj.get());
 

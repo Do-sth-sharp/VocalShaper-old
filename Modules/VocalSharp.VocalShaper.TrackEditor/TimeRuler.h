@@ -99,7 +99,7 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* timeViewerBubble;
+		std::unique_ptr<juce::LookAndFeel> timeViewerBubble;
 	}lafs;//控件样式
 
 	void showLabelEditor(int labelIndex, juce::Rectangle<int> place);

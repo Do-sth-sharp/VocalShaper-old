@@ -1,5 +1,6 @@
 ﻿#include "TimeRuler.h"
 #include <libJModule.h>
+#include "TimeViewerBubbleLAF.h"
 
 TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlMethod)
@@ -170,12 +171,10 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 	this->labelEditor = std::make_unique<LabelEditorCallOutBox>(this);
 
 	//建立时间预览器样式
-	jmadf::CallInterface<juce::LookAndFeel*&,
-		const std::function<int()>&, const std::function<float()>&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorBubbleLAF",
-			this->lafs.timeViewerBubble,
-			[this] {return this->timeViewerBorderSize; },
-			[this] {return this->timeViewerCornerSize; });
+	this->lafs.timeViewerBubble = std::unique_ptr<juce::LookAndFeel>(new TimeViewerBubbleLAF(
+		[this] {return this->timeViewerBorderSize; },
+		[this] {return this->timeViewerCornerSize; }
+	));
 	this->lafs.timeViewerBubble->setColour(
 		juce::BubbleComponent::ColourIds::backgroundColourId, this->colors.background_timeViewer
 	);
@@ -185,7 +184,7 @@ TimeRuler::TimeRuler(std::function<void(double, double)> wheelChangeMethod,
 
 	//建立时间预览器
 	this->timeValue = std::make_unique<TimeValueViewer>(this);
-	this->timeValue->setLookAndFeel(this->lafs.timeViewerBubble);
+	this->timeValue->setLookAndFeel(this->lafs.timeViewerBubble.get());
 
 	//监听标签变化
 	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(

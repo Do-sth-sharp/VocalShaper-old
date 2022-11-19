@@ -1,9 +1,7 @@
 ﻿#include "TrackView.h"
 #include <libJModule.h>
-
-juce::LookAndFeel* TrackView::LookAndFeels::linkButton = nullptr;
-juce::LookAndFeel* TrackView::LookAndFeels::showCurveButton = nullptr;
-juce::LookAndFeel* TrackView::LookAndFeels::textEditor = nullptr;
+#include "TrackViewSMButtonLAF.h"
+#include "TrackViewLinkButtonLAF.h"
 
 TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlHMethod,
@@ -35,12 +33,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	this->initUIConfigAndIcon();
 
 	//建立文本编辑器样式
-	if (!this->lafs.textEditor) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF",
-			this->lafs.textEditor
-			);
-	}
+	this->lafs.textEditor = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.textEditor->setColour(
 		juce::TextEditor::ColourIds::textColourId, this->colors.text_trackNameEditor
 	);
@@ -68,7 +61,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 
 	//建立文本编辑框
 	this->nameEditor = std::make_unique<juce::TextEditor>();
-	this->nameEditor->setLookAndFeel(this->lafs.textEditor);
+	this->nameEditor->setLookAndFeel(this->lafs.textEditor.get());
 	this->nameEditor->setHasFocusOutline(false);
 	this->nameEditor->setMultiLine(false);
 	this->nameEditor->setJustification(juce::Justification::centredLeft);
@@ -83,10 +76,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	this->addAndMakeVisible(this->nameEditor.get());
 
 	//建立MS按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewSMButtonLAF",
-		this->lafs.SMButton
-		);
+	this->lafs.SMButton = std::unique_ptr<juce::LookAndFeel>(new TrackViewSMButtonLAF);
 	this->lafs.SMButton->setColour(
 		juce::TextButton::ColourIds::textColourOffId, this->colors.text_MSButton
 	);
@@ -105,7 +95,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	this->mButton->setToggleable(true);
 	this->mButton->setWantsKeyboardFocus(false);
 	this->mButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->mButton->setLookAndFeel(this->lafs.SMButton);
+	this->mButton->setLookAndFeel(this->lafs.SMButton.get());
 	this->mButton->onClick = [this] {
 		this->sendMute(!this->mButton->getToggleState());
 	};
@@ -115,19 +105,14 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	this->sButton->setToggleable(true);
 	this->sButton->setWantsKeyboardFocus(false);
 	this->sButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
-	this->sButton->setLookAndFeel(this->lafs.SMButton);
+	this->sButton->setLookAndFeel(this->lafs.SMButton.get());
 	this->sButton->onClick = [this] {
 		this->sendSolo(!this->sButton->getToggleState());
 	};
 	this->addAndMakeVisible(this->sButton.get());
 
 	//建立链接按钮样式
-	if (!this->lafs.linkButton) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewLinkButtonLAF",
-			this->lafs.linkButton
-			);
-	}
+	this->lafs.linkButton = std::unique_ptr<juce::LookAndFeel>(new TrackViewLinkButtonLAF);
 	this->lafs.linkButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_trackViewLinkButton
 	);
@@ -149,18 +134,13 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 		this->tr("bt_EmptyTrack"), this->tr("tip_Link"));
 	this->linkButton->setWantsKeyboardFocus(false);
 	this->linkButton->setFocusContainerType(juce::Component::FocusContainerType::none);
-	this->linkButton->setLookAndFeel(this->lafs.linkButton);
+	this->linkButton->setLookAndFeel(this->lafs.linkButton.get());
 	this->linkButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->linkButton->onClick = [this] {this->showLinkMenu(); };
 	this->addChildComponent(this->linkButton.get());
 
 	//建立曲线显示按钮样式
-	if (!this->lafs.showCurveButton) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewShowCurveButtonLAF",
-			this->lafs.showCurveButton
-			);
-	}
+	this->lafs.showCurveButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.showCurveButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_trackViewShowCurveButton
 	);
@@ -177,7 +157,7 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	this->curveButton->setImages(this->iconCurve.get(), nullptr, nullptr, nullptr,
 		this->iconCurveHighlight.get(), nullptr, nullptr, nullptr);
 	this->curveButton->setToggleable(true);
-	this->curveButton->setLookAndFeel(this->lafs.showCurveButton);
+	this->curveButton->setLookAndFeel(this->lafs.showCurveButton.get());
 	this->curveButton->setWantsKeyboardFocus(false);
 	this->curveButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->curveButton->onClick = [this] {

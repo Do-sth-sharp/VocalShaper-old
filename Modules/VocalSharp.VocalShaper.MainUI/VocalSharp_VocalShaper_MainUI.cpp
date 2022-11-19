@@ -21,7 +21,6 @@ bool VocalSharp_VocalShaper_MainUI::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.MainMenu") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
@@ -67,19 +66,6 @@ bool VocalSharp_VocalShaper_MainUI::init()
 			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
-		return false;
-	}
-	if (
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTabCloseButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayTextButtonLAF")
-		) {
-		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
 	}
 	if (

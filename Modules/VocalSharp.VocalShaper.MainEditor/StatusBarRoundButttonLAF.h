@@ -52,7 +52,7 @@ public:
             g.setColour(button.findColour(juce::ComboBox::outlineColourId));
             g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
         }
-    }
+    };
 
     void drawDrawableButton(juce::Graphics& g, juce::DrawableButton& button,
         bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
@@ -89,5 +89,8 @@ public:
                 button.getWidth() - 4, textH,
                 juce::Justification::centred, 1);
         }
-    }
+    };
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatusBarRoundButtonLAF)
 };

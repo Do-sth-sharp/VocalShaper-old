@@ -107,11 +107,6 @@ bool VocalSharp_VocalShaper_Main::init()
 		return false;
 	}
 
-	//初始化样式工厂
-	if (!jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory")) {
-		return false;
-	}
-
 	//命令初始化
 	if (!jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")) {
 		return false;

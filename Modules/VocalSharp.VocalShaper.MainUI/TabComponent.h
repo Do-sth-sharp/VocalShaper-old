@@ -32,7 +32,7 @@ private:
 	}colors;//界面颜色
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* mainMenuButton;
+		std::unique_ptr<juce::LookAndFeel> mainMenuButton;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc

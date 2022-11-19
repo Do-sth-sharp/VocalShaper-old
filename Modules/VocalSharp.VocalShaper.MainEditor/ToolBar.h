@@ -39,7 +39,7 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* toolButton;
+		std::unique_ptr<juce::LookAndFeel> toolButton;
 	}lafs;//控件样式
 
 	void initCommandID();

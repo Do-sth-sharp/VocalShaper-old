@@ -68,8 +68,8 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* playButton;
-		juce::LookAndFeel* playTextButton;
+		std::unique_ptr<juce::LookAndFeel> playButton;
+		std::unique_ptr<juce::LookAndFeel> playTextButton;
 	}lafs;//控件样式
 
 	void initCommandID();

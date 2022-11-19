@@ -21,7 +21,6 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHub") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard") && 
@@ -67,23 +66,6 @@ bool VocalSharp_VocalShaper_MainEditor::init()
 			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
-		return false;
-	}
-	if (
-		!jmadf::CheckInterface<juce::LookAndFeel*&, juce::Colour>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStretchableBarLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusTextButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusRoundButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStatusFlatTextButtonLAF")
-		) {
-		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
 	}
 	if (

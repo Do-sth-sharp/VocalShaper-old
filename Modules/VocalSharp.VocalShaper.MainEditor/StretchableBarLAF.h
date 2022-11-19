@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 
 class StretchableBarLAF final : public juce::LookAndFeel_V4
@@ -14,8 +14,10 @@ public:
 		g.fillAll(this->mainColour);
 		if (isMouseDragging)
 			g.fillAll(this->mainColour.contrasting(0.2f));
-	}
+	};
 
 private:
 	juce::Colour mainColour;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StretchableBarLAF)
 };

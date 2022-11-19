@@ -68,10 +68,7 @@ TabComponent::TabComponent()
     }
 
     //以下构建主菜单按钮样式
-    jmadf::CallInterface<juce::LookAndFeel*&>(
-        "VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF",
-        this->lafs.mainMenuButton
-        );
+    this->lafs.mainMenuButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
     this->lafs.mainMenuButton->setColour(
         juce::TextButton::ColourIds::buttonColourId, this->colors.background_mainMenuButton
     );
@@ -86,7 +83,7 @@ TabComponent::TabComponent()
     this->mainMenuButton = std::make_unique<juce::DrawableButton>(
         "bt_MainMenu", juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize);
     this->mainMenuButton->setImages(this->iconMainMenu.get());
-    this->mainMenuButton->setLookAndFeel(this->lafs.mainMenuButton);
+    this->mainMenuButton->setLookAndFeel(this->lafs.mainMenuButton.get());
     this->mainMenuButton->setWantsKeyboardFocus(false);
     this->mainMenuButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
     this->mainMenuButton->onClick = [this] {

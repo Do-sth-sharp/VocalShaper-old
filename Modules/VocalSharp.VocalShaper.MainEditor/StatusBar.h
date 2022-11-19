@@ -69,11 +69,11 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* statusButton;
-		juce::LookAndFeel* statusTextButton;
+		std::unique_ptr<juce::LookAndFeel> statusButton;
+		std::unique_ptr<juce::LookAndFeel> statusTextButton;
 
-		juce::LookAndFeel* statusRoundButton;
-		juce::LookAndFeel* statusSwitchTrackButton;
+		std::unique_ptr<juce::LookAndFeel> statusRoundButton;
+		std::unique_ptr<juce::LookAndFeel> statusSwitchTrackButton;
 	}lafs;//控件样式
 
 	void initCommandID();

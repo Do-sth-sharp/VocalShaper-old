@@ -11,7 +11,6 @@
     "WuChang.JMADF.Device",
     "WuChang.JMADF.GlobalConfigs",
     "WuChang.JMADF.Translates",
-    "VocalSharp.VocalShaper.LookAndFeelFactory",
     "VocalSharp.VocalShaper.ProjectHub",
     "VocalSharp.VocalShaper.CommandManager",
     "VocalSharp.VocalShaper.ClipBoard",

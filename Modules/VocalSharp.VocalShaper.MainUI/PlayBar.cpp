@@ -1,5 +1,6 @@
 ﻿#include "PlayBar.h"
 #include <libJModule.h>
+#include "PlayBarTextButtonLAF.h"
 
 PlayBar::PlayBar()
 	:Component()
@@ -414,10 +415,7 @@ PlayBar::PlayBar()
 	}
 
 	//建立按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayButtonLAF",
-		this->lafs.playButton
-		);
+	this->lafs.playButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.playButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_playBarButton
 	);
@@ -433,7 +431,7 @@ PlayBar::PlayBar()
 		"bt_Play", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->playButton->setImages(this->iconPlay.get(), nullptr, nullptr, nullptr,
 		this->iconPlayHighlight.get(), nullptr, nullptr, nullptr);
-	this->playButton->setLookAndFeel(this->lafs.playButton);
+	this->playButton->setLookAndFeel(this->lafs.playButton.get());
 	this->playButton->setWantsKeyboardFocus(false);
 	this->playButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->playButton->setCommandToTrigger(this->commandManager, this->playCommandID, true);
@@ -443,7 +441,7 @@ PlayBar::PlayBar()
 	this->stopButton = std::make_unique<juce::DrawableButton>(
 		"bt_Stop", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->stopButton->setImages(this->iconStop.get());
-	this->stopButton->setLookAndFeel(this->lafs.playButton);
+	this->stopButton->setLookAndFeel(this->lafs.playButton.get());
 	this->stopButton->setWantsKeyboardFocus(false);
 	this->stopButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->stopButton->setCommandToTrigger(this->commandManager, this->stopCommandID, true);
@@ -453,7 +451,7 @@ PlayBar::PlayBar()
 	this->beginButton = std::make_unique<juce::DrawableButton>(
 		"bt_Begin", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->beginButton->setImages(this->iconBegin.get());
-	this->beginButton->setLookAndFeel(this->lafs.playButton);
+	this->beginButton->setLookAndFeel(this->lafs.playButton.get());
 	this->beginButton->setWantsKeyboardFocus(false);
 	this->beginButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->beginButton->setCommandToTrigger(this->commandManager, this->beginCommandID, true);
@@ -463,7 +461,7 @@ PlayBar::PlayBar()
 	this->endButton = std::make_unique<juce::DrawableButton>(
 		"bt_End", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->endButton->setImages(this->iconEnd.get());
-	this->endButton->setLookAndFeel(this->lafs.playButton);
+	this->endButton->setLookAndFeel(this->lafs.playButton.get());
 	this->endButton->setWantsKeyboardFocus(false);
 	this->endButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->endButton->setCommandToTrigger(this->commandManager, this->endCommandID, true);
@@ -474,7 +472,7 @@ PlayBar::PlayBar()
 		"bt_Loop", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->loopButton->setImages(this->iconLoop.get(), nullptr, nullptr, nullptr,
 		this->iconLoopHighlight.get(), nullptr, nullptr, nullptr);
-	this->loopButton->setLookAndFeel(this->lafs.playButton);
+	this->loopButton->setLookAndFeel(this->lafs.playButton.get());
 	this->loopButton->setWantsKeyboardFocus(false);
 	this->loopButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->loopButton->setCommandToTrigger(this->commandManager, this->loopCommandID, true);
@@ -485,7 +483,7 @@ PlayBar::PlayBar()
 		"bt_Follow", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->followButton->setImages(this->iconFollow.get(), nullptr, nullptr, nullptr,
 		this->iconFollowHighlight.get(), nullptr, nullptr, nullptr);
-	this->followButton->setLookAndFeel(this->lafs.playButton);
+	this->followButton->setLookAndFeel(this->lafs.playButton.get());
 	this->followButton->setWantsKeyboardFocus(false);
 	this->followButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->followButton->setCommandToTrigger(this->commandManager, this->followCommandID, true);
@@ -495,7 +493,7 @@ PlayBar::PlayBar()
 	this->undoButton = std::make_unique<juce::DrawableButton>(
 		"bt_Undo", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->undoButton->setImages(this->iconUndo.get());
-	this->undoButton->setLookAndFeel(this->lafs.playButton);
+	this->undoButton->setLookAndFeel(this->lafs.playButton.get());
 	this->undoButton->setWantsKeyboardFocus(false);
 	this->undoButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->undoButton->setCommandToTrigger(this->commandManager, this->undoCommandID, true);
@@ -505,7 +503,7 @@ PlayBar::PlayBar()
 	this->redoButton = std::make_unique<juce::DrawableButton>(
 		"bt_Redo", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->redoButton->setImages(this->iconRedo.get());
-	this->redoButton->setLookAndFeel(this->lafs.playButton);
+	this->redoButton->setLookAndFeel(this->lafs.playButton.get());
 	this->redoButton->setWantsKeyboardFocus(false);
 	this->redoButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->redoButton->setCommandToTrigger(this->commandManager, this->redoCommandID, true);
@@ -515,7 +513,7 @@ PlayBar::PlayBar()
 	this->configButton = std::make_unique<juce::DrawableButton>(
 		"bt_Config", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->configButton->setImages(this->iconConfig.get());
-	this->configButton->setLookAndFeel(this->lafs.playButton);
+	this->configButton->setLookAndFeel(this->lafs.playButton.get());
 	this->configButton->setWantsKeyboardFocus(false);
 	this->configButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	//this->configButton->setCommandToTrigger(this->commandManager, this->configCommandID, true);
@@ -526,10 +524,7 @@ PlayBar::PlayBar()
 	this->textGrid = this->tr("lb_Grid");
 
 	//建立选择按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetPlayTextButtonLAF",
-		this->lafs.playTextButton
-		);
+	this->lafs.playTextButton = std::unique_ptr<juce::LookAndFeel>(new PlayBarTextButtonLAF);
 	this->lafs.playTextButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_playBar
 	);
@@ -551,7 +546,7 @@ PlayBar::PlayBar()
 		juce::String(), this->textAdsorb);
 	this->adsorbButton->setWantsKeyboardFocus(false);
 	this->adsorbButton->setFocusContainerType(juce::Component::FocusContainerType::none);
-	this->adsorbButton->setLookAndFeel(this->lafs.playTextButton);
+	this->adsorbButton->setLookAndFeel(this->lafs.playTextButton.get());
 	this->adsorbButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->adsorbButton->onClick = [this] {this->showAdsorbMenu(); };
 	this->addAndMakeVisible(this->adsorbButton.get());
@@ -561,7 +556,7 @@ PlayBar::PlayBar()
 		juce::String(), this->textGrid);
 	this->gridButton->setWantsKeyboardFocus(false);
 	this->gridButton->setFocusContainerType(juce::Component::FocusContainerType::none);
-	this->gridButton->setLookAndFeel(this->lafs.playTextButton);
+	this->gridButton->setLookAndFeel(this->lafs.playTextButton.get());
 	this->gridButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->gridButton->onClick = [this] {this->showGridMenu(); };
 	this->addAndMakeVisible(this->gridButton.get());

@@ -48,12 +48,12 @@ public:
             g.setColour(button.findColour(juce::ComboBox::outlineColourId));
             g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
         }
-    }
+    };
 
     int getTextButtonWidthToFitText(juce::TextButton& b, int buttonHeight) override
     {
         return getTextButtonFont(b, buttonHeight).getStringWidth(b.getButtonText());
-    }
+    };
 
     void drawButtonText(juce::Graphics& g, juce::TextButton& button,
         bool /*shouldDrawButtonAsHighlighted*/, bool /*shouldDrawButtonAsDown*/) override
@@ -76,5 +76,8 @@ public:
             g.drawFittedText(button.getButtonText(),
                 leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
                 juce::Justification::centred, 2);
-    }
+    };
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatusBarFlatTextButtonLAF)
 };

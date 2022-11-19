@@ -1,5 +1,6 @@
 ﻿#include "EditorComponent.h"
 #include <libJModule.h>
+#include "StretchableBarLAF.h"
 
 EditorComponent::EditorComponent()
 	: EditorBase()
@@ -99,16 +100,14 @@ EditorComponent::EditorComponent()
 	this->slManager = std::make_unique<juce::StretchableLayoutManager>();
 
 	//建立拖动条样式
-	jmadf::CallInterface<juce::LookAndFeel*&, juce::Colour>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStretchableBarLAF",
-		this->lafs.stretchableBar, this->colors.stretchableBar
-		);
+	this->lafs.stretchableBar = std::unique_ptr<juce::LookAndFeel>(
+		new StretchableBarLAF(this->colors.stretchableBar));
 
 	//创建拖动条
 	this->slBar = std::make_unique<juce::StretchableLayoutResizerBar>(
 		this->slManager.get(),
 		1, false);
-	this->slBar->setLookAndFeel(this->lafs.stretchableBar);
+	this->slBar->setLookAndFeel(this->lafs.stretchableBar.get());
 	this->addChildComponent(this->slBar.get());
 
 	//添加项目回调

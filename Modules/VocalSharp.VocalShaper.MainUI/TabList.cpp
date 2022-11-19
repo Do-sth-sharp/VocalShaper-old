@@ -315,10 +315,7 @@ TabList::TabList()
 	}
 
 	//建立关闭按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTabCloseButtonLAF",
-		this->lafs.tabCloseButton
-		);
+	this->lafs.tabCloseButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.tabCloseButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_tabList.contrasting(0.05f)
 	);
@@ -329,10 +326,7 @@ TabList::TabList()
 		juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
 	);
 
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTabCloseButtonLAF",
-		this->lafs.tabHighlightCloseButton
-		);
+	this->lafs.tabHighlightCloseButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.tabHighlightCloseButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_tabList_highlight
 	);
@@ -347,7 +341,7 @@ TabList::TabList()
 	this->btCloseHover = std::make_unique<juce::DrawableButton>(
 		"bt_TabClose", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btCloseHover->setImages(this->iconClose.get());
-	this->btCloseHover->setLookAndFeel(this->lafs.tabCloseButton);
+	this->btCloseHover->setLookAndFeel(this->lafs.tabCloseButton.get());
 	this->btCloseHover->setWantsKeyboardFocus(false);
 	this->btCloseHover->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->btCloseHover->onClick = [this] {
@@ -358,17 +352,14 @@ TabList::TabList()
 	this->btCloseCurrent = std::make_unique<juce::DrawableButton>(
 		"bt_TabCloseHighlight", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btCloseCurrent->setImages(this->iconCloseHighlight.get());
-	this->btCloseCurrent->setLookAndFeel(this->lafs.tabHighlightCloseButton);
+	this->btCloseCurrent->setLookAndFeel(this->lafs.tabHighlightCloseButton.get());
 	this->btCloseCurrent->setWantsKeyboardFocus(false);
 	this->btCloseCurrent->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->btCloseCurrent->setCommandToTrigger(this->commandManager, this->closeProjCommandID, false);
 	this->addChildComponent(this->btCloseCurrent.get());
 
 	//以下构建主菜单按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetMainMenuButtonLAF",
-		this->lafs.tabBarButton
-		);
+	this->lafs.tabBarButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.tabBarButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_tabBarButton
 	);
@@ -383,7 +374,7 @@ TabList::TabList()
 	this->btAdd = std::make_unique<juce::DrawableButton>(
 		"bt_TabAdd", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btAdd->setImages(this->iconAdd.get());
-	this->btAdd->setLookAndFeel(this->lafs.tabBarButton);
+	this->btAdd->setLookAndFeel(this->lafs.tabBarButton.get());
 	this->btAdd->setWantsKeyboardFocus(false);
 	this->btAdd->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->btAdd->setCommandToTrigger(this->commandManager, this->showStartMenuCommandID, false);
@@ -393,7 +384,7 @@ TabList::TabList()
 	this->btMore = std::make_unique<juce::DrawableButton>(
 		"bt_TabMore", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->btMore->setImages(this->iconMore.get());
-	this->btMore->setLookAndFeel(this->lafs.tabBarButton);
+	this->btMore->setLookAndFeel(this->lafs.tabBarButton.get());
 	this->btMore->setWantsKeyboardFocus(false);
 	this->btMore->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->btMore->onClick = [this] {

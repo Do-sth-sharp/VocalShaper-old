@@ -82,9 +82,9 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* button;
-		juce::LookAndFeel* textEditor;
-		juce::LookAndFeel* listBox;
+		std::unique_ptr<juce::LookAndFeel> button;
+		std::unique_ptr<juce::LookAndFeel> textEditor;
+		std::unique_ptr<juce::LookAndFeel> listBox;
 	}lafs;//控件样式
 	
 	juce::Image logoImage;

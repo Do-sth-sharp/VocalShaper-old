@@ -13,4 +13,6 @@ public:
 
 private:
 	const std::function<int()> fontHeightFunc;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StartMenuButtonLAF)
 };

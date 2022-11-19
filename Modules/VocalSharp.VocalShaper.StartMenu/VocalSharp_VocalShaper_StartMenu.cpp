@@ -19,7 +19,6 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ProjectHistory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager")
 		)) {
@@ -62,17 +61,6 @@ bool VocalSharp_VocalShaper_StartMenu::init()
 			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
-		return false;
-	}
-	if (
-		!jmadf::CheckInterface<const std::function<int()>&, juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuTextEditorLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetStartMenuListBoxLAF")
-		) {
-		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
 	}
 	if (

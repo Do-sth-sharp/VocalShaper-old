@@ -94,10 +94,10 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* SMButton;
-		static juce::LookAndFeel* linkButton;
-		static juce::LookAndFeel* showCurveButton;
-		static juce::LookAndFeel* textEditor;
+		std::unique_ptr<juce::LookAndFeel> SMButton;
+		std::unique_ptr<juce::LookAndFeel> linkButton;
+		std::unique_ptr<juce::LookAndFeel> showCurveButton;
+		std::unique_ptr<juce::LookAndFeel> textEditor;
 	}lafs;//控件样式
 
 	void initUIConfigAndIcon();

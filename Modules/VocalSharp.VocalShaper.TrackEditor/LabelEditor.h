@@ -84,10 +84,10 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		static juce::LookAndFeel* button;
-		static juce::LookAndFeel* label;
-		static juce::LookAndFeel* codeEditor;
-		static juce::LookAndFeel* comboBox;
+		std::unique_ptr<juce::LookAndFeel> button;
+		std::unique_ptr<juce::LookAndFeel> label;
+		std::unique_ptr<juce::LookAndFeel> codeEditor;
+		std::unique_ptr<juce::LookAndFeel> comboBox;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
@@ -177,7 +177,7 @@ private:
 	}colors;//界面颜色
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* callOutBox;
+		std::unique_ptr<juce::LookAndFeel> callOutBox;
 	}lafs;//控件样式
 
 	friend class LabelEditorCallOutBoxCallback;

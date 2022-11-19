@@ -349,10 +349,7 @@ ToolBar::ToolBar()
 	}
 
 	//建立按钮样式
-	jmadf::CallInterface<juce::LookAndFeel*&>(
-		"VocalSharp.VocalShaper.LookAndFeelFactory", "GetToolButtonLAF",
-		this->lafs.toolButton
-		);
+	this->lafs.toolButton = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.toolButton->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_toolBarButton
 	);
@@ -368,7 +365,7 @@ ToolBar::ToolBar()
 		"bt_ViewMode", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->viewModeButton->setImages(this->iconViewMode.get(), nullptr, nullptr, nullptr,
 		this->iconViewModeHighlight.get(), nullptr, nullptr, nullptr);
-	this->viewModeButton->setLookAndFeel(this->lafs.toolButton);
+	this->viewModeButton->setLookAndFeel(this->lafs.toolButton.get());
 	this->viewModeButton->setWantsKeyboardFocus(false);
 	this->viewModeButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->viewModeButton->setCommandToTrigger(this->commandManager, this->viewModeCommandID, true);
@@ -379,7 +376,7 @@ ToolBar::ToolBar()
 		"bt_EditMode", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->editModeButton->setImages(this->iconEditMode.get(), nullptr, nullptr, nullptr,
 		this->iconEditModeHighlight.get(), nullptr, nullptr, nullptr);
-	this->editModeButton->setLookAndFeel(this->lafs.toolButton);
+	this->editModeButton->setLookAndFeel(this->lafs.toolButton.get());
 	this->editModeButton->setWantsKeyboardFocus(false);
 	this->editModeButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->editModeButton->setCommandToTrigger(this->commandManager, this->editModeCommandID, true);
@@ -390,7 +387,7 @@ ToolBar::ToolBar()
 		"bt_Tool1", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->tool1Button->setImages(this->iconTool1.get(), nullptr, nullptr, nullptr,
 		this->iconTool1Highlight.get(), nullptr, nullptr, nullptr);
-	this->tool1Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool1Button->setLookAndFeel(this->lafs.toolButton.get());
 	this->tool1Button->setWantsKeyboardFocus(false);
 	this->tool1Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->tool1Button->setCommandToTrigger(this->commandManager, this->tool1CommandID, true);
@@ -401,7 +398,7 @@ ToolBar::ToolBar()
 		"bt_Tool2", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->tool2Button->setImages(this->iconTool2.get(), nullptr, nullptr, nullptr,
 		this->iconTool2Highlight.get(), nullptr, nullptr, nullptr);
-	this->tool2Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool2Button->setLookAndFeel(this->lafs.toolButton.get());
 	this->tool2Button->setWantsKeyboardFocus(false);
 	this->tool2Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->tool2Button->setCommandToTrigger(this->commandManager, this->tool2CommandID, true);
@@ -412,7 +409,7 @@ ToolBar::ToolBar()
 		"bt_Tool3", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->tool3Button->setImages(this->iconTool3.get(), nullptr, nullptr, nullptr,
 		this->iconTool3Highlight.get(), nullptr, nullptr, nullptr);
-	this->tool3Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool3Button->setLookAndFeel(this->lafs.toolButton.get());
 	this->tool3Button->setWantsKeyboardFocus(false);
 	this->tool3Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->tool3Button->setCommandToTrigger(this->commandManager, this->tool3CommandID, true);
@@ -423,7 +420,7 @@ ToolBar::ToolBar()
 		"bt_Tool4", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->tool4Button->setImages(this->iconTool4.get(), nullptr, nullptr, nullptr,
 		this->iconTool4Highlight.get(), nullptr, nullptr, nullptr);
-	this->tool4Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool4Button->setLookAndFeel(this->lafs.toolButton.get());
 	this->tool4Button->setWantsKeyboardFocus(false);
 	this->tool4Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->tool4Button->setCommandToTrigger(this->commandManager, this->tool4CommandID, true);
@@ -434,7 +431,7 @@ ToolBar::ToolBar()
 		"bt_Tool5", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
 	this->tool5Button->setImages(this->iconTool5.get(), nullptr, nullptr, nullptr,
 		this->iconTool5Highlight.get(), nullptr, nullptr, nullptr);
-	this->tool5Button->setLookAndFeel(this->lafs.toolButton);
+	this->tool5Button->setLookAndFeel(this->lafs.toolButton.get());
 	this->tool5Button->setWantsKeyboardFocus(false);
 	this->tool5Button->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->tool5Button->setCommandToTrigger(this->commandManager, this->tool5CommandID, true);

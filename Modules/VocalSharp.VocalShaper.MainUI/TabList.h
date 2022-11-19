@@ -70,9 +70,9 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* tabCloseButton;
-		juce::LookAndFeel* tabHighlightCloseButton;
-		juce::LookAndFeel* tabBarButton;
+		std::unique_ptr<juce::LookAndFeel> tabCloseButton;
+		std::unique_ptr<juce::LookAndFeel> tabHighlightCloseButton;
+		std::unique_ptr<juce::LookAndFeel> tabBarButton;
 	}lafs;//控件样式
 
 	std::function<void(int, vocalshaper::ProjectProxy*&)> getPtrFunc;

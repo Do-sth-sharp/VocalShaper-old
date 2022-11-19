@@ -1,10 +1,6 @@
 ﻿#include "LabelEditor.h"
 #include <libJModule.h>
-
-juce::LookAndFeel* LabelEditor::LookAndFeels::button = nullptr;
-juce::LookAndFeel* LabelEditor::LookAndFeels::codeEditor = nullptr;
-juce::LookAndFeel* LabelEditor::LookAndFeels::comboBox = nullptr;
-juce::LookAndFeel* LabelEditor::LookAndFeels::label = nullptr;
+#include "LabelEditorCallOutBoxLAF.h"
 
 LabelEditor::LabelEditor()
 	: Component("Label Editor")
@@ -211,12 +207,7 @@ LabelEditor::LabelEditor()
         );
 
 	//建立下拉框样式
-	if (!this->lafs.comboBox) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF",
-			this->lafs.comboBox
-			);
-	}
+	this->lafs.comboBox = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.comboBox->setColour(
 		juce::ComboBox::ColourIds::backgroundColourId, this->colors.background_comboBox
 	);
@@ -253,7 +244,7 @@ LabelEditor::LabelEditor()
 
 	//初始化标签类型下拉框
 	this->comboBox = std::make_unique<juce::ComboBox>("Label Type");
-	this->comboBox->setLookAndFeel(this->lafs.comboBox);
+	this->comboBox->setLookAndFeel(this->lafs.comboBox.get());
 	this->comboBox->addItemList({ "LUA", "INI", "XML", "JSON" }, 1);
 	this->comboBox->setSelectedItemIndex(0);
 	this->comboBox->onChange = [this] {this->comboBoxChanged(); };
@@ -284,12 +275,7 @@ LabelEditor::LabelEditor()
 	this->documentListener = std::unique_ptr<juce::CodeDocument::Listener>(new DocumentListener(this));
 
 	//建立代码编辑器样式
-	if (!this->lafs.codeEditor) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF",
-			this->lafs.codeEditor
-			);
-	}
+	this->lafs.codeEditor = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.codeEditor->setColour(
 		juce::CodeEditorComponent::ColourIds::backgroundColourId, this->colors.background_codeEditor
 	);
@@ -391,16 +377,16 @@ LabelEditor::LabelEditor()
 		= std::make_unique<juce::CodeEditorComponent>(
 			this->document, this->jsonTokeniser.get());
 
-	this->luaLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->luaLabelEditor->setLookAndFeel(this->lafs.codeEditor.get());
 	this->luaLabelEditor->setColourScheme(codeScheme);
 	this->luaLabelEditor->setLineNumbersShown(false);
-	this->iniLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->iniLabelEditor->setLookAndFeel(this->lafs.codeEditor.get());
 	this->iniLabelEditor->setColourScheme(codeScheme);
 	this->iniLabelEditor->setLineNumbersShown(false);
-	this->xmlLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->xmlLabelEditor->setLookAndFeel(this->lafs.codeEditor.get());
 	this->xmlLabelEditor->setColourScheme(codeScheme);
 	this->xmlLabelEditor->setLineNumbersShown(false);
-	this->jsonLabelEditor->setLookAndFeel(this->lafs.codeEditor);
+	this->jsonLabelEditor->setLookAndFeel(this->lafs.codeEditor.get());
 	this->jsonLabelEditor->setColourScheme(codeScheme);
 	this->jsonLabelEditor->setLineNumbersShown(false);
 
@@ -410,12 +396,7 @@ LabelEditor::LabelEditor()
 	this->addChildComponent(this->jsonLabelEditor.get());
 
 	//建立结果回显样式
-	if (!this->lafs.label) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF",
-			this->lafs.label
-			);
-	}
+	this->lafs.label = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.label->setColour(
 		juce::Label::ColourIds::backgroundColourId, this->colors.background_labelEditorResultLabel
 	);
@@ -437,17 +418,12 @@ LabelEditor::LabelEditor()
 
 	//初始化结果回显
 	this->resultLabel = std::make_unique<juce::Label>("Label Result");
-	this->resultLabel->setLookAndFeel(this->lafs.label);
+	this->resultLabel->setLookAndFeel(this->lafs.label.get());
 	this->resultLabel->setJustificationType(juce::Justification::topLeft);
 	this->addAndMakeVisible(this->resultLabel.get());
 
 	//建立确定按钮样式
-	if (!this->lafs.button) {
-		jmadf::CallInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF",
-			this->lafs.button
-			);
-	}
+	this->lafs.button = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
 	this->lafs.button->setColour(
 		juce::TextButton::ColourIds::buttonColourId, this->colors.background_labelEditorButton);
 	this->lafs.button->setColour(
@@ -462,7 +438,7 @@ LabelEditor::LabelEditor()
 
 	//初始化确定按钮
 	this->okButton = std::make_unique<juce::TextButton>(this->tr("bt_Accept"));
-	this->okButton->setLookAndFeel(this->lafs.button);
+	this->okButton->setLookAndFeel(this->lafs.button.get());
 	this->okButton->onClick = [this] {this->acceptAndClose(); };
 	this->okButton->setEnabled(false);
 	this->addAndMakeVisible(this->okButton.get());
@@ -738,14 +714,10 @@ LabelEditorCallOutBox::LabelEditorCallOutBox(juce::Component* parent)
 	//scale
 
 	//构建呼出框样式
-	jmadf::CallInterface<juce::LookAndFeel*&,
-		const std::function<int()>&, const std::function<float()>&,
-		const juce::Colour, const juce::Colour>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCallOutBoxLAF",
-			this->lafs.callOutBox,
-			[this] {return this->borderSize; }, [this] {return this->cornerSize; },
-			this->colors.background_labelEditor, this->colors.border_labelEditor
-			);
+	this->lafs.callOutBox = std::unique_ptr<juce::LookAndFeel>(new LabelEditorCallOutBoxLAF(
+		[this] {return this->borderSize; }, [this] {return this->cornerSize; },
+		this->colors.background_labelEditor, this->colors.border_labelEditor
+	));
 
 	//初始化控件
 	this->labelEditor = std::make_unique<LabelEditor>();
@@ -805,7 +777,7 @@ LabelEditorCallOutBox::LabelEditorCallOutBoxCallback::LabelEditorCallOutBoxCallb
 	//初始化控件
 	this->callOutBox = std::make_unique<juce::CallOutBox>(
 		*(manager->labelEditor.get()), juce::Rectangle<int>({ 0, 0, 0, 0 }), nullptr);
-	this->callOutBox->setLookAndFeel(manager->lafs.callOutBox);
+	this->callOutBox->setLookAndFeel(manager->lafs.callOutBox.get());
 	this->callOutBox->setArrowSize(manager->arrowWidth);
 	//this->callOutBox->setDismissalMouseClicksAreAlwaysConsumed(true);
 }

@@ -46,4 +46,6 @@ private:
 	const std::function<float()> cornerSizeFunc;
 	const juce::Colour colorBackground;
 	const juce::Colour colorBorder;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LabelEditorCallOutBoxLAF)
 };

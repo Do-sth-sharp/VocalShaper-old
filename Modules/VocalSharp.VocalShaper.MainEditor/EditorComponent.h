@@ -105,7 +105,7 @@ private:
 	}scales;//控件缩放
 	struct LookAndFeels final
 	{
-		juce::LookAndFeel* stretchableBar;
+		std::unique_ptr<juce::LookAndFeel> stretchableBar;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;

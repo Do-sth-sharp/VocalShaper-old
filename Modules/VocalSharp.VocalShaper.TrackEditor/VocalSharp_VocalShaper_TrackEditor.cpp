@@ -21,7 +21,6 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
-		jmadf::LoadModule("VocalSharp.VocalShaper.LookAndFeelFactory") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard") &&
@@ -66,34 +65,6 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
-		return false;
-	}
-	if (
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorComboBoxLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCodeEditorLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorResultLabelLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&,
-			const std::function<int()>&, const std::function<float()>&,
-			const juce::Colour, const juce::Colour>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorCallOutBoxLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&,
-			const std::function<int()>&, const std::function<float()>&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetLabelEditorBubbleLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewSMButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewLinkButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackViewShowCurveButtonLAF") ||
-		!jmadf::CheckInterface<juce::LookAndFeel*&>(
-			"VocalSharp.VocalShaper.LookAndFeelFactory", "GetTrackNameTextEditorLAF")
-		) {
-		jmadf::RaiseException("@VocalSharp.VocalShaper.LookAndFeelFactory:Bad Interfaces!");
 		return false;
 	}
 	if (
