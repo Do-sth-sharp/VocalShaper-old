@@ -811,6 +811,25 @@ void TrackView::sendName(const juce::String& name)
 	}
 }
 
+void TrackView::sendColor(juce::Colour color)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject()) {
+		auto currentColor = vocalshaper::TrackDAO::getColour(this->getTrack());
+		if (color != currentColor) {
+			using ActionType = vocalshaper::actions::track::ColourAction;
+			ActionType::TargetType target{};
+			target.track = this->getIndex();
+			auto action = std::make_unique<ActionType>(
+				target, color, this->getProject()
+				);
+
+			//发送事件
+			this->getProject()->getProcesser()->processEvent(std::move(action));
+		}
+	}
+}
+
 void TrackView::showLinkMenu()
 {
 	//TODO 显示链接列表（声库、乐器）

@@ -122,8 +122,6 @@ private:
 	std::unique_ptr<juce::DrawableButton> curveButton = nullptr;
 	std::unique_ptr<juce::Drawable> iconCurve = nullptr, iconCurveHighlight = nullptr;
 
-	friend class TrackNameEditor;
-
 	void setColor(juce::Colour color);
 	void setTrackName(const juce::String& name);
 	void setTrackType(const vocalshaper::Track* track);
@@ -131,6 +129,7 @@ private:
 	void sendSolo(bool solo);
 	void sendMute(bool mute);
 	void sendName(const juce::String& name);
+	void sendColor(juce::Colour color);
 
 	void showLinkMenu();
 	void showCurve(bool show);
