@@ -164,6 +164,9 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 		this->showCurve(!this->isCurveShown());
 	};
 	this->addChildComponent(this->curveButton.get());
+
+	//建立颜色选择器
+	this->colorEditor = std::make_unique<ColorEditorCallOutBox>(this);
 }
 
 void TrackView::setTrack(const vocalshaper::Track* track, int index, bool isMaster)
@@ -324,6 +327,22 @@ void TrackView::resized()
 			height_marginTop + height_titleLine + height_lineSplit + height_controlLine + height_marginBottom);
 		this->linkButton->setVisible(controlLineShow);
 		this->curveButton->setVisible(controlLineShow);
+	}
+
+	//颜色选择器
+	{
+		//计算控件大小
+		int width_colorEditor = this->sizes.width_colorEditor * screenSize.getWidth();
+		int height_colorEditor = this->sizes.height_colorEditor * screenSize.getHeight();
+		float width_colorEditorArrow = this->sizes.width_colorEditorCalloutArrow * screenSize.getWidth();
+		int width_colorEditorBorder = this->sizes.width_colorEditorCalloutBorder * screenSize.getWidth();
+		float width_colorEditorCorner = this->sizes.width_colorEditorCalloutCorner * screenSize.getWidth();
+
+		//调整大小
+		this->colorEditor->resize(width_colorEditor, height_colorEditor);
+		this->colorEditor->setArrowSize(width_colorEditorArrow);
+		this->colorEditor->setBorderSize(width_colorEditorBorder);
+		this->colorEditor->setCornerSize(width_colorEditorCorner);
 	}
 }
 
@@ -541,8 +560,16 @@ void TrackView::mouseUp(const juce::MouseEvent& event)
 				width_colorLight, height_colorLight
 			);
 
+			//更改颜色
 			if (rectLightArea.contains(event.position)) {
-				//TODO 更改颜色
+				auto color = vocalshaper::TrackDAO::getColour(this->getTrack());
+				auto type = vocalshaper::TrackDAO::getTrackType(this->getTrack());
+				this->colorEditor->setCurrentColor(color);
+				this->colorEditor->setSingerColor(
+					type == vocalshaper::Track::TrackType::Voice &&
+					!vocalshaper::TrackDAO::getSinger(this->getTrack()).isEmpty(),
+					juce::Colour::fromRGB(98, 111, 252));//TODO 歌手颜色
+				this->colorEditor->showAt(rectLightArea.toNearestIntEdges());
 			}
 		}
 		else {
@@ -695,6 +722,7 @@ void TrackView::listenLinkChange(const vocalshaper::actions::ActionBase& action,
 
 void TrackView::setColor(juce::Colour color)
 {
+	this->colorEditor->close();
 	this->lafs.SMButton->setColour(
 		juce::TextButton::ColourIds::buttonOnColourId,
 		color
@@ -967,6 +995,26 @@ void TrackView::initUIConfigAndIcon()
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-trackHeadLinkCurveSplit", this->sizes.width_trackHeadLinkCurveSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditor", this->sizes.width_colorEditor, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditor", this->sizes.height_colorEditor, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditorCalloutArrow", this->sizes.width_colorEditorCalloutArrow, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditorCalloutBorder", this->sizes.width_colorEditorCalloutBorder, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditorCalloutCorner", this->sizes.width_colorEditorCalloutCorner, result
 		);
 
 	//position

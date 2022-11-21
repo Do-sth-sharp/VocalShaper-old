@@ -28,5 +28,8 @@
   "bt_WaveTrack": "波形轨道",
   "bt_UnlinkedVoiceTrack": "未链接歌声轨",
   "bt_UnlinkedMidiTrack": "未链接MIDI轨",
-  "tip_Link": "链接至歌声数据库或数字乐器"
+  "tip_Link": "链接至歌声数据库或数字乐器",
+
+  "lb_ThemeColor": "主题颜色",
+  "lb_HistoryColor": "历史颜色"
 }

@@ -93,7 +93,28 @@
     "height-trackHeadLineSplit:number": 0.01,
     "height-trackHeadControlLine:number": 0.025,
 
-    "width-trackHeadLinkCurveSplit:number": 0.0025
+    "width-trackHeadLinkCurveSplit:number": 0.0025,
+
+    "width-colorEditor": 0.35,
+    "height-colorEditor": 0.35,
+    "width-colorEditorCalloutArrow": 0.01,
+    "width-colorEditorCalloutBorder": 0.001,
+    "width-colorEditorCalloutCorner": 0.0025,
+
+    "height-colorEditorMarginTop:number": 0.01,
+    "height-colorEditorMarginBottom:number": 0.01,
+    "width-colorEditorMarginLeft:number": 0.01,
+    "width-colorEditorMarginRight:number": 0.01,
+
+    "width-colorEditorButton:number": 0.075,
+
+    "width-colorEditorSplitLine:number": 0.00075,
+    "height-colorEditorSplitLine:number": 0.25,
+
+    "width-colorEditorSplit:number": 0.015,
+
+    "height-colorEditorTitleFont:number": 0.0175,
+    "width-colorEditorTitleLeftMargin:number": 0.005
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
@@ -101,7 +122,17 @@
     "posY-labelEditorButton:number": 0.85,
 
     "posX-labelEditorComboBox:number": 0.025,
-    "posX-labelEditorButton:number": 0.55
+    "posX-labelEditorButton:number": 0.55,
+
+    "posY-colorEditorButton:number": 0.85,
+    "posX-colorEditorButton:number": 0.75,
+
+    "posX-colorEditorSplit:number": 0.4,
+    "posY-colorEditorSplitLine:number": 0.025,
+
+    "posY-colorEditorLeftSplit1:number": 0.1,
+    "posY-colorEditorLeftSplit2:number": 0.4,
+    "posY-colorEditorLeftSplit3:number": 0.5
   },
   "scale": {
     "height-curveByTrack:number": 0.5,
@@ -114,6 +145,8 @@
     "height-labelEditorButton:number": 0.8,
 
     "height-trackHeadColorLight:number": 0.25,
-    "height-trackHeadMSButton:number": 1.0
+    "height-trackHeadMSButton:number": 1.0,
+
+    "height-colorEditorButton:number": 0.8
   }
 }

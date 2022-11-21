@@ -71,7 +71,17 @@
     "background-trackNameEditor": "$ThemeColorB3",
     "text-trackNameEditor-highlight": "$ThemeColorB1",
     "background-trackNameEditor-highlight": "$ThemeColorD2",
-    "caret-trackNameEditor": "$ThemeColorD1"
+    "caret-trackNameEditor": "$ThemeColorD1",
+
+    "background-colorEditor:string": "$ThemeColorB3",
+    "border-colorEditor:string": "$ThemeColorB3",
+
+    "text-colorEditorButton:string": "$ThemeColorD1",
+    "background-colorEditorButton:string": "$ThemeColorA2",
+
+    "splitLine-colorEditor:string": "$ThemeColorD4",
+
+    "text-colorEditorTitle:string": "$ThemeColorD2"
   },
   "resource": {
     "icon-showCurveButton:string": "/rc/third-party/RemixIcon/icons/Business/line-chart-line.svg"

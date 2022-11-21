@@ -245,6 +245,7 @@ LabelEditor::LabelEditor()
 	//初始化标签类型下拉框
 	this->comboBox = std::make_unique<juce::ComboBox>("Label Type");
 	this->comboBox->setLookAndFeel(this->lafs.comboBox.get());
+	this->comboBox->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->comboBox->addItemList({ "LUA", "INI", "XML", "JSON" }, 1);
 	this->comboBox->setSelectedItemIndex(0);
 	this->comboBox->onChange = [this] {this->comboBoxChanged(); };
@@ -439,6 +440,7 @@ LabelEditor::LabelEditor()
 	//初始化确定按钮
 	this->okButton = std::make_unique<juce::TextButton>(this->tr("bt_Accept"));
 	this->okButton->setLookAndFeel(this->lafs.button.get());
+	this->okButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
 	this->okButton->onClick = [this] {this->acceptAndClose(); };
 	this->okButton->setEnabled(false);
 	this->addAndMakeVisible(this->okButton.get());

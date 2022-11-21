@@ -28,5 +28,8 @@
   "bt_WaveTrack": "Wave Track",
   "bt_UnlinkedVoiceTrack": "Unlinked Voice Track",
   "bt_UnlinkedMidiTrack": "Unlinked Midi Track",
-  "tip_Link": "Link to voice database or digital instrument"
+  "tip_Link": "Link to voice database or digital instrument",
+
+  "lb_ThemeColor": "Theme Colors",
+  "lb_HistoryColor": "History Colors"
 }

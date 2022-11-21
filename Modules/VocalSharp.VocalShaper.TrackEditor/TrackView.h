@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <JuceHeader.h>
 #include <libVocalShaper.h>
+#include "ColorEditor.h"
 
 class TrackView final : public vocalshaper::EditorBase
 {
@@ -84,6 +85,11 @@ private:
 
 		double width_trackHeadLinkCurveSplit;
 
+		double width_colorEditor;
+		double height_colorEditor;
+		double width_colorEditorCalloutArrow;
+		double width_colorEditorCalloutBorder;
+		double width_colorEditorCalloutCorner;
 	}sizes;//控件大小
 	struct Scale final
 	{
@@ -121,6 +127,8 @@ private:
 	std::unique_ptr<juce::TextButton> linkButton = nullptr;
 	std::unique_ptr<juce::DrawableButton> curveButton = nullptr;
 	std::unique_ptr<juce::Drawable> iconCurve = nullptr, iconCurveHighlight = nullptr;
+
+	std::unique_ptr<ColorEditorCallOutBox> colorEditor = nullptr;
 
 	void setColor(juce::Colour color);
 	void setTrackName(const juce::String& name);
