@@ -729,6 +729,7 @@ void TrackView::setColor(juce::Colour color)
 	);
 	this->mButton->repaint();
 	this->sButton->repaint();
+	this->repaint();
 }
 
 void TrackView::setTrackName(const juce::String& name)

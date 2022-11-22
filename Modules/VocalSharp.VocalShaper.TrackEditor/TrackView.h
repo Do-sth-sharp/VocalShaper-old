@@ -130,6 +130,8 @@ private:
 
 	std::unique_ptr<ColorEditorCallOutBox> colorEditor = nullptr;
 
+	friend class ColorEditor;
+
 	void setColor(juce::Colour color);
 	void setTrackName(const juce::String& name);
 	void setTrackType(const vocalshaper::Track* track);

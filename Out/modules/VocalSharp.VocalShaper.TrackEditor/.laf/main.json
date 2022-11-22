@@ -109,12 +109,30 @@
     "width-colorEditorButton:number": 0.075,
 
     "width-colorEditorSplitLine:number": 0.00075,
-    "height-colorEditorSplitLine:number": 0.25,
+    "height-colorEditorSplitLine:number": 0.245,
 
     "width-colorEditorSplit:number": 0.015,
 
     "height-colorEditorTitleFont:number": 0.0175,
-    "width-colorEditorTitleLeftMargin:number": 0.005
+    "width-colorEditorTitleLeftMargin:number": 0.005,
+
+    "width-colorEditorColorTemplate:number": 0.015,
+    "height-colorEditorColorTemplate:number": 0.02,
+    "width-colorEditorColorTemplateCorner": 0.0025,
+    "width-colorEditorColorTemplateSplit:number": 0.005,
+    "height-colorEditorColorTemplateSplit:number": 0.01,
+
+    "width-colorEditorColorSpace:number": 0.1325,
+    "width-colorEditorHueSpace:number": 0.01,
+    "width-colorEditorColorSpaceSplit:number": 0.007,
+    "height-colorEditorColorSpace:number": 0.26,
+    "width-colorEditorHueSpaceCorner": 0.002,
+
+    "width-colorEditorColorSpaceCursor:number": 0.007,
+    "width-colorEditorColorSpaceCursorLine:number": 0.0015,
+    "width-colorEditorColorSpaceCursorBorder:number": 0.001,
+    "width-colorEditorHueSpaceCursorLine:number": 0.0015,
+    "width-colorEditorHueSpaceCursorBorder:number": 0.001
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
@@ -130,8 +148,8 @@
     "posX-colorEditorSplit:number": 0.4,
     "posY-colorEditorSplitLine:number": 0.025,
 
-    "posY-colorEditorLeftSplit1:number": 0.1,
-    "posY-colorEditorLeftSplit2:number": 0.4,
+    "posY-colorEditorLeftSplit1:number": 0.15,
+    "posY-colorEditorLeftSplit2:number": 0.35,
     "posY-colorEditorLeftSplit3:number": 0.5
   },
   "scale": {

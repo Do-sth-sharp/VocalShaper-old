@@ -21,6 +21,7 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 		jmadf::LoadModule("WuChang.JMADF.Device") &&
 		jmadf::LoadModule("WuChang.JMADF.GlobalConfigs") &&
 		jmadf::LoadModule("WuChang.JMADF.Translates") &&
+		jmadf::LoadModule("WuChang.JMADF.Configs") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CommandManager") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.CallbackReactor") &&
 		jmadf::LoadModule("VocalSharp.VocalShaper.ClipBoard") &&
@@ -65,6 +66,13 @@ bool VocalSharp_VocalShaper_TrackEditor::init()
 			"WuChang.JMADF.Translates", "GetFunc")
 		) {
 		jmadf::RaiseException("@WuChang.JMADF.Translates:Bad Interfaces!");
+		return false;
+	}
+	if (
+		!jmadf::CheckInterface<const juce::String&, juce::var*&, bool&>(
+			"WuChang.JMADF.Configs", "GetReference")
+		) {
+		jmadf::RaiseException("@WuChang.JMADF.Configs:Bad Interfaces!");
 		return false;
 	}
 	if (

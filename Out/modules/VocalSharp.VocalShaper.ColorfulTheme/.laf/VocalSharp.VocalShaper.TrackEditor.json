@@ -66,12 +66,12 @@
     "icon-trackViewShowCurveButton-highlight:string": "$ThemeColorD1",
     "background-trackViewShowCurveButton-highlight:string": "$ThemeColorA1",
 
-    "text-trackNameEditor": "$ThemeColorD2",
-    "text-trackNameEditor-empty": "$ThemeColorD2",
-    "background-trackNameEditor": "$ThemeColorB3",
-    "text-trackNameEditor-highlight": "$ThemeColorB1",
-    "background-trackNameEditor-highlight": "$ThemeColorD2",
-    "caret-trackNameEditor": "$ThemeColorD1",
+    "text-trackNameEditor:string": "$ThemeColorD2",
+    "text-trackNameEditor-empty:string": "$ThemeColorD2",
+    "background-trackNameEditor:string": "$ThemeColorB3",
+    "text-trackNameEditor-highlight:string": "$ThemeColorB1",
+    "background-trackNameEditor-highlight:string": "$ThemeColorD2",
+    "caret-trackNameEditor:string": "$ThemeColorD1",
 
     "background-colorEditor:string": "$ThemeColorB3",
     "border-colorEditor:string": "$ThemeColorB3",
@@ -81,7 +81,22 @@
 
     "splitLine-colorEditor:string": "$ThemeColorD4",
 
-    "text-colorEditorTitle:string": "$ThemeColorD2"
+    "text-colorEditorTitle:string": "$ThemeColorD2",
+
+    "colorEditorHistoryDefaultColor:string": "$ThemeColorB3",
+
+    "themeColor0:string": "$ThemeColorA2",
+    "themeColor1:string": "$ThemeColorC1",
+    "themeColor2:string": "$ThemeColorC2",
+    "themeColor3:string": "$ThemeColorC3",
+    "themeColor4:string": "$ThemeColorC4",
+    "themeColor5:string": "$ThemeColorC5",
+    "themeColor6:string": "$ThemeColorC6",
+
+    "colorEditorColorSpaceCursor:string": "#FFFFFF",
+    "colorEditorColorSpaceCursorBorder:string": "#00000030",
+    "colorEditorHueSpaceCursor:string": "#FFFFFF",
+    "colorEditorHueSpaceCursorBorder:string": "#00000030"
   },
   "resource": {
     "icon-showCurveButton:string": "/rc/third-party/RemixIcon/icons/Business/line-chart-line.svg"

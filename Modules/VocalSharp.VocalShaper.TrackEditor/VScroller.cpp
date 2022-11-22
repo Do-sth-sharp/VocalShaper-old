@@ -47,6 +47,12 @@ VScroller::VScroller()
 		);
 
 	//resource
+
+	//监听轨道颜色变化
+	jmadf::CallInterface<const vocalshaper::actions::ActionBase::RuleFunc&>(
+		"VocalSharp.VocalShaper.CallbackReactor", "AddActionRules",
+		[this](const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+		{this->listenColorChange(action, type); });
 }
 
 void VScroller::limitSize(double& sp, double& ep, double nailPer)
@@ -350,6 +356,28 @@ void VScroller::updateVViewPort(double bottomTrack, double topTrack, double& sp,
 		if (minSize < this->getHeight()) {
 			sp *= (minSize / (double)this->getHeight());
 			ep *= (minSize / (double)this->getHeight());
+		}
+	}
+}
+
+void VScroller::listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	if (this->getProject() != action.getProxy()) {
+		return;
+	}
+
+	//获取消息管理器
+	auto messageManager = juce::MessageManager::getInstance();
+	if (!messageManager) {
+		return;
+	}
+
+	if (action.getBaseType() == vocalshaper::actions::ActionBase::Type::Track) {
+		if (
+			action.getActionType() == vocalshaper::actions::TrackAction::Actions::Colour) {
+			//刷新显示
+			messageManager->callAsync([this] {this->repaint(); });
 		}
 	}
 }

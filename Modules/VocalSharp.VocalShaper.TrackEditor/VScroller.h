@@ -25,6 +25,9 @@ protected:
 	//从轨道位置计算卷滚条百分比
 	void updateVViewPort(double bottomTrack, double topTrack, double& sp, double& ep) override;
 
+public:
+	void listenColorChange(const vocalshaper::actions::ActionBase& action, vocalshaper::actions::ActionBase::UndoType type);
+
 private:
 	struct Size final
 	{
