@@ -11,7 +11,8 @@ public:
 		std::function<void(double, double)> wheelChangeVMethod,
 		std::function<void(double, double)> wheelChangeWithCtrlVMethod,
 		std::function<void(const vocalshaper::Track*, bool)> showCurveMethod,
-		std::function<bool(const vocalshaper::Track*)> curveIsShownMethod);
+		std::function<bool(const vocalshaper::Track*)> curveIsShownMethod,
+		std::function<int(const vocalshaper::Track*)> getCurveSizeMethod);
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -68,6 +69,7 @@ private:
 
 	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod;
 	std::function<bool(const vocalshaper::Track*)> curveIsShownMethod;
+	std::function<int(const vocalshaper::Track*)> getCurveSizeMethod;
 
 	juce::OwnedArray<TrackView> trackList;
 	juce::ReadWriteLock listLock;

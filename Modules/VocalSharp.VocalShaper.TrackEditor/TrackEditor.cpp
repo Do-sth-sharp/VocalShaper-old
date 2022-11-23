@@ -90,7 +90,9 @@ TrackEditor::TrackEditor()
 		[this](const vocalshaper::Track* track, bool show)
 		{this->vScroller->showCurve(track, show); },
 		[this](const vocalshaper::Track* track)
-		{return this->vScroller->curveIsShown(track); });
+		{return this->vScroller->curveIsShown(track); },
+		[this](const vocalshaper::Track* track)
+		{return this->vScroller->getCurveSize(track); });
 	this->addChildEditorAndMakeVisible(this->tracks.get());
 
 	//设置回调

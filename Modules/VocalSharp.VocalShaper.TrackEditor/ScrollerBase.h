@@ -12,8 +12,8 @@ public:
 	bool getVertical() const;
 	void showCurve(const vocalshaper::Track* track, bool show);
 	bool curveIsShown(const vocalshaper::Track* track);
+	int getCurveSize(const vocalshaper::Track* track);
 	void setCurveChangeCallback(std::function<void(void)> func);
-
 	void sendWheelChange(double per, double delta);
 	void sendWheelChangeWithCtrl(double per, double delta);
 

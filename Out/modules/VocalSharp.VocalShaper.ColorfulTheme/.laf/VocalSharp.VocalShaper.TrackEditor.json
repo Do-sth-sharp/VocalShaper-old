@@ -52,6 +52,9 @@
 
     "fill-trackList-timeUnselect:string": "$ThemeColorF2",
 
+    "background-trackView-highlight": "$ThemeColorG1",
+    "background-trackViewHead-highlight": "$ThemeColorA1",
+
     "text-trackHeadName:string": "$ThemeColorD2",
 
     "text-MSButton:string": "$ThemeColorD3",

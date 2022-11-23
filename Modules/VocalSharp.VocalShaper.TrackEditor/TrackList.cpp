@@ -7,14 +7,16 @@ TrackList::TrackList(
 	std::function<void(double, double)> wheelChangeVMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlVMethod,
 	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod,
-	std::function<bool(const vocalshaper::Track*)> curveIsShownMethod)
+	std::function<bool(const vocalshaper::Track*)> curveIsShownMethod,
+	std::function<int(const vocalshaper::Track*)> getCurveSizeMethod)
 	: EditorBase(),
 	wheelChangeHMethod(wheelChangeHMethod),
 	wheelChangeWithCtrlHMethod(wheelChangeWithCtrlHMethod),
 	wheelChangeVMethod(wheelChangeVMethod),
 	wheelChangeWithCtrlVMethod(wheelChangeWithCtrlVMethod),
 	showCurveMethod(showCurveMethod),
-	curveIsShownMethod(curveIsShownMethod)
+	curveIsShownMethod(curveIsShownMethod),
+	getCurveSizeMethod(getCurveSizeMethod)
 {
 	this->setOpaque(false);
 
@@ -245,7 +247,8 @@ void TrackList::refreshList()
 				this->wheelChangeWithCtrlHMethod,
 				this->wheelChangeVMethod,
 				this->wheelChangeWithCtrlVMethod,
-				this->showCurveMethod
+				this->showCurveMethod,
+				this->getCurveSizeMethod
 			);
 			auto track = 
 				vocalshaper::ProjectDAO::getMasterTrack(this->getProject()->getPtr());
@@ -262,7 +265,8 @@ void TrackList::refreshList()
 				this->wheelChangeWithCtrlHMethod,
 				this->wheelChangeVMethod,
 				this->wheelChangeWithCtrlVMethod,
-				this->showCurveMethod
+				this->showCurveMethod,
+				this->getCurveSizeMethod
 			);
 			auto track =
 				vocalshaper::ProjectDAO::getTrack(this->getProject()->getPtr(), i);

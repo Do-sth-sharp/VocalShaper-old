@@ -140,6 +140,19 @@ bool ScrollerBase::curveIsShown(const vocalshaper::Track* track)
 	return false;
 }
 
+int ScrollerBase::getCurveSize(const vocalshaper::Track* track)
+{
+	juce::ScopedReadLock projLocker(this->getProjLock());
+	juce::ScopedReadLock locker(this->tempLock);
+	if (this->getProject() && this->ptrTemp) {
+		auto it = this->ptrTemp->trackState.find(track);
+		if (it != this->ptrTemp->trackState.end()) {
+			return it->second;
+		}
+	}
+	return 0;
+}
+
 void ScrollerBase::setCurveChangeCallback(std::function<void(void)> func)
 {
 	this->curveChangeCallback = func;

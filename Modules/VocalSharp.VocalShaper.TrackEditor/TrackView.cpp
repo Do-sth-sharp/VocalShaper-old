@@ -7,13 +7,15 @@ TrackView::TrackView(std::function<void(double, double)> wheelChangeHMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlHMethod,
 	std::function<void(double, double)> wheelChangeVMethod,
 	std::function<void(double, double)> wheelChangeWithCtrlVMethod,
-	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod)
+	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod,
+	std::function<int(const vocalshaper::Track*)> getCurveSizeMethod)
 	: EditorBase(),
 	wheelChangeHMethod(wheelChangeHMethod),
 	wheelChangeWithCtrlHMethod(wheelChangeWithCtrlHMethod),
 	wheelChangeVMethod(wheelChangeVMethod),
 	wheelChangeWithCtrlVMethod(wheelChangeWithCtrlVMethod),
-	showCurveMethod(showCurveMethod)
+	showCurveMethod(showCurveMethod),
+	getCurveSizeMethod(getCurveSizeMethod)
 {
 	this->setOpaque(false);
 
@@ -243,6 +245,11 @@ int TrackView::getCurveSize()
 	return 0;
 }
 
+bool TrackView::isSelected()
+{
+	return (!this->getIsMaster()) && (this->getIndex() == this->getTrackID());
+}
+
 void TrackView::resized()
 {
 	//获取屏幕属性
@@ -251,6 +258,13 @@ void TrackView::resized()
 
 	//计算控件大小
 	float width_head = this->sizes.width_trackHead * screenSize.getWidth();
+
+	//计算轨道主体大小与曲线编辑器大小
+	float height_track = this->getHeight();
+	if (this->isCurveShown()) {
+		int curveSize = this->getCurveSize();
+		height_track = this->getHeight() / (1 + curveSize * this->scales.height_curveByTrack);
+	}
 
 	//轨道头
 	{
@@ -323,7 +337,7 @@ void TrackView::resized()
 		);
 
 		//根据高度计算下行显示
-		bool controlLineShow = (this->getHeight() >=
+		bool controlLineShow = (height_track >=
 			height_marginTop + height_titleLine + height_lineSplit + height_controlLine + height_marginBottom);
 		this->linkButton->setVisible(controlLineShow);
 		this->curveButton->setVisible(controlLineShow);
@@ -354,6 +368,52 @@ void TrackView::paint(juce::Graphics& g)
 
 	//计算控件大小
 	float width_head = this->sizes.width_trackHead * screenSize.getWidth();
+	float height_borderTop = this->sizes.height_borderTop * screenSize.getHeight();
+	float width_borderRight = this->sizes.width_borderRight * screenSize.getWidth();
+
+	//计算轨道主体大小与曲线编辑器大小
+	float height_track = this->getHeight();
+	int curveSize = this->getCurveSize();
+	if (this->isCurveShown()) {
+		height_track = this->getHeight() / (1 + curveSize * this->scales.height_curveByTrack);
+	}
+	float height_curve = height_track * this->scales.height_curveByTrack;
+
+	//绘高亮背景
+	if (this->isSelected()) {
+		//底层背景
+		g.setColour(this->colors.background_trackView_highlight);
+		g.fillAll();
+
+		//轨道头背景
+		juce::Rectangle<float> rectHead(0, 0, width_head, height_track);
+		g.setColour(this->colors.background_trackViewHead_highlight);
+		g.fillRect(rectHead);
+
+		//轨道头右边框
+		juce::Rectangle<float> rectHeadRightBorder(
+			width_head - width_borderRight, 0, width_borderRight, height_track);
+		g.setColour(this->colors.border);
+		g.fillRect(rectHeadRightBorder);
+
+		//上边框
+		juce::Rectangle<float> rectTopBorder(
+			0, 0, this->getWidth(), height_borderTop);
+		g.setColour(this->colors.border);
+		g.fillRect(rectTopBorder);
+	}
+
+	//绘曲线分割线
+	if (this->isCurveShown()) {
+		for (int i = 0; i < curveSize; i++) {
+			juce::Rectangle<float> rectBorder(
+				0, height_track + i * height_curve,
+				this->getWidth(), height_borderTop
+			);
+			g.setColour(this->colors.border);
+			g.fillRect(rectBorder);
+		}
+	}
 
 	//轨道头
 	{
@@ -380,8 +440,6 @@ void TrackView::paint(juce::Graphics& g)
 		float height_msButton = this->scales.height_trackHeadMSButton * height_titleLine;
 		float width_colorLight = height_colorLight;
 		float width_msButton = height_msButton;
-
-		
 
 		juce::ScopedReadLock projLock(this->getProjLock());
 		if (this->getProject() && this->getTrack()) {
@@ -939,11 +997,27 @@ void TrackView::initUIConfigAndIcon()
 		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
 		"main", "color", "background-trackViewShowCurveButton-highlight", this->colors.background_trackViewShowCurveButton_highlight, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-trackView-highlight", this->colors.background_trackView_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-trackViewHead-highlight", this->colors.background_trackViewHead_highlight, result
+		);
 
 	//size
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "width-trackHead", this->sizes.width_trackHead, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-borderTop", this->sizes.height_borderTop, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-borderRight", this->sizes.width_borderRight, result
 		);
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",

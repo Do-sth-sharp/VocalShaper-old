@@ -10,7 +10,8 @@ public:
 		std::function<void(double, double)> wheelChangeWithCtrlHMethod,
 		std::function<void(double, double)> wheelChangeVMethod,
 		std::function<void(double, double)> wheelChangeWithCtrlVMethod,
-		std::function<void(const vocalshaper::Track*, bool)> showCurveMethod);
+		std::function<void(const vocalshaper::Track*, bool)> showCurveMethod,
+		std::function<int(const vocalshaper::Track*)> getCurveSizeMethod);
 
 	void setTrack(const vocalshaper::Track* track, int index = -1, bool isMaster = false);
 	const vocalshaper::Track* getTrack();
@@ -21,6 +22,8 @@ public:
 	bool isCurveShown();
 
 	int getCurveSize();
+
+	bool isSelected();
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
@@ -62,10 +65,15 @@ private:
 		juce::Colour background_trackViewShowCurveButton;
 		juce::Colour icon_trackViewShowCurveButton_highlight;
 		juce::Colour background_trackViewShowCurveButton_highlight;
+
+		juce::Colour background_trackView_highlight;
+		juce::Colour background_trackViewHead_highlight;
 	}colors;//界面颜色
 	struct Size final
 	{
 		double width_trackHead;
+		double height_borderTop;
+		double width_borderRight;
 
 		double width_trackHeadLeftMargin;
 		double width_trackHeadRightMargin;
@@ -121,6 +129,7 @@ private:
 	std::function<void(double, double)> wheelChangeVMethod;
 	std::function<void(double, double)> wheelChangeWithCtrlVMethod;
 	std::function<void(const vocalshaper::Track*, bool)> showCurveMethod;
+	std::function<int(const vocalshaper::Track*)> getCurveSizeMethod;
 
 	std::unique_ptr<juce::TextEditor> nameEditor = nullptr;
 	std::unique_ptr<juce::TextButton> mButton = nullptr, sButton = nullptr;
