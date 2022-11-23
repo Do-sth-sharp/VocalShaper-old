@@ -95,7 +95,7 @@
 
     "width-trackHeadLinkCurveSplit:number": 0.0025,
 
-    "width-colorEditor": 0.35,
+    "width-colorEditor": 0.36,
     "height-colorEditor": 0.35,
     "width-colorEditorCalloutArrow": 0.01,
     "width-colorEditorCalloutBorder": 0.001,
@@ -104,7 +104,7 @@
     "height-colorEditorMarginTop:number": 0.01,
     "height-colorEditorMarginBottom:number": 0.01,
     "width-colorEditorMarginLeft:number": 0.01,
-    "width-colorEditorMarginRight:number": 0.01,
+    "width-colorEditorMarginRight:number": 0.0125,
 
     "width-colorEditorButton:number": 0.075,
 
@@ -132,7 +132,15 @@
     "width-colorEditorColorSpaceCursorLine:number": 0.0015,
     "width-colorEditorColorSpaceCursorBorder:number": 0.001,
     "width-colorEditorHueSpaceCursorLine:number": 0.0015,
-    "width-colorEditorHueSpaceCursorBorder:number": 0.001
+    "width-colorEditorHueSpaceCursorBorder:number": 0.001,
+
+    "width-colorEditorColorSpaceValueSplit:number": 0.01,
+    "height-colorEditorValueTitleArea:number": 0.0275,
+    "height-colorEditorValueTitleFont:number": 0.0175,
+    "width-colorEditorValueTitleLeftMargin:number": 0.0025,
+    "height-colorEditorValueBox:number": 0.0275,
+    "height-colorEditorValueViewSplit:number": 0.015,
+    "height-colorEditorViewArea:number": 0.025
   },
   "position": {
     "posY-labelEditorCodeEditor:number": 0.1,
@@ -143,9 +151,9 @@
     "posX-labelEditorButton:number": 0.55,
 
     "posY-colorEditorButton:number": 0.85,
-    "posX-colorEditorButton:number": 0.75,
+    "posX-colorEditorButton:number": 0.7775,
 
-    "posX-colorEditorSplit:number": 0.4,
+    "posX-colorEditorSplit:number": 0.375,
     "posY-colorEditorSplitLine:number": 0.025,
 
     "posY-colorEditorLeftSplit1:number": 0.15,

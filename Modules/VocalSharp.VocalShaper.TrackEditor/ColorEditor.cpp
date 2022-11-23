@@ -100,6 +100,8 @@ void ColorHistory::acceptColor(juce::Colour color)
 ColorEditor::ColourSpaceView::ColourSpaceView(ColorEditor& cs)
 	: owner(cs)
 {
+	this->setWantsKeyboardFocus(true);
+
 	//添加标记控件
 	this->addAndMakeVisible(this->marker);
 	this->setMouseCursor(juce::MouseCursor::CrosshairCursor);
@@ -267,6 +269,8 @@ void ColorEditor::ColourSpaceView::ColourSpaceMarker::setPos(float pX, float pY)
 ColorEditor::HueSelectorComp::HueSelectorComp(ColorEditor& cs)
 	: owner(cs)
 {
+	this->setWantsKeyboardFocus(true);
+
 	//获取屏幕属性接口
 	this->screenSizeFunc =
 		jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
@@ -424,10 +428,25 @@ void ColorEditor::HueSelectorComp::HueSelectorMarker::setPos(float pY)
 	this->repaint();
 }
 
+void ColorEditor::ColorViewer::setCurrentColor(float hue, float sat, float bri)
+{
+	this->hue = hue;
+	this->sat = sat;
+	this->bri = bri;
+	this->repaint();
+}
+
+void ColorEditor::ColorViewer::paint(juce::Graphics& g)
+{
+	g.fillAll(juce::Colour::fromHSV(this->hue, this->sat, this->bri, 1.f));
+}
+
 ColorEditor::ColorEditor(TrackView* parent)
 	: Component("Color Editor"),
 	parent(parent)
 {
+	this->setWantsKeyboardFocus(true);
+
 	//获取屏幕属性接口
 	this->screenSizeFunc =
 		jmadf::GetInterface<juce::Component*, juce::Rectangle<int>&>(
@@ -510,6 +529,31 @@ ColorEditor::ColorEditor(TrackView* parent)
 		"main", "color", "themeColor6", this->colors.themeColor6, result
 		);
 
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-colorEditorValueBox", this->colors.text_colorEditorValueBox, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-colorEditorValueBox-empty", this->colors.text_colorEditorValueBox_empty, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-colorEditorValueBox", this->colors.background_colorEditorValueBox, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "text-colorEditorValueBox-highlight", this->colors.text_colorEditorValueBox_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "background-colorEditorValueBox-highlight", this->colors.background_colorEditorValueBox_highlight, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, juce::Colour&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetColor",
+		"main", "color", "caret-colorEditorValueBox", this->colors.caret_colorEditorValueBox, result
+		);
+
 	//size
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -587,6 +631,34 @@ ColorEditor::ColorEditor(TrackView* parent)
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
 		"main", "size", "height-colorEditorColorSpace", this->sizes.height_colorEditorColorSpace, result
 		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditorColorSpaceValueSplit", this->sizes.width_colorEditorColorSpaceValueSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditorValueTitleArea", this->sizes.height_colorEditorValueTitleArea, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditorValueTitleFont", this->sizes.height_colorEditorValueTitleFont, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "width-colorEditorValueTitleLeftMargin", this->sizes.width_colorEditorValueTitleLeftMargin, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditorValueBox", this->sizes.height_colorEditorValueBox, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditorValueViewSplit", this->sizes.height_colorEditorValueViewSplit, result
+		);
+	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
+		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
+		"main", "size", "height-colorEditorViewArea", this->sizes.height_colorEditorViewArea, result
+		);
 	//position
 	jmadf::CallInterface<const juce::String&, const juce::String&, const juce::String&, double&, bool&>(
 		"WuChang.JMADF.LookAndFeelConfigs", "GetNumber",
@@ -653,6 +725,145 @@ ColorEditor::ColorEditor(TrackView* parent)
 
 	this->hueView = std::make_unique<ColorEditor::HueSelectorComp>(*this);
 	this->addAndMakeVisible(this->hueView.get());
+
+	//建立值编辑器样式
+	this->lafs.valueBox = std::unique_ptr<juce::LookAndFeel>(new juce::LookAndFeel_V4);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::textColourId, this->colors.text_colorEditorValueBox
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::backgroundColourId, this->colors.background_colorEditorValueBox
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::highlightedTextColourId, this->colors.text_colorEditorValueBox_highlight
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::highlightColourId, this->colors.background_colorEditorValueBox_highlight
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::outlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::focusedOutlineColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+	this->lafs.valueBox->setColour(
+		juce::TextEditor::ColourIds::shadowColourId, juce::Colour::fromRGBA(0, 0, 0, 0)
+	);
+	this->lafs.valueBox->setColour(
+		juce::CaretComponent::ColourIds::caretColourId, this->colors.caret_colorEditorValueBox
+	);
+
+	//以下建立过滤器
+	class RGBFilter final : public juce::TextEditor::InputFilter
+	{
+	public:
+		RGBFilter() = default;
+
+	private:
+		juce::String filterNewText(juce::TextEditor& e, const juce::String& newInput) override
+		{
+			juce::String t(newInput);
+			
+			t = t.retainCharacters("0123456789");
+			t = t.substring(0, 3 - (e.getTotalNumChars() - e.getHighlightedRegion().getLength()));
+
+			auto caret = e.getCaretPosition();
+			auto num = e.getText().replaceSection(caret, 0, newInput).getIntValue();
+			if (num > 255) {
+				return juce::String();
+			}
+			return t;
+		};
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBFilter)
+	};
+	class HexFilter final : public juce::TextEditor::InputFilter
+	{
+	public:
+		HexFilter() = default;
+
+	private:
+		juce::String filterNewText(juce::TextEditor& e, const juce::String& newInput) override
+		{
+			juce::String t(newInput);
+
+			t = t.retainCharacters("0123456789abcdefABCDEF");
+			t = t.substring(0, 6 - (e.getTotalNumChars() - e.getHighlightedRegion().getLength()));
+
+			return t;
+		};
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HexFilter)
+	};
+
+	//以下初始化值编辑器
+	this->rValue = std::make_unique<juce::TextEditor>();
+	this->rValue->setLookAndFeel(this->lafs.valueBox.get());
+	this->rValue->setHasFocusOutline(false);
+	this->rValue->setMultiLine(false);
+	this->rValue->setJustification(juce::Justification::centredLeft);
+	this->rValue->setClicksOutsideDismissVirtualKeyboard(true);
+	this->rValue->setPopupMenuEnabled(false);
+	this->rValue->setTextToShowWhenEmpty(
+		this->tr("lb_R"), this->colors.text_colorEditorValueBox_empty);
+	//this->rValue->setInputRestrictions(3, "0123456789");
+	this->rValue->setInputFilter(new RGBFilter, true);
+	this->rValue->onTextChange = [this] {
+		this->rgbValueChanged();
+	};
+	this->addAndMakeVisible(this->rValue.get());
+
+	this->gValue = std::make_unique<juce::TextEditor>();
+	this->gValue->setLookAndFeel(this->lafs.valueBox.get());
+	this->gValue->setHasFocusOutline(false);
+	this->gValue->setMultiLine(false);
+	this->gValue->setJustification(juce::Justification::centredLeft);
+	this->gValue->setClicksOutsideDismissVirtualKeyboard(true);
+	this->gValue->setPopupMenuEnabled(false);
+	this->gValue->setTextToShowWhenEmpty(
+		this->tr("lb_G"), this->colors.text_colorEditorValueBox_empty);
+	//this->gValue->setInputRestrictions(3, "0123456789");
+	this->gValue->setInputFilter(new RGBFilter, true);
+	this->gValue->onTextChange = [this] {
+		this->rgbValueChanged();
+	};
+	this->addAndMakeVisible(this->gValue.get());
+
+	this->bValue = std::make_unique<juce::TextEditor>();
+	this->bValue->setLookAndFeel(this->lafs.valueBox.get());
+	this->bValue->setHasFocusOutline(false);
+	this->bValue->setMultiLine(false);
+	this->bValue->setJustification(juce::Justification::centredLeft);
+	this->bValue->setClicksOutsideDismissVirtualKeyboard(true);
+	this->bValue->setPopupMenuEnabled(false);
+	this->bValue->setTextToShowWhenEmpty(
+		this->tr("lb_B"), this->colors.text_colorEditorValueBox_empty);
+	//this->bValue->setInputRestrictions(3, "0123456789");
+	this->bValue->setInputFilter(new RGBFilter, true);
+	this->bValue->onTextChange = [this] {
+		this->rgbValueChanged();
+	};
+	this->addAndMakeVisible(this->bValue.get());
+
+	this->hexValue = std::make_unique<juce::TextEditor>();
+	this->hexValue->setLookAndFeel(this->lafs.valueBox.get());
+	this->hexValue->setHasFocusOutline(false);
+	this->hexValue->setMultiLine(false);
+	this->hexValue->setJustification(juce::Justification::centredLeft);
+	this->hexValue->setClicksOutsideDismissVirtualKeyboard(true);
+	this->hexValue->setPopupMenuEnabled(false);
+	this->hexValue->setTextToShowWhenEmpty(
+		this->tr("lb_Hex"), this->colors.text_colorEditorValueBox_empty);
+	//this->hexValue->setInputRestrictions(6, "0123456789abcdefABCDEF");
+	this->hexValue->setInputFilter(new HexFilter, true);
+	this->hexValue->onTextChange = [this] {
+		this->hexValueChanged();
+	};
+	this->addAndMakeVisible(this->hexValue.get());
+
+	//建立预览器
+	this->colorViewer = std::make_unique<ColorEditor::ColorViewer>();
+	this->addAndMakeVisible(this->colorViewer.get());
 }
 
 void ColorEditor::resized()
@@ -695,6 +906,12 @@ void ColorEditor::resized()
 	int width_colorSpaceSplit = this->sizes.width_colorEditorColorSpaceSplit * screenSize.getWidth();
 	int height_colorSpace = this->sizes.height_colorEditorColorSpace * screenSize.getHeight();
 
+	float width_colorSpaceValueSplit = this->sizes.width_colorEditorColorSpaceValueSplit * screenSize.getWidth();
+	float height_valueTitleArea = this->sizes.height_colorEditorValueTitleArea * screenSize.getHeight();
+	float height_valueBox = this->sizes.height_colorEditorValueBox * screenSize.getHeight();
+	float height_valueViewSplit = this->sizes.height_colorEditorValueViewSplit * screenSize.getHeight();
+	float height_viewArea = this->sizes.height_colorEditorViewArea * screenSize.getHeight();
+
 	//左右绘图区
 	juce::Rectangle<float> rectLeftArea(
 		width_marginLeft, height_marginTop,
@@ -712,10 +929,42 @@ void ColorEditor::resized()
 	int posY_colorSpace = rectRightArea.getY();
 	int posX_hueViewer = posX_colorSpace + width_colorSpace + width_colorSpaceSplit;
 
+	//计算右侧值显示区大小
+	float posX_valueBox = posX_hueViewer + width_hueViewer + width_colorSpaceValueSplit;
+
+	float width_valueBox = rectRightArea.getRight() - posX_valueBox;
+
 	//调整控件大小
 	this->okButton->setBounds(posX_button, posY_button, width_button, height_button);
 	this->colorSpace->setBounds(posX_colorSpace, posY_colorSpace, width_colorSpace, height_colorSpace);
 	this->hueView->setBounds(posX_hueViewer, posY_colorSpace, width_hueViewer, height_colorSpace);
+
+	this->rValue->setBounds(
+		posX_valueBox,
+		rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 0 + height_valueTitleArea,
+		width_valueBox, height_valueBox
+	);
+	this->gValue->setBounds(
+		posX_valueBox,
+		rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 1 + height_valueTitleArea,
+		width_valueBox, height_valueBox
+	);
+	this->bValue->setBounds(
+		posX_valueBox,
+		rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 2 + height_valueTitleArea,
+		width_valueBox, height_valueBox
+	);
+	this->hexValue->setBounds(
+		posX_valueBox,
+		rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 3 + height_valueTitleArea,
+		width_valueBox, height_valueBox
+	);
+
+	this->colorViewer->setBounds(
+		posX_valueBox,
+		rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 4 + height_valueViewSplit,
+		width_valueBox, height_viewArea
+	);
 }
 
 void ColorEditor::paint(juce::Graphics& g)
@@ -748,6 +997,21 @@ void ColorEditor::paint(juce::Graphics& g)
 
 	float width_titleMarginLeft = this->sizes.width_colorEditorTitleLeftMargin * screenSize.getWidth();
 
+	int width_colorSpace = this->sizes.width_colorEditorColorSpace * screenSize.getWidth();
+	int width_hueViewer = this->sizes.width_colorEditorHueSpace * screenSize.getWidth();
+	int width_colorSpaceSplit = this->sizes.width_colorEditorColorSpaceSplit * screenSize.getWidth();
+	int height_colorSpace = this->sizes.height_colorEditorColorSpace * screenSize.getHeight();
+
+	float width_colorSpaceValueSplit = this->sizes.width_colorEditorColorSpaceValueSplit * screenSize.getWidth();
+	float height_valueTitleArea = this->sizes.height_colorEditorValueTitleArea * screenSize.getHeight();
+	float height_valueBox = this->sizes.height_colorEditorValueBox * screenSize.getHeight();
+	float height_valueViewSplit = this->sizes.height_colorEditorValueViewSplit * screenSize.getHeight();
+	float height_viewArea = this->sizes.height_colorEditorViewArea * screenSize.getHeight();
+
+	float height_valueTitleFont = this->sizes.height_colorEditorValueTitleFont * screenSize.getHeight();
+
+	float width_valueTitleMarginLeft = this->sizes.width_colorEditorValueTitleLeftMargin * screenSize.getWidth();
+
 	//左右绘图区
 	juce::Rectangle<float> rectLeftArea(
 		width_marginLeft, height_marginTop,
@@ -778,8 +1042,21 @@ void ColorEditor::paint(juce::Graphics& g)
 	float themeColorTemplatePosY = posY_themeArea;
 	float historyColorTemplatePosY = posY_historyArea;
 
+	//计算右侧控件位置
+	int posX_colorSpace = rectRightArea.getX();
+	int posY_colorSpace = rectRightArea.getY();
+	int posX_hueViewer = posX_colorSpace + width_colorSpace + width_colorSpaceSplit;
+
+	//计算右侧值显示区大小
+	float posX_valueBox = posX_hueViewer + width_hueViewer + width_colorSpaceValueSplit;
+	float posX_valueTitle = posX_valueBox + width_valueTitleMarginLeft;
+
+	float width_valueBox = rectRightArea.getRight() - posX_valueBox;
+	float width_valueTitle = rectRightArea.getRight() - posX_valueTitle;
+
 	//计算字体
 	juce::Font fontTitle = g.getCurrentFont().withHeight(height_titleFont);
+	juce::Font fontValueTitle = g.getCurrentFont().withHeight(height_valueTitleFont);
 
 	//绘制基准线
 	//begin test
@@ -917,6 +1194,39 @@ void ColorEditor::paint(juce::Graphics& g)
 
 			g.fillRoundedRectangle(colorRect, width_colorTemplateCorner);
 		}
+	}
+
+	//绘制右侧值显示区标题
+	{
+		juce::String strRTitle(this->tr("lb_R"));
+		juce::String strGTitle(this->tr("lb_G"));
+		juce::String strBTitle(this->tr("lb_B"));
+		juce::String strHexTitle(this->tr("lb_Hex"));
+
+		juce::Rectangle<int> rectRTitle(
+			posX_valueTitle, rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 0,
+			width_valueTitle, height_valueTitleArea
+		);
+		juce::Rectangle<int> rectGTitle(
+			posX_valueTitle, rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 1,
+			width_valueTitle, height_valueTitleArea
+		);
+		juce::Rectangle<int> rectBTitle(
+			posX_valueTitle, rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 2,
+			width_valueTitle, height_valueTitleArea
+		);
+		juce::Rectangle<int> rectHexTitle(
+			posX_valueTitle, rectRightArea.getY() + (height_valueTitleArea + height_valueBox) * 3,
+			width_valueTitle, height_valueTitleArea
+		);
+
+		g.setColour(this->colors.text_colorEditorTitle);
+		g.setFont(fontValueTitle);
+
+		g.drawFittedText(strRTitle, rectRTitle, juce::Justification::centredLeft, 1);
+		g.drawFittedText(strGTitle, rectGTitle, juce::Justification::centredLeft, 1);
+		g.drawFittedText(strBTitle, rectBTitle, juce::Justification::centredLeft, 1);
+		g.drawFittedText(strHexTitle, rectHexTitle, juce::Justification::centredLeft, 1);
 	}
 }
 
@@ -1266,29 +1576,37 @@ void ColorEditor::mouseDrag(const juce::MouseEvent& event)
 	this->mouseMove(event);
 }
 
-void ColorEditor::selectColor(float hue, float sat, float bri)
+void ColorEditor::selectColor(float hue, float sat, float bri, bool refreshRGB, bool refreshHex)
 {
 	this->hue = hue;
 	this->sat = sat;
 	this->bri = bri;
-	this->refreshWidgets();
+	this->refreshWidgets(refreshRGB, refreshHex);
 }
 
-void ColorEditor::selectColor(juce::Colour color)
+void ColorEditor::selectColor(juce::Colour color, bool refreshRGB, bool refreshHex)
 {
 	auto h = color.getHue();
 	auto s = color.getSaturation();
 	auto v = color.getBrightness();
-	this->selectColor(h, s, v);
+	this->selectColor(h, s, v, refreshRGB, refreshHex);
 }
 
-void ColorEditor::refreshWidgets()
+void ColorEditor::refreshWidgets(bool refreshRGB, bool refreshHex)
 {
-	this->okButton->setEnabled(
-		juce::Colour::fromHSV(this->hue, this->sat, this->bri, 1.f) != this->currentColor);
+	auto color = juce::Colour::fromHSV(this->hue, this->sat, this->bri, 1.f);
+	this->okButton->setEnabled(color != this->currentColor);
 	this->colorSpace->setCurrentColor(this->hue, this->sat, this->bri);
 	this->hueView->setCurrentColor(this->hue, this->sat, this->bri);
-	//TODO 刷新控件当前颜色显示
+	if (refreshRGB) {
+		this->rValue->setText(juce::String(color.getRed()), false);
+		this->gValue->setText(juce::String(color.getGreen()), false);
+		this->bValue->setText(juce::String(color.getBlue()), false);
+	}
+	if (refreshHex) {
+		this->hexValue->setText(color.toDisplayString(false), false);
+	}
+	this->colorViewer->setCurrentColor(this->hue, this->sat, this->bri);
 }
 
 void ColorEditor::acceptAndClose()
@@ -1299,6 +1617,20 @@ void ColorEditor::acceptAndClose()
 		this->parent->sendColor(
 			juce::Colour::fromHSV(this->hue, this->sat, this->bri, 1.f));
 	}
+}
+
+void ColorEditor::rgbValueChanged()
+{
+	auto r = this->rValue->getText().getIntValue();
+	auto g = this->gValue->getText().getIntValue();
+	auto b = this->bValue->getText().getIntValue();
+	this->selectColor(juce::Colour::fromRGB(r, g, b), false, true);
+}
+
+void ColorEditor::hexValueChanged()
+{
+	auto color = juce::Colour::fromString(this->hexValue->getText()).withAlpha(1.f);
+	this->selectColor(color, true, false);
 }
 
 ColorEditorCallOutBox::ColorEditorCallOutBox(TrackView* parent)

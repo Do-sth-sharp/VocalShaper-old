@@ -31,5 +31,10 @@
   "tip_Link": "链接至歌声数据库或数字乐器",
 
   "lb_ThemeColor": "主题颜色",
-  "lb_HistoryColor": "历史颜色"
+  "lb_HistoryColor": "历史颜色",
+
+  "lb_R": "红",
+  "lb_G": "绿",
+  "lb_B": "蓝",
+  "lb_Hex": "十六进制"
 }

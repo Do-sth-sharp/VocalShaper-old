@@ -31,5 +31,10 @@
   "tip_Link": "Link to voice database or digital instrument",
 
   "lb_ThemeColor": "Theme Colors",
-  "lb_HistoryColor": "History Colors"
+  "lb_HistoryColor": "History Colors",
+
+  "lb_R": "Red",
+  "lb_G": "Green",
+  "lb_B": "Blue",
+  "lb_Hex": "Hex"
 }

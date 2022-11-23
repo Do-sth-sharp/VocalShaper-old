@@ -96,7 +96,14 @@
     "colorEditorColorSpaceCursor:string": "#FFFFFF",
     "colorEditorColorSpaceCursorBorder:string": "#00000030",
     "colorEditorHueSpaceCursor:string": "#FFFFFF",
-    "colorEditorHueSpaceCursorBorder:string": "#00000030"
+    "colorEditorHueSpaceCursorBorder:string": "#00000030",
+
+    "text-colorEditorValueBox:string": "$ThemeColorD2",
+    "text-colorEditorValueBox-empty:string": "$ThemeColorD3",
+    "background-colorEditorValueBox:string": "$ThemeColorB1",
+    "text-colorEditorValueBox-highlight:string": "$ThemeColorB1",
+    "background-colorEditorValueBox-highlight:string": "$ThemeColorD2",
+    "caret-colorEditorValueBox:string": "$ThemeColorD1"
   },
   "resource": {
     "icon-showCurveButton:string": "/rc/third-party/RemixIcon/icons/Business/line-chart-line.svg"

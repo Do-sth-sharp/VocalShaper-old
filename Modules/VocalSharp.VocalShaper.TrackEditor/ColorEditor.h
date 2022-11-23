@@ -64,6 +64,13 @@ private:
 		juce::Colour themeColor4;
 		juce::Colour themeColor5;
 		juce::Colour themeColor6;
+
+		juce::Colour text_colorEditorValueBox;
+		juce::Colour text_colorEditorValueBox_empty;
+		juce::Colour background_colorEditorValueBox;
+		juce::Colour text_colorEditorValueBox_highlight;
+		juce::Colour background_colorEditorValueBox_highlight;
+		juce::Colour caret_colorEditorValueBox;
 	}colors;//界面颜色
 	struct Size final
 	{
@@ -93,6 +100,15 @@ private:
 		double width_colorEditorHueSpace;
 		double width_colorEditorColorSpaceSplit;
 		double height_colorEditorColorSpace;
+
+		double width_colorEditorColorSpaceValueSplit;
+		double height_colorEditorValueTitleArea;
+		double height_colorEditorValueTitleFont;
+		double width_colorEditorValueTitleLeftMargin;
+		double height_colorEditorValueBox;
+
+		double height_colorEditorValueViewSplit;
+		double height_colorEditorViewArea;
 	}sizes;//控件大小
 	struct Positions final
 	{
@@ -114,6 +130,7 @@ private:
 	struct LookAndFeels final
 	{
 		std::unique_ptr<juce::LookAndFeel> button;
+		std::unique_ptr<juce::LookAndFeel> valueBox;
 	}lafs;//控件样式
 
 	std::function<void(juce::Component*, juce::Rectangle<int>&)> screenSizeFunc;
@@ -226,6 +243,20 @@ private:
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HueSelectorComp)
 	};
+	class ColorViewer final : public juce::Component
+	{
+	public:
+		ColorViewer() = default;
+
+		void setCurrentColor(float hue, float sat, float bri);
+
+		void paint(juce::Graphics& g) override;
+
+	private:
+		float hue = 0.f, sat = 0.f, bri = 0.f;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorViewer)
+	};
 
 	friend class ColourSpaceView;
 	friend class HueSelectorComp;
@@ -235,6 +266,10 @@ private:
 
 	std::unique_ptr<ColourSpaceView> colorSpace = nullptr;
 	std::unique_ptr<HueSelectorComp> hueView = nullptr;
+	std::unique_ptr<ColorViewer> colorViewer = nullptr;
+
+	std::unique_ptr<juce::TextEditor>
+		rValue = nullptr, gValue = nullptr, bValue = nullptr, hexValue = nullptr;
 
 	TrackView* parent = nullptr;
 
@@ -245,10 +280,13 @@ private:
 
 	int templateXSize = 6;
 
-	void selectColor(float hue, float sat, float bri);
-	void selectColor(juce::Colour color);
-	void refreshWidgets();
+	void selectColor(float hue, float sat, float bri, bool refreshRGB = true, bool refreshHex = true);
+	void selectColor(juce::Colour color, bool refreshRGB = true, bool refreshHex = true);
+	void refreshWidgets(bool refreshRGB = true, bool refreshHex = true);
 	void acceptAndClose();
+
+	void rgbValueChanged();
+	void hexValueChanged();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorEditor)
 };
