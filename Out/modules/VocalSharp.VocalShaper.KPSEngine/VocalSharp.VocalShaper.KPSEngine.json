@@ -1,0 +1,12 @@
+﻿{
+  "id": "VocalSharp.VocalShaper.KPSEngine",
+  "version": "0.0.1",
+  "group": [
+    "VocalShaper.OfficialModules",
+    "VocalShaper.Engines"
+  ],
+  "productId": "{08338208-B752-4A90-9C73-4163152D6818}",
+  "entry": "VocalSharp.VocalShaper.KPSEngine",
+  "description": "VocalShaper编辑器Karplus-strong引擎",
+  "dependencies": []
+}
