@@ -11,11 +11,11 @@ KPSEngine::KPSEngine()
 const vocalshaper::EngineBase::EngineFlags KPSEngine::getEngineFlags() const
 {
 	return vocalshaper::EngineBase::EngineFlags{
-		.renderBasePitch = true,
+		.renderBasePitch = false,
 		.exportPitch = true,
 		.exportDynamic = true,
 		.exportSpectrogrum = true,
-		.exportFormantrogrum = true
+		.exportFormantrogrum = false
 	};
 }
 
@@ -28,7 +28,8 @@ const vocalshaper::ParamInfoList KPSEngine::getParamList() const
 {
 	return vocalshaper::ParamInfoList{
 		vocalshaper::ParamInfo{vocalshaper::ParamInfo::ParamType::Dynamic, "PIT", "Pitch", -12., 12., 0., true},
-		vocalshaper::ParamInfo{vocalshaper::ParamInfo::ParamType::Dynamic, "DYN", "Dynamic", 0., 2., 1., false}
+		vocalshaper::ParamInfo{vocalshaper::ParamInfo::ParamType::Dynamic, "DYN", "Dynamic", 0., 1., 0.5, false},
+		vocalshaper::ParamInfo{vocalshaper::ParamInfo::ParamType::Static, "OPE", "Strength", 0., 1., 0.5, false}
 	};
 }
 

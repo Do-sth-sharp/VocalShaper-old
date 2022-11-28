@@ -15,8 +15,56 @@ double KPSRenderer::renderBasePitch(
 	const vocalshaper::TempoTemp* tempoTemp, uint32_t sampleRate,
 	uint32_t curveQuantification, uint32_t frameLength) const
 {
-	//TODO
 	return 0;
+
+	//if (!track) {
+	//	return 0;
+	//}
+
+	////获得渲染区始末位置
+	//auto noteFirst = vocalshaper::TrackDAO::getNote(track, std::get<0>(sentence));
+	//auto noteEnd = vocalshaper::TrackDAO::getNote(track, std::get<1>(sentence));
+	//if (!noteFirst || !noteEnd) {
+	//	return 0;
+	//}
+	//auto startTime = vocalshaper::NoteDAO::getSt(noteFirst);
+	//auto endTime =
+	//	vocalshaper::NoteDAO::getSt(noteEnd) + vocalshaper::NoteDAO::getLength(noteEnd);
+
+	////计算曲线长度并预填充
+	//int pitchLength = std::ceil((endTime - startTime) * curveQuantification);
+	//pitchArray.resize(pitchLength);
+	//pitchArray.fill(0.f);
+
+	////填充曲线
+	//auto fillPitchArrayFunc = [&pitchArray](int start, int end, float value) {
+	//	for (int i = start; i <= end; i++) {
+	//		pitchArray.getReference(i) = value;
+	//	}
+	//};
+
+	////遍历音符
+	//for (int i = std::get<0>(sentence); i <= std::get<1>(sentence); i++) {
+	//	auto note = vocalshaper::TrackDAO::getNote(track, i);
+	//	if (note) {
+	//		//计算音符始末位置
+	//		auto noteStartTime = vocalshaper::NoteDAO::getSt(note);
+	//		auto noteEndTime =
+	//			vocalshaper::NoteDAO::getSt(note) + vocalshaper::NoteDAO::getLength(note);
+
+	//		//计算音符控制区
+	//		int startPointIndex = (noteStartTime - startTime) * curveQuantification;
+	//		int endPointIndex = (noteEndTime - startTime) * curveQuantification;
+
+	//		//填充曲线为音符音高
+	//		auto pitch = vocalshaper::NoteDAO::getPitch(note);
+	//		fillPitchArrayFunc(startPointIndex, endPointIndex, pitch);
+	//	}
+	//}
+
+	////偏移量，单位四分音符时长
+	//return 
+	//	((int)(startTime * curveQuantification) / (double)curveQuantification) - startTime;
 }
 
 double KPSRenderer::getPitch(
@@ -55,6 +103,5 @@ double KPSRenderer::getFormantrogrum(
 	const vocalshaper::TempoTemp* tempoTemp, uint32_t sampleRate,
 	uint32_t frameLength, uint32_t scaleRatio) const
 {
-	//TODO
 	return 0;
 }

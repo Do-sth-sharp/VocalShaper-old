@@ -1,0 +1,10 @@
+﻿{
+  "id": "VocalSharp.VocalShaper.KarPlusStrong",
+  "name": "KarPlusStrong",
+  "styles": [ "style0", "style1", "style2", "style3", "style4", "style5", "style6", "style7", "style8" ],
+  "engine": {
+    "id": "VocalSharp.VocalShaper.KPSEngine",
+    "minVersion": "0.0.1"
+  },
+  "language": [ "Other" ]
+}
