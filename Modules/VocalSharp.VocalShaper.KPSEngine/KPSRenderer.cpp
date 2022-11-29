@@ -5,7 +5,45 @@ double KPSRenderer::renderSentence(
 	const std::tuple<int, int> sentence,
 	const vocalshaper::TempoTemp* tempoTemp, uint32_t sampleRate, uint32_t frameLength) const
 {
-	//TODO
+	if (!track || !tempoTemp) {
+		return 0;
+	}
+
+	//获得渲染区始末位置
+	auto noteFirst = vocalshaper::TrackDAO::getNote(track, std::get<0>(sentence));
+	auto noteEnd = vocalshaper::TrackDAO::getNote(track, std::get<1>(sentence));
+	if (!noteFirst || !noteEnd) {
+		return 0;
+	}
+	auto startBeat = vocalshaper::NoteDAO::getSt(noteFirst);
+	auto endBeat =
+		vocalshaper::NoteDAO::getSt(noteEnd) + vocalshaper::NoteDAO::getLength(noteEnd);
+	auto startTime = tempoTemp->get_t(startBeat);
+	auto endTime = tempoTemp->get_t(endBeat);
+
+	//计算音频长度并预填充
+	int audioLength = std::ceil((endTime - startTime) * sampleRate);
+	buffer = std::move(juce::AudioBuffer<float>(1, audioLength));
+
+	//遍历音符
+	for (int i = std::get<0>(sentence); i <= std::get<1>(sentence); i++) {
+		auto note = vocalshaper::TrackDAO::getNote(track, i);
+		if (note) {
+			//计算音符始末位置
+			auto noteStartBeat = vocalshaper::NoteDAO::getSt(note);
+			auto noteEndBeat =
+				vocalshaper::NoteDAO::getSt(note) + vocalshaper::NoteDAO::getLength(note);
+			auto noteStartTime = tempoTemp->get_t(noteStartBeat);
+			auto noteEndTime = tempoTemp->get_t(noteEndBeat);
+
+			//计算音符控制区
+			int startPointIndex = (noteStartTime - startTime) * sampleRate;
+			int endPointIndex = (noteEndTime - startTime) * sampleRate;
+
+			//TODO 生成音频
+		}
+	}
+
 	return 0;
 }
 
