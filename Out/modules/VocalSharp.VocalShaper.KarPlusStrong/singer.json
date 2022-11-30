@@ -6,5 +6,5 @@
     "id": "VocalSharp.VocalShaper.KPSEngine",
     "minVersion": "0.0.1"
   },
-  "language": [ "Other" ]
+  "languages": [ "Other" ]
 }

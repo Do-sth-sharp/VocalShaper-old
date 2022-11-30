@@ -44,5 +44,31 @@ public:
 		uint32_t frameLength, uint32_t scaleRatio) const override;
 
 private:
+	using SingerTempType = std::map<juce::String, std::tuple<int, juce::Array<uint16_t>>>;
+	mutable SingerTempType dbTemp;
+	mutable juce::CriticalSection dbTempLock;
+
+	struct SingerHandle final
+	{
+		SingerHandle() = delete;
+		explicit SingerHandle(
+			SingerTempType& temp, const juce::String& singer, const juce::String& style,
+			juce::CriticalSection& lock,
+			const std::function<juce::Array<uint16_t>(const juce::String&, const juce::String&)> loadFunc);
+		SingerHandle(SingerHandle&& other);
+		SingerHandle& operator=(SingerHandle&& other);
+		~SingerHandle();
+
+	private:
+		SingerTempType* temp;
+		juce::String id;
+		juce::CriticalSection* lock;
+		std::tuple<int, juce::Array<uint16_t>>* data;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SingerHandle)
+	};
+
+	const SingerHandle loadSinger(const juce::String& singer, const juce::String& style) const;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KPSRenderer)
 };
