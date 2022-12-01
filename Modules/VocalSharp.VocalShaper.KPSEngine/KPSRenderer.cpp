@@ -1,5 +1,11 @@
 ﻿#include "KPSRenderer.h"
 #include "libJModule.h"
+#include "KPSEngine.h"
+
+KPSRenderer::KPSRenderer(const KPSEngine* parent)
+	: parent(parent)
+{}
+
 
 double KPSRenderer::renderSentence(
 	juce::AudioBuffer<float>& buffer, const vocalshaper::Track* track,
@@ -29,28 +35,68 @@ double KPSRenderer::renderSentence(
 	//加载声库
 	auto singer = vocalshaper::TrackDAO::getSinger(track);
 	auto style = vocalshaper::TrackDAO::getStyle(track);
+	auto singerInfo = vocalshaper::SingerHub::getInfo(singer);
+	if (singerInfo.id != singer) {
+		return 0;
+	}
+	if (!singerInfo.styles.contains(style)) {
+		if (singerInfo.styles.size() == 0) {
+			return 0;
+		}
+		style = singerInfo.styles.getReference(0);
+	}
 	auto handle = this->loadSinger(singer, style);
+
+	//取轨道参数
+	auto paramList = this->parent->getParamList();
+
+	auto pitCurve = vocalshaper::EngineHelper::findCurve(
+		track, vocalshaper::EngineHelper::makeFullID("PIT"));
+	auto pitParam = vocalshaper::EngineHelper::findParam(
+		track, vocalshaper::EngineHelper::makeFullID("PIT"));
+	auto pitInfo = vocalshaper::EngineHelper::findParamInfo(paramList, "PIT");
+
+	auto dynCurve = vocalshaper::EngineHelper::findCurve(
+		track, vocalshaper::EngineHelper::makeFullID("DYN"));
+	auto dynParam = vocalshaper::EngineHelper::findParam(
+		track, vocalshaper::EngineHelper::makeFullID("DYN"));
+	auto dynInfo = vocalshaper::EngineHelper::findParamInfo(paramList, "DYN");
+
+	auto opeInfo = vocalshaper::EngineHelper::findParamInfo(paramList, "OPE");
 
 	//遍历音符
 	for (int i = std::get<0>(sentence); i <= std::get<1>(sentence); i++) {
+		//如果渲染中止
+		if (juce::Thread::currentThreadShouldExit()) {
+			return 0;
+		}
+
 		auto note = vocalshaper::TrackDAO::getNote(track, i);
 		if (note) {
 			//计算音符始末位置
 			auto noteStartBeat = vocalshaper::NoteDAO::getSt(note);
 			auto noteEndBeat =
 				vocalshaper::NoteDAO::getSt(note) + vocalshaper::NoteDAO::getLength(note);
-			auto noteStartTime = tempoTemp->get_t(noteStartBeat);
-			auto noteEndTime = tempoTemp->get_t(noteEndBeat);
+			
+			//取音符参数
+			auto opeParam = vocalshaper::EngineHelper::findParam(
+				note, vocalshaper::EngineHelper::makeFullID("OPE"));
 
-			//计算音符控制区
-			int startPointIndex = (noteStartTime - startTime) * sampleRate;
-			int endPointIndex = (noteEndTime - startTime) * sampleRate;
+			//获取音符属性
+			auto pitch = vocalshaper::NoteDAO::getPitch(note);
 
-			//TODO 生成音频
+			//生成音频
+			this->KarPlusStrongRenderNote(
+				buffer, handle, noteStartBeat, noteEndBeat, pitch,
+				sampleRate, startBeat, *tempoTemp,
+				pitCurve, dynCurve, pitParam, dynParam, opeParam,
+				pitInfo, dynInfo, opeInfo);
 		}
 	}
 
-	return 0;
+	//偏移量，单位秒
+	return 
+		((int)(startTime * sampleRate) / (double)sampleRate) - startTime;
 }
 
 double KPSRenderer::renderBasePitch(
@@ -60,55 +106,6 @@ double KPSRenderer::renderBasePitch(
 	uint32_t curveQuantification, uint32_t frameLength) const
 {
 	return 0;
-
-	//if (!track) {
-	//	return 0;
-	//}
-
-	////获得渲染区始末位置
-	//auto noteFirst = vocalshaper::TrackDAO::getNote(track, std::get<0>(sentence));
-	//auto noteEnd = vocalshaper::TrackDAO::getNote(track, std::get<1>(sentence));
-	//if (!noteFirst || !noteEnd) {
-	//	return 0;
-	//}
-	//auto startTime = vocalshaper::NoteDAO::getSt(noteFirst);
-	//auto endTime =
-	//	vocalshaper::NoteDAO::getSt(noteEnd) + vocalshaper::NoteDAO::getLength(noteEnd);
-
-	////计算曲线长度并预填充
-	//int pitchLength = std::ceil((endTime - startTime) * curveQuantification);
-	//pitchArray.resize(pitchLength);
-	//pitchArray.fill(0.f);
-
-	////填充曲线
-	//auto fillPitchArrayFunc = [&pitchArray](int start, int end, float value) {
-	//	for (int i = start; i <= end; i++) {
-	//		pitchArray.getReference(i) = value;
-	//	}
-	//};
-
-	////遍历音符
-	//for (int i = std::get<0>(sentence); i <= std::get<1>(sentence); i++) {
-	//	auto note = vocalshaper::TrackDAO::getNote(track, i);
-	//	if (note) {
-	//		//计算音符始末位置
-	//		auto noteStartTime = vocalshaper::NoteDAO::getSt(note);
-	//		auto noteEndTime =
-	//			vocalshaper::NoteDAO::getSt(note) + vocalshaper::NoteDAO::getLength(note);
-
-	//		//计算音符控制区
-	//		int startPointIndex = (noteStartTime - startTime) * curveQuantification;
-	//		int endPointIndex = (noteEndTime - startTime) * curveQuantification;
-
-	//		//填充曲线为音符音高
-	//		auto pitch = vocalshaper::NoteDAO::getPitch(note);
-	//		fillPitchArrayFunc(startPointIndex, endPointIndex, pitch);
-	//	}
-	//}
-
-	////偏移量，单位四分音符时长
-	//return 
-	//	((int)(startTime * curveQuantification) / (double)curveQuantification) - startTime;
 }
 
 double KPSRenderer::getPitch(
@@ -175,7 +172,7 @@ KPSRenderer::SingerHandle::SingerHandle(
 	}
 }
 
-KPSRenderer::SingerHandle::SingerHandle(KPSRenderer::SingerHandle&& other)
+KPSRenderer::SingerHandle::SingerHandle(KPSRenderer::SingerHandle&& other) noexcept
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(*(other.lock));
 
@@ -189,7 +186,7 @@ KPSRenderer::SingerHandle::SingerHandle(KPSRenderer::SingerHandle&& other)
 	other.data = nullptr;
 }
 
-KPSRenderer::SingerHandle& KPSRenderer::SingerHandle::operator=(KPSRenderer::SingerHandle&& other)
+KPSRenderer::SingerHandle& KPSRenderer::SingerHandle::operator=(KPSRenderer::SingerHandle&& other) noexcept
 {
 	if (this != &other) {
 		juce::GenericScopedLock<juce::CriticalSection> locker(*(other.lock));
@@ -239,10 +236,30 @@ const KPSRenderer::SingerHandle KPSRenderer::loadSinger(
 			result.add(stream.readShort());
 		}
 
-		return std::move(result);
+		return result;
 	};
 
 	return std::move(
 		KPSRenderer::SingerHandle(
 			this->dbTemp, singer, style, this->dbTempLock, loadFunc));
+}
+
+void KPSRenderer::KarPlusStrongRenderNote(
+	juce::AudioBuffer<float>& buffer, const SingerHandle& singerData,
+	double noteStartBeat, double noteEndBeat, uint8_t pitch, uint32_t sampleRate,
+	double startBeat, const vocalshaper::TempoTemp& tempoTemp,
+	const vocalshaper::Curve* pitCurve, const vocalshaper::Curve* dynCurve,
+	const vocalshaper::Param* pitParam, const vocalshaper::Param* dynParam,
+	const vocalshaper::Param* opeParam,
+	const vocalshaper::ParamInfo& pitInfo, const vocalshaper::ParamInfo& dynInfo,
+	const vocalshaper::ParamInfo& opeInfo) const
+{
+	//计算始末位置
+	auto startTime = tempoTemp.get_t(startBeat);
+	auto noteStartTime = tempoTemp.get_t(noteStartBeat);
+	auto noteEndTime = tempoTemp.get_t(noteEndBeat);
+	int startPointIndex = (noteStartTime - startTime) * sampleRate;
+	int endPointIndex = (noteEndTime - startTime) * sampleRate;
+
+	//TODO 单元合成
 }

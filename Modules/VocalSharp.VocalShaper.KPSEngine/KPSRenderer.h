@@ -2,10 +2,12 @@
 #include <libVocalShaper.h>
 #include <JuceHeader.h>
 
+class KPSEngine;
+
 class KPSRenderer final : public vocalshaper::RendererBase
 {
 public:
-	KPSRenderer() = default;
+	explicit KPSRenderer(const KPSEngine* parent);
 	~KPSRenderer() override = default;
 
 	double renderSentence(
@@ -55,20 +57,32 @@ private:
 			SingerTempType& temp, const juce::String& singer, const juce::String& style,
 			juce::CriticalSection& lock,
 			const std::function<juce::Array<uint16_t>(const juce::String&, const juce::String&)> loadFunc);
-		SingerHandle(SingerHandle&& other);
-		SingerHandle& operator=(SingerHandle&& other);
+		SingerHandle(SingerHandle&& other) noexcept;
+		SingerHandle& operator=(SingerHandle&& other) noexcept;
 		~SingerHandle();
 
 	private:
-		SingerTempType* temp;
+		SingerTempType* temp = nullptr;
 		juce::String id;
-		juce::CriticalSection* lock;
-		std::tuple<int, juce::Array<uint16_t>>* data;
+		juce::CriticalSection* lock = nullptr;
+		std::tuple<int, juce::Array<uint16_t>>* data = nullptr;
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SingerHandle)
 	};
 
 	const SingerHandle loadSinger(const juce::String& singer, const juce::String& style) const;
+
+	const KPSEngine* parent = nullptr;
+
+	void KarPlusStrongRenderNote(
+		juce::AudioBuffer<float>& buffer, const SingerHandle& singerData,
+		double noteStartBeat, double noteEndBeat, uint8_t pitch, uint32_t sampleRate,
+		double startBeat, const vocalshaper::TempoTemp& tempoTemp,
+		const vocalshaper::Curve* pitCurve, const vocalshaper::Curve* dynCurve,
+		const vocalshaper::Param* pitParam, const vocalshaper::Param* dynParam,
+		const vocalshaper::Param* opeParam,
+		const vocalshaper::ParamInfo& pitInfo, const vocalshaper::ParamInfo& dynInfo,
+		const vocalshaper::ParamInfo& opeInfo) const;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KPSRenderer)
 };

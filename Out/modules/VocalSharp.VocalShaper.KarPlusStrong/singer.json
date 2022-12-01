@@ -1,10 +1,14 @@
 ﻿{
   "id": "VocalSharp.VocalShaper.KarPlusStrong",
   "name": "KarPlusStrong",
+  "color": "F9B7B9",
+  "portrait": "",
   "styles": [ "style0", "style1", "style2", "style3", "style4", "style5", "style6", "style7", "style8" ],
   "engine": {
     "id": "VocalSharp.VocalShaper.KPSEngine",
     "minVersion": "0.0.1"
   },
-  "languages": [ "Other" ]
+  "languages": [ "Other" ],
+  "description": "来自無常的传统艺能，是VocalShaper的默认声库，也曾经是已经倒闭了的Infinity项目中初代实验产品Infinity Editor的默认声库，源自2020年，比VocalSharp初代还要老。（永别了，嘟嘟娘）\n算法是学习自sleepwalking的B站投稿视频，华侃如前辈的B站视频在我入坑早期给我提供了很多的基础知识补充。\n代表色是随便从桌面壁纸上取的，超美丽桌面壁纸：壁纸引擎“樱花&少女咖啡枪壁纸2（无BGM）”。（说的有点多了哈哈，就到这了）",
+  "license": "做你想做的，没有限制"
 }

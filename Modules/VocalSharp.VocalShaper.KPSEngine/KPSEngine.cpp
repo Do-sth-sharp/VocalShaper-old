@@ -3,7 +3,7 @@
 KPSEngine::KPSEngine()
 	: EngineBase()
 {
-	this->renderer = std::make_unique<KPSRenderer>();
+	this->renderer = std::make_unique<KPSRenderer>(this);
 	this->spliter = std::make_unique<KPSSpliter>();
 	this->phonerator = std::make_unique<KPSPhonerator>();
 }
