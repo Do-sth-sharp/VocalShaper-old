@@ -1,8 +1,20 @@
 ﻿#获取当前目录名
 string (REGEX REPLACE ".*/\(.*\)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
 
+#启用CUDA
+set (TARGET_CUDA_ENABLED ON)
+
+#准备CUDA
+if (TARGET_CUDA_ENABLED)
+	find_package (CUDA)
+	if (NOT CUDA_FOUND)
+		message ("CUDA DISABLED!!! NOT FOUND!!!")
+		set (TARGET_CUDA_ENABLED OFF)
+	endif (NOT CUDA_FOUND)
+endif (TARGET_CUDA_ENABLED)
+
 #设置基本属性
-cmake_minimum_required (VERSION 3.15)
+cmake_minimum_required (VERSION 3.23)
 
 project (${CURRENT_FOLDER} VERSION 0.0.1 LANGUAGES CXX C)
 
@@ -10,14 +22,24 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     set (CMAKE_BUILD_TYPE "Release"  CACHE STRING "Choose the type of build." FORCE)
 endif (NOT DEFINED CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_STANDARD 20)#使用C++20
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_STANDARD 17)#使用C17
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_STANDARD 20)#使用C++20
+set (CMAKE_CXX_EXTENSIONS OFF)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_C_STANDARD 17)#使用C17
+set (CMAKE_C_EXTENSIONS OFF)
+set (CMAKE_C_STANDARD_REQUIRED ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")#MSVC下使用/MD和/MDd
+
+#CUDA配置
+if (TARGET_CUDA_ENABLED)
+	enable_language (CUDA)
+	set (CMAKE_CUDA_STANDARD 17)#使用C++17
+	set (CMAKE_CUDA_EXTENSIONS OFF)
+	set (CMAKE_CUDA_STANDARD_REQUIRED ON)
+	set (CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+	set (CMAKE_CUDA_ARCHITECTURES all)
+endif (TARGET_CUDA_ENABLED)
 
 #初始化库目录
 if (NOT DEFINED OUT_DIR)
@@ -42,6 +64,9 @@ include_directories (${JUCEHEADER_DIR})
 include_directories (${JUCELIBRARY_DIR})
 include_directories (${LIBJMODULE_DIR})
 include_directories (${VSLIBRARY_DIR})
+if (TARGET_CUDA_ENABLED)
+	include_directories (${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+endif (TARGET_CUDA_ENABLED)
 
 #使用libJModule库
 add_subdirectory (${LIBJMODULE_DIR} libJModule)
@@ -61,79 +86,63 @@ add_compile_definitions (JUCE_DLL=1)
 add_compile_definitions (JUCE_DISABLE_DLL_ALLOCATORS=1)
 add_compile_definitions (_SILENCE_CXX20_CISO646_REMOVED_WARNING=1)
 endif ()
+if (TARGET_CUDA_ENABLED)
+	add_compile_definitions (CUDA_ENABLED=1)
+endif (TARGET_CUDA_ENABLED)
 add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
 #设置编译器参数
 if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		add_compile_options (
-			/permissive-#符合模式:是
-			/GS#安全检查:启用安全检查
-			/Zc:wchar_t#将WChar_t视为内置类型:是
-			/Gm-#启用最小重新生成:否
-			/sdl#SDL检查:是
-			/fp:precise#浮点模型:精度
-			/Zc:forScope#强制For循环范围中的合规性:是
-			/Gd#调用约定:__cdecl
-			/nologo#取消显示启动版权标志:是
-			/bigobj#较大生成对象:是
-		)
+		#set (CMAKE_CXX_FLAGS "/bigobj" ${CMAKE_CXX_FLAGS})
 		add_link_options (
-			/MANIFEST#生成清单:是
-			/NXCOMPAT#数据执行保护(DEP):是
-			/DYNAMICBASE#随机基址:是
-			/LARGEADDRESSAWARE#启用大地址:是
-			/SUBSYSTEM:WINDOWS#子系统:窗口
-			/MANIFESTUAC:NO#启用用户账户控制:否
-			/NOLOGO#取消显示启动版权标志:是
+			/MANIFEST #生成清单:是
+			/NXCOMPAT #数据执行保护(DEP):是
+			/DYNAMICBASE #随机基址:是
+			/LARGEADDRESSAWARE #启用大地址:是
+			/SUBSYSTEM:WINDOWS #子系统:窗口
+			/MANIFESTUAC:NO #启用用户账户控制:否
+			/NOLOGO #取消显示启动版权标志:是
 		)
 	else ()
-		add_compile_options (-fPIC)
+		set (CMAKE_CXX_FLAGS -fPIC ${CMAKE_CXX_FLAGS})
 		#add_link_options (-mbig-obj)
 	endif ()
 elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		add_compile_options (
-			/permissive-#符合模式:是
-			/GS#安全检查:启用安全检查
-			/GL#全程序优化:是
-			/Gy#启用函数级链接:是
-			/Zc:wchar_t#将WChar_t视为内置类型:是
-			/Gm-#启用最小重新生成:否
-			/sdl#SDL检查:是
-			/fp:precise#浮点模型:精度
-			/Zc:forScope#强制For循环范围中的合规性:是
-			/Gd#调用约定:__cdecl
-			/Oi#启用内部函数:是
-			/nologo#取消显示启动版权标志:是
-			/bigobj#较大生成对象:是
-		)
+		#set (CMAKE_CXX_FLAGS "/bigobj" ${CMAKE_CXX_FLAGS})
 		add_link_options (
-			/MANIFEST#生成清单:是
-			/LTCG:incremental#链接时间代码生成:使用快速链接时间代码生成
-			/NXCOMPAT#数据执行保护(DEP):是
-			/DYNAMICBASE#随机基址:是
-			/LARGEADDRESSAWARE#启用大地址:是
-			/OPT:REF#引用:是
-			/SUBSYSTEM:WINDOWS#子系统:窗口
-			/MANIFESTUAC:NO#启用用户账户控制:否
-			/OPT:ICF#启用COMDAT折叠:是
-			/NOLOGO#取消显示启动版权标志:是
+			/MANIFEST #生成清单:是
+			/LTCG:incremental #链接时间代码生成:使用快速链接时间代码生成
+			/NXCOMPAT #数据执行保护(DEP):是
+			/DYNAMICBASE #随机基址:是
+			/LARGEADDRESSAWARE #启用大地址:是
+			/OPT:REF #引用:是
+			/SUBSYSTEM:WINDOWS #子系统:窗口
+			/MANIFESTUAC:NO #启用用户账户控制:否
+			/OPT:ICF #启用COMDAT折叠:是
+			/NOLOGO #取消显示启动版权标志:是
 		)
 	else ()
-		add_compile_options (-fPIC)
+		set (CMAKE_CXX_FLAGS -fPIC ${CMAKE_CXX_FLAGS})
 		#add_link_options (-mbig-obj)
 	endif ()
 endif()
 
 #添加目录内所有源文件
-aux_source_directory(. TARGET_SOURCE)
+aux_source_directory (. TARGET_SOURCE)
+
+#添加CUDA文件
+if (TARGET_CUDA_ENABLED)
+	aux_source_directory (cuda TARGET_CUDA_SOURCE)
+endif (TARGET_CUDA_ENABLED)
 
 #编译的文件
 add_library (
 	${TARGET_NAME} SHARED
 	${LIBJMODULE_SRC}
 	${TARGET_SOURCE}
+	${TARGET_CUDA_SOURCE}
 )
 
 #链接库
