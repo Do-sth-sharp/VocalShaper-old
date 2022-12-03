@@ -125,16 +125,20 @@ __host__ cudaError_t doSynthesis(
 			cudaStreamWaitEvent(streams[i], events[i + 1], cudaEventWaitExternal);
 		}
 
+		//计算拼接单元长度
+		int currentUnitLength = unitArray[i];
+		if (currentUnitLength > partSize) { currentUnitLength = partSize; }
+
 		//任务二：线性衰减
-		int partRoundSize = (unitArray[i] / threadNumInABlock) + 1;
+		int partRoundSize = (currentUnitLength / threadNumInABlock) + 1;
 		attenuateUnit <<<partRoundSize, block, 0, streams[i]>>> (
-			&deviceUnitPtr[i * partSize], unitArray[i],
+			&deviceUnitPtr[i * partSize], currentUnitLength,
 			1.f - outDeviation / (float)(bufferSize - 1),
-			1.f - (outDeviation + unitArray[i] - 1) / (float)(bufferSize - 1));
+			1.f - (outDeviation + currentUnitLength - 1) / (float)(bufferSize - 1));
 
 		//任务三：将拼接单元拷贝到指定位置
 		cudaMemcpyAsync(
-			&hostBufferPtr[outDeviation], &deviceUnitPtr[i * partSize], unitArray[i], cudaMemcpyDeviceToHost, streams[i]);
+			&hostBufferPtr[outDeviation], &deviceUnitPtr[i * partSize], currentUnitLength, cudaMemcpyDeviceToHost, streams[i]);
 		outDeviation += unitArray[i];
 	}
 
