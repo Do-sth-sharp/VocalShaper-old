@@ -8,125 +8,169 @@ __host__ cudaError_t doSynthesis(
 	float* buffer, int bufferSize,
 	const int* unitArray, int unitSize)
 {
-	//使用设备0
-	int device = 0;
+	//无需计算
+	if (partSize <= 1) { return cudaError_t::cudaErrorUnknown; }
+	if (bufferSize <= 1) { return cudaError_t::cudaErrorUnknown; }
+	if (unitSize == 0) { return cudaError_t::cudaErrorUnknown; }
+
+	//选择设备
+	int device = -1;
+	cudaDeviceProp deviceProp = cudaDevicePropDontCare;
+	if (auto result = cudaChooseDevice(&device, &deviceProp)) {
+		return result;
+	}
 	if (auto result = cudaSetDevice(device)) {
 		return result;
 	}
 
-	//获取设备属性
-	cudaDeviceProp deviceProp;
-	if (auto result = cudaGetDeviceProperties(&deviceProp, device)) {
-		return result;
-	}
-
-	//在设备上申请合成结果储存空间
-	float* deviceBufferPtr = nullptr;
-	if (auto result = cudaMalloc(&deviceBufferPtr, bufferSize * sizeof(float))) {
+	//在主机上申请合成结果储存空间
+	float* hostBufferPtr = nullptr;
+	if (auto result = cudaMallocHost(&hostBufferPtr, bufferSize * sizeof(float), cudaMemAttachGlobal)) {
+		cudaDeviceReset();
 		return result;
 	}
 
 	//在设备上申请原始合成单元储存空间
 	float* devicePartPtr = nullptr;
 	if (auto result = cudaMalloc(&devicePartPtr, partSize * sizeof(float))) {
-		cudaFree(deviceBufferPtr);
+		cudaFreeHost(hostBufferPtr);
+		cudaDeviceReset();
 		return result;
 	}
 
 	//在设备上申请合成单元滤波后序列的储存空间
 	float* deviceUnitPtr = nullptr;
 	if (auto result = cudaMalloc(&deviceUnitPtr, (size_t)unitSize * partSize * sizeof(float))) {
-		cudaFree(deviceBufferPtr);
+		cudaFreeHost(hostBufferPtr);
 		cudaFree(devicePartPtr);
+		cudaDeviceReset();
 		return result;
 	}
 
 	//将原始合成单元存入设备
 	if (auto result = cudaMemcpy(devicePartPtr, part, partSize * sizeof(float), cudaMemcpyHostToDevice)) {
-		cudaFree(deviceBufferPtr);
+		cudaFreeHost(hostBufferPtr);
 		cudaFree(devicePartPtr);
 		cudaFree(deviceUnitPtr);
+		cudaDeviceReset();
 		return result;
 	}
 
-	//对合成单元滤波生成目标单元
-	if (auto result = computeEachUnit(deviceProp, deviceUnitPtr, devicePartPtr, unitSize, partSize)) {
-		cudaFree(deviceBufferPtr);
+	//建立流
+	cudaStream_t* streams = nullptr;
+	if (auto result = cudaMalloc(&streams, unitSize * sizeof(cudaStream_t))) {
+		cudaFreeHost(hostBufferPtr);
 		cudaFree(devicePartPtr);
 		cudaFree(deviceUnitPtr);
+		cudaDeviceReset();
 		return result;
 	}
+	for (int i = 0; i < unitSize; i++) {
+		cudaStreamCreateWithFlags(&streams[i], cudaStreamNonBlocking);
+	}
 
-	//释放原始合成单元
-	cudaFree(devicePartPtr);
-
-	//TODO 单元拼接
-	
-	//返回成功
-	return cudaError_t::cudaSuccess;
-}
-
-__host__ cudaError_t computeEachUnit(
-	const cudaDeviceProp& prop,
-	float* unitMem, const float* unit,
-	int count, int unitLength)
-{
-	//无需计算
-	if (unitLength == 0) { return cudaError_t::cudaErrorUnknown; }
+	//建立同步事件
+	cudaEvent_t* events = nullptr;
+	if (auto result = cudaMalloc(&events, unitSize * sizeof(cudaEvent_t))) {
+		//销毁流
+		for (int i = 0; i < unitSize; i++) {
+			cudaStreamDestroy(streams[i]);
+		}
+		cudaFreeHost(hostBufferPtr);
+		cudaFree(devicePartPtr);
+		cudaFree(deviceUnitPtr);
+		cudaFree(streams);
+		cudaDeviceReset();
+		return result;
+	}
+	for (int i = 0; i < unitSize; i++) {
+		cudaEventCreateWithFlags(&events[i], cudaEventDisableTiming);
+	}
 
 	//获取设备属性
-	auto& blockSizeInGrid = prop.maxGridSize;
-	auto& threadSizeInBlock = prop.maxThreadsDim;
-	int blockNumInAGrid = blockSizeInGrid[0] * blockSizeInGrid[1] * blockSizeInGrid[2];
+	auto& threadSizeInBlock = deviceProp.maxThreadsDim;
 	int threadNumInABlock = threadSizeInBlock[0] * threadSizeInBlock[1] * threadSizeInBlock[2];
 
-	//计算block, thread用量与循环轮数
-	int xSize = blockSizeInGrid[0], ySize = blockSizeInGrid[1], zSize = blockSizeInGrid[2];
-	int txSize = threadSizeInBlock[0], tySize = threadSizeInBlock[1], tzSize = threadSizeInBlock[2];
-	int roundSize = (unitLength / threadNumInABlock) / blockNumInAGrid + 1;
-	if (roundSize == 1) {
-		zSize = (unitLength / threadNumInABlock) / (blockSizeInGrid[0] * blockSizeInGrid[1]) + 1;
-		if (zSize == 1) {
-			ySize = (unitLength / threadNumInABlock) / blockSizeInGrid[0] + 1;
-			if (ySize == 1) {
-				xSize = (unitLength / threadNumInABlock) + 1;
-				if (xSize == 1) {
-					tzSize = unitLength / (threadSizeInBlock[0] * threadSizeInBlock[1]) + 1;
-					if (tzSize == 1) {
-						tySize = unitLength / threadSizeInBlock[0] + 1;
-						if (tySize == 1) {
-							txSize = unitLength;
-						}
-					}
-				}
-			}
-		}
-	}
+	//计算循环轮数
+	int roundSize = (partSize / threadNumInABlock) + 1;
 
 	//规划算子
-	dim3 grid(xSize, ySize, zSize), block(txSize, tySize, tzSize);
+	dim3 block(threadSizeInBlock[0], threadSizeInBlock[1], threadSizeInBlock[2]);
 
-	//循环计算每一个单元
-	for (int i = 0; i < count; i++) {
+	//深度优先建立流计算任务
+	int outDeviation = 0;
+	for (int i = 0; i < unitSize; i++) {
+		//在开始任务一前确认上一流已到达事件同步点
+		if (i > 0) {
+			cudaStreamWaitEvent(streams[i], events[i - 1], cudaEventWaitExternal);
+		}
+
+		//任务一：对拼接单元依次低通滤波
 		if (i == 0) {
-			for (int r = 0; r < roundSize; r++) {
-				computeUnit <<<grid, block>>> (
-					&unitMem[i * unitLength + r * blockNumInAGrid * threadNumInABlock],
-					&unit[r * blockNumInAGrid * threadNumInABlock],
-					unitLength);
-			}
+			computeUnit <<<roundSize, block, 0, streams[i]>>> (
+				&deviceUnitPtr[i * partSize],
+				&devicePartPtr[0], partSize);
 		}
 		else {
-			for (int r = 0; r < roundSize; r++) {
-				computeUnit <<<grid, block>>> (
-					&unitMem[i * unitLength + r * blockNumInAGrid * threadNumInABlock],
-					&unitMem[(i - 1) * unitLength + r * blockNumInAGrid * threadNumInABlock],
-					unitLength);
-			}
+			computeUnit <<<roundSize, block, 0, streams[i]>>> (
+				&deviceUnitPtr[i * partSize],
+				&deviceUnitPtr[(i - 1) * partSize], partSize);
 		}
-		cudaDeviceSynchronize();
+
+		//设置事件同步点
+		cudaEventRecordWithFlags(events[i], streams[i], cudaEventRecordExternal);
+
+		//在开始任务二前确认下一流已到达事件同步点
+		if (i < unitSize - 1) {
+			cudaStreamWaitEvent(streams[i], events[i + 1], cudaEventWaitExternal);
+		}
+
+		//任务二：线性衰减
+		int partRoundSize = (unitArray[i] / threadNumInABlock) + 1;
+		attenuateUnit <<<partRoundSize, block, 0, streams[i]>>> (
+			&deviceUnitPtr[i * partSize], unitArray[i],
+			1.f - outDeviation / (float)(bufferSize - 1),
+			1.f - (outDeviation + unitArray[i] - 1) / (float)(bufferSize - 1));
+
+		//任务三：将拼接单元拷贝到指定位置
+		cudaMemcpyAsync(
+			&hostBufferPtr[outDeviation], &deviceUnitPtr[i * partSize], unitArray[i], cudaMemcpyDeviceToHost, streams[i]);
+		outDeviation += unitArray[i];
 	}
 
+	//等待同步
+	cudaDeviceSynchronize();
+
+	//销毁事件
+	for (int i = 0; i < unitSize; i++) {
+		cudaEventDestroy(events[i]);
+	}
+	cudaFree(events);
+
+	//销毁流
+	for (int i = 0; i < unitSize; i++) {
+		cudaStreamDestroy(streams[i]);
+	}
+	cudaFree(streams);
+
+	//释放多余的内存
+	cudaFree(devicePartPtr);
+	cudaFree(deviceUnitPtr);
+
+	//将合成结果复制
+	if (auto result = cudaMemcpy(buffer, hostBufferPtr, bufferSize * sizeof(float), cudaMemcpyHostToHost)) {
+		cudaFreeHost(hostBufferPtr);
+		cudaDeviceReset();
+		return result;
+	}
+
+	//释放内存
+	cudaFreeHost(hostBufferPtr);
+
+	//重置设备
+	cudaDeviceReset();
+	
+	//返回成功
 	return cudaError_t::cudaSuccess;
 }
 
@@ -134,10 +178,9 @@ __global__ void computeUnit(
 	float* unitMemBase, const float* unitBase, int unitLength)
 {
 	//定位GPU线程
-	int blockIndex = blockIdx.z * (gridDim.x * gridDim.y) + blockIdx.y * gridDim.x + blockIdx.x;
-	int blockSize = blockDim.x * blockDim.y * blockDim.z;
+	int totalThread = blockDim.x * blockDim.y * blockDim.z;
 	int threadIndex = threadIdx.z * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.x + threadIdx.x;
-	int index = blockIndex * blockSize + threadIndex;
+	int index = totalThread * blockIdx.x + threadIndex;
 
 	//定位处理目标
 	if (index >= unitLength || index < 0) { return; }
@@ -146,6 +189,24 @@ __global__ void computeUnit(
 
 	//平均
 	unitMemBase[index] = unitBase[index] + (unitBase[nextIndex] - unitBase[index]) / 2;
+}
+
+__global__ void attenuateUnit(
+	float* unitMemBase, int unitLength, float sCoefficient, float eCoefficient)
+{
+	//定位GPU线程
+	int totalThread = blockDim.x * blockDim.y * blockDim.z;
+	int threadIndex = threadIdx.z * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.x + threadIdx.x;
+	int index = totalThread * blockIdx.x + threadIndex;
+
+	//定位处理目标
+	if (index >= unitLength || index < 0) { return; }
+
+	//计算衰减系数
+	float coefficient = sCoefficient + (eCoefficient - sCoefficient) * (index / (float)(unitLength - 1));
+
+	//衰减
+	unitMemBase[index] *= coefficient;
 }
 
 #endif

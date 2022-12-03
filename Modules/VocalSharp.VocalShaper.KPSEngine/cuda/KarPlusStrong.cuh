@@ -13,14 +13,12 @@ __host__ cudaError_t doSynthesis(
 	float* buffer, int bufferSize,
 	const int* unitArray, int unitSize);
 
-//生成滤波后的合成单元
-__host__ cudaError_t computeEachUnit(
-	const cudaDeviceProp& prop,
-	float* unitMem, const float* unit,
-	int count, int unitLength);
-
 //滤波单位算子
 __global__ void computeUnit(
 	float* unitMemBase, const float* unitBase, int unitLength);
+
+//衰减单位算子
+__global__ void attenuateUnit(
+	float* unitMemBase, int unitLength, float sCoefficient, float eCoefficient);
 
 #endif
