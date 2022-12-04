@@ -91,11 +91,30 @@ if (TARGET_CUDA_ENABLED)
 endif (TARGET_CUDA_ENABLED)
 add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
+#添加目录内所有源文件
+aux_source_directory (. TARGET_SOURCE)
+
+#添加CUDA文件
+if (TARGET_CUDA_ENABLED)
+	aux_source_directory (cuda TARGET_CUDA_SOURCE)
+	aux_source_directory (cuda/test TARGET_CUDA_TEST_SOURCE)
+endif (TARGET_CUDA_ENABLED)
+
+#编译的文件
+add_library (
+	${TARGET_NAME} SHARED
+	${LIBJMODULE_SRC}
+	${TARGET_SOURCE}
+	${TARGET_CUDA_SOURCE}
+)
+
 #设置编译器参数
 if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		#set (CMAKE_CXX_FLAGS "/bigobj" ${CMAKE_CXX_FLAGS})
-		add_link_options (
+		set_target_properties(
+			${TARGET_NAME} PROPERTIES
+			LINK_FLAGS 
 			/MANIFEST #生成清单:是
 			/NXCOMPAT #数据执行保护(DEP):是
 			/DYNAMICBASE #随机基址:是
@@ -111,7 +130,9 @@ if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
 elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		#set (CMAKE_CXX_FLAGS "/bigobj" ${CMAKE_CXX_FLAGS})
-		add_link_options (
+		set_target_properties(
+			${TARGET_NAME} PROPERTIES
+			LINK_FLAGS 
 			/MANIFEST #生成清单:是
 			/LTCG:incremental #链接时间代码生成:使用快速链接时间代码生成
 			/NXCOMPAT #数据执行保护(DEP):是
@@ -128,22 +149,6 @@ elseif (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
 		#add_link_options (-mbig-obj)
 	endif ()
 endif()
-
-#添加目录内所有源文件
-aux_source_directory (. TARGET_SOURCE)
-
-#添加CUDA文件
-if (TARGET_CUDA_ENABLED)
-	aux_source_directory (cuda TARGET_CUDA_SOURCE)
-endif (TARGET_CUDA_ENABLED)
-
-#编译的文件
-add_library (
-	${TARGET_NAME} SHARED
-	${LIBJMODULE_SRC}
-	${TARGET_SOURCE}
-	${TARGET_CUDA_SOURCE}
-)
 
 #链接库
 target_link_libraries (
@@ -168,3 +173,27 @@ add_dependencies (
 	JUCE
 	libVocalShaper
 )
+
+#测试目标
+add_executable (
+	KarPlusStrong_Cuda_Test
+	${TARGET_CUDA_SOURCE}
+	${TARGET_CUDA_TEST_SOURCE}
+)
+
+set_target_properties (
+	KarPlusStrong_Cuda_Test
+    PROPERTIES
+	PREFIX ""
+    ARCHIVE_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+    LIBRARY_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+    RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		set_target_properties(
+			KarPlusStrong_Cuda_Test PROPERTIES
+			LINK_FLAGS 
+			/SUBSYSTEM:CONSOLE #子系统:控制台
+		)
+endif ()
