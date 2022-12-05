@@ -93,6 +93,7 @@ add_compile_definitions (JUCE_MODAL_LOOPS_PERMITTED=1)
 
 #添加目录内所有源文件
 aux_source_directory (. TARGET_SOURCE)
+aux_source_directory (algorithm TARGET_ALGORITHM_SOURCE)
 
 #添加CUDA文件
 if (TARGET_CUDA_ENABLED)
@@ -106,6 +107,7 @@ add_library (
 	${LIBJMODULE_SRC}
 	${TARGET_SOURCE}
 	${TARGET_CUDA_SOURCE}
+	${TARGET_ALGORITHM_SOURCE}
 )
 
 #设置编译器参数
@@ -179,6 +181,7 @@ add_executable (
 	KarPlusStrong_Cuda_Test
 	${TARGET_CUDA_SOURCE}
 	${TARGET_CUDA_TEST_SOURCE}
+	${TARGET_ALGORITHM_SOURCE}
 )
 
 set_target_properties (
@@ -191,9 +194,9 @@ set_target_properties (
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		set_target_properties(
-			KarPlusStrong_Cuda_Test PROPERTIES
-			LINK_FLAGS 
-			/SUBSYSTEM:CONSOLE #子系统:控制台
-		)
+	set_target_properties(
+		KarPlusStrong_Cuda_Test PROPERTIES
+		LINK_FLAGS 
+		/SUBSYSTEM:CONSOLE #子系统:控制台
+	)
 endif ()
