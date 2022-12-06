@@ -7,7 +7,7 @@
 #include <time.h>
 #include <numeric>
 
-inline int16_t PCMFloat32ToInt16FmtConvert(float sample)
+inline int16_t PCMFloatToInt16FmtConvert(float sample)
 {
 	if (sample < -0.999999f) {
 		return INT16_MIN;
@@ -16,11 +16,11 @@ inline int16_t PCMFloat32ToInt16FmtConvert(float sample)
 		return INT16_MAX;
 	}
 	else {
-		return static_cast<int16_t>(sample * 32767.0f);
+		return static_cast<int16_t>(sample * 32767.f);
 	}
 }
 
-inline float PCMInt16ToFloat32FmtConvert(int16_t sample)
+inline float PCMInt16ToFloatFmtConvert(int16_t sample)
 {
 	return static_cast<float>(sample) / -static_cast<float>(INT16_MIN);
 }
@@ -33,31 +33,22 @@ int main()
 	std::string unitPath;
 	std::cin >> unitPath;
 
-	FILE* unitFile = fopen(unitPath.c_str(), "r");
-	if (!unitFile) {
-		std::cout << "未能打开文件：" << unitPath << std::endl;
-		system("pause");
-		return -1;
-	}
-
-	fseek(unitFile, 0, SEEK_END);
-	auto unitSize = ftell(unitFile);
-	fseek(unitFile, 0, SEEK_SET);
-
-	std::ifstream unitInputStream(unitFile);
-	if (!unitInputStream.good()) {
+	std::ifstream unitInputStream(unitPath, std::fstream::in | std::fstream::binary);
+	if (!unitInputStream.is_open()) {
 		std::cout << "未能建立文件流：" << unitPath << std::endl;
-		fclose(unitFile);
 		system("pause");
 		return -1;
 	}
+
+	unitInputStream.seekg(0, std::ios::end);
+	int unitSize = unitInputStream.tellg();
+	unitInputStream.seekg(0, std::ios::beg);
 
 	if (unitSize > 0) {
 		std::cout << "单元文件大小：" << unitSize << std::endl;
 	}
 	else {
 		std::cout << "单元文件大小为零！" << std::endl;
-		fclose(unitFile);
 		system("pause");
 		return -1;
 	}
@@ -71,10 +62,8 @@ int main()
 	for (int i = 0; i < unitNum; i++) {
 		int16_t unit = 0;
 		unitInputStream.read((char*)&unit, sizeof(int16_t));
-		unitList[i] = PCMInt16ToFloat32FmtConvert(unit);
+		unitList[i] = PCMInt16ToFloatFmtConvert(unit);
 	}
-
-	fclose(unitFile);
 
 	float unitMean= std::accumulate(unitList.begin(), unitList.end(), 0.f) / unitList.size();
 	for (int i = 0; i < unitNum; i++) {
@@ -87,17 +76,17 @@ int main()
 
 	std::cout << "输入合成频率：";
 	std::flush(std::cout);
-	float fre = 440.00;
+	float fre = 440.00f;
 	std::cin >> fre;
 
 	std::cout << "输入合成时长：";
 	std::flush(std::cout);
-	float time = 10.0;
+	float time = 10.0f;
 	std::cin >> time;
 
 	int sampleSize = time * sampleRate;
 	int partSize = 1 / fre * sampleRate;
-	int partNum = std::ceil(sampleSize / (double)partSize);
+	int partNum = std::ceil(sampleSize / (float)partSize);
 	int lastPartSize = sampleSize % partSize;
 
 	std::cout << "采样数：" << sampleSize << std::endl;
@@ -110,7 +99,7 @@ int main()
 	for (int i = 0; i < partNum; i++) {
 		partList[i] = partSize;
 	}
-	partList[partNum - 1] = lastPartSize;
+	partList[static_cast<size_t>(partNum) - 1] = lastPartSize;
 
 	std::vector<float> gpuBuffer;
 	gpuBuffer.resize(sampleSize);
@@ -145,40 +134,24 @@ int main()
 	clock_t cpuEndTime = clock();
 	std::cout << "CPU合成结束, 用时：" << (cpuEndTime - cpuStartTime) / (float)CLOCKS_PER_SEC << std::endl;
 
-	for (int i = sampleSize - lastPartSize; i < sampleSize; i++) {
-		if (cpuBuffer[i] > 0.1) {
-			std::cout << i << ":" << cpuBuffer[i] << std::endl;
-			system("pause");
-		}
-	}
-
 	std::cout << "输入GPU合成结果储存位置：";
 	std::flush(std::cout);
 
 	std::string gpuOutPath;
 	std::cin >> gpuOutPath;
 
-	FILE* gpuOutFile = fopen(gpuOutPath.c_str(), "w");
-	if (!gpuOutFile) {
-		std::cout << "未能打开文件：" << gpuOutPath << std::endl;
-		system("pause");
-		return -1;
-	}
-
-	std::ofstream gpuOutStream(gpuOutFile);
-	if (!gpuOutStream.good()) {
+	std::ofstream gpuOutStream(gpuOutPath, std::fstream::out | std::fstream::binary | std::fstream::trunc);
+	if (!gpuOutStream.is_open()) {
 		std::cout << "未能建立文件流：" << gpuOutPath << std::endl;
-		fclose(gpuOutFile);
 		system("pause");
 		return -1;
 	}
 
 	for (int i = 0; i < sampleSize; i++) {
-		int16_t temp = PCMFloat32ToInt16FmtConvert(gpuBuffer[i]);
+		int16_t temp = PCMFloatToInt16FmtConvert(gpuBuffer[i]);
 		gpuOutStream.write((const char*)&temp, sizeof(int16_t));
 	}
 
-	fclose(gpuOutFile);
 	std::cout << "已保存GPU合成结果！" << std::endl;
 
 	std::cout << "输入CPU合成结果储存位置：";
@@ -187,27 +160,18 @@ int main()
 	std::string cpuOutPath;
 	std::cin >> cpuOutPath;
 
-	FILE* cpuOutFile = fopen(cpuOutPath.c_str(), "w");
-	if (!cpuOutFile) {
-		std::cout << "未能打开文件：" << cpuOutPath << std::endl;
-		system("pause");
-		return -1;
-	}
-
-	std::ofstream cpuOutStream(cpuOutFile);
-	if (!cpuOutStream.good()) {
+	std::ofstream cpuOutStream(cpuOutPath, std::fstream::out | std::fstream::binary | std::fstream::trunc);
+	if (!cpuOutStream.is_open()) {
 		std::cout << "未能建立文件流：" << cpuOutPath << std::endl;
-		fclose(cpuOutFile);
 		system("pause");
 		return -1;
 	}
 
 	for (int i = 0; i < sampleSize; i++) {
-		int16_t temp = PCMFloat32ToInt16FmtConvert(cpuBuffer[i]);
+		int16_t temp = PCMFloatToInt16FmtConvert(cpuBuffer[i]);
 		cpuOutStream.write((const char*)&temp, sizeof(int16_t));
 	}
 
-	fclose(cpuOutFile);
 	std::cout << "已保存CPU合成结果！" << std::endl;
 
 	system("pause");

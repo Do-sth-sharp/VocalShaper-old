@@ -44,8 +44,8 @@ int doSynthesisCPU(
 		addUnit(
 			&buffer[outDeviation], ((i % 2) == 1) ? partTemp1 : partTemp2,
 			unitArray[i],
-			1.f - outDeviation / (float)(bufferSize - 1),
-			1.f - (outDeviation + unitArray[i] - 1) / (float)(bufferSize - 1));
+			1.f - (float)outDeviation / (float)(bufferSize - 1),
+			1.f - (float)(outDeviation + unitArray[i] - 1) / (float)(bufferSize - 1));
 
 		outDeviation += unitArray[i];
 	}
@@ -60,7 +60,7 @@ int doSynthesisCPU(
 void computeUnit(
 	float* unitMemBase, const float* unitBase, int unitLength)
 {
-	constexpr float r = .5f;
+	constexpr float r = 0.5f;
 	for (int i = 0; i < unitLength; i++) {
 		if (i > 0) {
 			unitMemBase[i] = unitBase[i] * r + unitBase[i - 1] * (1.f - r);

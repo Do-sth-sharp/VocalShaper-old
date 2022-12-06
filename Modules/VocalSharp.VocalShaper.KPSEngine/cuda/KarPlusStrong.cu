@@ -66,7 +66,7 @@ __host__ cudaError_t doSynthesisGPU(
 	}
 
 	//将原始合成单元存入设备
-	if (auto result = cudaMemcpy(devicePartPtr, part, maxUnitLength * sizeof(float), cudaMemcpyDefault)) {
+	if (auto result = cudaMemcpy(devicePartPtr, part, maxUnitLength * sizeof(float), cudaMemcpyHostToDevice)) {
 		cudaFreeHost(hostBufferPtr);
 		cudaFree(devicePartPtr);
 		cudaFree(deviceUnitPtr);
@@ -88,7 +88,7 @@ __host__ cudaError_t doSynthesisGPU(
 	}
 
 	//建立同步事件
-	cudaEvent_t* events = new cudaEvent_t[unitSize * 2];
+	cudaEvent_t* events = new cudaEvent_t[unitSize];
 	if (!events) {
 		//销毁流
 		for (int i = 0; i < unitSize; i++) {
@@ -101,22 +101,25 @@ __host__ cudaError_t doSynthesisGPU(
 		cudaDeviceReset();
 		return cudaError_t::cudaErrorMemoryAllocation;
 	}
-	for (int i = 0; i < unitSize * 2; i++) {
+	for (int i = 0; i < unitSize; i++) {
 		cudaEventCreateWithFlags(&events[i], cudaEventDisableTiming);
 	}
+
+	//等待同步
+	cudaDeviceSynchronize();
 
 	//获取设备属性
 	int threadNumInABlock = deviceProp.maxThreadsPerBlock;
 
 	//计算循环轮数
-	int roundSize = (maxUnitLength / threadNumInABlock) + 1;;
+	int roundSize = (maxUnitLength / threadNumInABlock) + 1;
 
 	//深度优先建立流计算任务
 	int outDeviation = 0;
 	for (int i = 0; i < unitSize; i++) {
 		//在开始任务一前确认上一流已到达事件同步点
 		if (i > 0) {
-			cudaStreamWaitEvent(streams[i], events[i - 1], cudaEventWaitDefault);
+			cudaStreamWaitEvent(streams[i], events[i - 1]);
 		}
 
 		//任务一：对拼接单元依次低通滤波
@@ -132,12 +135,11 @@ __host__ cudaError_t doSynthesisGPU(
 		}
 
 		//设置事件同步点
-		cudaEventRecordWithFlags(events[i], streams[i], cudaEventRecordDefault);
-		cudaEventRecordWithFlags(events[unitSize + i], streams[i], cudaEventRecordDefault);
+		cudaEventRecord(events[i], streams[i]);
 
 		//在开始任务二前确认下一流已到达事件同步点
 		if (i < unitSize - 1) {
-			cudaStreamWaitEvent(streams[i], events[unitSize + i + 1], cudaEventWaitDefault);
+			cudaStreamWaitEvent(streams[i], events[i + 1]);
 		}
 
 		//计算拼接单元长度
@@ -153,14 +155,14 @@ __host__ cudaError_t doSynthesisGPU(
 		//任务三：将拼接单元拷贝到指定位置
 		cudaMemcpyAsync(
 			&hostBufferPtr[outDeviation], &deviceUnitPtr[i * maxUnitLength], currentUnitLength, cudaMemcpyDeviceToHost, streams[i]);
-		outDeviation += unitArray[i];
+		outDeviation += currentUnitLength;
 	}
 
 	//等待同步
 	cudaDeviceSynchronize();
 
 	//销毁事件
-	for (int i = 0; i < unitSize * 2; i++) {
+	for (int i = 0; i < unitSize; i++) {
 		cudaEventDestroy(events[i]);
 	}
 	delete[] events;
@@ -196,7 +198,7 @@ __global__ void computeUnit(
 	float* unitMemBase, const float* unitBase, int unitLength, int totalThread)
 {
 	//运算系数
-	constexpr float r = .5;
+	constexpr float r = 0.5f;
 
 	//定位GPU线程
 	int index = totalThread * blockIdx.x + threadIdx.x;
