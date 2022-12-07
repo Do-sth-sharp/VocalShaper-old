@@ -134,6 +134,7 @@ int main()
 	clock_t cpuEndTime = clock();
 	std::cout << "CPU合成结束, 用时：" << (cpuEndTime - cpuStartTime) / (float)CLOCKS_PER_SEC << std::endl;
 
+#if CUDA_ENABLED
 	std::cout << "输入GPU合成结果储存位置：";
 	std::flush(std::cout);
 
@@ -153,6 +154,7 @@ int main()
 	}
 
 	std::cout << "已保存GPU合成结果！" << std::endl;
+#endif
 
 	std::cout << "输入CPU合成结果储存位置：";
 	std::flush(std::cout);

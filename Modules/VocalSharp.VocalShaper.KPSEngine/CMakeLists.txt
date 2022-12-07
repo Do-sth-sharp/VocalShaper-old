@@ -2,7 +2,7 @@
 string (REGEX REPLACE ".*/\(.*\)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
 
 #启用CUDA
-set (TARGET_CUDA_ENABLED ON)
+set (TARGET_CUDA_ENABLED OFF)
 
 #准备CUDA
 if (TARGET_CUDA_ENABLED)
@@ -177,26 +177,29 @@ add_dependencies (
 )
 
 #测试目标
-add_executable (
-	KarPlusStrong_Cuda_Test
-	${TARGET_CUDA_SOURCE}
-	${TARGET_CUDA_TEST_SOURCE}
-	${TARGET_ALGORITHM_SOURCE}
-)
-
-set_target_properties (
-	KarPlusStrong_Cuda_Test
-    PROPERTIES
-	PREFIX ""
-    ARCHIVE_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
-    LIBRARY_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
-    RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
-)
-
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	set_target_properties(
-		KarPlusStrong_Cuda_Test PROPERTIES
-		LINK_FLAGS 
-		/SUBSYSTEM:CONSOLE #子系统:控制台
+if (TARGET_CUDA_ENABLED)
+	add_executable (
+		KarPlusStrong_Cuda_Test
+		${TARGET_CUDA_SOURCE}
+		${TARGET_CUDA_TEST_SOURCE}
+		${TARGET_ALGORITHM_SOURCE}
 	)
-endif ()
+
+	set_target_properties (
+		KarPlusStrong_Cuda_Test
+	    PROPERTIES
+		PREFIX ""
+	    ARCHIVE_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+	    LIBRARY_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+	    RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR}/modules/${TARGET_NAME}
+	)
+
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		set_target_properties(
+			KarPlusStrong_Cuda_Test PROPERTIES
+			LINK_FLAGS 
+			/SUBSYSTEM:CONSOLE #子系统:控制台
+		)
+	endif ()
+
+endif (TARGET_CUDA_ENABLED)

@@ -1,6 +1,7 @@
 ﻿#include "KPSRenderer.h"
 #include "libJModule.h"
 #include "KPSEngine.h"
+#include "algorithm/KarPlusStrong.h"
 
 KPSRenderer::KPSRenderer(const KPSEngine* parent)
 	: parent(parent)
@@ -150,7 +151,7 @@ double KPSRenderer::getFormantrogrum(
 KPSRenderer::SingerHandle::SingerHandle(
 	KPSRenderer::SingerTempType& temp, const juce::String& singer, const juce::String& style,
 	juce::CriticalSection& lock,
-	const std::function<juce::Array<uint16_t>(const juce::String&, const juce::String&)> loadFunc)
+	const std::function<juce::Array<float>(const juce::String&, const juce::String&)> loadFunc)
 {
 	juce::GenericScopedLock<juce::CriticalSection> locker(lock);
 	
@@ -215,25 +216,38 @@ KPSRenderer::SingerHandle::~SingerHandle()
 	}
 }
 
+const juce::Array<float>* KPSRenderer::SingerHandle::operator->() const
+{
+	return &std::get<1>(*this->data);
+}
+
 const KPSRenderer::SingerHandle KPSRenderer::loadSinger(
 	const juce::String& singer, const juce::String& style) const
 {
-	auto loadFunc = [](const juce::String& singer, const juce::String& style)->juce::Array<uint16_t> {
+	auto loadFunc = [](const juce::String& singer, const juce::String& style)->juce::Array<float> {
 		auto info = jmadf::FindModule(singer);
 		if (!info) {
-			return juce::Array<uint16_t>();
+			return juce::Array<float>();
 		}
 
 		juce::String path = info->path + "/.database/" + style + ".nsdb";
 		juce::File file(path);
 		juce::FileInputStream stream(file);
 		if (stream.failedToOpen()) {
-			return juce::Array<uint16_t>();
+			return juce::Array<float>();
 		}
 
-		juce::Array<uint16_t> result;
+		juce::Array<float> result;
+		float sum = 0;
 		while (stream.getNumBytesRemaining() >= 2) {
-			result.add(stream.readShort());
+			float value = stream.readShort() / 32767.f;
+			result.add(value);
+			sum += value;
+		}
+
+		float mean = sum / result.size();
+		for (auto& i : result) {
+			i -= mean;
 		}
 
 		return result;
@@ -261,5 +275,75 @@ void KPSRenderer::KarPlusStrongRenderNote(
 	int startPointIndex = (noteStartTime - startTime) * sampleRate;
 	int endPointIndex = (noteEndTime - startTime) * sampleRate;
 
-	//TODO 单元合成
+	//根据pitch计算合成单元
+	int totalPointSize = endPointIndex - startPointIndex;
+	double pitchBase = pitch;
+	juce::Array<int> unitList;
+
+	if (pitCurve) {
+		int lengthCount = totalPointSize;
+		int deviation = 0;
+		while (lengthCount > 0) {
+			int currentIndex = startPointIndex + deviation;
+			double currentTime = currentIndex / (double)sampleRate;
+			double currentBeat = tempoTemp.get_x(currentTime);
+
+			double currentPitchCurveValue =
+				vocalshaper::HermiteInterpolation::getY(currentBeat, pitCurve, pitInfo.defaultValue);
+			double currentPitch = pitchBase + currentPitchCurveValue;
+
+			int unitSize = 1 / currentPitch * sampleRate;
+			if (unitSize > lengthCount) { unitSize = lengthCount; }
+
+			unitList.add(unitSize);
+			deviation += unitSize;
+			lengthCount -= unitSize;
+		}
+	}
+	else {
+		if (pitParam) {
+			pitchBase += vocalshaper::ParamDAO::getFloatData(pitParam);
+		}
+		else {
+			pitchBase += pitInfo.defaultValue;
+		}
+
+		int partSize = 1 / pitchBase * sampleRate;
+		int partNum = std::ceil(totalPointSize / (float)partSize);
+		int lastPartSize = totalPointSize % partSize;
+
+		for (int i = 0; i < partNum; i++) {
+			unitList.add(partSize);
+		}
+		unitList.getReference(partNum - 1) = lastPartSize;
+	}
+
+	//单元合成
+	doSynthesisCPU(
+		singerData->data(), singerData->size(),
+		&(buffer.getArrayOfWritePointers()[1])[startPointIndex], totalPointSize,
+		unitList.data(), unitList.size());
+
+	//动态控制
+	double opeValue = opeInfo.defaultValue;
+	if (opeParam) {
+		opeValue = vocalshaper::ParamDAO::getFloatData(opeParam);
+	}
+
+	for (int i = startPointIndex; i < endPointIndex; i++) {
+		double dynValue = dynInfo.defaultValue;
+		if (dynParam) {
+			dynValue = vocalshaper::ParamDAO::getFloatData(dynParam);
+		}
+		if (dynCurve) {
+			int currentIndex = startPointIndex + i;
+			double currentTime = currentIndex / (double)sampleRate;
+			double currentBeat = tempoTemp.get_x(currentTime);
+
+			dynValue =
+				vocalshaper::HermiteInterpolation::getY(currentBeat, dynCurve, dynInfo.defaultValue);
+		}
+
+		(buffer.getArrayOfWritePointers()[1])[startPointIndex + i] *= (opeValue * dynValue);
+	}
 }

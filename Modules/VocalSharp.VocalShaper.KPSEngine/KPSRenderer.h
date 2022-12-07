@@ -46,7 +46,7 @@ public:
 		uint32_t frameLength, uint32_t scaleRatio) const override;
 
 private:
-	using SingerTempType = std::map<juce::String, std::tuple<int, juce::Array<uint16_t>>>;
+	using SingerTempType = std::map<juce::String, std::tuple<int, juce::Array<float>>>;
 	mutable SingerTempType dbTemp;
 	mutable juce::CriticalSection dbTempLock;
 
@@ -56,16 +56,18 @@ private:
 		explicit SingerHandle(
 			SingerTempType& temp, const juce::String& singer, const juce::String& style,
 			juce::CriticalSection& lock,
-			const std::function<juce::Array<uint16_t>(const juce::String&, const juce::String&)> loadFunc);
+			const std::function<juce::Array<float>(const juce::String&, const juce::String&)> loadFunc);
 		SingerHandle(SingerHandle&& other) noexcept;
 		SingerHandle& operator=(SingerHandle&& other) noexcept;
 		~SingerHandle();
+
+		const juce::Array<float>* operator->() const;
 
 	private:
 		SingerTempType* temp = nullptr;
 		juce::String id;
 		juce::CriticalSection* lock = nullptr;
-		std::tuple<int, juce::Array<uint16_t>>* data = nullptr;
+		std::tuple<int, juce::Array<float>>* data = nullptr;
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SingerHandle)
 	};
